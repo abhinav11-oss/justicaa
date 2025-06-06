@@ -8,10 +8,15 @@ import { ChatInterface } from "@/components/ChatInterface";
 import { LegalGuides } from "@/components/LegalGuides";
 import { KnowledgeBase } from "@/components/KnowledgeBase";
 import { DocumentTemplates } from "@/components/DocumentTemplates";
-import { Scale, MessageSquare, BookOpen, FileText, Shield, Users } from "lucide-react";
+import { AuthModal } from "@/components/AuthModal";
+import { UserDashboard } from "@/components/UserDashboard";
+import { useAuth } from "@/hooks/useAuth";
+import { Scale, MessageSquare, BookOpen, FileText, Shield, Users, User, LogIn } from "lucide-react";
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState("chat");
+  const [authModalOpen, setAuthModalOpen] = useState(false);
+  const { user, loading } = useAuth();
 
   const legalServices = [
     {
@@ -40,6 +45,22 @@ const Index = () => {
     }
   ];
 
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-slate-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show dashboard if user is logged in
+  if (user) {
+    return <UserDashboard />;
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
       {/* Header */}
@@ -55,9 +76,15 @@ const Index = () => {
                 <p className="text-sm text-slate-600">Your Virtual Legal Counsel</p>
               </div>
             </div>
-            <Button variant="outline" size="sm">
-              Contact Lawyer
-            </Button>
+            <div className="flex space-x-2">
+              <Button variant="outline" size="sm" onClick={() => setAuthModalOpen(true)}>
+                <LogIn className="h-4 w-4 mr-2" />
+                Sign In
+              </Button>
+              <Button variant="outline" size="sm">
+                Contact Lawyer
+              </Button>
+            </div>
           </div>
         </div>
       </header>
@@ -151,6 +178,8 @@ const Index = () => {
           </Card>
         </div>
       </div>
+
+      <AuthModal isOpen={authModalOpen} onClose={() => setAuthModalOpen(false)} />
     </div>
   );
 };
