@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -8,6 +7,7 @@ import { MessageSquare, FileText, Calendar, User, LogOut, Plus } from 'lucide-re
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { ConversationDetail } from './ConversationDetail';
 
 interface Conversation {
   id: string;
@@ -42,6 +42,7 @@ export function UserDashboard() {
   const [documents, setDocuments] = useState<LegalDocument[]>([]);
   const [matters, setMatters] = useState<LegalMatter[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedConversationId, setSelectedConversationId] = useState<string | null>(null);
 
   useEffect(() => {
     if (user) {
@@ -131,6 +132,10 @@ export function UserDashboard() {
     }
   };
 
+  const handleConversationClick = (conversationId: string) => {
+    setSelectedConversationId(conversationId);
+  };
+
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'active': return 'bg-green-100 text-green-800';
@@ -157,6 +162,41 @@ export function UserDashboard() {
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
           <p className="text-slate-600">Loading your dashboard...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show conversation detail if selected
+  if (selectedConversationId) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
+        {/* Header */}
+        <header className="bg-white/80 backdrop-blur-sm border-b border-slate-200 sticky top-0 z-50">
+          <div className="container mx-auto px-4 py-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-3">
+                <div className="bg-blue-600 p-2 rounded-lg">
+                  <User className="h-6 w-6 text-white" />
+                </div>
+                <div>
+                  <h1 className="text-xl font-bold text-slate-900">Legal Dashboard</h1>
+                  <p className="text-sm text-slate-600">Welcome back, {user?.email}</p>
+                </div>
+              </div>
+              <Button variant="outline" size="sm" onClick={handleSignOut}>
+                <LogOut className="h-4 w-4 mr-2" />
+                Sign Out
+              </Button>
+            </div>
+          </div>
+        </header>
+
+        <div className="container mx-auto px-4 py-8">
+          <ConversationDetail 
+            conversationId={selectedConversationId}
+            onBack={() => setSelectedConversationId(null)}
+          />
         </div>
       </div>
     );
@@ -250,7 +290,11 @@ export function UserDashboard() {
                 ) : (
                   <div className="space-y-3">
                     {conversations.map((conversation) => (
-                      <div key={conversation.id} className="p-4 border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors">
+                      <div 
+                        key={conversation.id} 
+                        className="p-4 border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors cursor-pointer"
+                        onClick={() => handleConversationClick(conversation.id)}
+                      >
                         <div className="flex justify-between items-start">
                           <div>
                             <h4 className="font-medium">{conversation.title}</h4>
