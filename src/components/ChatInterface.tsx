@@ -5,10 +5,11 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Send, User, Bot, Lightbulb, Settings } from "lucide-react";
+import { Send, User, Bot, Lightbulb, Settings, MapPin } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { LawyerFinder } from "./LawyerFinder";
 
 interface Message {
   id: string;
@@ -22,7 +23,7 @@ export const ChatInterface = () => {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
-      content: "Hello! I'm your AI-powered Virtual Legal Assistant. I can help you with legal questions, guide you through legal processes, and provide general legal information. What legal question can I help you with today?",
+      content: "Hello! I'm your AI-powered Virtual Legal Assistant. I can help you with legal questions, guide you through legal processes, provide general legal information, and help you find lawyers near you. What legal question can I help you with today?",
       sender: 'assistant',
       timestamp: new Date(),
       category: 'greeting'
@@ -31,6 +32,7 @@ export const ChatInterface = () => {
   const [inputValue, setInputValue] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const [aiProvider, setAiProvider] = useState<'openai' | 'huggingface'>('huggingface');
+  const [showLawyerFinder, setShowLawyerFinder] = useState(false);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
   const { user } = useAuth();
@@ -44,6 +46,64 @@ export const ChatInterface = () => {
     "How to file for divorce?"
   ];
 
+  const detectLawType = (text: string): string => {
+    const content = text.toLowerCase();
+    
+    // Criminal Law
+    if (content.includes('fir') || content.includes('police') || content.includes('arrest') || 
+        content.includes('bail') || content.includes('criminal') || content.includes('theft') ||
+        content.includes('fraud') || content.includes('ipc') || content.includes('crpc')) {
+      return 'criminal';
+    }
+    
+    // Family Law
+    if (content.includes('divorce') || content.includes('marriage') || content.includes('custody') ||
+        content.includes('alimony') || content.includes('adoption') || content.includes('family')) {
+      return 'family';
+    }
+    
+    // Property Law
+    if (content.includes('property') || content.includes('land') || content.includes('rent') ||
+        content.includes('landlord') || content.includes('tenant') || content.includes('real estate') ||
+        content.includes('registration') || content.includes('stamp duty')) {
+      return 'property';
+    }
+    
+    // Business/Corporate Law
+    if (content.includes('business') || content.includes('company') || content.includes('llc') ||
+        content.includes('corporation') || content.includes('partnership') || content.includes('gst') ||
+        content.includes('tax') || content.includes('startup')) {
+      return 'business';
+    }
+    
+    // Contract Law
+    if (content.includes('contract') || content.includes('agreement') || content.includes('nda') ||
+        content.includes('terms') || content.includes('clause') || content.includes('breach')) {
+      return 'contract';
+    }
+    
+    // Consumer Law
+    if (content.includes('consumer') || content.includes('refund') || content.includes('complaint') ||
+        content.includes('defective') || content.includes('warranty') || content.includes('service')) {
+      return 'consumer';
+    }
+    
+    // Employment Law
+    if (content.includes('employment') || content.includes('job') || content.includes('workplace') ||
+        content.includes('salary') || content.includes('termination') || content.includes('pf') ||
+        content.includes('esi') || content.includes('labour')) {
+      return 'employment';
+    }
+    
+    // Intellectual Property
+    if (content.includes('trademark') || content.includes('copyright') || content.includes('patent') ||
+        content.includes('intellectual property') || content.includes('brand')) {
+      return 'intellectual-property';
+    }
+    
+    return 'general';
+  };
+
   useEffect(() => {
     if (scrollAreaRef.current) {
       scrollAreaRef.current.scrollTop = scrollAreaRef.current.scrollHeight;
@@ -53,11 +113,15 @@ export const ChatInterface = () => {
   const handleSendMessage = async () => {
     if (!inputValue.trim()) return;
 
+    // Detect law type from user input
+    const detectedCategory = detectLawType(inputValue);
+
     const userMessage: Message = {
       id: Date.now().toString(),
       content: inputValue,
       sender: 'user',
-      timestamp: new Date()
+      timestamp: new Date(),
+      category: detectedCategory
     };
 
     setMessages(prev => [...prev, userMessage]);
@@ -75,7 +139,8 @@ export const ChatInterface = () => {
       const { data, error } = await supabase.functions.invoke(functionName, {
         body: {
           message: inputValue,
-          conversationHistory: conversationHistory
+          conversationHistory: conversationHistory,
+          detectedCategory: detectedCategory
         }
       });
 
@@ -91,7 +156,7 @@ export const ChatInterface = () => {
         content: data.response,
         sender: 'assistant',
         timestamp: new Date(),
-        category: data.category || 'general'
+        category: data.category || detectedCategory
       };
 
       setMessages(prev => [...prev, assistantMessage]);
@@ -174,6 +239,20 @@ export const ChatInterface = () => {
     setInputValue(question);
   };
 
+  if (showLawyerFinder) {
+    return (
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <h3 className="text-lg font-semibold">Find Lawyers Near You</h3>
+          <Button variant="outline" onClick={() => setShowLawyerFinder(false)}>
+            Back to Chat
+          </Button>
+        </div>
+        <LawyerFinder />
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col h-[600px]">
       {/* AI Provider Selection */}
@@ -195,6 +274,15 @@ export const ChatInterface = () => {
                 {question}
               </Button>
             ))}
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setShowLawyerFinder(true)}
+              className="text-xs bg-blue-50 hover:bg-blue-100"
+            >
+              <MapPin className="h-3 w-3 mr-1" />
+              Find Lawyers Near Me
+            </Button>
           </div>
         </div>
         

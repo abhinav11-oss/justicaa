@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -8,10 +7,11 @@ import { ChatInterface } from "@/components/ChatInterface";
 import { LegalGuides } from "@/components/LegalGuides";
 import { KnowledgeBase } from "@/components/KnowledgeBase";
 import { DocumentTemplates } from "@/components/DocumentTemplates";
+import { DocumentGenerator } from "@/components/DocumentGenerator";
 import { AuthModal } from "@/components/AuthModal";
 import { UserDashboard } from "@/components/UserDashboard";
 import { useAuth } from "@/hooks/useAuth";
-import { Scale, MessageSquare, BookOpen, FileText, Shield, Users, User, LogIn } from "lucide-react";
+import { Scale, MessageSquare, BookOpen, FileText, Shield, Users, User, LogIn, FilePlus } from "lucide-react";
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState("chat");
@@ -96,8 +96,8 @@ const Index = () => {
             Get Legal Guidance <span className="text-blue-600">Instantly</span>
           </h2>
           <p className="text-xl text-slate-600 mb-8 max-w-3xl mx-auto">
-            Our AI-powered legal assistant provides immediate answers to common legal questions 
-            and guides you through important legal processes step-by-step.
+            Our AI-powered legal assistant provides immediate answers to common legal questions, 
+            generates legal documents, and helps you find qualified lawyers near you.
           </p>
           
           {/* Service Cards */}
@@ -127,10 +127,14 @@ const Index = () => {
         <Card className="bg-white/80 backdrop-blur-sm border-slate-200 shadow-xl">
           <CardHeader>
             <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-              <TabsList className="grid w-full grid-cols-4 bg-slate-100">
+              <TabsList className="grid w-full grid-cols-5 bg-slate-100">
                 <TabsTrigger value="chat" className="flex items-center space-x-2">
                   <MessageSquare className="h-4 w-4" />
                   <span>AI Chat</span>
+                </TabsTrigger>
+                <TabsTrigger value="generator" className="flex items-center space-x-2">
+                  <FilePlus className="h-4 w-4" />
+                  <span>Doc Generator</span>
                 </TabsTrigger>
                 <TabsTrigger value="guides" className="flex items-center space-x-2">
                   <BookOpen className="h-4 w-4" />
@@ -153,6 +157,9 @@ const Index = () => {
               <TabsContent value="chat">
                 <ChatInterface />
               </TabsContent>
+              <TabsContent value="generator">
+                <DocumentGenerator />
+              </TabsContent>
               <TabsContent value="guides">
                 <LegalGuides />
               </TabsContent>
@@ -172,7 +179,7 @@ const Index = () => {
             <CardContent className="pt-6">
               <p className="text-sm text-amber-800">
                 <strong>Legal Disclaimer:</strong> This AI assistant provides general legal information only and is not a substitute for professional legal advice. 
-                For specific legal matters, please consult with a qualified attorney.
+                For specific legal matters, please consult with a qualified attorney. We do not endorse any specific lawyers in our directory.
               </p>
             </CardContent>
           </Card>
