@@ -36,3 +36,6 @@ secret = ""
 
 [functions.ai-legal-chat]
 verify_jwt = false
+
+[functions.ai-legal-chat-hf]
+verify_jwt = false

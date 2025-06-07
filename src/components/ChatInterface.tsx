@@ -1,11 +1,11 @@
-
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Send, User, Bot, Lightbulb } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Send, User, Bot, Lightbulb, Settings } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
@@ -30,6 +30,7 @@ export const ChatInterface = () => {
   ]);
   const [inputValue, setInputValue] = useState("");
   const [isTyping, setIsTyping] = useState(false);
+  const [aiProvider, setAiProvider] = useState<'openai' | 'huggingface'>('huggingface');
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
   const { user } = useAuth();
@@ -64,12 +65,14 @@ export const ChatInterface = () => {
     setIsTyping(true);
 
     try {
-      console.log('Sending message to AI:', inputValue);
+      console.log(`Sending message to AI (${aiProvider}):`, inputValue);
       
       // Get conversation history (last 10 messages for context)
       const conversationHistory = messages.slice(-10);
       
-      const { data, error } = await supabase.functions.invoke('ai-legal-chat', {
+      const functionName = aiProvider === 'openai' ? 'ai-legal-chat' : 'ai-legal-chat-hf';
+      
+      const { data, error } = await supabase.functions.invoke(functionName, {
         body: {
           message: inputValue,
           conversationHistory: conversationHistory
@@ -173,24 +176,49 @@ export const ChatInterface = () => {
 
   return (
     <div className="flex flex-col h-[600px]">
-      {/* Quick Questions */}
-      <div className="mb-4">
-        <h3 className="text-sm font-medium text-slate-700 mb-3 flex items-center">
-          <Lightbulb className="h-4 w-4 mr-2" />
-          Quick Questions
-        </h3>
-        <div className="flex flex-wrap gap-2">
-          {quickQuestions.map((question, index) => (
-            <Button
-              key={index}
-              variant="outline"
-              size="sm"
-              onClick={() => handleQuickQuestion(question)}
-              className="text-xs"
-            >
-              {question}
-            </Button>
-          ))}
+      {/* AI Provider Selection */}
+      <div className="mb-4 flex items-center justify-between">
+        <div>
+          <h3 className="text-sm font-medium text-slate-700 mb-3 flex items-center">
+            <Lightbulb className="h-4 w-4 mr-2" />
+            Quick Questions
+          </h3>
+          <div className="flex flex-wrap gap-2">
+            {quickQuestions.map((question, index) => (
+              <Button
+                key={index}
+                variant="outline"
+                size="sm"
+                onClick={() => handleQuickQuestion(question)}
+                className="text-xs"
+              >
+                {question}
+              </Button>
+            ))}
+          </div>
+        </div>
+        
+        <div className="flex items-center space-x-2">
+          <Settings className="h-4 w-4 text-slate-500" />
+          <Select value={aiProvider} onValueChange={(value: 'openai' | 'huggingface') => setAiProvider(value)}>
+            <SelectTrigger className="w-40">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="huggingface">
+                <div className="flex flex-col">
+                  <span>Hugging Face</span>
+                  <span className="text-xs text-green-600">Free</span>
+                </div>
+              </SelectItem>
+              <SelectItem value="openai">
+                <div className="flex flex-col">
+                  <span>OpenAI</span>
+                  <span className="text-xs text-blue-600">Premium</span>
+                </div>
+              </SelectItem>
+            </SelectContent>
+          </Select>
         </div>
       </div>
 
@@ -275,6 +303,12 @@ export const ChatInterface = () => {
           Sign in to save your chat history and access personalized features
         </p>
       )}
+      
+      {/* AI Provider info */}
+      <p className="text-xs text-slate-500 mt-1 text-center">
+        Using {aiProvider === 'huggingface' ? 'Hugging Face (Free)' : 'OpenAI (Premium)'} • 
+        {aiProvider === 'huggingface' ? ' Limited daily usage' : ' Requires API key'}
+      </p>
     </div>
   );
 };
