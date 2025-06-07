@@ -58,7 +58,8 @@ Always maintain a helpful, professional tone while being clear about the limitat
 
     console.log('Sending request to Hugging Face with conversation length:', conversationText.length);
 
-    const response = await fetch('https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.1', {
+    // Updated to use the correct Hugging Face Inference API endpoint
+    const response = await fetch('https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.3', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${HUGGING_FACE_API_KEY}`,
@@ -67,11 +68,12 @@ Always maintain a helpful, professional tone while being clear about the limitat
       body: JSON.stringify({
         inputs: conversationText,
         parameters: {
-          max_new_tokens: 500,
+          max_new_tokens: 512,
           temperature: 0.7,
           top_p: 0.9,
           do_sample: true,
-          return_full_text: false
+          return_full_text: false,
+          stop: ["Human:", "\n\nHuman:"]
         }
       }),
     });
