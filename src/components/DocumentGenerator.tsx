@@ -439,7 +439,7 @@ Notarized by: _________________
             <FileText className="h-5 w-5 mr-2" />
             Legal Document Generator
             {category && (
-              <Badge variant="outline\" className="ml-2 capitalize">
+              <Badge variant="outline" className="ml-2 capitalize">
                 {category} Documents
               </Badge>
             )}

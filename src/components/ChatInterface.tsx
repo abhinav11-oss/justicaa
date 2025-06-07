@@ -336,7 +336,7 @@ export const ChatInterface = ({ category }: ChatInterfaceProps) => {
             <Lightbulb className="h-4 w-4 mr-2" />
             Quick Questions
             {category && (
-              <Badge variant="outline\" className="ml-2 capitalize">
+              <Badge variant="outline" className="ml-2 capitalize">
                 {category}
               </Badge>
             )}
