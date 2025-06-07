@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -41,7 +40,7 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
     } else {
       toast({
         title: "Welcome back!",
-        description: "You've successfully signed in."
+        description: "You've successfully signed in. All features are now available."
       });
       onClose();
     }
@@ -64,7 +63,7 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
     } else {
       toast({
         title: "Account Created!",
-        description: "Please check your email to verify your account."
+        description: "Please check your email to verify your account. Once verified, you'll have access to all features."
       });
       onClose();
     }
@@ -83,7 +82,7 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
             <span>Legal Assistant Account</span>
           </CardTitle>
           <CardDescription className="text-center">
-            Access your legal consultations and documents
+            Sign in to access AI Chat, Find Lawyers, Generate Documents, and more
           </CardDescription>
         </CardHeader>
         
@@ -192,10 +191,13 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
             </TabsContent>
           </Tabs>
           
-          <div className="mt-4 text-center">
-            <Button variant="ghost" onClick={onClose} className="text-sm">
-              Continue as Guest
-            </Button>
+          <div className="mt-4 p-3 bg-amber-50 border border-amber-200 rounded-lg">
+            <div className="flex items-start space-x-2">
+              <AlertCircle className="h-4 w-4 text-amber-600 mt-0.5" />
+              <p className="text-xs text-amber-800">
+                Authentication required to access all features including AI Chat, Find Lawyers, Generate Documents, and Template Downloads.
+              </p>
+            </div>
           </div>
         </CardContent>
       </Card>

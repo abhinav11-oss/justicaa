@@ -19,7 +19,11 @@ interface Message {
   category?: string;
 }
 
-export const ChatInterface = () => {
+interface ChatInterfaceProps {
+  category?: string;
+}
+
+export const ChatInterface = ({ category }: ChatInterfaceProps) => {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
@@ -37,14 +41,56 @@ export const ChatInterface = () => {
   const { toast } = useToast();
   const { user } = useAuth();
 
-  const quickQuestions = [
-    "How do I start a business?",
-    "What's in a basic contract?",
-    "Do I need a will?",
-    "How to trademark a name?",
-    "What are tenant rights?",
-    "How to file for divorce?"
-  ];
+  // Category-specific quick questions
+  const getQuickQuestions = () => {
+    const baseQuestions = {
+      business: [
+        "How do I start an LLC?",
+        "What's in a business contract?",
+        "How to trademark a name?",
+        "What are employment laws?",
+        "How to protect IP?",
+        "Business license requirements?"
+      ],
+      personal: [
+        "Do I need a will?",
+        "How to file for divorce?",
+        "What are tenant rights?",
+        "How to adopt a child?",
+        "Estate planning basics?",
+        "Family court procedures?"
+      ],
+      contract: [
+        "What makes a contract valid?",
+        "How to review an NDA?",
+        "Employment contract terms?",
+        "Breach of contract remedies?",
+        "Contract termination rights?",
+        "Service agreement clauses?"
+      ],
+      process: [
+        "How to file a lawsuit?",
+        "Small claims court process?",
+        "How to respond to summons?",
+        "Legal document filing?",
+        "Court appearance tips?",
+        "Legal representation rights?"
+      ]
+    };
+
+    return category && baseQuestions[category as keyof typeof baseQuestions] 
+      ? baseQuestions[category as keyof typeof baseQuestions]
+      : [
+          "How do I start a business?",
+          "What's in a basic contract?",
+          "Do I need a will?",
+          "How to trademark a name?",
+          "What are tenant rights?",
+          "How to file for divorce?"
+        ];
+  };
+
+  const quickQuestions = getQuickQuestions();
 
   const detectLawType = (text: string): string => {
     const content = text.toLowerCase();
@@ -101,7 +147,7 @@ export const ChatInterface = () => {
       return 'intellectual-property';
     }
     
-    return 'general';
+    return category || 'general';
   };
 
   useEffect(() => {
@@ -111,6 +157,15 @@ export const ChatInterface = () => {
   }, [messages, isTyping]);
 
   const handleSendMessage = async () => {
+    if (!user) {
+      toast({
+        title: "Authentication Required",
+        description: "Please sign in to access AI Chat features",
+        variant: "destructive"
+      });
+      return;
+    }
+
     if (!inputValue.trim()) return;
 
     // Detect law type from user input
@@ -236,8 +291,27 @@ export const ChatInterface = () => {
   };
 
   const handleQuickQuestion = (question: string) => {
+    if (!user) {
+      toast({
+        title: "Authentication Required",
+        description: "Please sign in to access AI Chat features",
+        variant: "destructive"
+      });
+      return;
+    }
     setInputValue(question);
   };
+
+  if (!user) {
+    return (
+      <Card className="bg-amber-50 border-amber-200">
+        <CardContent className="pt-6 text-center">
+          <h4 className="text-lg font-medium text-amber-900 mb-2">Authentication Required</h4>
+          <p className="text-amber-700 mb-4">Please sign in to access AI Chat and get legal assistance.</p>
+        </CardContent>
+      </Card>
+    );
+  }
 
   if (showLawyerFinder) {
     return (
@@ -248,19 +322,24 @@ export const ChatInterface = () => {
             Back to Chat
           </Button>
         </div>
-        <LawyerFinder />
+        <LawyerFinder category={category} />
       </div>
     );
   }
 
   return (
     <div className="flex flex-col h-[600px]">
-      {/* AI Provider Selection */}
+      {/* AI Provider Selection and Quick Questions */}
       <div className="mb-4 flex items-center justify-between">
         <div>
           <h3 className="text-sm font-medium text-slate-700 mb-3 flex items-center">
             <Lightbulb className="h-4 w-4 mr-2" />
             Quick Questions
+            {category && (
+              <Badge variant="outline" className="ml-2 capitalize">
+                {category}
+              </Badge>
+            )}
           </h3>
           <div className="flex flex-wrap gap-2">
             {quickQuestions.map((question, index) => (
@@ -385,13 +464,6 @@ export const ChatInterface = () => {
         </Button>
       </div>
 
-      {/* User status indicator */}
-      {!user && (
-        <p className="text-xs text-slate-500 mt-2 text-center">
-          Sign in to save your chat history and access personalized features
-        </p>
-      )}
-      
       {/* AI Provider info */}
       <p className="text-xs text-slate-500 mt-1 text-center">
         Using {aiProvider === 'huggingface' ? 'Hugging Face (Free)' : 'OpenAI (Premium)'} • 

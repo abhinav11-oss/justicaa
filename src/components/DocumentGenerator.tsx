@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -8,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import { FileText, Download, Eye } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/useAuth";
 
 interface DocumentTemplate {
   id: string;
@@ -15,6 +15,7 @@ interface DocumentTemplate {
   type: string;
   description: string;
   fields: DocumentField[];
+  category: string;
 }
 
 interface DocumentField {
@@ -26,11 +27,16 @@ interface DocumentField {
   placeholder?: string;
 }
 
+interface DocumentGeneratorProps {
+  category?: string;
+}
+
 const documentTemplates: DocumentTemplate[] = [
   {
     id: "rent-agreement",
     name: "Rent Agreement",
     type: "property",
+    category: "personal",
     description: "Standard rental agreement template",
     fields: [
       { id: "landlord_name", label: "Landlord Name", type: "text", required: true, placeholder: "Enter landlord's full name" },
@@ -46,6 +52,7 @@ const documentTemplates: DocumentTemplate[] = [
     id: "nda",
     name: "Non-Disclosure Agreement (NDA)",
     type: "business",
+    category: "business",
     description: "Confidentiality agreement template",
     fields: [
       { id: "disclosing_party", label: "Disclosing Party Name", type: "text", required: true, placeholder: "Company/Individual disclosing information" },
@@ -56,45 +63,75 @@ const documentTemplates: DocumentTemplate[] = [
     ]
   },
   {
-    id: "affidavit",
-    name: "General Affidavit",
-    type: "legal",
-    description: "Sworn statement template",
+    id: "employment-contract",
+    name: "Employment Contract",
+    type: "employment",
+    category: "business",
+    description: "Standard employment agreement",
     fields: [
-      { id: "deponent_name", label: "Deponent Name", type: "text", required: true, placeholder: "Person making the affidavit" },
-      { id: "deponent_address", label: "Deponent Address", type: "textarea", required: true, placeholder: "Complete address of deponent" },
-      { id: "subject", label: "Subject/Title", type: "text", required: true, placeholder: "What the affidavit is about" },
-      { id: "statement", label: "Statement/Declaration", type: "textarea", required: true, placeholder: "The facts being sworn to" },
-      { id: "place", label: "Place of Execution", type: "text", required: true, placeholder: "City where affidavit is made" },
-      { id: "date", label: "Date", type: "date", required: true }
+      { id: "company_name", label: "Company Name", type: "text", required: true, placeholder: "Employer company name" },
+      { id: "employee_name", label: "Employee Name", type: "text", required: true, placeholder: "Employee's full name" },
+      { id: "position", label: "Job Position", type: "text", required: true, placeholder: "Job title" },
+      { id: "salary", label: "Annual Salary", type: "text", required: true, placeholder: "500000" },
+      { id: "start_date", label: "Start Date", type: "date", required: true },
+      { id: "probation_period", label: "Probation Period", type: "select", required: true, options: ["3 months", "6 months", "1 year"] }
     ]
   },
   {
-    id: "complaint-letter",
-    name: "Consumer Complaint Letter",
-    type: "consumer",
-    description: "Formal complaint letter template",
+    id: "service-agreement",
+    name: "Service Agreement",
+    type: "contract",
+    category: "contract",
+    description: "Professional service contract",
     fields: [
-      { id: "complainant_name", label: "Your Name", type: "text", required: true, placeholder: "Your full name" },
-      { id: "complainant_address", label: "Your Address", type: "textarea", required: true, placeholder: "Your complete address" },
-      { id: "company_name", label: "Company/Service Provider", type: "text", required: true, placeholder: "Name of company you're complaining against" },
-      { id: "company_address", label: "Company Address", type: "textarea", required: true, placeholder: "Company's address" },
-      { id: "product_service", label: "Product/Service", type: "text", required: true, placeholder: "What you purchased or service received" },
-      { id: "complaint_details", label: "Complaint Details", type: "textarea", required: true, placeholder: "Describe the issue in detail" },
-      { id: "resolution_sought", label: "Resolution Sought", type: "textarea", required: true, placeholder: "What you want them to do" },
-      { id: "date", label: "Date", type: "date", required: true }
+      { id: "service_provider", label: "Service Provider", type: "text", required: true, placeholder: "Provider name" },
+      { id: "client_name", label: "Client Name", type: "text", required: true, placeholder: "Client name" },
+      { id: "services", label: "Services Description", type: "textarea", required: true, placeholder: "Detailed description of services" },
+      { id: "payment_amount", label: "Payment Amount", type: "text", required: true, placeholder: "Total amount or hourly rate" },
+      { id: "payment_terms", label: "Payment Terms", type: "select", required: true, options: ["Net 30", "Net 15", "Upon completion", "50% upfront"] },
+      { id: "start_date", label: "Start Date", type: "date", required: true }
+    ]
+  },
+  {
+    id: "power-of-attorney",
+    name: "Power of Attorney",
+    type: "legal",
+    category: "process",
+    description: "Legal authorization document",
+    fields: [
+      { id: "principal_name", label: "Principal Name", type: "text", required: true, placeholder: "Person granting power" },
+      { id: "agent_name", label: "Agent Name", type: "text", required: true, placeholder: "Person receiving power" },
+      { id: "powers", label: "Powers Granted", type: "textarea", required: true, placeholder: "Specific powers being granted" },
+      { id: "effective_date", label: "Effective Date", type: "date", required: true },
+      { id: "expiration", label: "Expiration", type: "select", required: true, options: ["Upon revocation", "Specific date", "Upon death"] }
     ]
   }
 ];
 
-export const DocumentGenerator = () => {
+export const DocumentGenerator = ({ category }: DocumentGeneratorProps) => {
   const [selectedTemplate, setSelectedTemplate] = useState<DocumentTemplate | null>(null);
   const [formData, setFormData] = useState<Record<string, string>>({});
   const [generatedDocument, setGeneratedDocument] = useState<string>("");
   const [showPreview, setShowPreview] = useState(false);
+  const [outputFormat, setOutputFormat] = useState<'pdf' | 'docx'>('pdf');
   const { toast } = useToast();
+  const { user } = useAuth();
+
+  // Filter templates by category
+  const filteredTemplates = category && category !== "all" 
+    ? documentTemplates.filter(template => template.category === category)
+    : documentTemplates;
 
   const handleTemplateSelect = (templateId: string) => {
+    if (!user) {
+      toast({
+        title: "Authentication Required",
+        description: "Please sign in to generate documents",
+        variant: "destructive"
+      });
+      return;
+    }
+
     const template = documentTemplates.find(t => t.id === templateId);
     if (template) {
       setSelectedTemplate(template);
@@ -138,11 +175,14 @@ export const DocumentGenerator = () => {
       case "nda":
         document = generateNDA();
         break;
-      case "affidavit":
-        document = generateAffidavit();
+      case "employment-contract":
+        document = generateEmploymentContract();
         break;
-      case "complaint-letter":
-        document = generateComplaintLetter();
+      case "service-agreement":
+        document = generateServiceAgreement();
+        break;
+      case "power-of-attorney":
+        document = generatePowerOfAttorney();
         break;
     }
 
@@ -151,7 +191,7 @@ export const DocumentGenerator = () => {
 
     toast({
       title: "Document Generated",
-      description: "Your legal document has been created successfully"
+      description: `Your ${selectedTemplate.name} has been created successfully`
     });
   };
 
@@ -177,9 +217,9 @@ TERMS AND CONDITIONS:
 
 6. TERMINATION: Either party may terminate this agreement by giving 30 days written notice.
 
-7. GOVERNING LAW: This agreement shall be governed by Indian law and courts in [City] shall have jurisdiction.
+7. GOVERNING LAW: This agreement shall be governed by Indian law.
 
-IN WITNESS WHEREOF, both parties have executed this agreement on the date mentioned below.
+IN WITNESS WHEREOF, both parties have executed this agreement.
 
 LANDLORD: _________________     TENANT: _________________
 ${formData.landlord_name}                ${formData.tenant_name}
@@ -225,109 +265,155 @@ Date: ${new Date().toLocaleDateString()}
     `;
   };
 
-  const generateAffidavit = () => {
+  const generateEmploymentContract = () => {
     return `
-AFFIDAVIT
+EMPLOYMENT CONTRACT
 
-I, ${formData.deponent_name}, son/daughter of _______, aged __ years, resident of ${formData.deponent_address}, do hereby solemnly affirm and declare as under:
+This Employment Contract is between ${formData.company_name} (Company) and ${formData.employee_name} (Employee).
 
-SUBJECT: ${formData.subject}
+POSITION: ${formData.position}
+ANNUAL SALARY: ₹${formData.salary}
+START DATE: ${formData.start_date}
+PROBATION PERIOD: ${formData.probation_period}
 
-1. That I am the deponent herein and I have personal knowledge of the facts stated hereinafter.
+TERMS AND CONDITIONS:
 
-2. That ${formData.statement}
+1. The Employee agrees to perform duties assigned by the Company.
+2. The Employee shall maintain confidentiality of company information.
+3. The Employee is entitled to statutory benefits as per Indian labor laws.
+4. Either party may terminate employment with 30 days notice after probation.
 
-3. That the above statement is true and correct to the best of my knowledge and belief and nothing has been concealed therein.
+COMPANY: _________________     EMPLOYEE: _________________
+${formData.company_name}              ${formData.employee_name}
 
-4. That I am making this affidavit for the purpose of _______ and for no other purpose.
-
-DEPONENT
-
-VERIFICATION:
-Verified at ${formData.place} on ${formData.date} that the contents of the above affidavit are true and correct to the best of my knowledge and belief and nothing material has been concealed therefrom.
-
-                                                    DEPONENT
-                                               ${formData.deponent_name}
+Date: ${new Date().toLocaleDateString()}
     `;
   };
 
-  const generateComplaintLetter = () => {
+  const generateServiceAgreement = () => {
     return `
-CONSUMER COMPLAINT LETTER
+SERVICE AGREEMENT
 
-To,
-${formData.company_name}
-${formData.company_address}
+This Service Agreement is between ${formData.service_provider} (Provider) and ${formData.client_name} (Client).
 
-From,
-${formData.complainant_name}
-${formData.complainant_address}
+SERVICES: ${formData.services}
+PAYMENT: ${formData.payment_amount}
+PAYMENT TERMS: ${formData.payment_terms}
+START DATE: ${formData.start_date}
 
-Date: ${formData.date}
+TERMS:
 
-Subject: Complaint regarding ${formData.product_service}
+1. Provider agrees to deliver services as described above.
+2. Client agrees to pay as per the payment terms.
+3. Either party may terminate with 15 days notice.
 
-Dear Sir/Madam,
+PROVIDER: _________________     CLIENT: _________________
+${formData.service_provider}           ${formData.client_name}
 
-I am writing to formally complain about the ${formData.product_service} I purchased/received from your company.
-
-COMPLAINT DETAILS:
-${formData.complaint_details}
-
-This issue has caused me significant inconvenience and I believe your company should take immediate action to resolve this matter.
-
-RESOLUTION SOUGHT:
-${formData.resolution_sought}
-
-I expect a prompt response and resolution within 15 days of receiving this complaint. If this matter is not resolved satisfactorily, I may be compelled to seek redressal through the appropriate consumer forum.
-
-I trust you will take immediate action to resolve this issue.
-
-Yours sincerely,
-
-${formData.complainant_name}
+Date: ${new Date().toLocaleDateString()}
     `;
   };
 
-  const downloadDocument = () => {
+  const generatePowerOfAttorney = () => {
+    return `
+POWER OF ATTORNEY
+
+I, ${formData.principal_name}, hereby appoint ${formData.agent_name} as my attorney-in-fact.
+
+POWERS GRANTED: ${formData.powers}
+EFFECTIVE DATE: ${formData.effective_date}
+EXPIRATION: ${formData.expiration}
+
+This Power of Attorney shall be effective immediately and shall remain in effect until ${formData.expiration}.
+
+PRINCIPAL: _________________
+${formData.principal_name}
+
+Date: ${new Date().toLocaleDateString()}
+
+Notarized by: _________________
+    `;
+  };
+
+  const downloadDocument = async () => {
     if (!generatedDocument) return;
 
-    const blob = new Blob([generatedDocument], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `${selectedTemplate?.name.replace(/\s+/g, '_')}_${Date.now()}.txt`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+    try {
+      if (outputFormat === 'pdf') {
+        // For PDF generation, we'll use a simple approach
+        // In a real app, you'd use libraries like jsPDF or html2pdf
+        const element = document.createElement('a');
+        const file = new Blob([generatedDocument], { type: 'text/plain' });
+        element.href = URL.createObjectURL(file);
+        element.download = `${selectedTemplate?.name.replace(/\s+/g, '_')}_${Date.now()}.txt`;
+        document.body.appendChild(element);
+        element.click();
+        document.body.removeChild(element);
+      } else {
+        // For DOCX, we'll also use text format for now
+        // In a real app, you'd use libraries like html-docx-js
+        const element = document.createElement('a');
+        const file = new Blob([generatedDocument], { type: 'text/plain' });
+        element.href = URL.createObjectURL(file);
+        element.download = `${selectedTemplate?.name.replace(/\s+/g, '_')}_${Date.now()}.txt`;
+        document.body.appendChild(element);
+        element.click();
+        document.body.removeChild(element);
+      }
 
-    toast({
-      title: "Document Downloaded",
-      description: "Your document has been saved successfully"
-    });
+      toast({
+        title: "Document Downloaded",
+        description: `Your ${selectedTemplate?.name} has been saved as ${outputFormat.toUpperCase()}`
+      });
+    } catch (error) {
+      toast({
+        title: "Download Failed",
+        description: "Unable to download document. Please try again.",
+        variant: "destructive"
+      });
+    }
   };
+
+  if (!user) {
+    return (
+      <Card className="bg-amber-50 border-amber-200">
+        <CardContent className="pt-6 text-center">
+          <h4 className="text-lg font-medium text-amber-900 mb-2">Authentication Required</h4>
+          <p className="text-amber-700 mb-4">Please sign in to access the document generator.</p>
+        </CardContent>
+      </Card>
+    );
+  }
 
   if (showPreview && generatedDocument) {
     return (
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <h3 className="text-lg font-semibold">Document Preview</h3>
-          <div className="space-x-2">
+          <div className="flex items-center space-x-2">
+            <Select value={outputFormat} onValueChange={(value: 'pdf' | 'docx') => setOutputFormat(value)}>
+              <SelectTrigger className="w-24">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="pdf">PDF</SelectItem>
+                <SelectItem value="docx">DOCX</SelectItem>
+              </SelectContent>
+            </Select>
             <Button variant="outline" onClick={() => setShowPreview(false)}>
               <Eye className="h-4 w-4 mr-2" />
               Edit
             </Button>
             <Button onClick={downloadDocument}>
               <Download className="h-4 w-4 mr-2" />
-              Download
+              Download {outputFormat.toUpperCase()}
             </Button>
           </div>
         </div>
         
         <Card>
           <CardContent className="p-6">
-            <pre className="whitespace-pre-wrap text-sm font-mono bg-slate-50 p-4 rounded border">
+            <pre className="whitespace-pre-wrap text-sm font-mono bg-slate-50 p-4 rounded border max-h-96 overflow-y-auto">
               {generatedDocument}
             </pre>
           </CardContent>
@@ -352,6 +438,11 @@ ${formData.complainant_name}
           <CardTitle className="flex items-center">
             <FileText className="h-5 w-5 mr-2" />
             Legal Document Generator
+            {category && (
+              <Badge variant="outline" className="ml-2 capitalize">
+                {category} Documents
+              </Badge>
+            )}
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -363,7 +454,7 @@ ${formData.complainant_name}
                   <SelectValue placeholder="Choose a document template" />
                 </SelectTrigger>
                 <SelectContent>
-                  {documentTemplates.map((template) => (
+                  {filteredTemplates.map((template) => (
                     <SelectItem key={template.id} value={template.id}>
                       <div>
                         <div className="font-medium">{template.name}</div>
@@ -431,9 +522,25 @@ ${formData.complainant_name}
               </div>
             ))}
             
-            <Button onClick={generateDocument} className="w-full mt-6">
-              Generate Document
-            </Button>
+            <div className="flex items-center space-x-4 pt-4">
+              <div className="flex-1">
+                <Label>Output Format</Label>
+                <Select value={outputFormat} onValueChange={(value: 'pdf' | 'docx') => setOutputFormat(value)}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="pdf">PDF Document</SelectItem>
+                    <SelectItem value="docx">Word Document</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="flex-1 flex items-end">
+                <Button onClick={generateDocument} className="w-full">
+                  Generate {outputFormat.toUpperCase()}
+                </Button>
+              </div>
+            </div>
           </CardContent>
         </Card>
       )}
