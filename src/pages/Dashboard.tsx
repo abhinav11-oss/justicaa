@@ -9,6 +9,7 @@ import { DocumentTemplates } from "@/components/DocumentTemplates";
 import { DocumentGenerator } from "@/components/DocumentGenerator";
 import { LawyerFinder } from "@/components/LawyerFinder";
 import { UserDashboard } from "@/components/UserDashboard";
+import { SettingsPanel } from "@/components/SettingsPanel";
 import { useAuth } from "@/hooks/useAuth";
 import { 
   Scale, 
@@ -99,15 +100,21 @@ const Dashboard = () => {
       title: "Legal Research",
       icon: Search,
       description: "Case law and statutes"
+    },
+    {
+      id: "settings",
+      title: "Settings",
+      icon: Settings,
+      description: "App preferences"
     }
   ];
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-slate-800 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-slate-600">Loading dashboard...</p>
+          <p className="text-slate-600 dark:text-slate-400">Loading dashboard...</p>
         </div>
       </div>
     );
@@ -129,24 +136,26 @@ const Dashboard = () => {
         return <LegalGuides />;
       case "research":
         return <KnowledgeBase />;
+      case "settings":
+        return <SettingsPanel />;
       default:
         return <DashboardHome />;
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-slate-800 flex">
       {/* Vertical Sidebar */}
-      <aside className="w-64 bg-white/80 backdrop-blur-sm border-r border-slate-200 flex flex-col">
+      <aside className="w-64 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border-r border-slate-200 dark:border-slate-700 flex flex-col">
         {/* Header */}
-        <div className="p-6 border-b border-slate-200">
+        <div className="p-6 border-b border-slate-200 dark:border-slate-700">
           <div className="flex items-center space-x-3">
             <div className="bg-blue-600 p-2 rounded-lg">
               <Scale className="h-6 w-6 text-white" />
             </div>
             <div>
-              <h1 className="text-lg font-bold text-slate-900">LegalAI Assistant</h1>
-              <p className="text-sm text-slate-600">Dashboard</p>
+              <h1 className="text-lg font-bold text-slate-900 dark:text-white">LegalAI Assistant</h1>
+              <p className="text-sm text-slate-600 dark:text-slate-400">Gwalior's Legal Solution</p>
             </div>
           </div>
         </div>
@@ -160,8 +169,8 @@ const Dashboard = () => {
                 onClick={() => setActiveTab(item.id)}
                 className={`w-full text-left p-3 rounded-lg transition-all duration-200 flex items-center space-x-3 ${
                   activeTab === item.id
-                    ? "bg-blue-100 text-blue-700 border border-blue-200"
-                    : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+                    ? "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800"
+                    : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-white"
                 }`}
               >
                 <item.icon className="h-5 w-5" />
@@ -175,16 +184,16 @@ const Dashboard = () => {
         </nav>
 
         {/* User Section */}
-        <div className="p-4 border-t border-slate-200">
+        <div className="p-4 border-t border-slate-200 dark:border-slate-700">
           {user ? (
             <div className="space-y-3">
               <div className="flex items-center space-x-3 p-2">
-                <div className="bg-blue-100 p-2 rounded-full">
-                  <User className="h-4 w-4 text-blue-600" />
+                <div className="bg-blue-100 dark:bg-blue-900/30 p-2 rounded-full">
+                  <User className="h-4 w-4 text-blue-600 dark:text-blue-400" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-slate-900 truncate">{user.email}</p>
-                  <p className="text-xs text-slate-500">Signed in</p>
+                  <p className="text-sm font-medium text-slate-900 dark:text-white truncate">{user.email}</p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">Signed in</p>
                 </div>
               </div>
               <Button variant="outline" size="sm" onClick={handleSignOut} className="w-full">
@@ -194,7 +203,7 @@ const Dashboard = () => {
             </div>
           ) : (
             <div className="text-center">
-              <p className="text-sm text-slate-600 mb-3">Browse as guest</p>
+              <p className="text-sm text-slate-600 dark:text-slate-400 mb-3">Browse as guest</p>
               <Button variant="outline" size="sm" className="w-full">
                 <User className="h-4 w-4 mr-2" />
                 Sign In
@@ -207,18 +216,18 @@ const Dashboard = () => {
       {/* Main Content Area */}
       <main className="flex-1 flex flex-col min-h-screen">
         {/* Top Bar */}
-        <header className="bg-white/80 backdrop-blur-sm border-b border-slate-200 p-4">
+        <header className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border-b border-slate-200 dark:border-slate-700 p-4">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-2xl font-bold text-slate-900 capitalize">
+              <h2 className="text-2xl font-bold text-slate-900 dark:text-white capitalize">
                 {sidebarItems.find(item => item.id === activeTab)?.title || "Dashboard"}
               </h2>
-              <p className="text-sm text-slate-600">
+              <p className="text-sm text-slate-600 dark:text-slate-400">
                 {sidebarItems.find(item => item.id === activeTab)?.description || "Welcome to your legal assistant"}
               </p>
             </div>
             <div className="flex items-center space-x-2">
-              <Button variant="outline" size="sm">
+              <Button variant="outline" size="sm" onClick={() => setActiveTab("settings")}>
                 <Settings className="h-4 w-4 mr-2" />
                 Settings
               </Button>
@@ -253,8 +262,8 @@ const DashboardHome = () => {
       color: "bg-green-500"
     },
     {
-      title: "Find Lawyer",
-      description: "Connect with legal experts",
+      title: "Find Gwalior Lawyer",
+      description: "Connect with local legal experts",
       icon: Users,
       action: "lawyers",
       color: "bg-purple-500"
@@ -274,7 +283,7 @@ const DashboardHome = () => {
         <CardContent className="p-6">
           <h3 className="text-2xl font-bold mb-2">Welcome to LegalAI Assistant</h3>
           <p className="text-blue-100">
-            Your comprehensive platform for legal assistance, document generation, and expert connections.
+            Your comprehensive platform for legal assistance in Gwalior - document generation, local lawyer connections, and expert guidance.
           </p>
         </CardContent>
       </Card>
@@ -286,8 +295,8 @@ const DashboardHome = () => {
               <div className={`${action.color} w-12 h-12 rounded-lg flex items-center justify-center mx-auto mb-4`}>
                 <action.icon className="h-6 w-6 text-white" />
               </div>
-              <h4 className="font-semibold text-slate-900 mb-2">{action.title}</h4>
-              <p className="text-sm text-slate-600">{action.description}</p>
+              <h4 className="font-semibold text-slate-900 dark:text-white mb-2">{action.title}</h4>
+              <p className="text-sm text-slate-600 dark:text-slate-400">{action.description}</p>
             </CardContent>
           </Card>
         ))}
@@ -296,22 +305,22 @@ const DashboardHome = () => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card>
           <CardContent className="p-6">
-            <h4 className="font-semibold text-slate-900 mb-4">Recent Activity</h4>
-            <div className="space-y-3 text-sm text-slate-600">
-              <p>• Welcome to LegalAI Assistant Dashboard</p>
-              <p>• Explore our AI-powered legal tools</p>
-              <p>• Start with a quick chat or document generation</p>
+            <h4 className="font-semibold text-slate-900 dark:text-white mb-4">Gwalior Legal Services</h4>
+            <div className="space-y-3 text-sm text-slate-600 dark:text-slate-400">
+              <p>• Connect with verified lawyers in Gwalior</p>
+              <p>• Access Madhya Pradesh legal templates</p>
+              <p>• Get location-specific legal guidance</p>
             </div>
           </CardContent>
         </Card>
 
         <Card>
           <CardContent className="p-6">
-            <h4 className="font-semibold text-slate-900 mb-4">Quick Tips</h4>
-            <div className="space-y-3 text-sm text-slate-600">
+            <h4 className="font-semibold text-slate-900 dark:text-white mb-4">Quick Tips</h4>
+            <div className="space-y-3 text-sm text-slate-600 dark:text-slate-400">
               <p>• Use specific legal terms for better AI responses</p>
               <p>• Save important documents to your profile</p>
-              <p>• Connect with lawyers for complex matters</p>
+              <p>• Enable location access for local lawyer suggestions</p>
             </div>
           </CardContent>
         </Card>

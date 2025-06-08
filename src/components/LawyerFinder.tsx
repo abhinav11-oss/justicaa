@@ -32,127 +32,130 @@ interface LawyerFinderProps {
   category?: string;
 }
 
-// Enhanced lawyer data with coordinates
+// Enhanced lawyer data focused on Gwalior and nearby areas
 const lawyersDatabase: Lawyer[] = [
+  // Gwalior Lawyers
   {
     id: "1",
-    name: "Adv. Rajesh Kumar",
-    specialization: ["Criminal Law", "Family Law"],
-    location: "Connaught Place",
-    city: "New Delhi",
-    pincode: "110001",
+    name: "Adv. Rajesh Kumar Sharma",
+    specialization: ["Criminal Law", "Family Law", "Consumer Law"],
+    location: "Lashkar",
+    city: "Gwalior",
+    pincode: "474001",
     phone: "+91-98765-43210",
     experience: 15,
     rating: 4.5,
-    address: "Block A, Connaught Place, New Delhi - 110001",
+    address: "Shop No. 15, Sarafa Bazaar, Lashkar, Gwalior - 474001",
     verified: true,
-    latitude: 28.6315,
-    longitude: 77.2167
+    latitude: 26.2124,
+    longitude: 78.1772
   },
   {
     id: "2", 
-    name: "Adv. Priya Sharma",
+    name: "Adv. Priya Agarwal",
     specialization: ["Property Law", "Civil Law", "Business Law"],
-    location: "Karol Bagh",
-    city: "New Delhi",
-    pincode: "110005",
+    location: "City Centre",
+    city: "Gwalior",
+    pincode: "474011",
     phone: "+91-98765-43211",
     experience: 12,
     rating: 4.7,
-    address: "Main Market, Karol Bagh, New Delhi - 110005",
+    address: "201, City Centre Mall, Gwalior - 474011",
     verified: true,
-    latitude: 28.6519,
-    longitude: 77.1909
+    latitude: 26.2295,
+    longitude: 78.1807
   },
   {
     id: "3",
     name: "Adv. Suresh Gupta",
     specialization: ["Business Law", "Contract Law", "Intellectual Property"],
-    location: "Lajpat Nagar",
-    city: "New Delhi", 
-    pincode: "110024",
+    location: "Thatipur", 
+    city: "Gwalior",
+    pincode: "474011",
     phone: "+91-98765-43212",
     experience: 20,
     rating: 4.3,
-    address: "Central Market, Lajpat Nagar, New Delhi - 110024",
+    address: "Advocate Chamber, District Court Complex, Thatipur, Gwalior - 474011",
     verified: true,
-    latitude: 28.5677,
-    longitude: 77.2431
+    latitude: 26.2083,
+    longitude: 78.1896
   },
   {
     id: "4",
     name: "Adv. Meera Joshi",
     specialization: ["Consumer Law", "Employment Law", "Family Law"],
-    location: "Rohini",
-    city: "New Delhi",
-    pincode: "110085",
+    location: "Morar",
+    city: "Gwalior",
+    pincode: "474006",
     phone: "+91-98765-43213", 
     experience: 8,
     rating: 4.6,
-    address: "Sector 3, Rohini, New Delhi - 110085",
+    address: "Near Railway Station, Morar, Gwalior - 474006",
     verified: false,
-    latitude: 28.7041,
-    longitude: 77.1025
+    latitude: 26.2389,
+    longitude: 78.2378
   },
   {
     id: "5",
     name: "Adv. Amit Verma",
     specialization: ["Criminal Law", "Cyber Law"],
-    location: "Dwarka",
-    city: "New Delhi",
-    pincode: "110075",
+    location: "Maharaj Bada",
+    city: "Gwalior",
+    pincode: "474002",
     phone: "+91-98765-43214",
     experience: 10,
     rating: 4.4,
-    address: "Sector 12, Dwarka, New Delhi - 110075",
+    address: "Chamber No. 12, Lawyer's Colony, Maharaj Bada, Gwalior - 474002",
     verified: true,
-    latitude: 28.5921,
-    longitude: 77.0460
+    latitude: 26.2230,
+    longitude: 78.1867
   },
   {
     id: "6",
     name: "Adv. Kavita Singh",
     specialization: ["Family Law", "Personal Legal"],
-    location: "Vasant Kunj",
-    city: "New Delhi",
-    pincode: "110070",
+    location: "Hazira",
+    city: "Gwalior",
+    pincode: "474001",
     phone: "+91-98765-43215",
     experience: 18,
     rating: 4.8,
-    address: "Mall Road, Vasant Kunj, New Delhi - 110070",
+    address: "Near Gwalior Fort, Hazira, Gwalior - 474001",
     verified: true,
-    latitude: 28.5244,
-    longitude: 77.1588
+    latitude: 26.2295,
+    longitude: 78.1674
   },
+  
+  // Nearby cities for comparison
   {
     id: "7",
     name: "Adv. Ravi Patel",
     specialization: ["Business Law", "Corporate Law", "Tax Law"],
-    location: "Nehru Place",
-    city: "New Delhi",
-    pincode: "110019",
+    location: "Civil Lines",
+    city: "Jhansi",
+    pincode: "284001",
     phone: "+91-98765-43216",
     experience: 14,
     rating: 4.5,
-    address: "Nehru Place, New Delhi - 110019",
+    address: "Civil Lines, Jhansi - 284001",
     verified: true,
-    latitude: 28.5495,
-    longitude: 77.2500
+    latitude: 25.4484,
+    longitude: 78.5685
   },
   {
     id: "8",
     name: "Adv. Sunita Agarwal",
     specialization: ["Contract Law", "Employment Law", "Civil Law"],
-    location: "Khan Market",
-    city: "New Delhi",
-    pincode: "110003",
+    location: "Scindia Nagar",
+    city: "Bhopal",
+    pincode: "462016",
     phone: "+91-98765-43217",
     experience: 11,
     rating: 4.6,
-    address: "Khan Market, New Delhi - 110003",
+    address: "Scindia Nagar, Bhopal - 462016",
     verified: true,
-    latitude: 28.5983,
-    longitude: 77.2320
+    latitude: 23.2599,
+    longitude: 77.4126
   }
 ];
 
@@ -162,11 +165,15 @@ const categoryMap = {
   "Contract Review": ["Contract Law", "Business Law", "Employment Law", "Civil Law"]
 };
 
+// Gwalior coordinates as default
+const GWALIOR_COORDS = { lat: 26.2183, lng: 78.1828 };
+
 export const LawyerFinder = ({ category }: LawyerFinderProps) => {
   const [lawyers, setLawyers] = useState<Lawyer[]>([]);
   const [filteredLawyers, setFilteredLawyers] = useState<Lawyer[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<keyof typeof categoryMap>("Business Law");
   const [selectedSpecialization, setSelectedSpecialization] = useState<string>("all");
+  const [selectedCity, setSelectedCity] = useState<string>("Gwalior");
   const [manualLocation, setManualLocation] = useState("");
   const [copiedPhone, setCopiedPhone] = useState<string | null>(null);
   const [showPhoneModal, setShowPhoneModal] = useState<string | null>(null);
@@ -179,9 +186,11 @@ export const LawyerFinder = ({ category }: LawyerFinderProps) => {
     "Corporate Law", "Tax Law"
   ];
 
+  const cities = ["Gwalior", "Jhansi", "Bhopal", "Indore", "Ujjain", "Morena", "Bhind", "Datia"];
+
   useEffect(() => {
-    // Auto-get location when component mounts
-    getCurrentLocation();
+    // Set Gwalior as default location
+    setGeoLocation(GWALIOR_COORDS.lat, GWALIOR_COORDS.lng);
     setLawyers(lawyersDatabase);
   }, []);
 
@@ -199,7 +208,7 @@ export const LawyerFinder = ({ category }: LawyerFinderProps) => {
 
   useEffect(() => {
     filterLawyers();
-  }, [selectedSpecialization, selectedCategory, lawyers]);
+  }, [selectedSpecialization, selectedCategory, selectedCity, lawyers]);
 
   useEffect(() => {
     if (category && categoryMap[category as keyof typeof categoryMap]) {
@@ -222,6 +231,11 @@ export const LawyerFinder = ({ category }: LawyerFinderProps) => {
   const filterLawyers = () => {
     let filtered = lawyers;
 
+    // Filter by city first (prioritize local lawyers)
+    if (selectedCity !== "all") {
+      filtered = filtered.filter(lawyer => lawyer.city === selectedCity);
+    }
+
     // Filter by category
     const relevantSpecs = categoryMap[selectedCategory] || [];
     if (relevantSpecs.length > 0) {
@@ -240,7 +254,7 @@ export const LawyerFinder = ({ category }: LawyerFinderProps) => {
     setFilteredLawyers(filtered);
   };
 
-  const handleManualLocationSubmit = () => {
+  const handleLocationSubmit = () => {
     if (!manualLocation.trim()) {
       toast({
         title: "Location Required",
@@ -250,9 +264,17 @@ export const LawyerFinder = ({ category }: LawyerFinderProps) => {
       return;
     }
     
-    // For demo purposes, set a default location for manual input
-    // In a real app, you'd geocode the address
-    setGeoLocation(28.6139, 77.2090); // Delhi coordinates
+    // Check if it's Gwalior or nearby
+    const isGwalior = manualLocation.toLowerCase().includes('gwalior') || 
+                     manualLocation.includes('474');
+    
+    if (isGwalior) {
+      setGeoLocation(GWALIOR_COORDS.lat, GWALIOR_COORDS.lng);
+      setSelectedCity("Gwalior");
+    } else {
+      // Set generic coordinates for other locations
+      setGeoLocation(26.2183, 78.1828);
+    }
     
     toast({
       title: "Location Set",
@@ -266,7 +288,7 @@ export const LawyerFinder = ({ category }: LawyerFinderProps) => {
       return;
     }
 
-    // Check if device is mobile or if tel: links are supported
+    // Check if device is mobile
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
     
     if (isMobile) {
@@ -297,9 +319,11 @@ export const LawyerFinder = ({ category }: LawyerFinderProps) => {
 
   const handleDirections = (lawyer: Lawyer) => {
     if (latitude && longitude && lawyer.address) {
+      // Use accurate coordinates for directions
       const directionsUrl = `https://www.google.com/maps/dir/?api=1&origin=${latitude},${longitude}&destination=${encodeURIComponent(lawyer.address)}`;
       window.open(directionsUrl, '_blank');
     } else {
+      // Fallback to searching for the address
       const fallbackUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(lawyer.address)}`;
       window.open(fallbackUrl, '_blank');
     }
@@ -312,12 +336,30 @@ export const LawyerFinder = ({ category }: LawyerFinderProps) => {
         <CardHeader>
           <CardTitle className="flex items-center">
             <MapPin className="h-5 w-5 mr-2" />
-            Find Lawyers Near You
+            Find Lawyers in Your City
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="flex flex-col sm:flex-row gap-4">
-            <div className="flex-1">
+          {/* City Selection */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="text-sm font-medium mb-2 block">Select City</label>
+              <Select value={selectedCity} onValueChange={setSelectedCity}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select your city" />
+                </SelectTrigger>
+                <SelectContent>
+                  {cities.map((city) => (
+                    <SelectItem key={city} value={city}>
+                      {city} {city === "Gwalior" && "(Recommended)"}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            
+            <div>
+              <label className="text-sm font-medium mb-2 block">Or Use Current Location</label>
               <Button 
                 onClick={getCurrentLocation}
                 disabled={loading}
@@ -327,29 +369,30 @@ export const LawyerFinder = ({ category }: LawyerFinderProps) => {
                 {loading ? "Getting Location..." : "Use Current Location"}
               </Button>
             </div>
-            <div className="flex-1 flex gap-2">
-              <Input
-                placeholder="Enter city or pincode"
-                value={manualLocation}
-                onChange={(e) => setManualLocation(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && handleManualLocationSubmit()}
-              />
-              <Button onClick={handleManualLocationSubmit} variant="outline">
-                Set
-              </Button>
-            </div>
+          </div>
+          
+          <div className="flex gap-2">
+            <Input
+              placeholder="Enter city or pincode manually"
+              value={manualLocation}
+              onChange={(e) => setManualLocation(e.target.value)}
+              onKeyPress={(e) => e.key === 'Enter' && handleLocationSubmit()}
+            />
+            <Button onClick={handleLocationSubmit} variant="outline">
+              Set
+            </Button>
           </div>
           
           {error && (
-            <div className="text-sm text-amber-600 bg-amber-50 p-3 rounded-lg flex items-center">
+            <div className="text-sm text-amber-600 bg-amber-50 dark:bg-amber-900/20 p-3 rounded-lg flex items-center">
               <AlertCircle className="h-4 w-4 mr-2" />
               {error}
             </div>
           )}
 
           {latitude && longitude && (
-            <div className="text-sm text-green-600 bg-green-50 p-3 rounded-lg">
-              ✓ Location found: {latitude.toFixed(4)}, {longitude.toFixed(4)}
+            <div className="text-sm text-green-600 bg-green-50 dark:bg-green-900/20 p-3 rounded-lg">
+              ✓ Location found: Showing lawyers near {selectedCity}
             </div>
           )}
         </CardContent>
@@ -386,14 +429,14 @@ export const LawyerFinder = ({ category }: LawyerFinderProps) => {
             {/* Results */}
             <div className="space-y-4">
               <h3 className="text-lg font-semibold">
-                {filteredLawyers.length} Lawyers Found for {cat}
+                {filteredLawyers.length} Lawyers Found in {selectedCity} for {cat}
               </h3>
               
               {filteredLawyers.length === 0 ? (
                 <Card>
                   <CardContent className="text-center py-8">
-                    <p className="text-slate-600">No results found near you for this category.</p>
-                    <p className="text-sm text-slate-500 mt-2">Try adjusting your filters or search area.</p>
+                    <p className="text-slate-600 dark:text-slate-400">No lawyers found in {selectedCity} for this category.</p>
+                    <p className="text-sm text-slate-500 dark:text-slate-500 mt-2">Try selecting a different city or adjusting your filters.</p>
                   </CardContent>
                 </Card>
               ) : (
@@ -412,7 +455,7 @@ export const LawyerFinder = ({ category }: LawyerFinderProps) => {
                                   </Badge>
                                 )}
                               </div>
-                              <p className="text-slate-600 text-sm">{lawyer.location}, {lawyer.city}</p>
+                              <p className="text-slate-600 dark:text-slate-400 text-sm">{lawyer.location}, {lawyer.city}</p>
                             </div>
                             <div className="flex items-center space-x-1">
                               <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
@@ -428,7 +471,7 @@ export const LawyerFinder = ({ category }: LawyerFinderProps) => {
                             ))}
                           </div>
 
-                          <div className="text-sm text-slate-600 space-y-1">
+                          <div className="text-sm text-slate-600 dark:text-slate-400 space-y-1">
                             <p>Experience: {lawyer.experience} years</p>
                             <div className="flex items-center justify-between">
                               <span className="flex items-center">
@@ -453,7 +496,7 @@ export const LawyerFinder = ({ category }: LawyerFinderProps) => {
                               {lawyer.address}
                             </p>
                             {lawyer.distance && (
-                              <p className="text-blue-600 font-medium">
+                              <p className="text-blue-600 dark:text-blue-400 font-medium">
                                 {lawyer.distance.toFixed(1)} km away
                               </p>
                             )}
@@ -519,9 +562,9 @@ export const LawyerFinder = ({ category }: LawyerFinderProps) => {
       </Dialog>
 
       {/* Disclaimer */}
-      <Card className="bg-amber-50 border-amber-200">
+      <Card className="bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800">
         <CardContent className="pt-6">
-          <p className="text-sm text-amber-800">
+          <p className="text-sm text-amber-800 dark:text-amber-200">
             <strong>Disclaimer:</strong> This directory is for informational purposes only. 
             We do not endorse any specific lawyer or guarantee their services. 
             Please verify credentials and consult multiple lawyers before making decisions.
