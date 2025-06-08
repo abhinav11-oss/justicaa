@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ChatInterface } from "@/components/ChatInterface";
 import { LegalGuides } from "@/components/LegalGuides";
 import { KnowledgeBase } from "@/components/KnowledgeBase";
@@ -11,19 +12,22 @@ import { LawyerFinder } from "@/components/LawyerFinder";
 import { UserDashboard } from "@/components/UserDashboard";
 import { SettingsPanel } from "@/components/SettingsPanel";
 import { useAuth } from "@/hooks/useAuth";
+import { useNavigate } from "react-router-dom";
+import { useTheme } from "next-themes";
 import { 
   Scale, 
   MessageSquare, 
   BookOpen, 
   FileText, 
-  Shield, 
   Users, 
   User, 
   LogOut, 
   FilePlus,
   Home,
   Settings,
-  Search
+  Search,
+  Sun,
+  Moon
 } from "lucide-react";
 
 const Dashboard = () => {
@@ -31,6 +35,8 @@ const Dashboard = () => {
     return sessionStorage.getItem('lastTab') || "home";
   });
   const { user, signOut, loading } = useAuth();
+  const navigate = useNavigate();
+  const { theme, setTheme } = useTheme();
 
   useEffect(() => {
     sessionStorage.setItem('lastTab', activeTab);
@@ -55,7 +61,18 @@ const Dashboard = () => {
   }, [user]);
 
   const handleSignOut = async () => {
-    await signOut();
+    try {
+      await signOut();
+      // Clear all session data
+      sessionStorage.clear();
+      localStorage.removeItem('lastTab');
+      // Redirect to landing page
+      navigate("/");
+    } catch (error) {
+      console.error('Logout error:', error);
+      // Force redirect even if there's an error
+      navigate("/");
+    }
   };
 
   const sidebarItems = [
@@ -111,10 +128,10 @@ const Dashboard = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-slate-800 flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-slate-600 dark:text-slate-400">Loading dashboard...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Loading dashboard...</p>
         </div>
       </div>
     );
@@ -144,18 +161,18 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-slate-800 flex">
+    <div className="min-h-screen bg-background flex">
       {/* Vertical Sidebar */}
-      <aside className="w-64 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border-r border-slate-200 dark:border-slate-700 flex flex-col">
+      <aside className="w-64 bg-card border-r border-border flex flex-col">
         {/* Header */}
-        <div className="p-6 border-b border-slate-200 dark:border-slate-700">
+        <div className="p-6 border-b border-border">
           <div className="flex items-center space-x-3">
-            <div className="bg-blue-600 p-2 rounded-lg">
-              <Scale className="h-6 w-6 text-white" />
+            <div className="bg-primary p-2 rounded-lg">
+              <Scale className="h-6 w-6 text-primary-foreground" />
             </div>
             <div>
-              <h1 className="text-lg font-bold text-slate-900 dark:text-white">LegalAI Assistant</h1>
-              <p className="text-sm text-slate-600 dark:text-slate-400">Gwalior's Legal Solution</p>
+              <h1 className="text-lg font-bold text-foreground">LegalAI Assistant</h1>
+              <p className="text-sm text-muted-foreground">Your Legal Solution</p>
             </div>
           </div>
         </div>
@@ -169,8 +186,8 @@ const Dashboard = () => {
                 onClick={() => setActiveTab(item.id)}
                 className={`w-full text-left p-3 rounded-lg transition-all duration-200 flex items-center space-x-3 ${
                   activeTab === item.id
-                    ? "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800"
-                    : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-white"
+                    ? "bg-primary/10 text-primary border border-primary/20"
+                    : "text-muted-foreground hover:bg-muted hover:text-foreground"
                 }`}
               >
                 <item.icon className="h-5 w-5" />
@@ -182,55 +199,60 @@ const Dashboard = () => {
             ))}
           </div>
         </nav>
-
-        {/* User Section */}
-        <div className="p-4 border-t border-slate-200 dark:border-slate-700">
-          {user ? (
-            <div className="space-y-3">
-              <div className="flex items-center space-x-3 p-2">
-                <div className="bg-blue-100 dark:bg-blue-900/30 p-2 rounded-full">
-                  <User className="h-4 w-4 text-blue-600 dark:text-blue-400" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-slate-900 dark:text-white truncate">{user.email}</p>
-                  <p className="text-xs text-slate-500 dark:text-slate-400">Signed in</p>
-                </div>
-              </div>
-              <Button variant="outline" size="sm" onClick={handleSignOut} className="w-full">
-                <LogOut className="h-4 w-4 mr-2" />
-                Sign Out
-              </Button>
-            </div>
-          ) : (
-            <div className="text-center">
-              <p className="text-sm text-slate-600 dark:text-slate-400 mb-3">Browse as guest</p>
-              <Button variant="outline" size="sm" className="w-full">
-                <User className="h-4 w-4 mr-2" />
-                Sign In
-              </Button>
-            </div>
-          )}
-        </div>
       </aside>
 
       {/* Main Content Area */}
       <main className="flex-1 flex flex-col min-h-screen">
         {/* Top Bar */}
-        <header className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border-b border-slate-200 dark:border-slate-700 p-4">
+        <header className="bg-card border-b border-border p-4">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-2xl font-bold text-slate-900 dark:text-white capitalize">
+              <h2 className="text-2xl font-bold text-foreground capitalize">
                 {sidebarItems.find(item => item.id === activeTab)?.title || "Dashboard"}
               </h2>
-              <p className="text-sm text-slate-600 dark:text-slate-400">
+              <p className="text-sm text-muted-foreground">
                 {sidebarItems.find(item => item.id === activeTab)?.description || "Welcome to your legal assistant"}
               </p>
             </div>
-            <div className="flex items-center space-x-2">
-              <Button variant="outline" size="sm" onClick={() => setActiveTab("settings")}>
-                <Settings className="h-4 w-4 mr-2" />
-                Settings
+            
+            <div className="flex items-center space-x-4">
+              {/* Theme Toggle */}
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+              >
+                {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
               </Button>
+              
+              {/* User Profile */}
+              {user && (
+                <div className="flex items-center space-x-3">
+                  <Avatar className="h-8 w-8">
+                    <AvatarImage src={user.user_metadata?.avatar_url} />
+                    <AvatarFallback>
+                      {user.email?.charAt(0).toUpperCase() || "U"}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="hidden md:block">
+                    <p className="text-sm font-medium text-foreground">{user.email}</p>
+                    <p className="text-xs text-muted-foreground">Signed in</p>
+                  </div>
+                  <Button variant="outline" size="sm" onClick={handleSignOut}>
+                    <LogOut className="h-4 w-4 mr-2" />
+                    Sign Out
+                  </Button>
+                </div>
+              )}
+              
+              {!user && (
+                <div className="flex items-center space-x-2">
+                  <Button variant="outline" size="sm" onClick={() => navigate("/")}>
+                    <User className="h-4 w-4 mr-2" />
+                    Sign In
+                  </Button>
+                </div>
+              )}
             </div>
           </div>
         </header>
@@ -262,7 +284,7 @@ const DashboardHome = () => {
       color: "bg-green-500"
     },
     {
-      title: "Find Gwalior Lawyer",
+      title: "Find Local Lawyer",
       description: "Connect with local legal experts",
       icon: Users,
       action: "lawyers",
@@ -279,11 +301,11 @@ const DashboardHome = () => {
 
   return (
     <div className="space-y-6">
-      <Card className="bg-gradient-to-r from-blue-500 to-blue-600 text-white">
+      <Card className="bg-gradient-to-r from-primary to-primary/80 text-primary-foreground">
         <CardContent className="p-6">
           <h3 className="text-2xl font-bold mb-2">Welcome to LegalAI Assistant</h3>
-          <p className="text-blue-100">
-            Your comprehensive platform for legal assistance in Gwalior - document generation, local lawyer connections, and expert guidance.
+          <p className="text-primary-foreground/80">
+            Your comprehensive platform for legal assistance - document generation, local lawyer connections, and expert guidance.
           </p>
         </CardContent>
       </Card>
@@ -295,8 +317,8 @@ const DashboardHome = () => {
               <div className={`${action.color} w-12 h-12 rounded-lg flex items-center justify-center mx-auto mb-4`}>
                 <action.icon className="h-6 w-6 text-white" />
               </div>
-              <h4 className="font-semibold text-slate-900 dark:text-white mb-2">{action.title}</h4>
-              <p className="text-sm text-slate-600 dark:text-slate-400">{action.description}</p>
+              <h4 className="font-semibold text-foreground mb-2">{action.title}</h4>
+              <p className="text-sm text-muted-foreground">{action.description}</p>
             </CardContent>
           </Card>
         ))}
@@ -305,19 +327,19 @@ const DashboardHome = () => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card>
           <CardContent className="p-6">
-            <h4 className="font-semibold text-slate-900 dark:text-white mb-4">Gwalior Legal Services</h4>
-            <div className="space-y-3 text-sm text-slate-600 dark:text-slate-400">
-              <p>• Connect with verified lawyers in Gwalior</p>
-              <p>• Access Madhya Pradesh legal templates</p>
-              <p>• Get location-specific legal guidance</p>
+            <h4 className="font-semibold text-foreground mb-4">Location-Based Services</h4>
+            <div className="space-y-3 text-sm text-muted-foreground">
+              <p>• Connect with verified lawyers in your area</p>
+              <p>• Access location-specific legal templates</p>
+              <p>• Get region-specific legal guidance</p>
             </div>
           </CardContent>
         </Card>
 
         <Card>
           <CardContent className="p-6">
-            <h4 className="font-semibold text-slate-900 dark:text-white mb-4">Quick Tips</h4>
-            <div className="space-y-3 text-sm text-slate-600 dark:text-slate-400">
+            <h4 className="font-semibold text-foreground mb-4">Quick Tips</h4>
+            <div className="space-y-3 text-sm text-muted-foreground">
               <p>• Use specific legal terms for better AI responses</p>
               <p>• Save important documents to your profile</p>
               <p>• Enable location access for local lawyer suggestions</p>

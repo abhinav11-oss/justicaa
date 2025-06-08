@@ -5,12 +5,15 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { AuthModal } from "@/components/AuthModal";
 import { useAuth } from "@/hooks/useAuth";
-import { Scale, MessageSquare, FileText, Shield, Users, CheckCircle, ArrowRight, Gavel, BookOpen, Clock } from "lucide-react";
+import { Scale, MessageSquare, FileText, Shield, Users, CheckCircle, ArrowRight, Gavel, BookOpen, Clock, Sun, Moon, Menu, X } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useTheme } from "next-themes";
 
 const Landing = () => {
   const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { user } = useAuth();
+  const { theme, setTheme } = useTheme();
 
   const features = [
     {
@@ -27,24 +30,19 @@ const Landing = () => {
       icon: Users,
       title: "Find Legal Experts",
       description: "Connect with qualified lawyers near you based on your specific needs"
-    },
-    {
-      icon: BookOpen,
-      title: "Legal Research",
-      description: "Access comprehensive legal guides and educational resources"
     }
   ];
 
   const benefits = [
     {
       icon: Clock,
-      title: "Save Time",
-      description: "Get legal guidance instantly without waiting for appointments"
+      title: "Free & Instant",
+      description: "Get legal guidance instantly without waiting for appointments or paying consultation fees"
     },
     {
       icon: Shield,
-      title: "Cost-Effective",
-      description: "Access legal information and basic services at a fraction of traditional costs"
+      title: "Geo-Personalized",
+      description: "Location-specific legal advice and local lawyer recommendations"
     },
     {
       icon: Gavel,
@@ -56,37 +54,57 @@ const Landing = () => {
   const steps = [
     {
       step: "1",
-      title: "Sign Up",
-      description: "Create your free account in seconds"
+      title: "Ask",
+      description: "Submit your legal question or select a document type"
     },
     {
       step: "2",
-      title: "Choose Service",
-      description: "Select from AI chat, document generation, or lawyer finder"
+      title: "Get Answer",
+      description: "Receive instant AI-powered legal guidance and recommendations"
     },
     {
       step: "3",
-      title: "Get Results",
-      description: "Receive instant legal guidance and solutions"
+      title: "Generate/Contact",
+      description: "Download documents or connect with local legal experts"
     }
   ];
 
+  const handleCTAClick = () => {
+    if (user) {
+      // Already signed in, redirect to dashboard
+      window.location.href = "/dashboard";
+    } else {
+      // Not signed in, show auth modal
+      setAuthModalOpen(true);
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
+    <div className="min-h-screen bg-background text-foreground">
       {/* Header */}
-      <header className="bg-white/80 backdrop-blur-sm border-b border-slate-200 sticky top-0 z-50">
+      <header className="bg-background/80 backdrop-blur-sm border-b border-border sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <div className="bg-blue-600 p-2 rounded-lg">
-                <Scale className="h-6 w-6 text-white" />
+              <div className="bg-primary p-2 rounded-lg">
+                <Scale className="h-6 w-6 text-primary-foreground" />
               </div>
               <div>
-                <h1 className="text-xl font-bold text-slate-900">LegalAI Assistant</h1>
-                <p className="text-sm text-slate-600">Your Virtual Legal Counsel</p>
+                <h1 className="text-xl font-bold text-foreground">LegalAI Assistant</h1>
+                <p className="text-sm text-muted-foreground">Your Virtual Legal Counsel</p>
               </div>
             </div>
-            <div className="flex space-x-2">
+            
+            {/* Desktop Navigation */}
+            <div className="hidden md:flex items-center space-x-4">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+              >
+                {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+              </Button>
+              
               {user ? (
                 <Link to="/dashboard">
                   <Button>
@@ -95,13 +113,52 @@ const Landing = () => {
                   </Button>
                 </Link>
               ) : (
-                <Button onClick={() => setAuthModalOpen(true)}>
+                <Button onClick={handleCTAClick}>
                   Get Started
                   <ArrowRight className="h-4 w-4 ml-2" />
                 </Button>
               )}
             </div>
+
+            {/* Mobile Menu Button */}
+            <div className="md:hidden flex items-center space-x-2">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+              >
+                {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              >
+                {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+              </Button>
+            </div>
           </div>
+          
+          {/* Mobile Menu */}
+          {mobileMenuOpen && (
+            <div className="md:hidden mt-4 pb-4 border-t border-border">
+              <div className="flex flex-col space-y-2 pt-4">
+                {user ? (
+                  <Link to="/dashboard">
+                    <Button className="w-full">
+                      Go to Dashboard
+                      <ArrowRight className="h-4 w-4 ml-2" />
+                    </Button>
+                  </Link>
+                ) : (
+                  <Button onClick={handleCTAClick} className="w-full">
+                    Get Started
+                    <ArrowRight className="h-4 w-4 ml-2" />
+                  </Button>
+                )}
+              </div>
+            </div>
+          )}
         </div>
       </header>
 
@@ -111,47 +168,38 @@ const Landing = () => {
           <Badge variant="secondary" className="mb-4">
             Powered by Advanced AI Technology
           </Badge>
-          <h2 className="text-5xl font-bold text-slate-900 mb-6">
+          <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
             Your Virtual Legal Assistant
           </h2>
-          <p className="text-xl text-slate-600 mb-4">
+          <p className="text-xl text-muted-foreground mb-4">
             Simplifying Legal Solutions for Everyone
           </p>
-          <p className="text-lg text-slate-500 mb-8 max-w-2xl mx-auto">
+          <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
             Get instant legal guidance, generate professional documents, and connect with qualified lawyers - all in one intelligent platform designed for the modern world.
           </p>
           
-          {user ? (
-            <Link to="/dashboard">
-              <Button size="lg" className="text-lg px-8 py-4">
-                Access Your Dashboard
-                <ArrowRight className="h-5 w-5 ml-2" />
-              </Button>
-            </Link>
-          ) : (
-            <Button size="lg" className="text-lg px-8 py-4" onClick={() => setAuthModalOpen(true)}>
-              Start Your Legal Journey
-              <ArrowRight className="h-5 w-5 ml-2" />
-            </Button>
-          )}
+          <Button size="lg" className="text-lg px-8 py-4" onClick={handleCTAClick}>
+            {user ? "Access Your Dashboard" : "Start Your Legal Journey"}
+            <ArrowRight className="h-5 w-5 ml-2" />
+          </Button>
         </div>
       </section>
 
       {/* What We Do Section */}
       <section className="container mx-auto px-4 py-16">
         <div className="text-center mb-12">
-          <h3 className="text-3xl font-bold text-slate-900 mb-4">What We Do</h3>
-          <p className="text-lg text-slate-600 max-w-2xl mx-auto">
+          <h3 className="text-3xl font-bold text-foreground mb-4">What We Do</h3>
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             Our AI-powered platform provides comprehensive legal assistance through multiple integrated services
           </p>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {features.map((feature, index) => (
-            <Card key={index} className="bg-white/60 backdrop-blur-sm border-slate-200 hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+            <Card key={index} className="hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
               <CardHeader className="text-center pb-3">
-                <div className="bg-blue-100 w-12 h-12 rounded-lg flex items-center justify-center mx-auto mb-3">
-                  <feature.icon className="h-6 w-6 text-blue-600" />
+                <div className="bg-primary/10 w-12 h-12 rounded-lg flex items-center justify-center mx-auto mb-3">
+                  <feature.icon className="h-6 w-6 text-primary" />
                 </div>
                 <CardTitle className="text-lg">{feature.title}</CardTitle>
               </CardHeader>
@@ -166,11 +214,11 @@ const Landing = () => {
       </section>
 
       {/* Why Choose Us Section */}
-      <section className="bg-white/50 py-16">
+      <section className="bg-muted/50 py-16">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <h3 className="text-3xl font-bold text-slate-900 mb-4">Why Choose LegalAI Assistant?</h3>
-            <p className="text-lg text-slate-600 max-w-2xl mx-auto">
+            <h3 className="text-3xl font-bold text-foreground mb-4">Why Choose LegalAI Assistant?</h3>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
               Experience the future of legal assistance with our innovative approach to legal services
             </p>
           </div>
@@ -178,11 +226,11 @@ const Landing = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {benefits.map((benefit, index) => (
               <div key={index} className="text-center">
-                <div className="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <benefit.icon className="h-8 w-8 text-blue-600" />
+                <div className="bg-primary/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <benefit.icon className="h-8 w-8 text-primary" />
                 </div>
-                <h4 className="text-xl font-semibold text-slate-900 mb-2">{benefit.title}</h4>
-                <p className="text-slate-600">{benefit.description}</p>
+                <h4 className="text-xl font-semibold text-foreground mb-2">{benefit.title}</h4>
+                <p className="text-muted-foreground">{benefit.description}</p>
               </div>
             ))}
           </div>
@@ -192,8 +240,8 @@ const Landing = () => {
       {/* How It Works Section */}
       <section className="container mx-auto px-4 py-16">
         <div className="text-center mb-12">
-          <h3 className="text-3xl font-bold text-slate-900 mb-4">How It Works</h3>
-          <p className="text-lg text-slate-600 max-w-2xl mx-auto">
+          <h3 className="text-3xl font-bold text-foreground mb-4">How It Works</h3>
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             Get started with legal assistance in three simple steps
           </p>
         </div>
@@ -201,13 +249,13 @@ const Landing = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {steps.map((step, index) => (
             <div key={index} className="text-center relative">
-              <div className="bg-blue-600 text-white w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4 text-xl font-bold">
+              <div className="bg-primary text-primary-foreground w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4 text-xl font-bold">
                 {step.step}
               </div>
-              <h4 className="text-xl font-semibold text-slate-900 mb-2">{step.title}</h4>
-              <p className="text-slate-600">{step.description}</p>
+              <h4 className="text-xl font-semibold text-foreground mb-2">{step.title}</h4>
+              <p className="text-muted-foreground">{step.description}</p>
               {index < steps.length - 1 && (
-                <div className="hidden md:block absolute top-6 left-1/2 w-full h-0.5 bg-blue-200 transform translate-x-1/2"></div>
+                <div className="hidden md:block absolute top-6 left-1/2 w-full h-0.5 bg-border transform translate-x-1/2"></div>
               )}
             </div>
           ))}
@@ -215,44 +263,60 @@ const Landing = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="bg-blue-600 py-16">
+      <section className="bg-primary py-16">
         <div className="container mx-auto px-4 text-center">
-          <h3 className="text-3xl font-bold text-white mb-4">Ready to Get Started?</h3>
-          <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
+          <h3 className="text-3xl font-bold text-primary-foreground mb-4">Ready to Get Started?</h3>
+          <p className="text-xl text-primary-foreground/80 mb-8 max-w-2xl mx-auto">
             Join thousands of users who have simplified their legal needs with our AI-powered platform
           </p>
           
-          {user ? (
-            <Link to="/dashboard">
-              <Button size="lg" variant="secondary" className="text-lg px-8 py-4">
-                Go to Dashboard
-                <ArrowRight className="h-5 w-5 ml-2" />
-              </Button>
-            </Link>
-          ) : (
-            <Button size="lg" variant="secondary" className="text-lg px-8 py-4" onClick={() => setAuthModalOpen(true)}>
-              Create Free Account
-              <ArrowRight className="h-5 w-5 ml-2" />
-            </Button>
-          )}
+          <Button size="lg" variant="secondary" className="text-lg px-8 py-4" onClick={handleCTAClick}>
+            {user ? "Go to Dashboard" : "Create Free Account"}
+            <ArrowRight className="h-5 w-5 ml-2" />
+          </Button>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="bg-slate-900 text-white py-8">
-        <div className="container mx-auto px-4 text-center">
-          <div className="flex items-center justify-center space-x-3 mb-4">
-            <div className="bg-blue-600 p-2 rounded-lg">
-              <Scale className="h-6 w-6 text-white" />
+      <footer className="bg-muted py-8">
+        <div className="container mx-auto px-4">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div className="col-span-1 md:col-span-2">
+              <div className="flex items-center space-x-3 mb-4">
+                <div className="bg-primary p-2 rounded-lg">
+                  <Scale className="h-6 w-6 text-primary-foreground" />
+                </div>
+                <span className="text-xl font-bold text-foreground">LegalAI Assistant</span>
+              </div>
+              <p className="text-muted-foreground mb-4">
+                Empowering everyone with accessible legal solutions
+              </p>
             </div>
-            <span className="text-xl font-bold">LegalAI Assistant</span>
+            
+            <div>
+              <h5 className="font-semibold text-foreground mb-4">Company</h5>
+              <ul className="space-y-2 text-muted-foreground">
+                <li><a href="#" className="hover:text-foreground transition-colors">About</a></li>
+                <li><a href="#" className="hover:text-foreground transition-colors">Contact</a></li>
+                <li><a href="#" className="hover:text-foreground transition-colors">Careers</a></li>
+              </ul>
+            </div>
+            
+            <div>
+              <h5 className="font-semibold text-foreground mb-4">Legal</h5>
+              <ul className="space-y-2 text-muted-foreground">
+                <li><a href="#" className="hover:text-foreground transition-colors">Privacy Policy</a></li>
+                <li><a href="#" className="hover:text-foreground transition-colors">Terms of Service</a></li>
+                <li><a href="#" className="hover:text-foreground transition-colors">Legal Disclaimer</a></li>
+              </ul>
+            </div>
           </div>
-          <p className="text-slate-400 mb-4">
-            Empowering everyone with accessible legal solutions
-          </p>
-          <div className="text-sm text-slate-500">
-            <strong>Legal Disclaimer:</strong> This platform provides general legal information only and is not a substitute for professional legal advice. 
-            For specific legal matters, please consult with a qualified attorney.
+          
+          <div className="border-t border-border mt-8 pt-8 text-center">
+            <div className="text-sm text-muted-foreground">
+              <strong>Legal Disclaimer:</strong> This platform provides general legal information only and is not a substitute for professional legal advice. 
+              For specific legal matters, please consult with a qualified attorney.
+            </div>
           </div>
         </div>
       </footer>
