@@ -1,549 +1,629 @@
+
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { FileText, Download, Eye } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Download, FileText, AlertCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { useAuth } from "@/hooks/useAuth";
+import jsPDF from 'jspdf';
+
+interface DocumentGeneratorProps {
+  category?: string;
+}
 
 interface DocumentTemplate {
   id: string;
   name: string;
-  type: string;
   description: string;
-  fields: DocumentField[];
-  category: string;
+  category: string[];
+  fields: FormField[];
 }
 
-interface DocumentField {
+interface FormField {
   id: string;
   label: string;
-  type: 'text' | 'textarea' | 'date' | 'select';
+  type: 'text' | 'textarea' | 'date' | 'number';
   required: boolean;
-  options?: string[];
   placeholder?: string;
-}
-
-interface DocumentGeneratorProps {
-  category?: string;
 }
 
 const documentTemplates: DocumentTemplate[] = [
   {
     id: "rent-agreement",
     name: "Rent Agreement",
-    type: "property",
-    category: "personal",
-    description: "Standard rental agreement template",
+    description: "Standard rental agreement for residential property",
+    category: ["Personal Legal", "Contract Review"],
     fields: [
-      { id: "landlord_name", label: "Landlord Name", type: "text", required: true, placeholder: "Enter landlord's full name" },
-      { id: "tenant_name", label: "Tenant Name", type: "text", required: true, placeholder: "Enter tenant's full name" },
-      { id: "property_address", label: "Property Address", type: "textarea", required: true, placeholder: "Complete property address" },
-      { id: "rent_amount", label: "Monthly Rent (₹)", type: "text", required: true, placeholder: "25000" },
-      { id: "security_deposit", label: "Security Deposit (₹)", type: "text", required: true, placeholder: "50000" },
-      { id: "lease_duration", label: "Lease Duration", type: "select", required: true, options: ["11 months", "1 year", "2 years", "3 years"] },
-      { id: "start_date", label: "Lease Start Date", type: "date", required: true }
+      { id: "landlord_name", label: "Landlord Name", type: "text", required: true },
+      { id: "tenant_name", label: "Tenant Name", type: "text", required: true },
+      { id: "property_address", label: "Property Address", type: "textarea", required: true },
+      { id: "monthly_rent", label: "Monthly Rent (₹)", type: "number", required: true },
+      { id: "security_deposit", label: "Security Deposit (₹)", type: "number", required: true },
+      { id: "lease_start", label: "Lease Start Date", type: "date", required: true },
+      { id: "lease_duration", label: "Lease Duration (months)", type: "number", required: true }
     ]
   },
   {
     id: "nda",
     name: "Non-Disclosure Agreement (NDA)",
-    type: "business",
-    category: "business",
-    description: "Confidentiality agreement template",
+    description: "Confidentiality agreement for business purposes",
+    category: ["Business Law", "Contract Review"],
     fields: [
-      { id: "disclosing_party", label: "Disclosing Party Name", type: "text", required: true, placeholder: "Company/Individual disclosing information" },
-      { id: "receiving_party", label: "Receiving Party Name", type: "text", required: true, placeholder: "Company/Individual receiving information" },
-      { id: "purpose", label: "Purpose of Disclosure", type: "textarea", required: true, placeholder: "Business discussion, partnership evaluation, etc." },
-      { id: "duration", label: "Confidentiality Duration", type: "select", required: true, options: ["1 year", "2 years", "3 years", "5 years", "Indefinite"] },
-      { id: "effective_date", label: "Effective Date", type: "date", required: true }
+      { id: "disclosing_party", label: "Disclosing Party", type: "text", required: true },
+      { id: "receiving_party", label: "Receiving Party", type: "text", required: true },
+      { id: "purpose", label: "Purpose of Disclosure", type: "textarea", required: true },
+      { id: "effective_date", label: "Effective Date", type: "date", required: true },
+      { id: "duration_years", label: "Duration (years)", type: "number", required: true }
+    ]
+  },
+  {
+    id: "affidavit",
+    name: "General Affidavit",
+    description: "Sworn statement for legal purposes",
+    category: ["Personal Legal"],
+    fields: [
+      { id: "deponent_name", label: "Deponent Name", type: "text", required: true },
+      { id: "deponent_address", label: "Deponent Address", type: "textarea", required: true },
+      { id: "statement_details", label: "Statement Details", type: "textarea", required: true, placeholder: "Detailed statement to be sworn..." },
+      { id: "place_of_oath", label: "Place of Oath", type: "text", required: true },
+      { id: "date_of_oath", label: "Date of Oath", type: "date", required: true }
+    ]
+  },
+  {
+    id: "complaint-letter",
+    name: "Consumer Complaint Letter",
+    description: "Formal complaint letter for consumer issues",
+    category: ["Personal Legal"],
+    fields: [
+      { id: "complainant_name", label: "Complainant Name", type: "text", required: true },
+      { id: "complainant_address", label: "Complainant Address", type: "textarea", required: true },
+      { id: "respondent_name", label: "Respondent/Company Name", type: "text", required: true },
+      { id: "respondent_address", label: "Respondent Address", type: "textarea", required: true },
+      { id: "complaint_details", label: "Complaint Details", type: "textarea", required: true },
+      { id: "relief_sought", label: "Relief Sought", type: "textarea", required: true },
+      { id: "complaint_date", label: "Date of Complaint", type: "date", required: true }
     ]
   },
   {
     id: "employment-contract",
     name: "Employment Contract",
-    type: "employment",
-    category: "business",
-    description: "Standard employment agreement",
+    description: "Standard employment agreement template",
+    category: ["Business Law", "Contract Review"],
     fields: [
-      { id: "company_name", label: "Company Name", type: "text", required: true, placeholder: "Employer company name" },
-      { id: "employee_name", label: "Employee Name", type: "text", required: true, placeholder: "Employee's full name" },
-      { id: "position", label: "Job Position", type: "text", required: true, placeholder: "Job title" },
-      { id: "salary", label: "Annual Salary", type: "text", required: true, placeholder: "500000" },
+      { id: "employer_name", label: "Employer Name", type: "text", required: true },
+      { id: "employee_name", label: "Employee Name", type: "text", required: true },
+      { id: "job_title", label: "Job Title", type: "text", required: true },
+      { id: "salary", label: "Monthly Salary (₹)", type: "number", required: true },
       { id: "start_date", label: "Start Date", type: "date", required: true },
-      { id: "probation_period", label: "Probation Period", type: "select", required: true, options: ["3 months", "6 months", "1 year"] }
+      { id: "probation_period", label: "Probation Period (months)", type: "number", required: true },
+      { id: "work_location", label: "Work Location", type: "text", required: true }
     ]
   },
   {
-    id: "service-agreement",
-    name: "Service Agreement",
-    type: "contract",
-    category: "contract",
-    description: "Professional service contract",
+    id: "partnership-deed",
+    name: "Partnership Deed",
+    description: "Agreement for business partnership",
+    category: ["Business Law"],
     fields: [
-      { id: "service_provider", label: "Service Provider", type: "text", required: true, placeholder: "Provider name" },
-      { id: "client_name", label: "Client Name", type: "text", required: true, placeholder: "Client name" },
-      { id: "services", label: "Services Description", type: "textarea", required: true, placeholder: "Detailed description of services" },
-      { id: "payment_amount", label: "Payment Amount", type: "text", required: true, placeholder: "Total amount or hourly rate" },
-      { id: "payment_terms", label: "Payment Terms", type: "select", required: true, options: ["Net 30", "Net 15", "Upon completion", "50% upfront"] },
-      { id: "start_date", label: "Start Date", type: "date", required: true }
-    ]
-  },
-  {
-    id: "power-of-attorney",
-    name: "Power of Attorney",
-    type: "legal",
-    category: "process",
-    description: "Legal authorization document",
-    fields: [
-      { id: "principal_name", label: "Principal Name", type: "text", required: true, placeholder: "Person granting power" },
-      { id: "agent_name", label: "Agent Name", type: "text", required: true, placeholder: "Person receiving power" },
-      { id: "powers", label: "Powers Granted", type: "textarea", required: true, placeholder: "Specific powers being granted" },
-      { id: "effective_date", label: "Effective Date", type: "date", required: true },
-      { id: "expiration", label: "Expiration", type: "select", required: true, options: ["Upon revocation", "Specific date", "Upon death"] }
+      { id: "partner1_name", label: "Partner 1 Name", type: "text", required: true },
+      { id: "partner2_name", label: "Partner 2 Name", type: "text", required: true },
+      { id: "business_name", label: "Business Name", type: "text", required: true },
+      { id: "business_address", label: "Business Address", type: "textarea", required: true },
+      { id: "partner1_investment", label: "Partner 1 Investment (₹)", type: "number", required: true },
+      { id: "partner2_investment", label: "Partner 2 Investment (₹)", type: "number", required: true },
+      { id: "profit_sharing", label: "Profit Sharing Ratio", type: "text", required: true, placeholder: "e.g., 50:50" }
     ]
   }
 ];
 
+const categoryMap = {
+  "Business Law": ["Business Law"],
+  "Personal Legal": ["Personal Legal"],
+  "Contract Review": ["Contract Review"]
+};
+
 export const DocumentGenerator = ({ category }: DocumentGeneratorProps) => {
+  const [selectedCategory, setSelectedCategory] = useState<keyof typeof categoryMap>("Business Law");
   const [selectedTemplate, setSelectedTemplate] = useState<DocumentTemplate | null>(null);
   const [formData, setFormData] = useState<Record<string, string>>({});
-  const [generatedDocument, setGeneratedDocument] = useState<string>("");
-  const [showPreview, setShowPreview] = useState(false);
-  const [outputFormat, setOutputFormat] = useState<'pdf' | 'docx'>('pdf');
+  const [selectedFormat, setSelectedFormat] = useState<"pdf" | "docx">("pdf");
+  const [isGenerating, setIsGenerating] = useState(false);
   const { toast } = useToast();
-  const { user } = useAuth();
 
-  // Filter templates by category
-  const filteredTemplates = category && category !== "all" 
-    ? documentTemplates.filter(template => template.category === category)
-    : documentTemplates;
-
-  const handleTemplateSelect = (templateId: string) => {
-    if (!user) {
-      toast({
-        title: "Authentication Required",
-        description: "Please sign in to generate documents",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    const template = documentTemplates.find(t => t.id === templateId);
-    if (template) {
-      setSelectedTemplate(template);
-      setFormData({});
-      setGeneratedDocument("");
-      setShowPreview(false);
-    }
+  const getFilteredTemplates = () => {
+    const relevantCategories = categoryMap[selectedCategory] || [];
+    return documentTemplates.filter(template => 
+      template.category.some(cat => relevantCategories.includes(cat))
+    );
   };
 
-  const handleFieldChange = (fieldId: string, value: string) => {
-    setFormData(prev => ({
-      ...prev,
-      [fieldId]: value
-    }));
+  const handleInputChange = (fieldId: string, value: string) => {
+    setFormData(prev => ({ ...prev, [fieldId]: value }));
   };
 
-  const generateDocument = () => {
-    if (!selectedTemplate) return;
-
-    // Check required fields
-    const missingFields = selectedTemplate.fields
-      .filter(field => field.required && !formData[field.id])
-      .map(field => field.label);
-
+  const validateForm = (): boolean => {
+    if (!selectedTemplate) return false;
+    
+    const requiredFields = selectedTemplate.fields.filter(field => field.required);
+    const missingFields = requiredFields.filter(field => !formData[field.id]?.trim());
+    
     if (missingFields.length > 0) {
       toast({
-        title: "Missing Required Fields",
-        description: `Please fill: ${missingFields.join(', ')}`,
+        title: "Required Fields Missing",
+        description: `Please fill in: ${missingFields.map(f => f.label).join(", ")}`,
         variant: "destructive"
       });
-      return;
+      return false;
     }
+    
+    return true;
+  };
 
-    // Generate document based on template
-    let document = "";
+  const generatePDF = (content: string, title: string) => {
+    const pdf = new jsPDF();
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const margin = 20;
+    const lineHeight = 6;
+    let yPosition = 30;
 
-    switch (selectedTemplate.id) {
-      case "rent-agreement":
-        document = generateRentAgreement();
-        break;
-      case "nda":
-        document = generateNDA();
-        break;
-      case "employment-contract":
-        document = generateEmploymentContract();
-        break;
-      case "service-agreement":
-        document = generateServiceAgreement();
-        break;
-      case "power-of-attorney":
-        document = generatePowerOfAttorney();
-        break;
-    }
+    // Add logo/header
+    pdf.setFontSize(20);
+    pdf.setFont("times", "bold");
+    pdf.text("LegalAI Assistant", pageWidth / 2, 20, { align: "center" });
+    
+    pdf.setFontSize(16);
+    pdf.text(title, pageWidth / 2, yPosition, { align: "center" });
+    yPosition += 20;
 
-    setGeneratedDocument(document);
-    setShowPreview(true);
-
-    toast({
-      title: "Document Generated",
-      description: `Your ${selectedTemplate.name} has been created successfully`
+    // Add content
+    pdf.setFontSize(12);
+    pdf.setFont("times", "normal");
+    
+    const lines = pdf.splitTextToSize(content, pageWidth - 2 * margin);
+    
+    lines.forEach((line: string) => {
+      if (yPosition > pdf.internal.pageSize.getHeight() - margin) {
+        pdf.addPage();
+        yPosition = margin;
+      }
+      pdf.text(line, margin, yPosition);
+      yPosition += lineHeight;
     });
+
+    // Save with timestamp
+    const timestamp = new Date().toISOString().split('T')[0];
+    pdf.save(`LegalAI_${title.replace(/\s+/g, '_')}_${timestamp}.pdf`);
   };
 
-  const generateRentAgreement = () => {
+  const generateWordContent = (content: string, title: string): string => {
     return `
-RENTAL AGREEMENT
-
-This Rental Agreement is made between ${formData.landlord_name} (Landlord) and ${formData.tenant_name} (Tenant) for the property located at:
-
-${formData.property_address}
-
-TERMS AND CONDITIONS:
-
-1. RENT: The monthly rent is ₹${formData.rent_amount}, payable on or before the 5th of each month.
-
-2. SECURITY DEPOSIT: A security deposit of ₹${formData.security_deposit} has been paid by the Tenant.
-
-3. LEASE PERIOD: This agreement is for ${formData.lease_duration} starting from ${formData.start_date}.
-
-4. MAINTENANCE: The Tenant shall maintain the property in good condition and is responsible for minor repairs.
-
-5. UTILITIES: Electricity, water, and other utility charges shall be borne by the Tenant.
-
-6. TERMINATION: Either party may terminate this agreement by giving 30 days written notice.
-
-7. GOVERNING LAW: This agreement shall be governed by Indian law.
-
-IN WITNESS WHEREOF, both parties have executed this agreement.
-
-LANDLORD: _________________     TENANT: _________________
-${formData.landlord_name}                ${formData.tenant_name}
-
-Date: ${new Date().toLocaleDateString()}
-
-WITNESSES:
-1. _________________
-2. _________________
-    `;
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>${title}</title>
+    <style>
+        body { 
+            font-family: 'Times New Roman', serif; 
+            font-size: 12pt; 
+            line-height: 1.6; 
+            margin: 1in; 
+        }
+        .header { 
+            text-align: center; 
+            font-size: 16pt; 
+            font-weight: bold; 
+            margin-bottom: 20pt; 
+        }
+        .title { 
+            text-align: center; 
+            font-size: 14pt; 
+            font-weight: bold; 
+            margin-bottom: 20pt; 
+        }
+        .content { 
+            text-align: justify; 
+            white-space: pre-line; 
+        }
+    </style>
+</head>
+<body>
+    <div class="header">LegalAI Assistant</div>
+    <div class="title">${title}</div>
+    <div class="content">${content}</div>
+</body>
+</html>`;
   };
 
-  const generateNDA = () => {
-    return `
-NON-DISCLOSURE AGREEMENT
-
-This Non-Disclosure Agreement is entered into between:
-
-DISCLOSING PARTY: ${formData.disclosing_party}
-RECEIVING PARTY: ${formData.receiving_party}
-
-WHEREAS, the parties wish to explore ${formData.purpose};
-
-NOW THEREFORE, the parties agree:
-
-1. CONFIDENTIAL INFORMATION: Any information disclosed by the Disclosing Party shall be considered confidential.
-
-2. OBLIGATIONS: The Receiving Party agrees to:
-   - Keep all confidential information secret
-   - Use information only for the stated purpose
-   - Not disclose to third parties without written consent
-
-3. DURATION: This agreement shall remain in effect for ${formData.duration} from ${formData.effective_date}.
-
-4. RETURN OF INFORMATION: Upon termination, all confidential materials must be returned or destroyed.
-
-5. REMEDIES: Breach of this agreement may result in irreparable harm, entitling the Disclosing Party to injunctive relief.
-
-DISCLOSING PARTY: _________________     RECEIVING PARTY: _________________
-${formData.disclosing_party}                    ${formData.receiving_party}
-
-Date: ${new Date().toLocaleDateString()}
-    `;
+  const downloadWordDocument = (content: string, title: string) => {
+    const htmlContent = generateWordContent(content, title);
+    const blob = new Blob([htmlContent], { type: 'application/msword' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    const timestamp = new Date().toISOString().split('T')[0];
+    
+    link.href = url;
+    link.download = `LegalAI_${title.replace(/\s+/g, '_')}_${timestamp}.doc`;
+    link.click();
+    
+    URL.revokeObjectURL(url);
   };
 
-  const generateEmploymentContract = () => {
-    return `
-EMPLOYMENT CONTRACT
+  const generateDocument = async () => {
+    if (!validateForm() || !selectedTemplate) return;
 
-This Employment Contract is between ${formData.company_name} (Company) and ${formData.employee_name} (Employee).
-
-POSITION: ${formData.position}
-ANNUAL SALARY: ₹${formData.salary}
-START DATE: ${formData.start_date}
-PROBATION PERIOD: ${formData.probation_period}
-
-TERMS AND CONDITIONS:
-
-1. The Employee agrees to perform duties assigned by the Company.
-2. The Employee shall maintain confidentiality of company information.
-3. The Employee is entitled to statutory benefits as per Indian labor laws.
-4. Either party may terminate employment with 30 days notice after probation.
-
-COMPANY: _________________     EMPLOYEE: _________________
-${formData.company_name}              ${formData.employee_name}
-
-Date: ${new Date().toLocaleDateString()}
-    `;
-  };
-
-  const generateServiceAgreement = () => {
-    return `
-SERVICE AGREEMENT
-
-This Service Agreement is between ${formData.service_provider} (Provider) and ${formData.client_name} (Client).
-
-SERVICES: ${formData.services}
-PAYMENT: ${formData.payment_amount}
-PAYMENT TERMS: ${formData.payment_terms}
-START DATE: ${formData.start_date}
-
-TERMS:
-
-1. Provider agrees to deliver services as described above.
-2. Client agrees to pay as per the payment terms.
-3. Either party may terminate with 15 days notice.
-
-PROVIDER: _________________     CLIENT: _________________
-${formData.service_provider}           ${formData.client_name}
-
-Date: ${new Date().toLocaleDateString()}
-    `;
-  };
-
-  const generatePowerOfAttorney = () => {
-    return `
-POWER OF ATTORNEY
-
-I, ${formData.principal_name}, hereby appoint ${formData.agent_name} as my attorney-in-fact.
-
-POWERS GRANTED: ${formData.powers}
-EFFECTIVE DATE: ${formData.effective_date}
-EXPIRATION: ${formData.expiration}
-
-This Power of Attorney shall be effective immediately and shall remain in effect until ${formData.expiration}.
-
-PRINCIPAL: _________________
-${formData.principal_name}
-
-Date: ${new Date().toLocaleDateString()}
-
-Notarized by: _________________
-    `;
-  };
-
-  const downloadDocument = async () => {
-    if (!generatedDocument) return;
+    setIsGenerating(true);
 
     try {
-      if (outputFormat === 'pdf') {
-        // For PDF generation, we'll use a simple approach
-        // In a real app, you'd use libraries like jsPDF or html2pdf
-        const element = document.createElement('a');
-        const file = new Blob([generatedDocument], { type: 'text/plain' });
-        element.href = URL.createObjectURL(file);
-        element.download = `${selectedTemplate?.name.replace(/\s+/g, '_')}_${Date.now()}.txt`;
-        document.body.appendChild(element);
-        element.click();
-        document.body.removeChild(element);
+      let content = "";
+      const today = new Date().toLocaleDateString('en-IN');
+
+      switch (selectedTemplate.id) {
+        case "rent-agreement":
+          content = `RENTAL AGREEMENT
+
+This Rental Agreement is made on ${formData.lease_start || today} between ${formData.landlord_name || '[Landlord Name]'} (Landlord) and ${formData.tenant_name || '[Tenant Name]'} (Tenant).
+
+PROPERTY DETAILS:
+The property located at:
+${formData.property_address || '[Property Address]'}
+
+TERMS AND CONDITIONS:
+1. Monthly Rent: ₹${formData.monthly_rent || '[Amount]'}
+2. Security Deposit: ₹${formData.security_deposit || '[Amount]'}
+3. Lease Duration: ${formData.lease_duration || '[Duration]'} months
+4. Lease Start Date: ${formData.lease_start || '[Date]'}
+
+LANDLORD OBLIGATIONS:
+- Provide peaceful possession of the property
+- Maintain the property in habitable condition
+- Provide necessary repairs (structural)
+
+TENANT OBLIGATIONS:
+- Pay rent on time every month
+- Maintain the property in good condition
+- Not sublet without written permission
+- Use property only for residential purposes
+
+TERMINATION:
+Either party may terminate this agreement with 30 days written notice.
+
+This agreement is governed by the laws of India.
+
+Landlord Signature: _________________     Tenant Signature: _________________
+Date: ${today}                           Date: ${today}`;
+          break;
+
+        case "nda":
+          content = `NON-DISCLOSURE AGREEMENT
+
+This Non-Disclosure Agreement ("Agreement") is entered into on ${formData.effective_date || today} between ${formData.disclosing_party || '[Disclosing Party]'} ("Disclosing Party") and ${formData.receiving_party || '[Receiving Party]'} ("Receiving Party").
+
+PURPOSE:
+${formData.purpose || '[Purpose of disclosure]'}
+
+CONFIDENTIAL INFORMATION:
+The Receiving Party acknowledges that it may receive confidential and proprietary information from the Disclosing Party.
+
+OBLIGATIONS:
+1. The Receiving Party agrees to hold all confidential information in strict confidence
+2. Not to disclose any confidential information to third parties
+3. Use confidential information solely for the stated purpose
+4. Return or destroy all confidential materials upon request
+
+DURATION:
+This agreement shall remain in effect for ${formData.duration_years || '[Duration]'} years from the effective date.
+
+REMEDIES:
+Breach of this agreement may result in irreparable harm, and the Disclosing Party shall be entitled to seek injunctive relief.
+
+This agreement is governed by the laws of India.
+
+Disclosing Party: _________________     Receiving Party: _________________
+Date: ${today}                         Date: ${today}`;
+          break;
+
+        case "affidavit":
+          content = `AFFIDAVIT
+
+I, ${formData.deponent_name || '[Deponent Name]'}, son/daughter of _________, aged _____ years, residing at ${formData.deponent_address || '[Address]'}, do hereby solemnly affirm and declare as under:
+
+1. That I am the deponent herein and I am competent to swear this affidavit.
+
+2. That the facts stated herein are true and correct to the best of my knowledge and belief.
+
+3. ${formData.statement_details || '[Statement details]'}
+
+4. That I have not concealed any material facts and the information provided is complete and accurate.
+
+5. That this affidavit is being made for [specify purpose] and no other purpose.
+
+I hereby declare that the contents of this affidavit are true to the best of my knowledge and belief and nothing material has been concealed therefrom.
+
+DEPONENT
+
+Verified at ${formData.place_of_oath || '[Place]'} on this ${formData.date_of_oath || today}.
+
+The contents of the above affidavit are true to the best of my knowledge and belief.
+
+                                        _________________
+                                        ${formData.deponent_name || '[Deponent Name]'}
+                                        DEPONENT`;
+          break;
+
+        case "complaint-letter":
+          content = `CONSUMER COMPLAINT
+
+To,
+The Consumer Disputes Redressal Commission
+[Address]
+
+Subject: Consumer Complaint against ${formData.respondent_name || '[Respondent Name]'}
+
+Respected Sir/Madam,
+
+I, ${formData.complainant_name || '[Complainant Name]'}, residing at ${formData.complainant_address || '[Address]'}, would like to file the following complaint:
+
+RESPONDENT DETAILS:
+${formData.respondent_name || '[Respondent Name]'}
+${formData.respondent_address || '[Respondent Address]'}
+
+COMPLAINT DETAILS:
+${formData.complaint_details || '[Complaint details]'}
+
+RELIEF SOUGHT:
+${formData.relief_sought || '[Relief sought]'}
+
+SUPPORTING DOCUMENTS:
+[List any supporting documents attached]
+
+I request you to kindly take necessary action against the respondent and provide appropriate relief.
+
+Thanking you,
+
+Yours faithfully,
+
+${formData.complainant_name || '[Complainant Name]'}
+Date: ${formData.complaint_date || today}
+Signature: _________________`;
+          break;
+
+        case "employment-contract":
+          content = `EMPLOYMENT AGREEMENT
+
+This Employment Agreement is entered into on ${formData.start_date || today} between ${formData.employer_name || '[Employer Name]'} ("Company") and ${formData.employee_name || '[Employee Name]'} ("Employee").
+
+POSITION AND DUTIES:
+The Employee is hired for the position of ${formData.job_title || '[Job Title]'} and will perform duties as assigned by the Company.
+
+COMPENSATION:
+Monthly Salary: ₹${formData.salary || '[Amount]'}
+Payment will be made monthly on or before the last working day of each month.
+
+EMPLOYMENT TERMS:
+1. Start Date: ${formData.start_date || '[Date]'}
+2. Work Location: ${formData.work_location || '[Location]'}
+3. Probation Period: ${formData.probation_period || '[Duration]'} months
+4. Working Hours: As per company policy
+
+EMPLOYEE OBLIGATIONS:
+1. Maintain confidentiality of company information
+2. Perform duties diligently and professionally
+3. Comply with company policies and procedures
+4. Provide adequate notice before resignation
+
+TERMINATION:
+Either party may terminate this agreement with appropriate notice as per labor laws.
+
+This agreement is governed by the laws of India.
+
+Company Representative: _____________    Employee: _________________
+Date: ${today}                         Date: ${today}`;
+          break;
+
+        case "partnership-deed":
+          content = `PARTNERSHIP DEED
+
+This Partnership Deed is executed on ${today} between ${formData.partner1_name || '[Partner 1]'} and ${formData.partner2_name || '[Partner 2]'} (collectively "Partners").
+
+BUSINESS DETAILS:
+Business Name: ${formData.business_name || '[Business Name]'}
+Business Address: ${formData.business_address || '[Business Address]'}
+
+CAPITAL CONTRIBUTION:
+${formData.partner1_name || '[Partner 1]'}: ₹${formData.partner1_investment || '[Amount]'}
+${formData.partner2_name || '[Partner 2]'}: ₹${formData.partner2_investment || '[Amount]'}
+
+PROFIT AND LOSS SHARING:
+Profits and losses shall be shared in the ratio of ${formData.profit_sharing || '[Ratio]'}.
+
+MANAGEMENT:
+Both partners shall have equal rights in the management of the business unless otherwise agreed.
+
+DUTIES AND RESPONSIBILITIES:
+1. Each partner shall devote time and attention to the business
+2. Major decisions require consent of both partners
+3. Neither partner can bind the firm beyond ₹[Amount] without consent
+
+DISSOLUTION:
+The partnership may be dissolved by mutual consent or as per the Partnership Act, 1932.
+
+This deed is governed by the laws of India.
+
+Partner 1: _________________        Partner 2: _________________
+Date: ${today}                     Date: ${today}`;
+          break;
+
+        default:
+          content = "Document template not found.";
+      }
+
+      if (selectedFormat === "pdf") {
+        generatePDF(content, selectedTemplate.name);
       } else {
-        // For DOCX, we'll also use text format for now
-        // In a real app, you'd use libraries like html-docx-js
-        const element = document.createElement('a');
-        const file = new Blob([generatedDocument], { type: 'text/plain' });
-        element.href = URL.createObjectURL(file);
-        element.download = `${selectedTemplate?.name.replace(/\s+/g, '_')}_${Date.now()}.txt`;
-        document.body.appendChild(element);
-        element.click();
-        document.body.removeChild(element);
+        downloadWordDocument(content, selectedTemplate.name);
       }
 
       toast({
-        title: "Document Downloaded",
-        description: `Your ${selectedTemplate?.name} has been saved as ${outputFormat.toUpperCase()}`
+        title: "Document Generated",
+        description: `${selectedTemplate.name} has been downloaded as ${selectedFormat.toUpperCase()}`,
       });
+
     } catch (error) {
       toast({
-        title: "Download Failed",
-        description: "Unable to download document. Please try again.",
+        title: "Generation Failed",
+        description: "Failed to generate document. Please try again.",
         variant: "destructive"
       });
+    } finally {
+      setIsGenerating(false);
     }
   };
 
-  if (!user) {
-    return (
-      <Card className="bg-amber-50 border-amber-200">
-        <CardContent className="pt-6 text-center">
-          <h4 className="text-lg font-medium text-amber-900 mb-2">Authentication Required</h4>
-          <p className="text-amber-700 mb-4">Please sign in to access the document generator.</p>
-        </CardContent>
-      </Card>
-    );
-  }
-
-  if (showPreview && generatedDocument) {
-    return (
-      <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <h3 className="text-lg font-semibold">Document Preview</h3>
-          <div className="flex items-center space-x-2">
-            <Select value={outputFormat} onValueChange={(value: 'pdf' | 'docx') => setOutputFormat(value)}>
-              <SelectTrigger className="w-24">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="pdf">PDF</SelectItem>
-                <SelectItem value="docx">DOCX</SelectItem>
-              </SelectContent>
-            </Select>
-            <Button variant="outline" onClick={() => setShowPreview(false)}>
-              <Eye className="h-4 w-4 mr-2" />
-              Edit
-            </Button>
-            <Button onClick={downloadDocument}>
-              <Download className="h-4 w-4 mr-2" />
-              Download {outputFormat.toUpperCase()}
-            </Button>
-          </div>
-        </div>
-        
-        <Card>
-          <CardContent className="p-6">
-            <pre className="whitespace-pre-wrap text-sm font-mono bg-slate-50 p-4 rounded border max-h-96 overflow-y-auto">
-              {generatedDocument}
-            </pre>
-          </CardContent>
-        </Card>
-
-        <Card className="bg-blue-50 border-blue-200">
-          <CardContent className="pt-6">
-            <p className="text-sm text-blue-800">
-              <strong>Note:</strong> This is a basic template. Please review the document carefully and 
-              consider consulting a lawyer for complex matters or before signing important agreements.
-            </p>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
-
   return (
     <div className="space-y-6">
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center">
-            <FileText className="h-5 w-5 mr-2" />
-            Legal Document Generator
-            {category && (
-              <Badge variant="outline" className="ml-2 capitalize">
-                {category} Documents
-              </Badge>
-            )}
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            <div>
-              <Label htmlFor="template">Select Document Type</Label>
-              <Select onValueChange={handleTemplateSelect}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Choose a document template" />
-                </SelectTrigger>
-                <SelectContent>
-                  {filteredTemplates.map((template) => (
-                    <SelectItem key={template.id} value={template.id}>
-                      <div>
-                        <div className="font-medium">{template.name}</div>
-                        <div className="text-xs text-slate-500">{template.description}</div>
-                      </div>
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+      {/* Category Tabs */}
+      <Tabs value={selectedCategory} onValueChange={(value: string) => setSelectedCategory(value as keyof typeof categoryMap)}>
+        <TabsList className="grid w-full grid-cols-3">
+          <TabsTrigger value="Business Law">Business Law</TabsTrigger>
+          <TabsTrigger value="Personal Legal">Personal Legal</TabsTrigger>
+          <TabsTrigger value="Contract Review">Contract Review</TabsTrigger>
+        </TabsList>
+
+        {Object.keys(categoryMap).map((cat) => (
+          <TabsContent key={cat} value={cat} className="space-y-6">
+            <div className="text-center">
+              <h3 className="text-2xl font-bold text-slate-900 mb-2">Document Generator</h3>
+              <p className="text-slate-600">Generate professional legal documents for {cat.toLowerCase()}</p>
             </div>
+
+            {/* Available Documents */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Available Documents for {cat}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid gap-4 md:grid-cols-2">
+                  {getFilteredTemplates().map((template) => (
+                    <Card 
+                      key={template.id} 
+                      className={`cursor-pointer transition-all hover:shadow-md ${
+                        selectedTemplate?.id === template.id ? 'ring-2 ring-blue-500' : ''
+                      }`}
+                      onClick={() => setSelectedTemplate(template)}
+                    >
+                      <CardContent className="p-4">
+                        <div className="flex items-start space-x-3">
+                          <div className="bg-blue-100 p-2 rounded-lg">
+                            <FileText className="h-5 w-5 text-blue-600" />
+                          </div>
+                          <div className="flex-1">
+                            <h4 className="font-semibold">{template.name}</h4>
+                            <p className="text-sm text-slate-600 mt-1">{template.description}</p>
+                            <div className="flex flex-wrap gap-1 mt-2">
+                              {template.category.map((cat) => (
+                                <Badge key={cat} variant="outline" className="text-xs">
+                                  {cat}
+                                </Badge>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Document Form */}
+            {selectedTemplate && (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Generate {selectedTemplate.name}</CardTitle>
+                  <div className="flex items-center space-x-4">
+                    <div>
+                      <label className="text-sm font-medium">Format:</label>
+                      <Select value={selectedFormat} onValueChange={(value: "pdf" | "docx") => setSelectedFormat(value)}>
+                        <SelectTrigger className="w-24">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="pdf">PDF</SelectItem>
+                          <SelectItem value="docx">Word</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="grid gap-4 md:grid-cols-2">
+                    {selectedTemplate.fields.map((field) => (
+                      <div key={field.id}>
+                        <label className="block text-sm font-medium mb-1">
+                          {field.label} {field.required && <span className="text-red-500">*</span>}
+                        </label>
+                        {field.type === 'textarea' ? (
+                          <Textarea
+                            placeholder={field.placeholder}
+                            value={formData[field.id] || ''}
+                            onChange={(e) => handleInputChange(field.id, e.target.value)}
+                            className="min-h-20"
+                          />
+                        ) : (
+                          <Input
+                            type={field.type}
+                            placeholder={field.placeholder}
+                            value={formData[field.id] || ''}
+                            onChange={(e) => handleInputChange(field.id, e.target.value)}
+                          />
+                        )}
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="flex space-x-4 pt-4">
+                    <Button 
+                      onClick={generateDocument}
+                      disabled={isGenerating || !selectedFormat}
+                      className="flex-1"
+                    >
+                      <Download className="h-4 w-4 mr-2" />
+                      {isGenerating ? 'Generating...' : `Generate ${selectedFormat.toUpperCase()}`}
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      onClick={() => {
+                        setSelectedTemplate(null);
+                        setFormData({});
+                      }}
+                    >
+                      Cancel
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+          </TabsContent>
+        ))}
+      </Tabs>
+
+      {/* Disclaimer */}
+      <Card className="bg-amber-50 border-amber-200">
+        <CardContent className="pt-6">
+          <div className="flex items-start space-x-2">
+            <AlertCircle className="h-5 w-5 text-amber-600 mt-0.5" />
+            <p className="text-sm text-amber-800">
+              <strong>Legal Disclaimer:</strong> These templates are for informational purposes only and may not be suitable for all situations. 
+              Please consult with a qualified attorney before using any legal documents. Customize the templates according to your specific needs.
+            </p>
           </div>
         </CardContent>
       </Card>
-
-      {selectedTemplate && (
-        <Card>
-          <CardHeader>
-            <CardTitle>{selectedTemplate.name}</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {selectedTemplate.fields.map((field) => (
-              <div key={field.id}>
-                <Label htmlFor={field.id}>
-                  {field.label} {field.required && <span className="text-red-500">*</span>}
-                </Label>
-                {field.type === 'text' && (
-                  <Input
-                    id={field.id}
-                    placeholder={field.placeholder}
-                    value={formData[field.id] || ''}
-                    onChange={(e) => handleFieldChange(field.id, e.target.value)}
-                  />
-                )}
-                {field.type === 'textarea' && (
-                  <Textarea
-                    id={field.id}
-                    placeholder={field.placeholder}
-                    value={formData[field.id] || ''}
-                    onChange={(e) => handleFieldChange(field.id, e.target.value)}
-                    rows={3}
-                  />
-                )}
-                {field.type === 'date' && (
-                  <Input
-                    id={field.id}
-                    type="date"
-                    value={formData[field.id] || ''}
-                    onChange={(e) => handleFieldChange(field.id, e.target.value)}
-                  />
-                )}
-                {field.type === 'select' && field.options && (
-                  <Select onValueChange={(value) => handleFieldChange(field.id, value)}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select an option" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {field.options.map((option) => (
-                        <SelectItem key={option} value={option}>
-                          {option}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                )}
-              </div>
-            ))}
-            
-            <div className="flex items-center space-x-4 pt-4">
-              <div className="flex-1">
-                <Label>Output Format</Label>
-                <Select value={outputFormat} onValueChange={(value: 'pdf' | 'docx') => setOutputFormat(value)}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="pdf">PDF Document</SelectItem>
-                    <SelectItem value="docx">Word Document</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="flex-1 flex items-end">
-                <Button onClick={generateDocument} className="w-full">
-                  Generate {outputFormat.toUpperCase()}
-                </Button>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      )}
     </div>
   );
 };

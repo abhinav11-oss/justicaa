@@ -5,7 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Send, User, Bot, Lightbulb, Settings, MapPin } from "lucide-react";
+import { Send, User, Bot, Lightbulb, Settings, MapPin, Lock } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
@@ -157,15 +157,6 @@ export const ChatInterface = ({ category }: ChatInterfaceProps) => {
   }, [messages, isTyping]);
 
   const handleSendMessage = async () => {
-    if (!user) {
-      toast({
-        title: "Authentication Required",
-        description: "Please sign in to access AI Chat features",
-        variant: "destructive"
-      });
-      return;
-    }
-
     if (!inputValue.trim()) return;
 
     // Detect law type from user input
@@ -291,27 +282,8 @@ export const ChatInterface = ({ category }: ChatInterfaceProps) => {
   };
 
   const handleQuickQuestion = (question: string) => {
-    if (!user) {
-      toast({
-        title: "Authentication Required",
-        description: "Please sign in to access AI Chat features",
-        variant: "destructive"
-      });
-      return;
-    }
     setInputValue(question);
   };
-
-  if (!user) {
-    return (
-      <Card className="bg-amber-50 border-amber-200">
-        <CardContent className="pt-6 text-center">
-          <h4 className="text-lg font-medium text-amber-900 mb-2">Authentication Required</h4>
-          <p className="text-amber-700 mb-4">Please sign in to access AI Chat and get legal assistance.</p>
-        </CardContent>
-      </Card>
-    );
-  }
 
   if (showLawyerFinder) {
     return (
@@ -463,6 +435,16 @@ export const ChatInterface = ({ category }: ChatInterfaceProps) => {
           <Send className="h-4 w-4" />
         </Button>
       </div>
+
+      {/* Authentication Notice for Conversation History */}
+      {!user && (
+        <div className="mt-2 text-center">
+          <p className="text-xs text-slate-500 flex items-center justify-center">
+            <Lock className="h-3 w-3 mr-1" />
+            Sign in to save your conversation history
+          </p>
+        </div>
+      )}
 
       {/* AI Provider info */}
       <p className="text-xs text-slate-500 mt-1 text-center">

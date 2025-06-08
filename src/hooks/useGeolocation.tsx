@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 
 interface GeolocationState {
@@ -27,7 +28,7 @@ export function useGeolocation(): GeolocationHook {
       setState(prev => ({
         ...prev,
         loading: false,
-        error: 'Geolocation is not supported by this browser.',
+        error: 'Geolocation is not supported by this browser. Please enter your location manually.',
       }));
       return;
     }
@@ -46,13 +47,13 @@ export function useGeolocation(): GeolocationHook {
         
         switch (error.code) {
           case error.PERMISSION_DENIED:
-            errorMessage = 'Location access denied. Please enter your location manually.';
+            errorMessage = 'Location access denied. Please enter your location manually or enable location permissions.';
             break;
           case error.POSITION_UNAVAILABLE:
-            errorMessage = 'Location information is unavailable.';
+            errorMessage = 'Location information is unavailable. Please enter your location manually.';
             break;
           case error.TIMEOUT:
-            errorMessage = 'Location request timed out.';
+            errorMessage = 'Location request timed out. Please try again or enter manually.';
             break;
         }
 
@@ -61,9 +62,6 @@ export function useGeolocation(): GeolocationHook {
           loading: false,
           error: errorMessage,
         }));
-
-        // Fallback to IP geolocation
-        fetchIPLocation();
       },
       {
         enableHighAccuracy: true,
@@ -71,30 +69,6 @@ export function useGeolocation(): GeolocationHook {
         maximumAge: 300000, // 5 minutes
       }
     );
-  };
-
-  const fetchIPLocation = async () => {
-    try {
-      const response = await fetch('https://ipapi.co/json/');
-      const data = await response.json();
-      
-      if (data.latitude && data.longitude) {
-        setState({
-          latitude: data.latitude,
-          longitude: data.longitude,
-          error: null,
-          loading: false,
-        });
-      } else {
-        throw new Error('IP geolocation failed');
-      }
-    } catch (error) {
-      setState(prev => ({
-        ...prev,
-        loading: false,
-        error: 'Unable to determine location. Please enter manually.',
-      }));
-    }
   };
 
   const setManualLocation = (lat: number, lng: number) => {
