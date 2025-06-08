@@ -8,4 +8,57 @@ const SUPABASE_PUBLISHABLE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiO
 // Import the supabase client like this:
 // import { supabase } from "@/integrations/supabase/client";
 
-export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
+  auth: {
+    persistSession: true,
+    autoRefreshToken: true,
+    detectSessionInUrl: true,
+    flowType: 'pkce'
+  }
+});
+
+// Session recovery error handler
+export const handleSessionError = async (error: any) => {
+  console.error('Session error detected:', error);
+  
+  if (
+    error?.status === 400 || 
+    error?.code === 'refresh_token_not_found' ||
+    error?.message?.includes('Invalid Refresh Token') ||
+    error?.message?.includes('refresh_token_not_found')
+  ) {
+    try {
+      // Force global logout to clear all sessions
+      await supabase.auth.signOut({ scope: 'global' });
+    } catch (signOutError) {
+      console.warn('Error during forced logout:', signOutError);
+    }
+    
+    // Clear all local storage
+    localStorage.clear();
+    sessionStorage.clear();
+    
+    // Clear any cached auth data
+    try {
+      await supabase.auth.getSession();
+    } catch (clearError) {
+      console.warn('Error clearing session cache:', clearError);
+    }
+    
+    return true; // Indicates session was cleared
+  }
+  
+  return false; // No action taken
+};
+
+// Initialize session recovery on client creation
+supabase.auth.onAuthStateChange(async (event, session) => {
+  if (event === 'TOKEN_REFRESHED') {
+    console.log('Token refreshed successfully');
+  } else if (event === 'SIGNED_OUT') {
+    console.log('User signed out');
+    // Clear any remaining local data
+    localStorage.removeItem('supabase.auth.token');
+    sessionStorage.clear();
+  }
+});

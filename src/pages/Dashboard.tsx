@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -14,6 +13,7 @@ import { SettingsPanel } from "@/components/SettingsPanel";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "next-themes";
+import { useToast } from "@/hooks/use-toast";
 import { 
   Scale, 
   MessageSquare, 
@@ -27,16 +27,18 @@ import {
   Settings,
   Search,
   Sun,
-  Moon
+  Moon,
+  AlertTriangle
 } from "lucide-react";
 
 const Dashboard = () => {
   const [activeTab, setActiveTab] = useState(() => {
     return sessionStorage.getItem('lastTab') || "home";
   });
-  const { user, signOut, loading } = useAuth();
+  const { user, signOut, loading, sessionError } = useAuth();
   const navigate = useNavigate();
   const { theme, setTheme } = useTheme();
+  const { toast } = useToast();
 
   useEffect(() => {
     sessionStorage.setItem('lastTab', activeTab);
@@ -60,16 +62,43 @@ const Dashboard = () => {
     }
   }, [user]);
 
+  // Show session error notification
+  useEffect(() => {
+    if (sessionError) {
+      toast({
+        title: "Session Error",
+        description: sessionError,
+        variant: "destructive",
+        duration: 5000
+      });
+    }
+  }, [sessionError, toast]);
+
   const handleSignOut = async () => {
     try {
+      setActiveTab("home"); // Reset to home tab
       await signOut();
+      
       // Clear all session data
       sessionStorage.clear();
       localStorage.removeItem('lastTab');
+      
+      toast({
+        title: "Signed Out",
+        description: "You have been successfully signed out."
+      });
+      
       // Redirect to landing page
       navigate("/");
     } catch (error) {
       console.error('Logout error:', error);
+      
+      toast({
+        title: "Logout Error",
+        description: "There was an issue signing out. Redirecting anyway.",
+        variant: "destructive"
+      });
+      
       // Force redirect even if there's an error
       navigate("/");
     }
@@ -132,6 +161,14 @@ const Dashboard = () => {
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
           <p className="text-muted-foreground">Loading dashboard...</p>
+          {sessionError && (
+            <div className="mt-4 p-3 bg-amber-50 border border-amber-200 rounded-lg max-w-md">
+              <div className="flex items-center space-x-2">
+                <AlertTriangle className="h-4 w-4 text-amber-600" />
+                <p className="text-sm text-amber-800">{sessionError}</p>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     );
@@ -256,6 +293,24 @@ const Dashboard = () => {
             </div>
           </div>
         </header>
+
+        {/* Session Error Banner */}
+        {sessionError && (
+          <div className="bg-amber-50 border-b border-amber-200 p-3">
+            <div className="flex items-center justify-center space-x-2">
+              <AlertTriangle className="h-4 w-4 text-amber-600" />
+              <p className="text-sm text-amber-800">{sessionError}</p>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => window.location.reload()}
+                className="ml-4"
+              >
+                Retry
+              </Button>
+            </div>
+          </div>
+        )}
 
         {/* Content */}
         <div className="flex-1 p-6 overflow-auto">

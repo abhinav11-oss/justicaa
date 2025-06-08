@@ -4,7 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { AlertCircle, Mail, Lock, User } from 'lucide-react';
+import { AlertCircle, Mail, Lock, User, RefreshCw } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
 
@@ -20,7 +20,7 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState('signin');
   
-  const { signIn, signUp } = useAuth();
+  const { signIn, signUp, sessionError } = useAuth();
   const { toast } = useToast();
 
   if (!isOpen) return null;
@@ -34,7 +34,7 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
     if (error) {
       toast({
         title: "Sign In Failed",
-        description: error.message,
+        description: error.message || "Please check your credentials and try again.",
         variant: "destructive"
       });
     } else {
@@ -57,7 +57,7 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
     if (error) {
       toast({
         title: "Sign Up Failed",
-        description: error.message,
+        description: error.message || "Please try again with different credentials.",
         variant: "destructive"
       });
     } else {
@@ -69,6 +69,11 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
     }
     
     setLoading(false);
+  };
+
+  const handleRetrySession = () => {
+    // Reload the page to retry session initialization
+    window.location.reload();
   };
 
   return (
@@ -87,6 +92,27 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
         </CardHeader>
         
         <CardContent>
+          {/* Session Error Display */}
+          {sessionError && (
+            <div className="mb-4 p-3 bg-amber-50 border border-amber-200 rounded-lg">
+              <div className="flex items-start space-x-2">
+                <AlertCircle className="h-4 w-4 text-amber-600 mt-0.5" />
+                <div className="flex-1">
+                  <p className="text-sm text-amber-800">{sessionError}</p>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleRetrySession}
+                    className="mt-2"
+                  >
+                    <RefreshCw className="h-3 w-3 mr-1" />
+                    Retry
+                  </Button>
+                </div>
+              </div>
+            </div>
+          )}
+
           <Tabs value={activeTab} onValueChange={setActiveTab}>
             <TabsList className="grid w-full grid-cols-2">
               <TabsTrigger value="signin">Sign In</TabsTrigger>
@@ -107,6 +133,7 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
                       onChange={(e) => setEmail(e.target.value)}
                       className="pl-10"
                       required
+                      disabled={loading}
                     />
                   </div>
                 </div>
@@ -123,6 +150,7 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
                       onChange={(e) => setPassword(e.target.value)}
                       className="pl-10"
                       required
+                      disabled={loading}
                     />
                   </div>
                 </div>
@@ -147,6 +175,7 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
                       onChange={(e) => setFullName(e.target.value)}
                       className="pl-10"
                       required
+                      disabled={loading}
                     />
                   </div>
                 </div>
@@ -163,6 +192,7 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
                       onChange={(e) => setEmail(e.target.value)}
                       className="pl-10"
                       required
+                      disabled={loading}
                     />
                   </div>
                 </div>
@@ -180,6 +210,7 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
                       className="pl-10"
                       required
                       minLength={6}
+                      disabled={loading}
                     />
                   </div>
                 </div>
