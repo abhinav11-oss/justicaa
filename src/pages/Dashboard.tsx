@@ -14,6 +14,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "next-themes";
 import { useToast } from "@/hooks/use-toast";
+import { useSidebar } from "@/hooks/useSidebar";
 import { 
   Scale, 
   MessageSquare, 
@@ -28,7 +29,10 @@ import {
   Search,
   Sun,
   Moon,
-  AlertTriangle
+  AlertTriangle,
+  ChevronLeft,
+  ChevronRight,
+  Menu
 } from "lucide-react";
 
 const Dashboard = () => {
@@ -39,6 +43,7 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const { theme, setTheme } = useTheme();
   const { toast } = useToast();
+  const { isCollapsed, toggleSidebar } = useSidebar();
 
   useEffect(() => {
     sessionStorage.setItem('lastTab', activeTab);
@@ -199,39 +204,56 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen bg-background flex">
-      {/* Vertical Sidebar */}
-      <aside className="w-64 bg-card border-r border-border flex flex-col">
+      {/* Collapsible Vertical Sidebar */}
+      <aside className={`bg-card border-r border-border flex flex-col transition-all duration-300 ${isCollapsed ? 'w-16' : 'w-64'}`}>
         {/* Header */}
-        <div className="p-6 border-b border-border">
-          <div className="flex items-center space-x-3">
-            <div className="bg-primary p-2 rounded-lg">
-              <Scale className="h-6 w-6 text-primary-foreground" />
-            </div>
-            <div>
-              <h1 className="text-lg font-bold text-foreground">LegalAI Assistant</h1>
-              <p className="text-sm text-muted-foreground">Your Legal Solution</p>
-            </div>
+        <div className="p-4 border-b border-border">
+          <div className="flex items-center justify-between">
+            {!isCollapsed && (
+              <div className="flex items-center space-x-3">
+                <div className="bg-primary p-2 rounded-lg">
+                  <Scale className="h-6 w-6 text-primary-foreground" />
+                </div>
+                <div>
+                  <h1 className="text-lg font-bold text-foreground">LegalAI</h1>
+                  <p className="text-sm text-muted-foreground">Assistant</p>
+                </div>
+              </div>
+            )}
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={toggleSidebar}
+              className="h-8 w-8"
+            >
+              {isCollapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
+            </Button>
           </div>
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 p-4">
-          <div className="space-y-2">
+        <nav className="flex-1 p-2">
+          <div className="space-y-1">
             {sidebarItems.map((item) => (
               <button
                 key={item.id}
                 onClick={() => setActiveTab(item.id)}
-                className={`w-full text-left p-3 rounded-lg transition-all duration-200 flex items-center space-x-3 ${
+                className={`w-full text-left p-3 rounded-lg transition-all duration-200 flex items-center ${
+                  isCollapsed ? 'justify-center' : 'space-x-3'
+                } ${
                   activeTab === item.id
                     ? "bg-primary/10 text-primary border border-primary/20"
                     : "text-muted-foreground hover:bg-muted hover:text-foreground"
                 }`}
+                title={isCollapsed ? item.title : undefined}
               >
-                <item.icon className="h-5 w-5" />
-                <div>
-                  <div className="font-medium">{item.title}</div>
-                  <div className="text-xs opacity-70">{item.description}</div>
-                </div>
+                <item.icon className="h-5 w-5 flex-shrink-0" />
+                {!isCollapsed && (
+                  <div>
+                    <div className="font-medium">{item.title}</div>
+                    <div className="text-xs opacity-70">{item.description}</div>
+                  </div>
+                )}
               </button>
             ))}
           </div>
@@ -243,13 +265,23 @@ const Dashboard = () => {
         {/* Top Bar */}
         <header className="bg-card border-b border-border p-4">
           <div className="flex items-center justify-between">
-            <div>
-              <h2 className="text-2xl font-bold text-foreground capitalize">
-                {sidebarItems.find(item => item.id === activeTab)?.title || "Dashboard"}
-              </h2>
-              <p className="text-sm text-muted-foreground">
-                {sidebarItems.find(item => item.id === activeTab)?.description || "Welcome to your legal assistant"}
-              </p>
+            <div className="flex items-center space-x-4">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={toggleSidebar}
+                className="md:hidden"
+              >
+                <Menu className="h-5 w-5" />
+              </Button>
+              <div>
+                <h2 className="text-2xl font-bold text-foreground capitalize">
+                  {sidebarItems.find(item => item.id === activeTab)?.title || "Dashboard"}
+                </h2>
+                <p className="text-sm text-muted-foreground">
+                  {sidebarItems.find(item => item.id === activeTab)?.description || "Welcome to your legal assistant"}
+                </p>
+              </div>
             </div>
             
             <div className="flex items-center space-x-4">

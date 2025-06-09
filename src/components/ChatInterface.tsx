@@ -1,22 +1,22 @@
+
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Send, User, Bot, Lightbulb, Settings, MapPin, Lock } from "lucide-react";
+import { Send, Bot, User, Loader2, Copy, MessageSquare } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
-import { LawyerFinder } from "./LawyerFinder";
+import { QuickQuestions } from "@/components/QuickQuestions";
 
 interface Message {
   id: string;
+  role: "user" | "assistant";
   content: string;
-  sender: 'user' | 'assistant';
   timestamp: Date;
-  category?: string;
 }
 
 interface ChatInterfaceProps {
@@ -24,433 +24,273 @@ interface ChatInterfaceProps {
 }
 
 export const ChatInterface = ({ category }: ChatInterfaceProps) => {
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: '1',
-      content: "Hello! I'm your AI-powered Virtual Legal Assistant. I can help you with legal questions, guide you through legal processes, provide general legal information, and help you find lawyers near you. What legal question can I help you with today?",
-      sender: 'assistant',
-      timestamp: new Date(),
-      category: 'greeting'
-    }
-  ]);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState("");
-  const [isTyping, setIsTyping] = useState(false);
-  const [aiProvider, setAiProvider] = useState<'openai' | 'huggingface'>('huggingface');
-  const [showLawyerFinder, setShowLawyerFinder] = useState(false);
-  const scrollAreaRef = useRef<HTMLDivElement>(null);
-  const { toast } = useToast();
+  const [isLoading, setIsLoading] = useState(false);
+  const [conversationId, setConversationId] = useState<string | null>(null);
   const { user } = useAuth();
+  const { toast } = useToast();
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const hasUserInteracted = messages.some(msg => msg.role === "user");
 
-  // Category-specific quick questions
-  const getQuickQuestions = () => {
-    const baseQuestions = {
-      business: [
-        "How do I start an LLC?",
-        "What's in a business contract?",
-        "How to trademark a name?",
-        "What are employment laws?",
-        "How to protect IP?",
-        "Business license requirements?"
-      ],
-      personal: [
-        "Do I need a will?",
-        "How to file for divorce?",
-        "What are tenant rights?",
-        "How to adopt a child?",
-        "Estate planning basics?",
-        "Family court procedures?"
-      ],
-      contract: [
-        "What makes a contract valid?",
-        "How to review an NDA?",
-        "Employment contract terms?",
-        "Breach of contract remedies?",
-        "Contract termination rights?",
-        "Service agreement clauses?"
-      ],
-      process: [
-        "How to file a lawsuit?",
-        "Small claims court process?",
-        "How to respond to summons?",
-        "Legal document filing?",
-        "Court appearance tips?",
-        "Legal representation rights?"
-      ]
-    };
-
-    return category && baseQuestions[category as keyof typeof baseQuestions] 
-      ? baseQuestions[category as keyof typeof baseQuestions]
-      : [
-          "How do I start a business?",
-          "What's in a basic contract?",
-          "Do I need a will?",
-          "How to trademark a name?",
-          "What are tenant rights?",
-          "How to file for divorce?"
-        ];
-  };
-
-  const quickQuestions = getQuickQuestions();
-
-  const detectLawType = (text: string): string => {
-    const content = text.toLowerCase();
-    
-    // Criminal Law
-    if (content.includes('fir') || content.includes('police') || content.includes('arrest') || 
-        content.includes('bail') || content.includes('criminal') || content.includes('theft') ||
-        content.includes('fraud') || content.includes('ipc') || content.includes('crpc')) {
-      return 'criminal';
-    }
-    
-    // Family Law
-    if (content.includes('divorce') || content.includes('marriage') || content.includes('custody') ||
-        content.includes('alimony') || content.includes('adoption') || content.includes('family')) {
-      return 'family';
-    }
-    
-    // Property Law
-    if (content.includes('property') || content.includes('land') || content.includes('rent') ||
-        content.includes('landlord') || content.includes('tenant') || content.includes('real estate') ||
-        content.includes('registration') || content.includes('stamp duty')) {
-      return 'property';
-    }
-    
-    // Business/Corporate Law
-    if (content.includes('business') || content.includes('company') || content.includes('llc') ||
-        content.includes('corporation') || content.includes('partnership') || content.includes('gst') ||
-        content.includes('tax') || content.includes('startup')) {
-      return 'business';
-    }
-    
-    // Contract Law
-    if (content.includes('contract') || content.includes('agreement') || content.includes('nda') ||
-        content.includes('terms') || content.includes('clause') || content.includes('breach')) {
-      return 'contract';
-    }
-    
-    // Consumer Law
-    if (content.includes('consumer') || content.includes('refund') || content.includes('complaint') ||
-        content.includes('defective') || content.includes('warranty') || content.includes('service')) {
-      return 'consumer';
-    }
-    
-    // Employment Law
-    if (content.includes('employment') || content.includes('job') || content.includes('workplace') ||
-        content.includes('salary') || content.includes('termination') || content.includes('pf') ||
-        content.includes('esi') || content.includes('labour')) {
-      return 'employment';
-    }
-    
-    // Intellectual Property
-    if (content.includes('trademark') || content.includes('copyright') || content.includes('patent') ||
-        content.includes('intellectual property') || content.includes('brand')) {
-      return 'intellectual-property';
-    }
-    
-    return category || 'general';
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
   useEffect(() => {
-    if (scrollAreaRef.current) {
-      scrollAreaRef.current.scrollTop = scrollAreaRef.current.scrollHeight;
-    }
-  }, [messages, isTyping]);
+    scrollToBottom();
+  }, [messages]);
 
-  const handleSendMessage = async () => {
-    if (!inputValue.trim()) return;
+  const handleQuestionClick = (question: string) => {
+    setInputValue(question);
+    handleSendMessage(question);
+  };
 
-    // Detect law type from user input
-    const detectedCategory = detectLawType(inputValue);
+  const handleSendMessage = async (messageContent?: string) => {
+    const content = messageContent || inputValue.trim();
+    if (!content) return;
 
     const userMessage: Message = {
       id: Date.now().toString(),
-      content: inputValue,
-      sender: 'user',
+      role: "user",
+      content: content,
       timestamp: new Date(),
-      category: detectedCategory
     };
 
     setMessages(prev => [...prev, userMessage]);
     setInputValue("");
-    setIsTyping(true);
+    setIsLoading(true);
 
     try {
-      console.log(`Sending message to AI (${aiProvider}):`, inputValue);
-      
-      // Get conversation history (last 10 messages for context)
-      const conversationHistory = messages.slice(-10);
-      
-      const functionName = aiProvider === 'openai' ? 'ai-legal-chat' : 'ai-legal-chat-hf';
-      
-      const { data, error } = await supabase.functions.invoke(functionName, {
+      // Create conversation if not exists
+      if (!conversationId && user) {
+        const { data: conversation, error: convError } = await supabase
+          .from("chat_conversations")
+          .insert([
+            {
+              user_id: user.id,
+              title: content.slice(0, 50) + "...",
+              legal_category: category || "general",
+              status: "active"
+            }
+          ])
+          .select()
+          .single();
+
+        if (convError) throw convError;
+        setConversationId(conversation.id);
+      }
+
+      // Call the AI function
+      const { data, error } = await supabase.functions.invoke('ai-legal-chat', {
         body: {
-          message: inputValue,
-          conversationHistory: conversationHistory,
-          detectedCategory: detectedCategory
+          message: content,
+          conversation_id: conversationId,
+          category: category || "general"
         }
       });
 
-      if (error) {
-        console.error('Supabase function error:', error);
-        throw error;
-      }
-
-      console.log('AI response received:', data);
+      if (error) throw error;
 
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
-        content: data.response,
-        sender: 'assistant',
+        role: "assistant",
+        content: data.response || "I apologize, but I couldn't process your request at the moment. Please try again.",
         timestamp: new Date(),
-        category: data.category || detectedCategory
       };
 
       setMessages(prev => [...prev, assistantMessage]);
 
-      // Save conversation to database if user is logged in
-      if (user) {
-        try {
-          await saveConversationToDatabase([userMessage, assistantMessage]);
-        } catch (dbError) {
-          console.error('Error saving to database:', dbError);
-          // Don't block the UI for database errors
-        }
+      // Save messages to database if user is logged in
+      if (user && conversationId) {
+        await supabase.from("chat_messages").insert([
+          {
+            conversation_id: conversationId,
+            role: "user",
+            content: content,
+            created_at: userMessage.timestamp.toISOString()
+          },
+          {
+            conversation_id: conversationId,
+            role: "assistant", 
+            content: assistantMessage.content,
+            created_at: assistantMessage.timestamp.toISOString()
+          }
+        ]);
       }
 
     } catch (error) {
-      console.error('Error getting AI response:', error);
-      
+      console.error("Error sending message:", error);
+      toast({
+        title: "Error",
+        description: "Failed to send message. Please try again.",
+        variant: "destructive"
+      });
+
       const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
-        content: "I apologize, but I'm experiencing technical difficulties. Please try again in a moment, or consider consulting with a qualified attorney for immediate legal assistance.",
-        sender: 'assistant',
+        role: "assistant",
+        content: "I'm sorry, I'm having trouble connecting right now. Please check your internet connection and try again.",
         timestamp: new Date(),
-        category: 'error'
       };
 
       setMessages(prev => [...prev, errorMessage]);
-      
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleSendMessage();
+    }
+  };
+
+  const copyToClipboard = async (text: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
       toast({
-        title: "Connection Error",
-        description: "Unable to get AI response. Please try again.",
+        title: "Copied",
+        description: "Message copied to clipboard"
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to copy message",
         variant: "destructive"
       });
-    } finally {
-      setIsTyping(false);
     }
   };
-
-  const saveConversationToDatabase = async (newMessages: Message[]) => {
-    if (!user) return;
-
-    try {
-      // Create or get conversation
-      const { data: conversation, error: convError } = await supabase
-        .from('chat_conversations')
-        .insert({
-          user_id: user.id,
-          title: messages.length === 1 ? inputValue.slice(0, 50) + '...' : undefined,
-          legal_category: newMessages.find(m => m.category)?.category
-        })
-        .select()
-        .single();
-
-      if (convError && convError.code !== '23505') { // Ignore duplicate key errors
-        throw convError;
-      }
-
-      // Save messages
-      if (conversation) {
-        const messagesToSave = newMessages.map(msg => ({
-          conversation_id: conversation.id,
-          content: msg.content,
-          sender: msg.sender,
-          metadata: { category: msg.category }
-        }));
-
-        const { error: msgError } = await supabase
-          .from('chat_messages')
-          .insert(messagesToSave);
-
-        if (msgError) {
-          throw msgError;
-        }
-      }
-    } catch (error) {
-      console.error('Database save error:', error);
-    }
-  };
-
-  const handleQuickQuestion = (question: string) => {
-    setInputValue(question);
-  };
-
-  if (showLawyerFinder) {
-    return (
-      <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <h3 className="text-lg font-semibold">Find Lawyers Near You</h3>
-          <Button variant="outline" onClick={() => setShowLawyerFinder(false)}>
-            Back to Chat
-          </Button>
-        </div>
-        <LawyerFinder category={category} />
-      </div>
-    );
-  }
 
   return (
-    <div className="flex flex-col h-[600px]">
-      {/* AI Provider Selection and Quick Questions */}
-      <div className="mb-4 flex items-center justify-between">
-        <div>
-          <h3 className="text-sm font-medium text-slate-700 mb-3 flex items-center">
-            <Lightbulb className="h-4 w-4 mr-2" />
-            Quick Questions
+    <div className="h-[calc(100vh-200px)] flex flex-col">
+      <Card className="flex-1 flex flex-col">
+        <CardHeader className="flex-shrink-0">
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle className="flex items-center">
+                <MessageSquare className="h-5 w-5 mr-2" />
+                AI Legal Assistant
+              </CardTitle>
+              <p className="text-sm text-muted-foreground mt-1">
+                Get instant legal guidance and answers to your questions
+              </p>
+            </div>
             {category && (
-              <Badge variant="outline" className="ml-2 capitalize">
+              <Badge variant="outline" className="capitalize">
                 {category}
               </Badge>
             )}
-          </h3>
-          <div className="flex flex-wrap gap-2">
-            {quickQuestions.map((question, index) => (
-              <Button
-                key={index}
-                variant="outline"
-                size="sm"
-                onClick={() => handleQuickQuestion(question)}
-                className="text-xs"
-              >
-                {question}
-              </Button>
-            ))}
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setShowLawyerFinder(true)}
-              className="text-xs bg-blue-50 hover:bg-blue-100"
-            >
-              <MapPin className="h-3 w-3 mr-1" />
-              Find Lawyers Near Me
-            </Button>
           </div>
-        </div>
-        
-        <div className="flex items-center space-x-2">
-          <Settings className="h-4 w-4 text-slate-500" />
-          <Select value={aiProvider} onValueChange={(value: 'openai' | 'huggingface') => setAiProvider(value)}>
-            <SelectTrigger className="w-40">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="huggingface">
-                <div className="flex flex-col">
-                  <span>Hugging Face</span>
-                  <span className="text-xs text-green-600">Free</span>
-                </div>
-              </SelectItem>
-              <SelectItem value="openai">
-                <div className="flex flex-col">
-                  <span>OpenAI</span>
-                  <span className="text-xs text-blue-600">Premium</span>
-                </div>
-              </SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-      </div>
+        </CardHeader>
 
-      {/* Chat Messages */}
-      <ScrollArea className="flex-1 p-4 border rounded-lg bg-slate-50" ref={scrollAreaRef}>
-        <div className="space-y-4">
-          {messages.map((message) => (
-            <div
-              key={message.id}
-              className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
-            >
-              <div className={`flex space-x-2 max-w-[80%] ${message.sender === 'user' ? 'flex-row-reverse space-x-reverse' : ''}`}>
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                  message.sender === 'user' ? 'bg-blue-600' : 'bg-slate-600'
-                }`}>
-                  {message.sender === 'user' ? (
-                    <User className="h-4 w-4 text-white" />
-                  ) : (
-                    <Bot className="h-4 w-4 text-white" />
-                  )}
-                </div>
-                <Card className={`${message.sender === 'user' ? 'bg-blue-600 text-white' : 'bg-white'}`}>
-                  <CardContent className="p-3">
-                    <p className="text-sm whitespace-pre-wrap">{message.content}</p>
-                    {message.category && message.sender === 'assistant' && message.category !== 'greeting' && (
-                      <Badge variant="secondary" className="mt-2 text-xs">
-                        {message.category.replace('-', ' ')}
-                      </Badge>
+        <CardContent className="flex-1 flex flex-col p-0">
+          <ScrollArea className="flex-1 px-6">
+            {!hasUserInteracted && (
+              <QuickQuestions 
+                onQuestionClick={handleQuestionClick}
+                isVisible={!hasUserInteracted}
+              />
+            )}
+            
+            {messages.length > 0 && (
+              <div className="space-y-4 py-4">
+                {messages.map((message) => (
+                  <div
+                    key={message.id}
+                    className={`flex items-start space-x-3 ${
+                      message.role === "user" ? "justify-end" : "justify-start"
+                    }`}
+                  >
+                    {message.role === "assistant" && (
+                      <div className="bg-primary p-2 rounded-full">
+                        <Bot className="h-4 w-4 text-primary-foreground" />
+                      </div>
                     )}
-                    <p className="text-xs opacity-70 mt-2">
-                      {message.timestamp.toLocaleTimeString()}
-                    </p>
-                  </CardContent>
-                </Card>
-              </div>
-            </div>
-          ))}
-          
-          {isTyping && (
-            <div className="flex justify-start">
-              <div className="flex space-x-2 max-w-[80%]">
-                <div className="w-8 h-8 rounded-full flex items-center justify-center bg-slate-600">
-                  <Bot className="h-4 w-4 text-white" />
-                </div>
-                <Card className="bg-white">
-                  <CardContent className="p-3">
-                    <div className="flex space-x-1">
-                      <div className="w-2 h-2 bg-slate-400 rounded-full animate-bounce"></div>
-                      <div className="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                      <div className="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                    
+                    <div
+                      className={`max-w-[80%] p-4 rounded-lg ${
+                        message.role === "user"
+                          ? "bg-primary text-primary-foreground"
+                          : "bg-muted"
+                      }`}
+                    >
+                      <div className="prose prose-sm max-w-none">
+                        <p className="whitespace-pre-wrap">{message.content}</p>
+                      </div>
+                      
+                      <div className="flex items-center justify-between mt-2 pt-2 border-t border-current/10">
+                        <span className="text-xs opacity-70">
+                          {message.timestamp.toLocaleTimeString()}
+                        </span>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => copyToClipboard(message.content)}
+                          className="h-6 px-2 opacity-70 hover:opacity-100"
+                        >
+                          <Copy className="h-3 w-3" />
+                        </Button>
+                      </div>
                     </div>
-                  </CardContent>
-                </Card>
+
+                    {message.role === "user" && (
+                      <div className="bg-primary p-2 rounded-full">
+                        <User className="h-4 w-4 text-primary-foreground" />
+                      </div>
+                    )}
+                  </div>
+                ))}
+                
+                {isLoading && (
+                  <div className="flex items-start space-x-3">
+                    <div className="bg-primary p-2 rounded-full">
+                      <Bot className="h-4 w-4 text-primary-foreground" />
+                    </div>
+                    <div className="bg-muted p-4 rounded-lg">
+                      <div className="flex items-center space-x-2">
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                        <span className="text-sm">Thinking...</span>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
+            )}
+            <div ref={messagesEndRef} />
+          </ScrollArea>
+
+          {/* Input Area */}
+          <div className="border-t p-4 flex-shrink-0">
+            <div className="flex space-x-2">
+              <Input
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                onKeyPress={handleKeyPress}
+                placeholder="Ask me anything about legal matters..."
+                disabled={isLoading}
+                className="flex-1"
+              />
+              <Button
+                onClick={() => handleSendMessage()}
+                disabled={isLoading || !inputValue.trim()}
+                size="icon"
+              >
+                {isLoading ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Send className="h-4 w-4" />
+                )}
+              </Button>
             </div>
-          )}
-        </div>
-      </ScrollArea>
-
-      {/* Input Area */}
-      <div className="flex space-x-2 mt-4">
-        <Input
-          value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
-          placeholder="Ask your legal question..."
-          onKeyPress={(e) => e.key === 'Enter' && !isTyping && handleSendMessage()}
-          className="flex-1"
-          disabled={isTyping}
-        />
-        <Button 
-          onClick={handleSendMessage} 
-          className="bg-blue-600 hover:bg-blue-700"
-          disabled={isTyping || !inputValue.trim()}
-        >
-          <Send className="h-4 w-4" />
-        </Button>
-      </div>
-
-      {/* Authentication Notice for Conversation History */}
-      {!user && (
-        <div className="mt-2 text-center">
-          <p className="text-xs text-slate-500 flex items-center justify-center">
-            <Lock className="h-3 w-3 mr-1" />
-            Sign in to save your conversation history
-          </p>
-        </div>
-      )}
-
-      {/* AI Provider info */}
-      <p className="text-xs text-slate-500 mt-1 text-center">
-        Using {aiProvider === 'huggingface' ? 'Hugging Face (Free)' : 'OpenAI (Premium)'} • 
-        {aiProvider === 'huggingface' ? ' Limited daily usage' : ' Requires API key'}
-      </p>
+            
+            <p className="text-xs text-muted-foreground mt-2 text-center">
+              This AI assistant provides general legal information only. Consult a qualified lawyer for specific legal advice.
+            </p>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 };
