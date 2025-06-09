@@ -31,6 +31,7 @@ export const ChatInterface = ({ category }: ChatInterfaceProps) => {
   const { user } = useAuth();
   const { toast } = useToast();
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const chatContainerRef = useRef<HTMLDivElement>(null);
   const hasUserInteracted = messages.some(msg => msg.role === "user");
 
   const scrollToBottom = () => {
@@ -187,80 +188,82 @@ export const ChatInterface = ({ category }: ChatInterfaceProps) => {
         </CardHeader>
 
         <CardContent className="flex-1 flex flex-col p-0">
-          <ScrollArea className="flex-1 px-6">
-            {!hasUserInteracted && (
-              <QuickQuestions 
-                onQuestionClick={handleQuestionClick}
-                isVisible={!hasUserInteracted}
-              />
-            )}
-            
-            {messages.length > 0 && (
-              <div className="space-y-4 py-4">
-                {messages.map((message) => (
-                  <div
-                    key={message.id}
-                    className={`flex items-start space-x-3 ${
-                      message.role === "user" ? "justify-end" : "justify-start"
-                    }`}
-                  >
-                    {message.role === "assistant" && (
+          <div className="flex-1 overflow-y-auto" ref={chatContainerRef}>
+            <div className="px-6">
+              {!hasUserInteracted && (
+                <QuickQuestions 
+                  onQuestionClick={handleQuestionClick}
+                  isVisible={!hasUserInteracted}
+                />
+              )}
+              
+              {messages.length > 0 && (
+                <div className="space-y-4 py-4">
+                  {messages.map((message) => (
+                    <div
+                      key={message.id}
+                      className={`flex items-start space-x-3 ${
+                        message.role === "user" ? "justify-end" : "justify-start"
+                      }`}
+                    >
+                      {message.role === "assistant" && (
+                        <div className="bg-primary p-2 rounded-full">
+                          <Bot className="h-4 w-4 text-primary-foreground" />
+                        </div>
+                      )}
+                      
+                      <div
+                        className={`max-w-[80%] p-4 rounded-lg ${
+                          message.role === "user"
+                            ? "bg-primary text-primary-foreground"
+                            : "bg-muted"
+                        }`}
+                      >
+                        <div className="prose prose-sm max-w-none">
+                          <p className="whitespace-pre-wrap">{message.content}</p>
+                        </div>
+                        
+                        <div className="flex items-center justify-between mt-2 pt-2 border-t border-current/10">
+                          <span className="text-xs opacity-70">
+                            {message.timestamp.toLocaleTimeString()}
+                          </span>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => copyToClipboard(message.content)}
+                            className="h-6 px-2 opacity-70 hover:opacity-100"
+                          >
+                            <Copy className="h-3 w-3" />
+                          </Button>
+                        </div>
+                      </div>
+
+                      {message.role === "user" && (
+                        <div className="bg-primary p-2 rounded-full">
+                          <User className="h-4 w-4 text-primary-foreground" />
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                  
+                  {isLoading && (
+                    <div className="flex items-start space-x-3">
                       <div className="bg-primary p-2 rounded-full">
                         <Bot className="h-4 w-4 text-primary-foreground" />
                       </div>
-                    )}
-                    
-                    <div
-                      className={`max-w-[80%] p-4 rounded-lg ${
-                        message.role === "user"
-                          ? "bg-primary text-primary-foreground"
-                          : "bg-muted"
-                      }`}
-                    >
-                      <div className="prose prose-sm max-w-none">
-                        <p className="whitespace-pre-wrap">{message.content}</p>
-                      </div>
-                      
-                      <div className="flex items-center justify-between mt-2 pt-2 border-t border-current/10">
-                        <span className="text-xs opacity-70">
-                          {message.timestamp.toLocaleTimeString()}
-                        </span>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => copyToClipboard(message.content)}
-                          className="h-6 px-2 opacity-70 hover:opacity-100"
-                        >
-                          <Copy className="h-3 w-3" />
-                        </Button>
+                      <div className="bg-muted p-4 rounded-lg">
+                        <div className="flex items-center space-x-2">
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                          <span className="text-sm">Thinking...</span>
+                        </div>
                       </div>
                     </div>
-
-                    {message.role === "user" && (
-                      <div className="bg-primary p-2 rounded-full">
-                        <User className="h-4 w-4 text-primary-foreground" />
-                      </div>
-                    )}
-                  </div>
-                ))}
-                
-                {isLoading && (
-                  <div className="flex items-start space-x-3">
-                    <div className="bg-primary p-2 rounded-full">
-                      <Bot className="h-4 w-4 text-primary-foreground" />
-                    </div>
-                    <div className="bg-muted p-4 rounded-lg">
-                      <div className="flex items-center space-x-2">
-                        <Loader2 className="h-4 w-4 animate-spin" />
-                        <span className="text-sm">Thinking...</span>
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-            )}
-            <div ref={messagesEndRef} />
-          </ScrollArea>
+                  )}
+                </div>
+              )}
+              <div ref={messagesEndRef} />
+            </div>
+          </div>
 
           {/* Input Area */}
           <div className="border-t p-4 flex-shrink-0">
