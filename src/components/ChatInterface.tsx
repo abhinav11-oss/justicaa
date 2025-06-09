@@ -82,7 +82,7 @@ export const ChatInterface = ({ category }: ChatInterfaceProps) => {
         setConversationId(conversation.id);
       }
 
-      // Call the Hugging Face AI function instead of OpenAI
+      // Call the free Hugging Face AI function
       const { data, error } = await supabase.functions.invoke('ai-legal-chat-hf', {
         body: {
           message: content,
@@ -96,7 +96,7 @@ export const ChatInterface = ({ category }: ChatInterfaceProps) => {
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
         role: "assistant",
-        content: data.response || "I apologize, but I couldn't process your request at the moment. Please try again.",
+        content: data.response || "I apologize, but I couldn't process your request at the moment. Please try again or consider consulting with a qualified attorney for immediate assistance.",
         timestamp: new Date(),
       };
 
@@ -132,7 +132,7 @@ export const ChatInterface = ({ category }: ChatInterfaceProps) => {
       const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
         role: "assistant",
-        content: "I'm sorry, I'm having trouble connecting right now. Please check your internet connection and try again.",
+        content: "I'm sorry, I'm having trouble connecting right now. As an alternative, consider reaching out to local legal aid organizations or consulting with an attorney for immediate assistance.",
         timestamp: new Date(),
       };
 
