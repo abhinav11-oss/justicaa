@@ -82,8 +82,8 @@ export const ChatInterface = ({ category }: ChatInterfaceProps) => {
         setConversationId(conversation.id);
       }
 
-      // Call the AI function
-      const { data, error } = await supabase.functions.invoke('ai-legal-chat', {
+      // Call the Hugging Face AI function instead of OpenAI
+      const { data, error } = await supabase.functions.invoke('ai-legal-chat-hf', {
         body: {
           message: content,
           conversation_id: conversationId,
