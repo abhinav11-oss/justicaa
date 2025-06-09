@@ -12,7 +12,7 @@
 
 ## 📁 Project Structure
 
-![image](https://github.com/user-attachments/assets/55555f00-e681-465b-a32b-7aa0ad8cc724)
+![image](https://github.com/user-attachments/assets/8de2ee3c-c980-4f8d-baeb-1b5a6d8f34c9)
 
 
 
