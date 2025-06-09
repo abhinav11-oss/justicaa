@@ -90,8 +90,8 @@ const Landing = () => {
                 <Scale className="h-6 w-6 text-primary-foreground" />
               </div>
               <div>
-                <h1 className="text-xl font-bold text-foreground">LegalAI Assistant</h1>
-                <p className="text-sm text-muted-foreground">Your Virtual Legal Counsel</p>
+                <h1 className="text-xl font-bold text-foreground">Justicaa</h1>
+                <p className="text-sm text-muted-foreground">Your AI Partner for Legal Help, Documents & Lawyers.</p>
               </div>
             </div>
             
