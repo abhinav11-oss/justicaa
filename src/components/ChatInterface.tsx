@@ -103,20 +103,21 @@ export const ChatInterface = ({ category }: ChatInterfaceProps) => {
 
       // Save messages to database if user is logged in
       if (user && conversationId) {
-        await supabase.from("chat_messages").insert([
-          {
-            conversation_id: conversationId,
-            role: "user",
-            content: content,
-            created_at: userMessage.timestamp.toISOString()
-          },
-          {
-            conversation_id: conversationId,
-            role: "assistant", 
-            content: assistantMessage.content,
-            created_at: assistantMessage.timestamp.toISOString()
-          }
-        ]);
+        // Insert user message
+        await supabase.from("chat_messages").insert({
+          conversation_id: conversationId,
+          sender: "user",
+          content: content,
+          created_at: userMessage.timestamp.toISOString()
+        });
+
+        // Insert assistant message
+        await supabase.from("chat_messages").insert({
+          conversation_id: conversationId,
+          sender: "assistant",
+          content: assistantMessage.content,
+          created_at: assistantMessage.timestamp.toISOString()
+        });
       }
 
     } catch (error) {
