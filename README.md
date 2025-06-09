@@ -12,45 +12,8 @@
 
 ## 📁 Project Structure
 
-justicaa/
-│
-├── public/                         # Static files served directly (no processing)
-│   ├── _redirects                  # Netlify/Vercel redirect rules
-│   ├── favicon.ico                 # Website icon
-│   ├── placeholder.svg             # Placeholder image
-│   └── robots.txt                  # SEO crawler rules
-│
-├── src/                            # Main application source code
-│   ├── components/                 # Reusable UI components (Chat UI, Sidebar, etc.)
-│   ├── hooks/                      # Custom React hooks (e.g. auth, form state)
-│   ├── integrations/supabase/     # Supabase client config & session handlers
-│   ├── lib/                        # Utility functions (formatting, helpers)
-│   ├── pages/                      # Page-level components (e.g., Home, Docs)
-│   ├── App.tsx                     # Root component & layout provider
-│   ├── App.css                     # App-specific styles
-│   ├── main.tsx                    # ReactDOM mount point
-│   ├── index.css                   # Global TailwindCSS + base styles
-│   └── vite-env.d.ts               # Vite environment type declarations
-│
-├── supabase/                       # Supabase edge functions & project config
-│   ├── functions/                  # Serverless functions (API routes, triggers)
-│   └── config.toml                 # Supabase project configuration
-│
-├── .gitignore                      # Git ignored files list
-├── README.md                       # 📘 Project documentation
-├── bun.lockb                       # Bun package lock file (if using Bun)
-├── components.json                 # UI component metadata (used by builder tools)
-├── eslint.config.js                # Linting rules for code quality
-├── index.html                      # Entry point HTML for Vite
-├── package.json                    # Project dependencies & scripts
-├── package-lock.json               # Exact dependency versions for npm
-├── postcss.config.js               # PostCSS config (used with Tailwind)
-├── tailwind.config.ts              # TailwindCSS theme & extensions
-├── tsconfig.app.json               # TypeScript config for the app
-├── tsconfig.json                   # Global TypeScript configuration
-├── tsconfig.node.json              # TS config for backend/node files
-├── vercel.json                     # Vercel deployment configuration
-└── vite.config.ts                  # Vite bundler configuration
+![image](https://github.com/user-attachments/assets/55555f00-e681-465b-a32b-7aa0ad8cc724)
+
 
 
 ## 🚀 Features
