@@ -1,6 +1,6 @@
-# ⚖️ LegalEase – AI-Powered Virtual Legal Assistant and legal document generator.
+# ⚖️ juscticaa – AI-Powered Virtual Legal Assistant and legal document generator.
 
-LegalEase is a conversational AI platform that empowers users with instant, reliable legal guidance. Designed to bridge the legal literacy gap, LegalEase offers step-by-step assistance for navigating India's complex legal landscape – from filing FIRs to understanding rights during police arrests.
+juscticaa is a conversational AI platform that empowers users with instant, reliable legal guidance. Designed to bridge the legal literacy gap, LegalEase offers step-by-step assistance for navigating India's complex legal landscape – from filing FIRs to understanding rights during police arrests.
 
 ---
 
@@ -22,13 +22,13 @@ Millions of Indians lack access to affordable and timely legal advice. Navigatin
 - Inability to file complaints or understand rights
 - Over-dependence on expensive legal consultants
 
-**LegalEase** solves this by providing instant, accessible, AI-powered legal guidance to anyone, anywhere.
+**juscticaa** solves this by providing instant, accessible, AI-powered legal guidance to anyone, anywhere.
 
 ---
 
 ## 💡 Solution
 
-LegalEase uses a conversational AI system trained on legal FAQs, documentation, and real-world scenarios to:
+juscticaa uses a conversational AI system trained on legal FAQs, documentation, and real-world scenarios to:
 - Educate users about their rights
 - Guide them through legal processes
 - Offer links to government forms and authorities
@@ -86,7 +86,7 @@ Legal Knowledge Base (Custom curated content, IPC, RTI, etc.)
 
 ## 🥊 Competitor Comparison
 
-| Platform     | Limitations                    | LegalEase Edge                   |
+| Platform     | Limitations                    | juscticaa Edge                   |
 |--------------|--------------------------------|----------------------------------|
 | LawRato      | Static articles, not dynamic   | Interactive, AI-based responses  |
 | Google Search| Info overload, not personalized| Curated and user-specific help   |
@@ -117,7 +117,7 @@ Legal Knowledge Base (Custom curated content, IPC, RTI, etc.)
 
 ## ⚖️ Disclaimer
 
-LegalEase is for **informational purposes only**. It does not constitute legal advice. For serious legal issues, always consult a licensed advocate.
+justicaa is for **informational purposes only**. It does not constitute legal advice. For serious legal issues, always consult a licensed advocate.
 
 ---
 
