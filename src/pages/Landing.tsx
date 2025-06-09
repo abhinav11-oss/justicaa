@@ -217,7 +217,7 @@ const Landing = () => {
       <section className="bg-muted/50 py-16">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <h3 className="text-3xl font-bold text-foreground mb-4">Why Choose LegalAI Assistant?</h3>
+            <h3 className="text-3xl font-bold text-foreground mb-4">Why Choose Justicaa?</h3>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
               Experience the future of legal assistance with our innovative approach to legal services
             </p>
@@ -286,7 +286,7 @@ const Landing = () => {
                 <div className="bg-primary p-2 rounded-lg">
                   <Scale className="h-6 w-6 text-primary-foreground" />
                 </div>
-                <span className="text-xl font-bold text-foreground">LegalAI Assistant</span>
+                <span className="text-xl font-bold text-foreground">Justicaa</span>
               </div>
               <p className="text-muted-foreground mb-4">
                 Empowering everyone with accessible legal solutions
