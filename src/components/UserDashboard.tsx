@@ -3,7 +3,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { MessageSquare, FileText, Calendar, Plus } from 'lucide-react';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
+import { MessageSquare, FileText, Calendar, Plus, MoreVertical, Archive, Trash2, Download, Eye } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -22,6 +24,7 @@ interface LegalDocument {
   title: string;
   document_type: string;
   status: string;
+  content: any;
   created_at: string;
 }
 
@@ -39,10 +42,12 @@ export function UserDashboard() {
   const { user } = useAuth();
   const { toast } = useToast();
   const [conversations, setConversations] = useState<Conversation[]>([]);
+  const [archivedConversations, setArchivedConversations] = useState<Conversation[]>([]);
   const [documents, setDocuments] = useState<LegalDocument[]>([]);
   const [matters, setMatters] = useState<LegalMatter[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedConversationId, setSelectedConversationId] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState('conversations');
 
   useEffect(() => {
     if (user) {
@@ -52,28 +57,38 @@ export function UserDashboard() {
 
   const fetchUserData = async () => {
     try {
-      // Fetch conversations
+      // Fetch active conversations
       const { data: conversationsData } = await supabase
         .from('chat_conversations')
         .select('*')
+        .eq('status', 'active')
         .order('created_at', { ascending: false })
-        .limit(5);
+        .limit(10);
+
+      // Fetch archived conversations
+      const { data: archivedData } = await supabase
+        .from('chat_conversations')
+        .select('*')
+        .eq('status', 'archived')
+        .order('created_at', { ascending: false })
+        .limit(10);
 
       // Fetch documents
       const { data: documentsData } = await supabase
         .from('legal_documents')
         .select('*')
         .order('created_at', { ascending: false })
-        .limit(5);
+        .limit(10);
 
       // Fetch legal matters
       const { data: mattersData } = await supabase
         .from('legal_matters')
         .select('*')
         .order('created_at', { ascending: false })
-        .limit(5);
+        .limit(10);
 
       setConversations(conversationsData || []);
+      setArchivedConversations(archivedData || []);
       setDocuments(documentsData || []);
       setMatters(mattersData || []);
     } catch (error) {
@@ -121,6 +136,111 @@ export function UserDashboard() {
     }
   };
 
+  const archiveConversation = async (conversationId: string) => {
+    try {
+      const { error } = await supabase
+        .from('chat_conversations')
+        .update({ status: 'archived' })
+        .eq('id', conversationId);
+
+      if (error) throw error;
+
+      toast({
+        title: "Conversation Archived",
+        description: "The conversation has been moved to archives."
+      });
+      
+      fetchUserData();
+    } catch (error) {
+      console.error('Error archiving conversation:', error);
+      toast({
+        title: "Error",
+        description: "Failed to archive conversation.",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const deleteConversation = async (conversationId: string) => {
+    try {
+      const { error } = await supabase
+        .from('chat_conversations')
+        .delete()
+        .eq('id', conversationId);
+
+      if (error) throw error;
+
+      toast({
+        title: "Conversation Deleted",
+        description: "The conversation has been permanently deleted."
+      });
+      
+      fetchUserData();
+    } catch (error) {
+      console.error('Error deleting conversation:', error);
+      toast({
+        title: "Error",
+        description: "Failed to delete conversation.",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const restoreConversation = async (conversationId: string) => {
+    try {
+      const { error } = await supabase
+        .from('chat_conversations')
+        .update({ status: 'active' })
+        .eq('id', conversationId);
+
+      if (error) throw error;
+
+      toast({
+        title: "Conversation Restored",
+        description: "The conversation has been restored to active chats."
+      });
+      
+      fetchUserData();
+    } catch (error) {
+      console.error('Error restoring conversation:', error);
+      toast({
+        title: "Error",
+        description: "Failed to restore conversation.",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const downloadDocument = (document: LegalDocument) => {
+    try {
+      const content = typeof document.content === 'string' 
+        ? document.content 
+        : JSON.stringify(document.content, null, 2);
+      
+      const blob = new Blob([content], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `${document.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.txt`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+
+      toast({
+        title: "Document Downloaded",
+        description: `${document.title} has been downloaded.`
+      });
+    } catch (error) {
+      console.error('Error downloading document:', error);
+      toast({
+        title: "Download Failed",
+        description: "Failed to download the document.",
+        variant: "destructive"
+      });
+    }
+  };
+
   const handleConversationClick = (conversationId: string) => {
     setSelectedConversationId(conversationId);
   };
@@ -131,6 +251,7 @@ export function UserDashboard() {
       case 'completed': return 'bg-blue-100 text-blue-800';
       case 'pending': return 'bg-yellow-100 text-yellow-800';
       case 'draft': return 'bg-gray-100 text-gray-800';
+      case 'archived': return 'bg-purple-100 text-purple-800';
       default: return 'bg-gray-100 text-gray-800';
     }
   };
@@ -144,6 +265,55 @@ export function UserDashboard() {
       default: return 'bg-gray-100 text-gray-800';
     }
   };
+
+  const ConversationActions = ({ conversation, isArchived = false }: { conversation: Conversation, isArchived?: boolean }) => (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+          <MoreVertical className="h-4 w-4" />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        <DropdownMenuItem onClick={() => handleConversationClick(conversation.id)}>
+          <Eye className="h-4 w-4 mr-2" />
+          View Details
+        </DropdownMenuItem>
+        {!isArchived ? (
+          <DropdownMenuItem onClick={() => archiveConversation(conversation.id)}>
+            <Archive className="h-4 w-4 mr-2" />
+            Archive
+          </DropdownMenuItem>
+        ) : (
+          <DropdownMenuItem onClick={() => restoreConversation(conversation.id)}>
+            <Archive className="h-4 w-4 mr-2" />
+            Restore
+          </DropdownMenuItem>
+        )}
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+              <Trash2 className="h-4 w-4 mr-2" />
+              Delete
+            </DropdownMenuItem>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Delete Conversation</AlertDialogTitle>
+              <AlertDialogDescription>
+                Are you sure you want to delete this conversation? This action cannot be undone.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction onClick={() => deleteConversation(conversation.id)}>
+                Delete
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
 
   if (loading) {
     return (
@@ -171,24 +341,34 @@ export function UserDashboard() {
   return (
     <div className="space-y-6">
       {/* Quick Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         <Card className="bg-white/60 backdrop-blur-sm">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Active Conversations</CardTitle>
             <MessageSquare className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{conversations.filter(c => c.status === 'active').length}</div>
+            <div className="text-2xl font-bold">{conversations.length}</div>
           </CardContent>
         </Card>
         
         <Card className="bg-white/60 backdrop-blur-sm">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Draft Documents</CardTitle>
+            <CardTitle className="text-sm font-medium">Archived Chats</CardTitle>
+            <Archive className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{archivedConversations.length}</div>
+          </CardContent>
+        </Card>
+        
+        <Card className="bg-white/60 backdrop-blur-sm">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Documents</CardTitle>
             <FileText className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{documents.filter(d => d.status === 'draft').length}</div>
+            <div className="text-2xl font-bold">{documents.length}</div>
           </CardContent>
         </Card>
         
@@ -206,9 +386,10 @@ export function UserDashboard() {
       {/* Main Content */}
       <Card className="bg-white/80 backdrop-blur-sm border-slate-200 shadow-xl">
         <CardHeader>
-          <Tabs defaultValue="conversations" className="w-full">
-            <TabsList className="grid w-full grid-cols-3 bg-slate-100">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+            <TabsList className="grid w-full grid-cols-4 bg-slate-100">
               <TabsTrigger value="conversations">Recent Conversations</TabsTrigger>
+              <TabsTrigger value="archived">Archived Chats</TabsTrigger>
               <TabsTrigger value="documents">Documents</TabsTrigger>
               <TabsTrigger value="matters">Legal Matters</TabsTrigger>
             </TabsList>
@@ -216,7 +397,7 @@ export function UserDashboard() {
         </CardHeader>
         
         <CardContent>
-          <Tabs defaultValue="conversations" className="w-full">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <TabsContent value="conversations" className="space-y-4">
               <div className="flex justify-between items-center">
                 <h3 className="text-lg font-semibold">Recent Conversations</h3>
@@ -236,20 +417,66 @@ export function UserDashboard() {
                   {conversations.map((conversation) => (
                     <div 
                       key={conversation.id} 
-                      className="p-4 border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors cursor-pointer"
-                      onClick={() => handleConversationClick(conversation.id)}
+                      className="p-4 border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors"
                     >
                       <div className="flex justify-between items-start">
-                        <div>
+                        <div 
+                          className="flex-1 cursor-pointer"
+                          onClick={() => handleConversationClick(conversation.id)}
+                        >
                           <h4 className="font-medium">{conversation.title}</h4>
                           <p className="text-sm text-slate-600 capitalize">{conversation.legal_category}</p>
                           <p className="text-xs text-slate-400">
                             {new Date(conversation.created_at).toLocaleDateString()}
                           </p>
                         </div>
-                        <Badge className={getStatusColor(conversation.status)}>
-                          {conversation.status}
-                        </Badge>
+                        <div className="flex items-center space-x-2">
+                          <Badge className={getStatusColor(conversation.status)}>
+                            {conversation.status}
+                          </Badge>
+                          <ConversationActions conversation={conversation} />
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </TabsContent>
+
+            <TabsContent value="archived" className="space-y-4">
+              <div className="flex justify-between items-center">
+                <h3 className="text-lg font-semibold">Archived Conversations</h3>
+              </div>
+              
+              {archivedConversations.length === 0 ? (
+                <div className="text-center py-8 text-slate-500">
+                  <Archive className="h-12 w-12 mx-auto mb-4 text-slate-300" />
+                  <p>No archived conversations yet.</p>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {archivedConversations.map((conversation) => (
+                    <div 
+                      key={conversation.id} 
+                      className="p-4 border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors"
+                    >
+                      <div className="flex justify-between items-start">
+                        <div 
+                          className="flex-1 cursor-pointer"
+                          onClick={() => handleConversationClick(conversation.id)}
+                        >
+                          <h4 className="font-medium">{conversation.title}</h4>
+                          <p className="text-sm text-slate-600 capitalize">{conversation.legal_category}</p>
+                          <p className="text-xs text-slate-400">
+                            {new Date(conversation.created_at).toLocaleDateString()}
+                          </p>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Badge className={getStatusColor(conversation.status)}>
+                            {conversation.status}
+                          </Badge>
+                          <ConversationActions conversation={conversation} isArchived={true} />
+                        </div>
                       </div>
                     </div>
                   ))}
@@ -276,16 +503,26 @@ export function UserDashboard() {
                   {documents.map((document) => (
                     <div key={document.id} className="p-4 border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors">
                       <div className="flex justify-between items-start">
-                        <div>
+                        <div className="flex-1">
                           <h4 className="font-medium">{document.title}</h4>
                           <p className="text-sm text-slate-600 capitalize">{document.document_type}</p>
                           <p className="text-xs text-slate-400">
                             {new Date(document.created_at).toLocaleDateString()}
                           </p>
                         </div>
-                        <Badge className={getStatusColor(document.status)}>
-                          {document.status}
-                        </Badge>
+                        <div className="flex items-center space-x-2">
+                          <Badge className={getStatusColor(document.status)}>
+                            {document.status}
+                          </Badge>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => downloadDocument(document)}
+                          >
+                            <Download className="h-4 w-4 mr-2" />
+                            Download
+                          </Button>
+                        </div>
                       </div>
                     </div>
                   ))}

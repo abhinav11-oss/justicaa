@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -9,6 +8,8 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Download, FileText, AlertCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
 import jsPDF from 'jspdf';
 
 interface DocumentGeneratorProps {
@@ -133,6 +134,7 @@ export const DocumentGenerator = ({ category }: DocumentGeneratorProps) => {
   const [selectedFormat, setSelectedFormat] = useState<"pdf" | "docx">("pdf");
   const [isGenerating, setIsGenerating] = useState(false);
   const { toast } = useToast();
+  const { user } = useAuth();
 
   const getFilteredTemplates = () => {
     const relevantCategories = categoryMap[selectedCategory] || [];
@@ -173,7 +175,7 @@ export const DocumentGenerator = ({ category }: DocumentGeneratorProps) => {
     // Add logo/header
     pdf.setFontSize(20);
     pdf.setFont("times", "bold");
-    pdf.text("LegalAI Assistant", pageWidth / 2, 20, { align: "center" });
+    pdf.text("Justicaa - Your AI Partner for Legal Help", pageWidth / 2, 20, { align: "center" });
     
     pdf.setFontSize(16);
     pdf.text(title, pageWidth / 2, yPosition, { align: "center" });
@@ -196,7 +198,7 @@ export const DocumentGenerator = ({ category }: DocumentGeneratorProps) => {
 
     // Save with timestamp
     const timestamp = new Date().toISOString().split('T')[0];
-    pdf.save(`LegalAI_${title.replace(/\s+/g, '_')}_${timestamp}.pdf`);
+    pdf.save(`Justicaa_${title.replace(/\s+/g, '_')}_${timestamp}.pdf`);
   };
 
   const generateWordContent = (content: string, title: string): string => {
@@ -232,7 +234,7 @@ export const DocumentGenerator = ({ category }: DocumentGeneratorProps) => {
     </style>
 </head>
 <body>
-    <div class="header">LegalAI Assistant</div>
+    <div class="header">Justicaa - Your AI Partner for Legal Help</div>
     <div class="title">${title}</div>
     <div class="content">${content}</div>
 </body>
@@ -247,10 +249,42 @@ export const DocumentGenerator = ({ category }: DocumentGeneratorProps) => {
     const timestamp = new Date().toISOString().split('T')[0];
     
     link.href = url;
-    link.download = `LegalAI_${title.replace(/\s+/g, '_')}_${timestamp}.doc`;
+    link.download = `Justicaa_${title.replace(/\s+/g, '_')}_${timestamp}.doc`;
     link.click();
     
     URL.revokeObjectURL(url);
+  };
+
+  const saveDocumentToDatabase = async (title: string, content: string, documentType: string) => {
+    if (!user) return;
+
+    try {
+      const { error } = await supabase
+        .from('legal_documents')
+        .insert([
+          {
+            user_id: user.id,
+            title: title,
+            document_type: documentType,
+            content: { text: content, formData: formData },
+            status: 'completed'
+          }
+        ]);
+
+      if (error) throw error;
+
+      toast({
+        title: "Document Saved",
+        description: "Document has been saved to your documents library."
+      });
+    } catch (error) {
+      console.error('Error saving document:', error);
+      toast({
+        title: "Save Failed",
+        description: "Failed to save document to library.",
+        variant: "destructive"
+      });
+    }
   };
 
   const generateDocument = async () => {
@@ -462,6 +496,10 @@ Date: ${today}                     Date: ${today}`;
           content = "Document template not found.";
       }
 
+      // Save to database first
+      await saveDocumentToDatabase(selectedTemplate.name, content, selectedTemplate.id);
+
+      // Then download
       if (selectedFormat === "pdf") {
         generatePDF(content, selectedTemplate.name);
       } else {
@@ -470,10 +508,11 @@ Date: ${today}                     Date: ${today}`;
 
       toast({
         title: "Document Generated",
-        description: `${selectedTemplate.name} has been downloaded as ${selectedFormat.toUpperCase()}`,
+        description: `${selectedTemplate.name} has been downloaded as ${selectedFormat.toUpperCase()} and saved to your documents.`,
       });
 
     } catch (error) {
+      console.error('Error generating document:', error);
       toast({
         title: "Generation Failed",
         description: "Failed to generate document. Please try again.",
