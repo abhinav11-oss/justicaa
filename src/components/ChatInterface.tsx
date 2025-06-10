@@ -4,9 +4,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Send, Bot, User, Loader2, Copy, MessageSquare } from "lucide-react";
+import { Send, Bot, User, Loader2, Copy, MessageSquare, Lock } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
@@ -28,11 +28,17 @@ export const ChatInterface = ({ category }: ChatInterfaceProps) => {
   const [inputValue, setInputValue] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [conversationId, setConversationId] = useState<string | null>(null);
+  const [trialMessagesUsed, setTrialMessagesUsed] = useState(0);
+  const [showAuthModal, setShowAuthModal] = useState(false);
   const { user } = useAuth();
   const { toast } = useToast();
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const hasUserInteracted = messages.some(msg => msg.role === "user");
+
+  // Check if this is trial mode
+  const isTrialMode = !user && window.location.search.includes('trial=true');
+  const TRIAL_MESSAGE_LIMIT = 3;
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -42,14 +48,52 @@ export const ChatInterface = ({ category }: ChatInterfaceProps) => {
     scrollToBottom();
   }, [messages]);
 
+  // Load trial messages count from localStorage
+  useEffect(() => {
+    if (isTrialMode) {
+      const savedCount = localStorage.getItem('trialMessagesUsed');
+      setTrialMessagesUsed(savedCount ? parseInt(savedCount) : 0);
+    }
+  }, [isTrialMode]);
+
   const handleQuestionClick = (question: string) => {
     setInputValue(question);
     handleSendMessage(question);
   };
 
+  const handleAuthAction = () => {
+    // Open auth in new tab
+    const authWindow = window.open('/auth', '_blank', 'width=500,height=600,scrollbars=yes,resizable=yes');
+    
+    // Listen for auth success message
+    const messageHandler = (event) => {
+      if (event.origin === window.location.origin && event.data.type === 'AUTH_SUCCESS') {
+        authWindow?.close();
+        setShowAuthModal(false);
+        window.location.reload(); // Refresh to update auth state
+      }
+    };
+    
+    window.addEventListener('message', messageHandler);
+    
+    // Cleanup listener if window is closed manually
+    const checkClosed = setInterval(() => {
+      if (authWindow?.closed) {
+        window.removeEventListener('message', messageHandler);
+        clearInterval(checkClosed);
+      }
+    }, 1000);
+  };
+
   const handleSendMessage = async (messageContent?: string) => {
     const content = messageContent || inputValue.trim();
     if (!content) return;
+
+    // Check trial limit for non-authenticated users
+    if (isTrialMode && trialMessagesUsed >= TRIAL_MESSAGE_LIMIT) {
+      setShowAuthModal(true);
+      return;
+    }
 
     const userMessage: Message = {
       id: Date.now().toString(),
@@ -61,6 +105,13 @@ export const ChatInterface = ({ category }: ChatInterfaceProps) => {
     setMessages(prev => [...prev, userMessage]);
     setInputValue("");
     setIsLoading(true);
+
+    // Update trial message count
+    if (isTrialMode) {
+      const newCount = trialMessagesUsed + 1;
+      setTrialMessagesUsed(newCount);
+      localStorage.setItem('trialMessagesUsed', newCount.toString());
+    }
 
     try {
       // Create conversation if not exists
@@ -121,6 +172,11 @@ export const ChatInterface = ({ category }: ChatInterfaceProps) => {
         });
       }
 
+      // Show auth modal if trial limit reached
+      if (isTrialMode && trialMessagesUsed + 1 >= TRIAL_MESSAGE_LIMIT) {
+        setTimeout(() => setShowAuthModal(true), 2000);
+      }
+
     } catch (error) {
       console.error("Error sending message:", error);
       toast({
@@ -165,6 +221,8 @@ export const ChatInterface = ({ category }: ChatInterfaceProps) => {
     }
   };
 
+  const isInputDisabled = isTrialMode && trialMessagesUsed >= TRIAL_MESSAGE_LIMIT;
+
   return (
     <div className="h-[calc(100vh-200px)] flex flex-col">
       <Card className="flex-1 flex flex-col">
@@ -179,6 +237,11 @@ export const ChatInterface = ({ category }: ChatInterfaceProps) => {
                 Get instant legal guidance and answers to your questions
               </p>
             </div>
+            {isTrialMode && (
+              <Badge variant="outline" className="capitalize">
+                Trial Mode: {TRIAL_MESSAGE_LIMIT - trialMessagesUsed}/{TRIAL_MESSAGE_LIMIT} messages left
+              </Badge>
+            )}
             {category && (
               <Badge variant="outline" className="capitalize">
                 {category}
@@ -272,17 +335,19 @@ export const ChatInterface = ({ category }: ChatInterfaceProps) => {
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 onKeyPress={handleKeyPress}
-                placeholder="Ask me anything about legal matters..."
-                disabled={isLoading}
+                placeholder={isInputDisabled ? "Please sign in to continue" : "Ask me anything about legal matters..."}
+                disabled={isLoading || isInputDisabled}
                 className="flex-1"
               />
               <Button
                 onClick={() => handleSendMessage()}
-                disabled={isLoading || !inputValue.trim()}
+                disabled={isLoading || !inputValue.trim() || isInputDisabled}
                 size="icon"
               >
                 {isLoading ? (
                   <Loader2 className="h-4 w-4 animate-spin" />
+                ) : isInputDisabled ? (
+                  <Lock className="h-4 w-4" />
                 ) : (
                   <Send className="h-4 w-4" />
                 )}
@@ -295,6 +360,35 @@ export const ChatInterface = ({ category }: ChatInterfaceProps) => {
           </div>
         </CardContent>
       </Card>
+      
+      {/* Auth Dialog */}
+      <Dialog open={showAuthModal} onOpenChange={setShowAuthModal}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Sign in to continue</DialogTitle>
+            <DialogDescription>
+              You've used all your free trial messages. Sign in or create an account to continue using the AI Legal Assistant.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="py-4 flex flex-col gap-3">
+            <p className="text-sm text-muted-foreground">
+              Creating an account gives you unlimited access to:
+            </p>
+            <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1">
+              <li>AI legal chat</li>
+              <li>Document generation</li>
+              <li>Legal guide repository</li>
+              <li>Lawyer finder</li>
+            </ul>
+          </div>
+          <div className="flex justify-end gap-3">
+            <Button variant="outline" onClick={() => setShowAuthModal(false)}>Cancel</Button>
+            <Button className="gradient-primary text-white border-0" onClick={handleAuthAction}>
+              Sign in / Sign up
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

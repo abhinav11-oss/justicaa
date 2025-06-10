@@ -1,10 +1,11 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { AuthModal } from "@/components/AuthModal";
 import { useAuth } from "@/hooks/useAuth";
-import { Scale, MessageSquare, FileText, Shield, Users, CheckCircle, ArrowRight, Gavel, BookOpen, Clock, Sun, Moon, Menu, X, Star, Zap, Award } from "lucide-react";
+import { Scale, MessageSquare, FileText, Shield, Users, CheckCircle, ArrowRight, Gavel, BookOpen, Clock, Sun, Moon, Menu, X, Star, Zap, Award, Phone, Mail } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useTheme } from "next-themes";
 
@@ -83,6 +84,11 @@ const Landing = () => {
     }
   };
 
+  const handleTryForFree = () => {
+    // Navigate to dashboard for trial mode
+    window.location.href = "/dashboard?trial=true";
+  };
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       {/* Header */}
@@ -127,7 +133,7 @@ const Landing = () => {
                   <Button variant="ghost" onClick={handleCTAClick}>
                     Sign in
                   </Button>
-                  <Button className="gradient-primary text-white border-0" onClick={handleCTAClick}>
+                  <Button className="gradient-primary text-white border-0" onClick={handleTryForFree}>
                     Try for free
                   </Button>
                 </>
@@ -174,7 +180,7 @@ const Landing = () => {
                     <Button variant="outline" onClick={handleCTAClick} className="w-full">
                       Sign in
                     </Button>
-                    <Button onClick={handleCTAClick} className="w-full gradient-primary text-white border-0">
+                    <Button onClick={handleTryForFree} className="w-full gradient-primary text-white border-0">
                       Try for free
                     </Button>
                   </div>
@@ -198,7 +204,7 @@ const Landing = () => {
             </p>
             
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
-              <Button size="lg" className="text-lg px-8 py-4 gradient-primary text-white border-0 rounded-xl" onClick={handleCTAClick}>
+              <Button size="lg" className="text-lg px-8 py-4 gradient-primary text-white border-0 rounded-xl" onClick={handleTryForFree}>
                 Try for free
               </Button>
             </div>
@@ -274,7 +280,7 @@ const Landing = () => {
             Join thousands of Indians who have simplified their legal needs with our AI-powered platform
           </p>
           
-          <Button size="lg" variant="secondary" className="text-lg px-8 py-4 bg-white text-primary hover:bg-white/90 rounded-xl" onClick={handleCTAClick}>
+          <Button size="lg" variant="secondary" className="text-lg px-8 py-4 bg-white text-primary hover:bg-white/90 rounded-xl" onClick={handleTryForFree}>
             {user ? "Go to Dashboard" : "Start Your Legal Journey"}
             <ArrowRight className="h-5 w-5 ml-2" />
           </Button>
@@ -282,7 +288,7 @@ const Landing = () => {
       </section>
 
       {/* Footer */}
-      <footer className="bg-card border-t py-12">
+      <footer id="contact" className="bg-card border-t py-12">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div className="col-span-1 md:col-span-2">
@@ -307,11 +313,16 @@ const Landing = () => {
             </div>
             
             <div>
-              <h5 className="font-semibold text-foreground mb-4">Legal</h5>
+              <h5 className="font-semibold text-foreground mb-4">Contact Us</h5>
               <ul className="space-y-3 text-muted-foreground">
-                <li><a href="#" className="hover:text-foreground transition-colors">Privacy Policy</a></li>
-                <li><a href="#" className="hover:text-foreground transition-colors">Terms of Service</a></li>
-                <li><a href="#" className="hover:text-foreground transition-colors">Legal Disclaimer</a></li>
+                <li className="flex items-center space-x-2">
+                  <Phone className="h-4 w-4" />
+                  <a href="tel:+918269704727" className="hover:text-foreground transition-colors">+91 8269704727</a>
+                </li>
+                <li className="flex items-center space-x-2">
+                  <Mail className="h-4 w-4" />
+                  <a href="mailto:abhinavlodhi99@gmail.com" className="hover:text-foreground transition-colors">abhinavlodhi99@gmail.com</a>
+                </li>
               </ul>
             </div>
           </div>
