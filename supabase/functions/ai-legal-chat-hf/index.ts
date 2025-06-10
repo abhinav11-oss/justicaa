@@ -18,79 +18,126 @@ serve(async (req) => {
 
     console.log('Processing legal query:', message);
 
-    // Build a comprehensive legal prompt
-    const legalSystemPrompt = `You are an expert Virtual Legal Assistant with extensive knowledge of law. Provide detailed, helpful, and specific legal information while being clear that this is general guidance, not legal advice for specific cases.
-
-Guidelines:
-- Give comprehensive, detailed responses that directly address the user's question
-- Provide specific legal concepts, procedures, and considerations
-- Include relevant laws, regulations, or legal principles when applicable
-- Explain legal processes step-by-step when relevant
-- Offer practical guidance and next steps
-- Always include the disclaimer about consulting an attorney for specific cases
-- Be helpful and informative, not just generic`;
-
-    // Create a detailed prompt for better responses
-    let fullPrompt = legalSystemPrompt + "\n\n";
+    // Get Gemini API key from environment
+    const geminiApiKey = Deno.env.get('GEMINI_API_KEY');
     
-    // Add conversation history for context
+    if (!geminiApiKey) {
+      throw new Error('Gemini API key not configured');
+    }
+
+    // Build comprehensive Indian legal system prompt
+    const indianLegalSystemPrompt = `🎯 You are a highly knowledgeable and responsible Indian legal assistant trained on real Indian laws and procedures.
+
+Your goal is to help Indian citizens by providing accurate, actionable, and easy-to-understand legal answers across various domains like:
+
+• IPC (Indian Penal Code)
+• RTI (Right to Information Act) 
+• NDPS Act
+• Consumer Protection Act
+• Fundamental Rights
+• Civil Procedures
+• Police Complaints
+• Family Law (Hindu Marriage Act, etc.)
+• Property Law
+• Labour Law
+• Constitutional Law
+• Criminal Procedure Code (CrPC)
+• Civil Procedure Code (CPC)
+
+🔍 When a user asks a question, always:
+1. Identify the applicable Indian law or legal context
+2. Explain the rights or legal steps in simple, clear language
+3. Guide them with specific next actions (filing RTI, lodging complaint, approaching legal body)
+4. Mention which government body, court, or authority handles the issue
+5. Provide relevant section numbers from applicable acts when helpful
+6. Suggest approximate timelines for legal processes where known
+
+Important Guidelines:
+• Always prioritize Indian legal jurisdiction and procedures
+• Use simple Hindi/English terms that common people understand
+• Never provide misinformation - clearly say "I'm not certain about this specific detail" if unsure
+• Always include disclaimer about consulting qualified lawyers for complex cases
+• Respect user privacy and data protection
+• Focus on empowering citizens with knowledge of their legal rights
+
+Remember: You're helping Indian citizens navigate their legal system effectively.`;
+
+    // Create conversation context
+    let conversationContext = "";
     if (conversationHistory.length > 0) {
-      fullPrompt += "Previous conversation:\n";
+      conversationContext = "\n\nPrevious conversation context:\n";
       conversationHistory.slice(-3).forEach((msg: any) => {
-        fullPrompt += `${msg.sender === 'user' ? 'User' : 'Assistant'}: ${msg.content}\n`;
+        conversationContext += `${msg.sender === 'user' ? 'User' : 'Assistant'}: ${msg.content}\n`;
       });
-      fullPrompt += "\n";
     }
-    
-    fullPrompt += `User Question: ${message}\n\nProvide a detailed, helpful legal response:`;
 
-    // Try multiple free AI APIs for better responses
-    let aiResponse = null;
+    // Prepare the full prompt
+    const fullPrompt = `${indianLegalSystemPrompt}${conversationContext}\n\nUser's Legal Question: ${message}\n\nProvide a comprehensive, helpful response following the guidelines above:`;
 
-    // First try: Hugging Face Inference API with a more capable model
-    try {
-      const hfResponse = await fetch('https://api-inference.huggingface.co/models/microsoft/DialoGPT-large', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+    // Call Gemini API
+    const geminiResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiApiKey}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        contents: [{
+          parts: [{
+            text: fullPrompt
+          }]
+        }],
+        generationConfig: {
+          temperature: 0.7,
+          topK: 40,
+          topP: 0.95,
+          maxOutputTokens: 1024,
         },
-        body: JSON.stringify({
-          inputs: fullPrompt,
-          parameters: {
-            max_new_tokens: 500,
-            temperature: 0.7,
-            do_sample: true,
-            return_full_text: false,
-            pad_token_id: 50256
+        safetySettings: [
+          {
+            category: "HARM_CATEGORY_HARASSMENT",
+            threshold: "BLOCK_MEDIUM_AND_ABOVE"
+          },
+          {
+            category: "HARM_CATEGORY_HATE_SPEECH", 
+            threshold: "BLOCK_MEDIUM_AND_ABOVE"
+          },
+          {
+            category: "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+            threshold: "BLOCK_MEDIUM_AND_ABOVE"
+          },
+          {
+            category: "HARM_CATEGORY_DANGEROUS_CONTENT",
+            threshold: "BLOCK_MEDIUM_AND_ABOVE"
           }
-        }),
-      });
+        ]
+      }),
+    });
 
-      if (hfResponse.ok) {
-        const hfData = await hfResponse.json();
-        if (Array.isArray(hfData) && hfData[0]?.generated_text) {
-          aiResponse = hfData[0].generated_text.trim();
-        }
-      }
-    } catch (error) {
-      console.log('Hugging Face API failed, trying alternative...');
+    if (!geminiResponse.ok) {
+      const errorData = await geminiResponse.text();
+      console.error('Gemini API error:', errorData);
+      throw new Error(`Gemini API error: ${geminiResponse.status}`);
     }
 
-    // Fallback: Use a more sophisticated rule-based system
+    const geminiData = await geminiResponse.json();
+    
+    let aiResponse = null;
+    if (geminiData.candidates && geminiData.candidates[0]?.content?.parts?.[0]?.text) {
+      aiResponse = geminiData.candidates[0].content.parts[0].text.trim();
+    }
+
+    // Fallback to Indian legal knowledge base if Gemini fails
     if (!aiResponse || aiResponse.length < 50) {
-      aiResponse = generateDetailedLegalResponse(message, conversationHistory);
+      aiResponse = generateIndianLegalResponse(message);
     }
 
-    // Clean up the response
-    aiResponse = cleanupResponse(aiResponse);
-
-    // Ensure response has legal disclaimer
-    if (!aiResponse.toLowerCase().includes('legal advice') && !aiResponse.toLowerCase().includes('attorney')) {
-      aiResponse += "\n\nImportant: This is general legal information only and not legal advice for your specific situation. Please consult with a qualified attorney for personalized legal advice.";
+    // Ensure Indian legal disclaimer is included
+    if (!aiResponse.toLowerCase().includes('qualified lawyer') && !aiResponse.toLowerCase().includes('legal advice')) {
+      aiResponse += "\n\n⚖️ Important: This is general legal information based on Indian laws. For complex cases or specific legal advice, please consult with a qualified Indian lawyer or advocate.";
     }
 
-    // Categorize the response
-    const category = categorizeResponse(aiResponse, message);
+    // Categorize based on Indian legal domains
+    const category = categorizeIndianLegalResponse(aiResponse, message);
 
     return new Response(JSON.stringify({ 
       response: aiResponse,
@@ -100,10 +147,34 @@ Guidelines:
     });
 
   } catch (error) {
-    console.error('Error in ai-legal-chat-hf function:', error);
+    console.error('Error in Indian legal AI function:', error);
+    
+    // Provide helpful fallback response
+    const fallbackResponse = `मुझे खुशी होगी आपकी कानूनी सहायता करने में! (I'd be happy to assist with your legal query!)
+
+Unfortunately, I'm experiencing a technical issue right now. However, here are some immediate steps you can take:
+
+🏛️ **For Constitutional/Fundamental Rights Issues:**
+- Contact your nearest Legal Aid Cell
+- File a complaint with the National Human Rights Commission (NHRC)
+
+📄 **For RTI Queries:**
+- Visit rtionline.gov.in for online RTI filing
+- Contact your State Information Commission
+
+👮 **For Police/Criminal Matters:**
+- Visit your nearest police station
+- Use the online complaint portal of your state police
+
+🏪 **For Consumer Issues:**
+- File a complaint with the National Consumer Helpline: 1915
+- Visit consumerhelpline.gov.in
+
+For immediate legal assistance, contact your nearest Legal Services Authority or dial 1968 for legal aid.`;
+
     return new Response(JSON.stringify({ 
       error: error.message,
-      response: "I apologize for the technical difficulty. However, I can still help with your legal question. Could you please rephrase your question, and I'll do my best to provide helpful legal information."
+      response: fallbackResponse 
     }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -111,466 +182,251 @@ Guidelines:
   }
 });
 
-function generateDetailedLegalResponse(message: string, conversationHistory: any[] = []): string {
+function generateIndianLegalResponse(message: string): string {
   const lowerMessage = message.toLowerCase();
   
-  // Contract-related questions
-  if (lowerMessage.includes('contract') || lowerMessage.includes('agreement') || lowerMessage.includes('breach')) {
-    if (lowerMessage.includes('breach')) {
-      return `A contract breach occurs when one party fails to fulfill their obligations under a legally binding agreement. There are several types of breaches:
+  // RTI (Right to Information) queries
+  if (lowerMessage.includes('rti') || lowerMessage.includes('right to information') || lowerMessage.includes('information act')) {
+    return `📄 **Right to Information (RTI) Act, 2005**
 
-**Material Breach**: A significant failure that defeats the purpose of the contract, allowing the non-breaching party to terminate and seek damages.
+The RTI Act empowers every Indian citizen to seek information from public authorities.
 
-**Minor Breach**: A partial failure that doesn't destroy the contract's value, typically remedied through damages.
+**Your Rights under RTI:**
+- Access to information held by public authorities
+- Obtain certified copies of documents  
+- Inspect government works and documents
+- Take notes, extracts or certified copies
 
-**Anticipatory Breach**: When one party indicates they won't perform before the performance date.
+**How to File RTI:**
+1. **Online**: Visit rtionline.gov.in or your state's RTI portal
+2. **Offline**: Submit application to concerned Public Information Officer (PIO)
+3. **Fee**: ₹10 for Central Govt, varies for states (free for BPL cardholders)
+4. **Timeline**: 30 days for response (48 hours for life/liberty matters)
 
-**Steps if you believe there's a breach:**
-1. Review the contract terms carefully
-2. Document the alleged breach with evidence
-3. Check for any cure periods or notice requirements
-4. Consider sending a formal demand letter
-5. Calculate potential damages
-6. Explore resolution options (negotiation, mediation, arbitration)
+**Key Information:**
+- **Section 4**: Proactive disclosure by departments
+- **Section 6**: How to request information  
+- **Section 7**: Time limits for disposal
+- **Section 18**: Appellate authorities
 
-**Potential remedies include:**
-- Monetary damages (compensatory, consequential, or punitive)
-- Specific performance (forcing completion)
-- Contract cancellation and restitution
+**Contact:**
+- Central Information Commission (CIC) for central govt matters
+- State Information Commission for state govt matters
 
-The specific remedies available depend on your contract terms, jurisdiction, and the nature of the breach.`;
-    } else {
-      return `Contract law governs legally binding agreements between parties. For a valid contract, you need:
+**Next Steps:**
+1. Identify the concerned department/ministry
+2. Draft your RTI application clearly stating information needed
+3. Submit with prescribed fee
+4. If no response, file first appeal with Appellate Authority
 
-**Essential Elements:**
-1. **Offer**: A clear proposal with definite terms
-2. **Acceptance**: Unqualified agreement to the offer
-3. **Consideration**: Something of value exchanged by both parties
-4. **Capacity**: Legal ability to enter contracts (age, mental capacity)
-5. **Legality**: The contract purpose must be lawful
-
-**Types of Contracts:**
-- Written vs. Oral (some must be written under Statute of Frauds)
-- Bilateral (mutual promises) vs. Unilateral (promise for performance)
-- Express (clearly stated) vs. Implied (inferred from conduct)
-
-**Important Considerations:**
-- Contracts involving real estate, goods over $500, or agreements lasting over one year typically must be written
-- Include clear terms for performance, payment, deadlines, and dispute resolution
-- Consider including force majeure clauses for unforeseen circumstances
-- Review applicable state laws as contract law varies by jurisdiction
-
-**Red flags to avoid:**
-- Unconscionable terms, fraud, duress, or undue influence
-- Ambiguous language that could lead to disputes`;
-    }
+Remember: RTI doesn't apply to private bodies unless they're substantially funded by government.`;
   }
 
-  // Business law questions
-  if (lowerMessage.includes('business') || lowerMessage.includes('llc') || lowerMessage.includes('corporation') || lowerMessage.includes('startup')) {
-    return `Business formation is a crucial decision that affects your liability, taxes, and operations. Here's a comprehensive overview:
+  // Police complaints and criminal matters
+  if (lowerMessage.includes('police') || lowerMessage.includes('fir') || lowerMessage.includes('arrest') || lowerMessage.includes('criminal')) {
+    return `👮 **Police Complaints & Criminal Procedures**
 
-**Business Entity Types:**
-
-**LLC (Limited Liability Company):**
-- Personal asset protection from business debts
-- Flexible tax options (pass-through or corporate taxation)
-- Fewer formalities than corporations
-- Good for small to medium businesses
-
-**Corporation (C-Corp):**
-- Strong liability protection
-- Can raise capital through stock sales
-- Double taxation (corporate and personal levels)
-- Required board meetings and formal record-keeping
-
-**S-Corporation:**
-- Pass-through taxation (avoids double taxation)
-- Limited to 100 shareholders, all must be US citizens/residents
-- More restrictions than LLCs but potential tax savings
-
-**Partnership:**
-- Simple formation but personal liability for all debts
-- Pass-through taxation
-- Consider Limited Partnerships (LP) for liability protection
-
-**Formation Steps:**
-1. Choose and reserve your business name
-2. File formation documents with your state
-3. Obtain required licenses and permits
-4. Get an EIN (Employer Identification Number) from the IRS
-5. Open a business bank account
-6. Create operating agreements or bylaws
-7. Consider trademark protection for your business name/logo
-
-**Ongoing Compliance:**
-- Annual state filings and fees
-- Proper record-keeping and meeting minutes
-- Separate business and personal finances
-- Required insurance (general liability, professional liability, etc.)`;
-  }
-
-  // Employment law questions
-  if (lowerMessage.includes('employment') || lowerMessage.includes('workplace') || lowerMessage.includes('fired') || lowerMessage.includes('discrimination')) {
-    return `Employment law protects both employees and employers through federal and state regulations:
-
-**Key Federal Employment Laws:**
-- **Title VII**: Prohibits discrimination based on race, color, religion, sex, or national origin
-- **ADA**: Requires reasonable accommodations for qualified individuals with disabilities
-- **FMLA**: Provides unpaid leave for family/medical reasons (eligible employees)
-- **FLSA**: Governs minimum wage, overtime, and child labor standards
-- **OSHA**: Ensures safe working conditions
-
-**At-Will Employment:**
-Most US employment is "at-will," meaning either party can terminate without cause, BUT there are important exceptions:
-- Cannot fire for illegal reasons (discrimination, retaliation, whistleblowing)
-- Must follow company policies and procedures
-- Cannot violate employment contracts or union agreements
-
-**If You Face Workplace Issues:**
-1. **Document everything**: Keep records of incidents, emails, witnesses
-2. **Follow company procedures**: Use internal grievance processes first
-3. **Know your rights**: Research applicable laws and company policies
-4. **File complaints**: EEOC for discrimination, Department of Labor for wage issues
-5. **Time limits**: Most complaints have strict deadlines (180-300 days typically)
-
-**Common Issues:**
-- **Wrongful termination**: Firing for illegal reasons
-- **Wage theft**: Unpaid overtime, meal break violations
-- **Hostile work environment**: Severe, pervasive discriminatory conduct
-- **Retaliation**: Punishment for exercising legal rights
-
-**When to Contact an Attorney:**
-- Complex discrimination cases
-- Significant financial losses
-- Unclear legal rights
-- Employer refuses to address serious violations`;
-  }
-
-  // Family law questions
-  if (lowerMessage.includes('family') || lowerMessage.includes('divorce') || lowerMessage.includes('custody') || lowerMessage.includes('child support')) {
-    return `Family law encompasses various personal relationships and domestic matters:
-
-**Divorce Proceedings:**
-- **No-fault divorce**: Available in all states, citing irreconcilable differences
-- **Fault-based divorce**: Adultery, abandonment, abuse (varies by state)
-- **Property division**: Equitable distribution vs. community property states
-- **Alimony/Spousal support**: Based on factors like marriage length, earning capacity, standard of living
-
-**Child Custody and Support:**
-**Types of Custody:**
-- **Legal custody**: Decision-making authority for child's welfare
-- **Physical custody**: Where the child primarily lives
-- **Joint vs. sole custody**: Shared or exclusive arrangements
-
-**Best Interest Standard**: Courts consider:
-- Child's physical and emotional needs
-- Parents' ability to provide stable environment
-- Existing parent-child relationships
-- Child's preferences (age-appropriate)
-- History of domestic violence or substance abuse
-
-**Child Support Calculations:**
-- Based on state guidelines considering both parents' incomes
-- Covers basic needs: housing, food, clothing, healthcare, education
-- Can be modified if circumstances change significantly
-
-**Estate Planning:**
-- **Wills**: Distribute property, name guardians for minor children
-- **Trusts**: Manage assets, avoid probate, provide for beneficiaries
-- **Power of Attorney**: Authorize someone to make decisions if incapacitated
-- **Advanced Directives**: Healthcare wishes if unable to communicate
-
-**Adoption Process:**
-- Home studies and background checks
-- Consent requirements from biological parents
-- Court approval and finalization
-- Different rules for stepparent, international, and agency adoptions`;
-  }
-
-  // Real estate questions
-  if (lowerMessage.includes('real estate') || lowerMessage.includes('property') || lowerMessage.includes('landlord') || lowerMessage.includes('tenant') || lowerMessage.includes('lease')) {
-    return `Real estate law governs property transactions and landlord-tenant relationships:
-
-**Property Transactions:**
-**Purchase Process:**
-1. **Purchase Agreement**: Defines terms, price, contingencies, closing date
-2. **Title Search**: Ensures clear ownership and identifies liens
-3. **Property Inspection**: Identifies defects that may affect value
-4. **Financing**: Mortgage approval and terms
-5. **Closing**: Final transfer of ownership and keys
-
-**Key Contingencies:**
-- Financing approval
-- Satisfactory inspection results
-- Clear title
-- Appraisal meeting purchase price
-
-**Landlord-Tenant Law:**
-**Landlord Responsibilities:**
-- Maintain habitable conditions (heat, water, electricity)
-- Make necessary repairs for health and safety
-- Follow proper procedures for rent increases and evictions
-- Return security deposits within statutory timeframes
-- Provide quiet enjoyment of the property
-
-**Tenant Rights:**
-- Right to habitable housing
-- Privacy rights (proper notice for entry)
-- Protection against discriminatory practices
-- Right to reasonable accommodations for disabilities
-- Protection against retaliatory eviction
-
-**Common Issues:**
-**Security Deposits:**
-- Limits on amounts (typically 1-2 months' rent)
-- Required to be held in separate accounts in some states
-- Itemized deductions for actual damages beyond normal wear
-
-**Eviction Process:**
-- Must follow state-specific procedures
-- Proper notice requirements (pay or quit, cure or quit)
-- Cannot use "self-help" evictions (changing locks, shutting utilities)
-- Court proceedings required for legal eviction
-
-**Property Disputes:**
-- Boundary disputes and easements
-- Neighbor issues (noise, trees, fences)
-- Homeowners association violations
-- Construction defects and contractor disputes`;
-  }
-
-  // Personal injury questions
-  if (lowerMessage.includes('injury') || lowerMessage.includes('accident') || lowerMessage.includes('negligence') || lowerMessage.includes('liability')) {
-    return `Personal injury law allows injured parties to seek compensation for harm caused by others' negligence or intentional actions:
-
-**Elements of Negligence:**
-1. **Duty of Care**: Defendant owed plaintiff a legal duty
-2. **Breach**: Defendant failed to meet the standard of care
-3. **Causation**: Breach directly caused the injury
-4. **Damages**: Plaintiff suffered actual harm or losses
-
-**Types of Personal Injury Cases:**
-- **Motor vehicle accidents**: Cars, trucks, motorcycles, pedestrians
-- **Slip and fall**: Property owner negligence
-- **Medical malpractice**: Healthcare provider errors
-- **Product liability**: Defective or dangerous products
-- **Workplace injuries**: Workers' compensation claims
-- **Dog bites**: Owner liability for pet attacks
-
-**Compensation Types:**
-**Economic Damages:**
-- Medical expenses (past and future)
-- Lost wages and earning capacity
-- Property damage
-- Rehabilitation costs
-
-**Non-Economic Damages:**
-- Pain and suffering
-- Emotional distress
-- Loss of enjoyment of life
-- Loss of consortium (relationship impact)
-
-**Important Considerations:**
-**Statute of Limitations:**
-- Typically 2-3 years from injury date (varies by state and case type)
-- Discovery rule may extend deadline for unknown injuries
-- Missing deadlines can bar your claim entirely
-
-**Comparative/Contributory Negligence:**
-- Your own fault may reduce or eliminate recovery
-- Pure comparative: Recovery reduced by your percentage of fault
-- Modified comparative: No recovery if you're 50%+ at fault
-- Contributory negligence: Any fault eliminates recovery (few states)
-
-**Insurance Considerations:**
-- Notify your insurance company promptly
-- Be careful with recorded statements
-- Understand policy limits and coverage types
-- Uninsured/underinsured motorist coverage importance`;
-  }
-
-  // Criminal law questions
-  if (lowerMessage.includes('criminal') || lowerMessage.includes('arrest') || lowerMessage.includes('charges') || lowerMessage.includes('police')) {
-    return `Criminal law involves prosecution of individuals who violate laws that protect public safety and order:
-
-**Your Constitutional Rights:**
-**4th Amendment**: Protection against unreasonable searches and seizures
-- Police need warrant or probable cause for searches
-- Exceptions: plain view, consent, exigent circumstances, vehicle searches
-
-**5th Amendment**: Protection against self-incrimination
-- Right to remain silent
-- Cannot be forced to testify against yourself
-- Protection against double jeopardy
-
-**6th Amendment**: Right to counsel and fair trial
-- Right to attorney (provided if indigent)
-- Right to speedy and public trial
-- Right to confront witnesses
+**Your Rights during Police Interaction:**
 
 **If Arrested:**
-1. **Exercise your right to remain silent** - Don't answer questions without attorney
-2. **Request an attorney immediately** - Clearly state "I want a lawyer"
-3. **Don't consent to searches** - Say "I do not consent to any searches"
-4. **Stay calm and comply** - Don't resist even if arrest seems unlawful
-5. **Remember details** - Note badge numbers, time, location, witnesses
+- **Article 22**: Right to know grounds of arrest
+- **Section 50, CrPC**: Right to inform someone about arrest
+- **Section 56**: Medical examination if arrested for assault on woman
+- **Right to Lawyer**: Cannot be denied legal representation
 
-**Criminal Process:**
-1. **Investigation and Arrest**
-2. **Initial Appearance**: Informed of charges, bail set
-3. **Preliminary Hearing**: Determination of probable cause
-4. **Arraignment**: Enter plea (guilty, not guilty, no contest)
-5. **Discovery**: Exchange of evidence between parties
-6. **Plea Negotiations**: Possible plea bargain discussions
-7. **Trial**: If no plea agreement reached
-8. **Sentencing**: If found guilty
+**Filing FIR:**
+- **Section 154, CrPC**: Police must register FIR for cognizable offenses
+- **Free of Cost**: No fee for FIR registration
+- **Copy**: You have right to free copy of FIR
+- **Online**: Many states allow online FIR for certain offenses
 
-**Types of Crimes:**
-**Felonies**: Serious crimes punishable by more than one year in prison
-**Misdemeanors**: Less serious crimes, typically under one year jail time
-**Infractions**: Minor violations, usually fines only
+**If Police Refuses FIR:**
+1. Send written complaint by registered post
+2. Approach Superintendent of Police
+3. File complaint under Section 156(3) CrPC in Magistrate Court
+4. Contact State Human Rights Commission
 
-**Defenses:**
-- Self-defense or defense of others
-- Alibi (you were elsewhere)
-- Insanity or diminished capacity
-- Duress or coercion
-- Entrapment by law enforcement
-- Statute of limitations expired`;
+**Key Sections:**
+- **Section 41**: When police can arrest without warrant
+- **Section 41A**: Notice of appearance before arrest in certain cases
+- **Section 161**: Police power to examine witnesses
+
+**Important Contacts:**
+- **Police Control Room**: 100
+- **Women Helpline**: 1091  
+- **National Human Rights Commission**: 011-23385368
+
+**Legal Bodies:**
+- Magistrate Court for Section 156(3) complaints
+- Sessions Court for serious offenses
+- High Court for habeas corpus petitions
+
+Immediate action needed: Document everything, get medical examination if injured, contact family/lawyer immediately.`;
   }
 
-  // Intellectual property questions
-  if (lowerMessage.includes('intellectual property') || lowerMessage.includes('trademark') || lowerMessage.includes('copyright') || lowerMessage.includes('patent')) {
-    return `Intellectual Property (IP) law protects creations of the mind and provides exclusive rights to creators:
+  // Consumer protection matters
+  if (lowerMessage.includes('consumer') || lowerMessage.includes('defective product') || lowerMessage.includes('unfair trade')) {
+    return `🛡️ **Consumer Protection Act, 2019**
 
-**Types of Intellectual Property:**
+**Your Consumer Rights:**
+1. **Right to Safety**: Protection against hazardous goods
+2. **Right to Information**: Complete product information  
+3. **Right to Choose**: Access to competitive market
+4. **Right to be Heard**: Voice in consumer policy
+5. **Right to Redressal**: Compensation for unfair practices
+6. **Right to Education**: Consumer awareness
 
-**Copyright:**
-- **Protects**: Original works of authorship (books, music, art, software, etc.)
-- **Duration**: Life of author + 70 years (works for hire: 95 years from publication)
-- **Rights**: Reproduction, distribution, public performance, derivative works
-- **Automatic**: Protection begins when work is fixed in tangible form
-- **Registration**: Not required but provides additional legal benefits
+**Where to Complain:**
+- **District Commission**: Claims up to ₹1 crore
+- **State Commission**: Claims ₹1 crore to ₹10 crores  
+- **National Commission**: Claims above ₹10 crores
 
-**Trademarks:**
-- **Protects**: Words, phrases, symbols, designs that identify goods/services
-- **Duration**: Indefinite if properly maintained and used
-- **Rights**: Exclusive use in connection with specific goods/services
-- **Requirements**: Must be distinctive and used in commerce
-- **Registration**: Federal registration provides nationwide protection
+**Online Complaint:**
+- Visit: edaakhil.nic.in (National Consumer Helpline)
+- Call: 1915 (Consumer Helpline)
+- SMS: 8130009809
 
-**Patents:**
-- **Protects**: Inventions, processes, machines, compositions of matter
-- **Duration**: 20 years from filing date
-- **Requirements**: Novel, non-obvious, useful
-- **Types**: Utility (most common), design, plant patents
-- **Process**: Extensive examination by USPTO, can take years
+**Documents Required:**
+- Purchase receipt/invoice
+- Warranty/guarantee card
+- Photos of defective product
+- Medical reports (if applicable)
 
-**Trade Secrets:**
-- **Protects**: Confidential business information providing competitive advantage
-- **Duration**: As long as kept secret
-- **Examples**: Formulas, customer lists, manufacturing processes
-- **Protection**: Non-disclosure agreements, limited access, security measures
+**Timeline:**
+- District Commission: 3-5 months
+- No court fee for claims up to ₹5 lakhs
 
-**Common IP Issues:**
-**Infringement**: Unauthorized use of protected IP
-- **Copyright**: Copying substantial portions without permission
-- **Trademark**: Likelihood of consumer confusion
-- **Patent**: Making, using, selling patented invention without license
+**Remedies Available:**
+- Refund or replacement
+- Compensation for damages
+- Punitive damages for unfair practices
+- Discontinuation of unfair practices
 
-**Fair Use (Copyright):**
-- Limited use for criticism, comment, news reporting, teaching, research
-- Factors: Purpose, nature of work, amount used, effect on market
+**Key Definitions:**
+- **Deficiency**: Fault in service quality/standard
+- **Unfair Trade Practice**: Misleading advertisements, false claims
+- **Consumer**: Person who buys goods/services for consideration
 
-**Enforcement:**
-- Cease and desist letters
-- DMCA takedown notices for online infringement
-- Federal court litigation
-- International protection through treaties
-
-**Business Considerations:**
-- Conduct clearance searches before adopting marks
-- Document creation processes for copyright claims
-- Use proper notices (© for copyright, ® for registered trademarks)
-- Implement IP policies for employees and contractors`;
+File complaint within 2 years of cause of action. E-commerce disputes can be filed where consumer resides.`;
   }
 
-  // Default comprehensive response for general questions
-  return `I understand you have a legal question, and I'm here to provide helpful information. Let me address your inquiry with specific legal guidance:
+  // Property and real estate law
+  if (lowerMessage.includes('property') || lowerMessage.includes('real estate') || lowerMessage.includes('registration') || lowerMessage.includes('mutation')) {
+    return `🏘️ **Property & Real Estate Law in India**
 
-**Understanding Your Legal Situation:**
-Every legal matter has unique circumstances that affect the applicable laws and potential outcomes. Based on your question, here are the key legal concepts and considerations:
+**Key Laws:**
+- **Registration Act, 1908**: Mandatory registration of property documents
+- **Transfer of Property Act, 1882**: Rules for property transfer
+- **Real Estate (Regulation and Development) Act, 2016 (RERA)**: Protects homebuyers
 
-**Relevant Legal Framework:**
-- Federal and state laws may both apply to your situation
-- Court precedents (case law) influence how laws are interpreted
-- Local regulations and ordinances may also be relevant
-- Statute of limitations may affect your ability to take legal action
+**Property Registration Process:**
+1. **Document Verification**: Check clear title, approvals
+2. **Stamp Duty Payment**: Varies by state (3-10% of property value)
+3. **Registration**: At Sub-Registrar office within 4 months
+4. **Mutation**: Update records in revenue department
 
-**Steps You Can Take:**
-1. **Document everything**: Keep detailed records of relevant events, communications, and evidence
-2. **Research applicable laws**: Look up relevant statutes and regulations in your jurisdiction
-3. **Understand your rights**: Know what legal protections and remedies may be available
-4. **Consider time limits**: Many legal actions have specific deadlines
-5. **Evaluate your options**: Weigh the costs, benefits, and likelihood of success for different approaches
+**Important Documents:**
+- **Sale Deed**: Primary ownership document
+- **Title Deed**: Chain of ownership  
+- **Encumbrance Certificate**: Property transaction history
+- **Possession Certificate**: Actual possession proof
 
-**When Professional Help is Needed:**
-- Complex legal issues requiring specialized knowledge
-- Situations involving significant financial stakes
-- Cases where court representation is necessary
-- Time-sensitive matters with strict deadlines
-- Disputes that cannot be resolved through negotiation
+**RERA Protections:**
+- **Section 11**: Developer obligations and disclosures
+- **Section 18**: Possession timeline penalties
+- **Section 19**: Interest on delayed possession
+- **Complaint Portal**: rera.gov.in (state-wise)
 
-**Resources for Further Assistance:**
-- State bar associations often provide lawyer referral services
-- Legal aid organizations for those with limited income
-- Self-help legal resources and court websites
-- Mediation and arbitration for dispute resolution
+**Property Disputes:**
+- **Civil Court**: Title disputes, partition suits
+- **Revenue Court**: Mutation, land records
+- **Consumer Forum**: Builder delays, defects (under RERA)
+- **DRT**: If loan involved
 
-**Important Legal Principles:**
-- Know your rights and responsibilities under applicable laws
-- Understand that legal remedies vary based on specific circumstances
-- Be aware that court procedures have strict requirements and deadlines
-- Consider both legal and practical aspects of your situation
+**Red Flags:**
+- Unregistered agreements beyond 11 months
+- Properties without clear title
+- Unapproved layouts/constructions
 
-To provide more specific guidance, I would need additional details about your particular circumstances. Feel free to ask follow-up questions about specific aspects of your legal issue.`;
+**Next Steps:**
+1. Verify property documents with lawyer
+2. Check RERA registration for new projects  
+3. Ensure proper stamp duty payment
+4. Complete registration within legal timeline
+
+Always engage qualified property lawyer for due diligence before any property transaction.`;
+  }
+
+  // Default comprehensive Indian legal response
+  return `🇮🇳 **Indian Legal System - General Guidance**
+
+I'm here to help you with your legal query related to Indian laws. Let me provide you with comprehensive guidance:
+
+**Constitutional Framework:**
+- **Fundamental Rights**: Articles 12-35 (Right to Equality, Freedom, etc.)
+- **Directive Principles**: Articles 36-51 (State policy guidelines)
+- **Fundamental Duties**: Article 51A
+
+**Major Legal Areas:**
+
+**1. Criminal Law:**
+- **IPC (Indian Penal Code)**: Defines crimes and punishments
+- **CrPC (Criminal Procedure Code)**: Criminal trial procedures
+- **Evidence Act**: Rules for evidence in court
+
+**2. Civil Law:**
+- **CPC (Civil Procedure Code)**: Civil lawsuit procedures  
+- **Contract Act**: Agreement enforceability
+- **Tort Law**: Civil wrongs and remedies
+
+**3. Specialized Acts:**
+- **RTI Act, 2005**: Right to Information
+- **Consumer Protection Act, 2019**: Consumer rights
+- **NDPS Act**: Narcotics and drug offenses
+- **Prevention of Corruption Act**: Anti-corruption measures
+
+**Legal Remedies Available:**
+- **Writ Petitions**: Constitutional remedies (High Court/Supreme Court)
+- **Civil Suits**: Monetary compensation, injunctions
+- **Criminal Complaints**: Punishment for offenses
+- **Tribunal Proceedings**: Specialized dispute resolution
+
+**Important Contacts:**
+- **Legal Aid**: 1968
+- **National Human Rights Commission**: 011-23385368
+- **National Consumer Helpline**: 1915
+- **Women Helpline**: 1091
+
+**Immediate Steps:**
+1. Identify the specific legal area your issue falls under
+2. Gather all relevant documents and evidence
+3. Consult with appropriate legal authority or lawyer
+4. Know the limitation period for your type of case
+
+Could you please provide more specific details about your legal concern? This will help me give you more targeted guidance based on applicable Indian laws and procedures.
+
+**Disclaimer**: This is general legal information. For specific legal advice tailored to your situation, please consult with a qualified advocate or lawyer registered with the Bar Council of India.`;
 }
 
-function cleanupResponse(response: string): string {
-  // Remove any unwanted prefixes or AI-generated artifacts
-  response = response.replace(/^(Assistant:|AI:|Legal Assistant:|Response:)/gi, '');
-  response = response.replace(/^[\s:]+/, '');
-  
-  // Remove any incomplete sentences at the end
-  const sentences = response.split(/[.!?]+/);
-  if (sentences.length > 1 && sentences[sentences.length - 1].trim().length < 10) {
-    sentences.pop();
-    response = sentences.join('.') + '.';
-  }
-  
-  return response.trim();
-}
-
-function categorizeResponse(response: string, question: string): string {
+function categorizeIndianLegalResponse(response: string, question: string): string {
   const content = (response + ' ' + question).toLowerCase();
   
-  if (content.includes('business') || content.includes('llc') || content.includes('corporation')) {
-    return 'business';
-  } else if (content.includes('contract') || content.includes('agreement') || content.includes('breach')) {
-    return 'contract';
-  } else if (content.includes('family') || content.includes('divorce') || content.includes('custody')) {
-    return 'family';
-  } else if (content.includes('real estate') || content.includes('property') || content.includes('landlord')) {
-    return 'real-estate';
-  } else if (content.includes('employment') || content.includes('workplace') || content.includes('fired')) {
-    return 'employment';
-  } else if (content.includes('intellectual property') || content.includes('trademark') || content.includes('copyright')) {
-    return 'intellectual-property';
-  } else if (content.includes('criminal') || content.includes('arrest') || content.includes('charges')) {
+  if (content.includes('rti') || content.includes('right to information')) {
+    return 'rti';
+  } else if (content.includes('police') || content.includes('fir') || content.includes('criminal') || content.includes('ipc')) {
     return 'criminal';
-  } else if (content.includes('injury') || content.includes('accident') || content.includes('negligence')) {
-    return 'personal-injury';
+  } else if (content.includes('consumer') || content.includes('defective') || content.includes('unfair trade')) {
+    return 'consumer';
+  } else if (content.includes('property') || content.includes('real estate') || content.includes('rera')) {
+    return 'property';
+  } else if (content.includes('fundamental rights') || content.includes('constitutional') || content.includes('writ')) {
+    return 'constitutional';
+  } else if (content.includes('family') || content.includes('marriage') || content.includes('divorce')) {
+    return 'family';
+  } else if (content.includes('labour') || content.includes('employment') || content.includes('workplace')) {
+    return 'labour';
+  } else if (content.includes('ndps') || content.includes('drug') || content.includes('narcotics')) {
+    return 'ndps';
   } else {
     return 'general';
   }
