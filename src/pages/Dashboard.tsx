@@ -233,8 +233,8 @@ const Dashboard = () => {
           <div className="flex items-center justify-between">
             {isExpanded && (
               <div className="flex items-center space-x-3">
-                <div className="bg-primary p-2 rounded-lg">
-                  <Scale className="h-6 w-6 text-primary-foreground" />
+                <div className="gradient-primary p-2 rounded-xl">
+                  <Scale className="h-6 w-6 text-white" />
                 </div>
                 <div>
                   <h1 className="text-lg font-bold text-foreground dark:text-foreground">Justicaa</h1>
@@ -260,11 +260,11 @@ const Dashboard = () => {
               <button
                 key={item.id}
                 onClick={() => setActiveTab(item.id)}
-                className={`w-full text-left p-3 rounded-lg transition-all duration-200 flex items-center ${
+                className={`w-full text-left p-3 rounded-xl transition-all duration-200 flex items-center ${
                   isExpanded ? 'space-x-3' : 'justify-center'
                 } ${
                   activeTab === item.id
-                    ? "bg-primary/10 text-primary border border-primary/20"
+                    ? "bg-primary/10 text-primary border-2 border-primary/20"
                     : "text-muted-foreground hover:bg-muted hover:text-foreground dark:text-muted-foreground dark:hover:bg-muted dark:hover:text-foreground"
                 }`}
                 title={!isExpanded ? item.title : undefined}
@@ -321,7 +321,7 @@ const Dashboard = () => {
                 <div className="flex items-center space-x-3">
                   <Avatar className="h-8 w-8">
                     <AvatarImage src={user.user_metadata?.avatar_url} />
-                    <AvatarFallback>
+                    <AvatarFallback className="gradient-primary text-white">
                       {user.email?.charAt(0).toUpperCase() || "U"}
                     </AvatarFallback>
                   </Avatar>
