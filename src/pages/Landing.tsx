@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -190,13 +189,6 @@ const Landing = () => {
       <section className="hero-section relative overflow-hidden">
         <div className="container mx-auto px-4 py-20 text-center relative z-10">
           <div className="max-w-4xl mx-auto">
-            <div className="flex items-center justify-center mb-6">
-              <Badge variant="secondary" className="bg-primary/10 text-primary border-primary/20 px-4 py-2">
-                <Award className="h-4 w-4 mr-2" />
-                Product of the Day
-              </Badge>
-            </div>
-            
             <h2 className="text-5xl md:text-7xl font-bold text-foreground mb-6 leading-tight">
               AI Lawyer: your personal legal AI assistant
             </h2>
@@ -209,29 +201,6 @@ const Landing = () => {
               <Button size="lg" className="text-lg px-8 py-4 gradient-primary text-white border-0 rounded-xl" onClick={handleCTAClick}>
                 Try for free
               </Button>
-              <div className="flex items-center space-x-4 text-sm text-muted-foreground">
-                <div className="flex items-center">
-                  <span className="text-yellow-500 mr-1">★★★★★</span>
-                  <span>4.9/5</span>
-                </div>
-                <span>•</span>
-                <span>10,000+ users</span>
-              </div>
-            </div>
-
-            <div className="flex items-center justify-center space-x-8 opacity-60">
-              <div className="flex items-center space-x-2">
-                <div className="w-8 h-8 bg-green-500 rounded flex items-center justify-center">
-                  <Zap className="h-4 w-4 text-white" />
-                </div>
-                <span className="text-sm">NVIDIA Inception program</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <div className="w-8 h-8 bg-red-500 rounded flex items-center justify-center">
-                  <span className="text-white font-bold text-xs">G</span>
-                </div>
-                <span className="text-sm">Google For Startups</span>
-              </div>
             </div>
           </div>
         </div>
