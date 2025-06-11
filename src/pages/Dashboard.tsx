@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -214,8 +213,8 @@ const Dashboard = () => {
   };
 
   return (
-    <TooltipProvider>
-      <div className="min-h-screen bg-background dark:bg-gray-900 flex flex-col md:flex-row">
+    <TooltipProvider delayDuration={300}>
+      <div className="min-h-screen bg-background dark:bg-gray-900 flex flex-col md:flex-row relative">
         {/* Mobile Overlay */}
         {isMobile && sidebarOpen && (
           <div 
@@ -241,7 +240,7 @@ const Dashboard = () => {
           </div>
 
           {/* Navigation */}
-          <nav className="flex-1 p-2">
+          <nav className="flex-1 p-2 relative z-10">
             <div className="space-y-2">
               {sidebarItems.map((item) => (
                 isMobile ? (
@@ -268,7 +267,7 @@ const Dashboard = () => {
                     <TooltipTrigger asChild>
                       <button
                         onClick={() => setActiveTab(item.id)}
-                        className={`w-full p-3 rounded-xl transition-all duration-200 flex items-center justify-center ${
+                        className={`w-full p-3 rounded-xl transition-all duration-200 flex items-center justify-center relative ${
                           activeTab === item.id
                             ? "bg-primary/10 text-primary border-2 border-primary/20"
                             : "text-muted-foreground hover:bg-muted hover:text-foreground dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white"
@@ -277,7 +276,11 @@ const Dashboard = () => {
                         <item.icon className="h-5 w-5" />
                       </button>
                     </TooltipTrigger>
-                    <TooltipContent side="right" className="flex flex-col z-[9999] bg-popover dark:bg-gray-800 border border-border dark:border-gray-600">
+                    <TooltipContent 
+                      side="right" 
+                      className="flex flex-col bg-popover dark:bg-gray-800 border border-border dark:border-gray-600 shadow-lg"
+                      sideOffset={8}
+                    >
                       <span className="font-medium">{item.title}</span>
                       <span className="text-xs opacity-70">{item.description}</span>
                     </TooltipContent>
@@ -289,9 +292,9 @@ const Dashboard = () => {
         </aside>
 
         {/* Main Content Area */}
-        <main className="flex-1 flex flex-col min-h-screen">
+        <main className="flex-1 flex flex-col min-h-screen relative">
           {/* Top Bar */}
-          <header className="bg-card dark:bg-gray-800 border-b border-border dark:border-gray-700 p-3 md:p-4">
+          <header className="bg-card dark:bg-gray-800 border-b border-border dark:border-gray-700 p-3 md:p-4 relative z-30">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-2 md:space-x-4">
                 {/* Mobile Menu Button */}
@@ -354,7 +357,7 @@ const Dashboard = () => {
 
           {/* Session Error Banner */}
           {sessionError && (
-            <div className="bg-amber-50 dark:bg-amber-900/20 border-b border-amber-200 dark:border-amber-800 p-3">
+            <div className="bg-amber-50 dark:bg-amber-900/20 border-b border-amber-200 dark:border-amber-800 p-3 relative z-20">
               <div className="flex items-center justify-center space-x-2">
                 <AlertTriangle className="h-4 w-4 text-amber-600 dark:text-amber-400 flex-shrink-0" />
                 <p className="text-sm text-amber-800 dark:text-amber-200 text-center">{sessionError}</p>
@@ -371,7 +374,7 @@ const Dashboard = () => {
           )}
 
           {/* Content */}
-          <div className="flex-1 p-3 md:p-6 overflow-auto bg-background dark:bg-gray-900">
+          <div className="flex-1 p-3 md:p-6 overflow-auto bg-background dark:bg-gray-900 relative z-10">
             {renderMainContent()}
           </div>
         </main>
