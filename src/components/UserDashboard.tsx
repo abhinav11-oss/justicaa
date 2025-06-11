@@ -211,25 +211,25 @@ export function UserDashboard() {
     }
   };
 
-  const downloadDocument = (document: LegalDocument) => {
+  const downloadDocument = (doc: LegalDocument) => {
     try {
-      const content = typeof document.content === 'string' 
-        ? document.content 
-        : JSON.stringify(document.content, null, 2);
+      const content = typeof doc.content === 'string' 
+        ? doc.content 
+        : JSON.stringify(doc.content, null, 2);
       
       const blob = new Blob([content], { type: 'text/plain' });
       const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
+      const link = window.document.createElement('a');
       link.href = url;
-      link.download = `${document.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.txt`;
-      document.body.appendChild(link);
+      link.download = `${doc.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.txt`;
+      window.document.body.appendChild(link);
       link.click();
-      document.body.removeChild(link);
+      window.document.body.removeChild(link);
       URL.revokeObjectURL(url);
 
       toast({
         title: "Document Downloaded",
-        description: `${document.title} has been downloaded.`
+        description: `${doc.title} has been downloaded.`
       });
     } catch (error) {
       console.error('Error downloading document:', error);
