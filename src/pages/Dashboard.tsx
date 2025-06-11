@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -214,7 +215,7 @@ const Dashboard = () => {
 
   return (
     <TooltipProvider>
-      <div className="min-h-screen bg-background dark:bg-background flex flex-col md:flex-row">
+      <div className="min-h-screen bg-background dark:bg-gray-900 flex flex-col md:flex-row">
         {/* Mobile Overlay */}
         {isMobile && sidebarOpen && (
           <div 
@@ -227,13 +228,13 @@ const Dashboard = () => {
         <aside className={`
           ${isMobile ? 'fixed' : 'relative'} 
           ${isMobile && !sidebarOpen ? '-translate-x-full' : 'translate-x-0'}
-          bg-card dark:bg-card border-r border-border dark:border-border 
+          bg-card dark:bg-gray-800 border-r border-border dark:border-gray-700 
           ${isMobile ? 'w-64 h-full z-50' : 'w-16'} 
           transition-transform duration-300 ease-in-out
           flex flex-col
         `}>
           {/* Header */}
-          <div className="p-2 border-b border-border dark:border-border flex justify-center">
+          <div className="p-2 border-b border-border dark:border-gray-700 flex justify-center">
             <div className="gradient-primary p-2 rounded-xl">
               <Scale className="h-6 w-6 text-white" />
             </div>
@@ -253,7 +254,7 @@ const Dashboard = () => {
                     className={`w-full p-3 rounded-xl transition-all duration-200 flex items-center space-x-3 ${
                       activeTab === item.id
                         ? "bg-primary/10 text-primary border-2 border-primary/20"
-                        : "text-muted-foreground hover:bg-muted hover:text-foreground dark:text-muted-foreground dark:hover:bg-muted dark:hover:text-foreground"
+                        : "text-muted-foreground hover:bg-muted hover:text-foreground dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white"
                     }`}
                   >
                     <item.icon className="h-5 w-5 flex-shrink-0" />
@@ -270,13 +271,13 @@ const Dashboard = () => {
                         className={`w-full p-3 rounded-xl transition-all duration-200 flex items-center justify-center ${
                           activeTab === item.id
                             ? "bg-primary/10 text-primary border-2 border-primary/20"
-                            : "text-muted-foreground hover:bg-muted hover:text-foreground dark:text-muted-foreground dark:hover:bg-muted dark:hover:text-foreground"
+                            : "text-muted-foreground hover:bg-muted hover:text-foreground dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white"
                         }`}
                       >
                         <item.icon className="h-5 w-5" />
                       </button>
                     </TooltipTrigger>
-                    <TooltipContent side="right" className="flex flex-col">
+                    <TooltipContent side="right" className="flex flex-col z-[9999] bg-popover dark:bg-gray-800 border border-border dark:border-gray-600">
                       <span className="font-medium">{item.title}</span>
                       <span className="text-xs opacity-70">{item.description}</span>
                     </TooltipContent>
@@ -290,7 +291,7 @@ const Dashboard = () => {
         {/* Main Content Area */}
         <main className="flex-1 flex flex-col min-h-screen">
           {/* Top Bar */}
-          <header className="bg-card dark:bg-card border-b border-border dark:border-border p-3 md:p-4">
+          <header className="bg-card dark:bg-gray-800 border-b border-border dark:border-gray-700 p-3 md:p-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-2 md:space-x-4">
                 {/* Mobile Menu Button */}
@@ -299,17 +300,17 @@ const Dashboard = () => {
                     variant="ghost"
                     size="icon"
                     onClick={() => setSidebarOpen(true)}
-                    className="md:hidden"
+                    className="md:hidden dark:text-gray-300 dark:hover:bg-gray-700"
                   >
                     <Menu className="h-5 w-5" />
                   </Button>
                 )}
                 
                 <div>
-                  <h2 className="text-lg md:text-2xl font-bold text-foreground dark:text-foreground capitalize">
+                  <h2 className="text-lg md:text-2xl font-bold text-foreground dark:text-white capitalize">
                     {sidebarItems.find(item => item.id === activeTab)?.title || "Dashboard"}
                   </h2>
-                  <p className="text-xs md:text-sm text-muted-foreground dark:text-muted-foreground hidden sm:block">
+                  <p className="text-xs md:text-sm text-muted-foreground dark:text-gray-400 hidden sm:block">
                     {sidebarItems.find(item => item.id === activeTab)?.description || "Welcome to your legal assistant"}
                   </p>
                 </div>
@@ -321,7 +322,7 @@ const Dashboard = () => {
                   variant="ghost"
                   size="icon"
                   onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-                  className="h-8 w-8 md:h-10 md:w-10"
+                  className="h-8 w-8 md:h-10 md:w-10 dark:text-gray-300 dark:hover:bg-gray-700"
                 >
                   {theme === "dark" ? <Sun className="h-4 w-4 md:h-5 md:w-5" /> : <Moon className="h-4 w-4 md:h-5 md:w-5" />}
                 </Button>
@@ -336,12 +337,12 @@ const Dashboard = () => {
                       </AvatarFallback>
                     </Avatar>
                     <div className="hidden lg:block">
-                      <p className="text-sm font-medium text-foreground dark:text-foreground truncate max-w-32">
+                      <p className="text-sm font-medium text-foreground dark:text-white truncate max-w-32">
                         {user.email}
                       </p>
-                      <p className="text-xs text-muted-foreground dark:text-muted-foreground">Signed in</p>
+                      <p className="text-xs text-muted-foreground dark:text-gray-400">Signed in</p>
                     </div>
-                    <Button variant="outline" size="sm" onClick={handleSignOut} className="text-xs md:text-sm">
+                    <Button variant="outline" size="sm" onClick={handleSignOut} className="text-xs md:text-sm dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700">
                       <LogOut className="h-3 w-3 md:h-4 md:w-4 mr-1 md:mr-2" />
                       <span className="hidden sm:inline">Sign Out</span>
                     </Button>
@@ -370,7 +371,7 @@ const Dashboard = () => {
           )}
 
           {/* Content */}
-          <div className="flex-1 p-3 md:p-6 overflow-auto">
+          <div className="flex-1 p-3 md:p-6 overflow-auto bg-background dark:bg-gray-900">
             {renderMainContent()}
           </div>
         </main>

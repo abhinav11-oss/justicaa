@@ -213,15 +213,36 @@ export function UserDashboard() {
 
   const downloadDocument = (doc: LegalDocument) => {
     try {
-      const content = typeof doc.content === 'string' 
-        ? doc.content 
-        : JSON.stringify(doc.content, null, 2);
+      let content = '';
+      let fileName = '';
+      let mimeType = '';
       
-      const blob = new Blob([content], { type: 'text/plain' });
+      if (typeof doc.content === 'string') {
+        content = doc.content;
+      } else if (typeof doc.content === 'object' && doc.content !== null) {
+        // Check if it's HTML content
+        if (doc.content.html) {
+          content = doc.content.html;
+          fileName = `${doc.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.html`;
+          mimeType = 'text/html';
+        } else {
+          content = JSON.stringify(doc.content, null, 2);
+          fileName = `${doc.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.json`;
+          mimeType = 'application/json';
+        }
+      } else {
+        content = String(doc.content);
+        fileName = `${doc.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.txt`;
+        mimeType = 'text/plain';
+      }
+
+      // Create and download the file
+      const blob = new Blob([content], { type: mimeType });
       const url = URL.createObjectURL(blob);
       const link = window.document.createElement('a');
       link.href = url;
-      link.download = `${doc.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.txt`;
+      link.download = fileName;
+      link.style.display = 'none';
       window.document.body.appendChild(link);
       link.click();
       window.document.body.removeChild(link);
@@ -229,13 +250,13 @@ export function UserDashboard() {
 
       toast({
         title: "Document Downloaded",
-        description: `${doc.title} has been downloaded.`
+        description: `${doc.title} has been downloaded successfully.`
       });
     } catch (error) {
       console.error('Error downloading document:', error);
       toast({
         title: "Download Failed",
-        description: "Failed to download the document.",
+        description: "Failed to download the document. Please try again.",
         variant: "destructive"
       });
     }
@@ -342,56 +363,56 @@ export function UserDashboard() {
     <div className="space-y-6">
       {/* Quick Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <Card className="bg-white/60 backdrop-blur-sm">
+        <Card className="bg-white/60 dark:bg-gray-800/60 backdrop-blur-sm border-slate-200 dark:border-gray-700">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Active Conversations</CardTitle>
-            <MessageSquare className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium dark:text-white">Active Conversations</CardTitle>
+            <MessageSquare className="h-4 w-4 text-muted-foreground dark:text-gray-400" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{conversations.length}</div>
+            <div className="text-2xl font-bold dark:text-white">{conversations.length}</div>
           </CardContent>
         </Card>
         
-        <Card className="bg-white/60 backdrop-blur-sm">
+        <Card className="bg-white/60 dark:bg-gray-800/60 backdrop-blur-sm border-slate-200 dark:border-gray-700">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Archived Chats</CardTitle>
-            <Archive className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium dark:text-white">Archived Chats</CardTitle>
+            <Archive className="h-4 w-4 text-muted-foreground dark:text-gray-400" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{archivedConversations.length}</div>
+            <div className="text-2xl font-bold dark:text-white">{archivedConversations.length}</div>
           </CardContent>
         </Card>
         
-        <Card className="bg-white/60 backdrop-blur-sm">
+        <Card className="bg-white/60 dark:bg-gray-800/60 backdrop-blur-sm border-slate-200 dark:border-gray-700">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Documents</CardTitle>
-            <FileText className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium dark:text-white">Documents</CardTitle>
+            <FileText className="h-4 w-4 text-muted-foreground dark:text-gray-400" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{documents.length}</div>
+            <div className="text-2xl font-bold dark:text-white">{documents.length}</div>
           </CardContent>
         </Card>
         
-        <Card className="bg-white/60 backdrop-blur-sm">
+        <Card className="bg-white/60 dark:bg-gray-800/60 backdrop-blur-sm border-slate-200 dark:border-gray-700">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Active Matters</CardTitle>
-            <Calendar className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium dark:text-white">Active Matters</CardTitle>
+            <Calendar className="h-4 w-4 text-muted-foreground dark:text-gray-400" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{matters.filter(m => m.status === 'active').length}</div>
+            <div className="text-2xl font-bold dark:text-white">{matters.filter(m => m.status === 'active').length}</div>
           </CardContent>
         </Card>
       </div>
 
       {/* Main Content */}
-      <Card className="bg-white/80 backdrop-blur-sm border-slate-200 shadow-xl">
+      <Card className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border-slate-200 dark:border-gray-700 shadow-xl">
         <CardHeader>
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid w-full grid-cols-4 bg-slate-100">
-              <TabsTrigger value="conversations">Recent Conversations</TabsTrigger>
-              <TabsTrigger value="archived">Archived Chats</TabsTrigger>
-              <TabsTrigger value="documents">Documents</TabsTrigger>
-              <TabsTrigger value="matters">Legal Matters</TabsTrigger>
+            <TabsList className="grid w-full grid-cols-4 bg-slate-100 dark:bg-gray-700">
+              <TabsTrigger value="conversations" className="dark:text-gray-300 dark:data-[state=active]:bg-gray-600 dark:data-[state=active]:text-white">Recent Conversations</TabsTrigger>
+              <TabsTrigger value="archived" className="dark:text-gray-300 dark:data-[state=active]:bg-gray-600 dark:data-[state=active]:text-white">Archived Chats</TabsTrigger>
+              <TabsTrigger value="documents" className="dark:text-gray-300 dark:data-[state=active]:bg-gray-600 dark:data-[state=active]:text-white">Documents</TabsTrigger>
+              <TabsTrigger value="matters" className="dark:text-gray-300 dark:data-[state=active]:bg-gray-600 dark:data-[state=active]:text-white">Legal Matters</TabsTrigger>
             </TabsList>
           </Tabs>
         </CardHeader>
@@ -400,16 +421,16 @@ export function UserDashboard() {
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <TabsContent value="conversations" className="space-y-4">
               <div className="flex justify-between items-center">
-                <h3 className="text-lg font-semibold">Recent Conversations</h3>
-                <Button onClick={createNewConversation} size="sm">
+                <h3 className="text-lg font-semibold dark:text-white">Recent Conversations</h3>
+                <Button onClick={createNewConversation} size="sm" className="dark:bg-primary dark:hover:bg-primary/90">
                   <Plus className="h-4 w-4 mr-2" />
                   New Chat
                 </Button>
               </div>
               
               {conversations.length === 0 ? (
-                <div className="text-center py-8 text-slate-500">
-                  <MessageSquare className="h-12 w-12 mx-auto mb-4 text-slate-300" />
+                <div className="text-center py-8 text-slate-500 dark:text-gray-400">
+                  <MessageSquare className="h-12 w-12 mx-auto mb-4 text-slate-300 dark:text-gray-600" />
                   <p>No conversations yet. Start your first legal consultation!</p>
                 </div>
               ) : (
@@ -417,16 +438,16 @@ export function UserDashboard() {
                   {conversations.map((conversation) => (
                     <div 
                       key={conversation.id} 
-                      className="p-4 border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors"
+                      className="p-4 border border-slate-200 dark:border-gray-600 rounded-lg hover:bg-slate-50 dark:hover:bg-gray-700/50 transition-colors"
                     >
                       <div className="flex justify-between items-start">
                         <div 
                           className="flex-1 cursor-pointer"
                           onClick={() => handleConversationClick(conversation.id)}
                         >
-                          <h4 className="font-medium">{conversation.title}</h4>
-                          <p className="text-sm text-slate-600 capitalize">{conversation.legal_category}</p>
-                          <p className="text-xs text-slate-400">
+                          <h4 className="font-medium dark:text-white">{conversation.title}</h4>
+                          <p className="text-sm text-slate-600 dark:text-gray-400 capitalize">{conversation.legal_category}</p>
+                          <p className="text-xs text-slate-400 dark:text-gray-500">
                             {new Date(conversation.created_at).toLocaleDateString()}
                           </p>
                         </div>
@@ -445,12 +466,12 @@ export function UserDashboard() {
 
             <TabsContent value="archived" className="space-y-4">
               <div className="flex justify-between items-center">
-                <h3 className="text-lg font-semibold">Archived Conversations</h3>
+                <h3 className="text-lg font-semibold dark:text-white">Archived Conversations</h3>
               </div>
               
               {archivedConversations.length === 0 ? (
-                <div className="text-center py-8 text-slate-500">
-                  <Archive className="h-12 w-12 mx-auto mb-4 text-slate-300" />
+                <div className="text-center py-8 text-slate-500 dark:text-gray-400">
+                  <Archive className="h-12 w-12 mx-auto mb-4 text-slate-300 dark:text-gray-600" />
                   <p>No archived conversations yet.</p>
                 </div>
               ) : (
@@ -458,16 +479,16 @@ export function UserDashboard() {
                   {archivedConversations.map((conversation) => (
                     <div 
                       key={conversation.id} 
-                      className="p-4 border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors"
+                      className="p-4 border border-slate-200 dark:border-gray-600 rounded-lg hover:bg-slate-50 dark:hover:bg-gray-700/50 transition-colors"
                     >
                       <div className="flex justify-between items-start">
                         <div 
                           className="flex-1 cursor-pointer"
                           onClick={() => handleConversationClick(conversation.id)}
                         >
-                          <h4 className="font-medium">{conversation.title}</h4>
-                          <p className="text-sm text-slate-600 capitalize">{conversation.legal_category}</p>
-                          <p className="text-xs text-slate-400">
+                          <h4 className="font-medium dark:text-white">{conversation.title}</h4>
+                          <p className="text-sm text-slate-600 dark:text-gray-400 capitalize">{conversation.legal_category}</p>
+                          <p className="text-xs text-slate-400 dark:text-gray-500">
                             {new Date(conversation.created_at).toLocaleDateString()}
                           </p>
                         </div>
@@ -486,27 +507,27 @@ export function UserDashboard() {
             
             <TabsContent value="documents" className="space-y-4">
               <div className="flex justify-between items-center">
-                <h3 className="text-lg font-semibold">Legal Documents</h3>
-                <Button size="sm">
+                <h3 className="text-lg font-semibold dark:text-white">Legal Documents</h3>
+                <Button size="sm" className="dark:bg-primary dark:hover:bg-primary/90">
                   <Plus className="h-4 w-4 mr-2" />
                   New Document
                 </Button>
               </div>
               
               {documents.length === 0 ? (
-                <div className="text-center py-8 text-slate-500">
-                  <FileText className="h-12 w-12 mx-auto mb-4 text-slate-300" />
+                <div className="text-center py-8 text-slate-500 dark:text-gray-400">
+                  <FileText className="h-12 w-12 mx-auto mb-4 text-slate-300 dark:text-gray-600" />
                   <p>No documents yet. Create your first legal document!</p>
                 </div>
               ) : (
                 <div className="space-y-3">
                   {documents.map((document) => (
-                    <div key={document.id} className="p-4 border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors">
+                    <div key={document.id} className="p-4 border border-slate-200 dark:border-gray-600 rounded-lg hover:bg-slate-50 dark:hover:bg-gray-700/50 transition-colors">
                       <div className="flex justify-between items-start">
                         <div className="flex-1">
-                          <h4 className="font-medium">{document.title}</h4>
-                          <p className="text-sm text-slate-600 capitalize">{document.document_type}</p>
-                          <p className="text-xs text-slate-400">
+                          <h4 className="font-medium dark:text-white">{document.title}</h4>
+                          <p className="text-sm text-slate-600 dark:text-gray-400 capitalize">{document.document_type}</p>
+                          <p className="text-xs text-slate-400 dark:text-gray-500">
                             {new Date(document.created_at).toLocaleDateString()}
                           </p>
                         </div>
@@ -518,6 +539,7 @@ export function UserDashboard() {
                             variant="outline"
                             size="sm"
                             onClick={() => downloadDocument(document)}
+                            className="dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700"
                           >
                             <Download className="h-4 w-4 mr-2" />
                             Download
@@ -532,32 +554,32 @@ export function UserDashboard() {
             
             <TabsContent value="matters" className="space-y-4">
               <div className="flex justify-between items-center">
-                <h3 className="text-lg font-semibold">Legal Matters</h3>
-                <Button size="sm">
+                <h3 className="text-lg font-semibold dark:text-white">Legal Matters</h3>
+                <Button size="sm" className="dark:bg-primary dark:hover:bg-primary/90">
                   <Plus className="h-4 w-4 mr-2" />
                   New Matter
                 </Button>
               </div>
               
               {matters.length === 0 ? (
-                <div className="text-center py-8 text-slate-500">
-                  <Calendar className="h-12 w-12 mx-auto mb-4 text-slate-300" />
+                <div className="text-center py-8 text-slate-500 dark:text-gray-400">
+                  <Calendar className="h-12 w-12 mx-auto mb-4 text-slate-300 dark:text-gray-600" />
                   <p>No legal matters yet. Add your first case!</p>
                 </div>
               ) : (
                 <div className="space-y-3">
                   {matters.map((matter) => (
-                    <div key={matter.id} className="p-4 border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors">
+                    <div key={matter.id} className="p-4 border border-slate-200 dark:border-gray-600 rounded-lg hover:bg-slate-50 dark:hover:bg-gray-700/50 transition-colors">
                       <div className="flex justify-between items-start">
                         <div>
-                          <h4 className="font-medium">{matter.title}</h4>
-                          <p className="text-sm text-slate-600 capitalize">{matter.matter_type}</p>
+                          <h4 className="font-medium dark:text-white">{matter.title}</h4>
+                          <p className="text-sm text-slate-600 dark:text-gray-400 capitalize">{matter.matter_type}</p>
                           {matter.deadline_date && (
-                            <p className="text-xs text-red-600">
+                            <p className="text-xs text-red-600 dark:text-red-400">
                               Deadline: {new Date(matter.deadline_date).toLocaleDateString()}
                             </p>
                           )}
-                          <p className="text-xs text-slate-400">
+                          <p className="text-xs text-slate-400 dark:text-gray-500">
                             Created: {new Date(matter.created_at).toLocaleDateString()}
                           </p>
                         </div>
