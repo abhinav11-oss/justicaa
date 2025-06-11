@@ -11,6 +11,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { QuickQuestions } from "@/components/QuickQuestions";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface Message {
   id: string;
@@ -35,6 +36,7 @@ export const ChatInterface = ({ category }: ChatInterfaceProps) => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const hasUserInteracted = messages.some(msg => msg.role === "user");
+  const isMobile = useIsMobile();
 
   // Check if this is trial mode
   const isTrialMode = !user && window.location.search.includes('trial=true');
@@ -224,35 +226,37 @@ export const ChatInterface = ({ category }: ChatInterfaceProps) => {
   const isInputDisabled = isTrialMode && trialMessagesUsed >= TRIAL_MESSAGE_LIMIT;
 
   return (
-    <div className="h-[calc(100vh-200px)] flex flex-col">
+    <div className={`${isMobile ? 'h-[calc(100vh-120px)]' : 'h-[calc(100vh-200px)]'} flex flex-col`}>
       <Card className="flex-1 flex flex-col">
-        <CardHeader className="flex-shrink-0">
-          <div className="flex items-center justify-between">
+        <CardHeader className="flex-shrink-0 p-3 md:p-6">
+          <div className="flex items-center justify-between flex-wrap gap-2">
             <div>
-              <CardTitle className="flex items-center">
-                <MessageSquare className="h-5 w-5 mr-2" />
+              <CardTitle className="flex items-center text-lg md:text-xl">
+                <MessageSquare className="h-4 w-4 md:h-5 md:w-5 mr-2" />
                 AI Legal Assistant
               </CardTitle>
-              <p className="text-sm text-muted-foreground mt-1">
+              <p className="text-xs md:text-sm text-muted-foreground mt-1">
                 Get instant legal guidance and answers to your questions
               </p>
             </div>
-            {isTrialMode && (
-              <Badge variant="outline" className="capitalize">
-                Trial Mode: {TRIAL_MESSAGE_LIMIT - trialMessagesUsed}/{TRIAL_MESSAGE_LIMIT} messages left
-              </Badge>
-            )}
-            {category && (
-              <Badge variant="outline" className="capitalize">
-                {category}
-              </Badge>
-            )}
+            <div className="flex gap-2">
+              {isTrialMode && (
+                <Badge variant="outline" className="text-xs">
+                  Trial: {TRIAL_MESSAGE_LIMIT - trialMessagesUsed}/{TRIAL_MESSAGE_LIMIT} left
+                </Badge>
+              )}
+              {category && (
+                <Badge variant="outline" className="capitalize text-xs">
+                  {category}
+                </Badge>
+              )}
+            </div>
           </div>
         </CardHeader>
 
         <CardContent className="flex-1 flex flex-col p-0">
           <div className="flex-1 overflow-y-auto" ref={chatContainerRef}>
-            <div className="px-6">
+            <div className="px-3 md:px-6">
               {!hasUserInteracted && (
                 <QuickQuestions 
                   onQuestionClick={handleQuestionClick}
@@ -261,29 +265,29 @@ export const ChatInterface = ({ category }: ChatInterfaceProps) => {
               )}
               
               {messages.length > 0 && (
-                <div className="space-y-4 py-4">
+                <div className="space-y-3 md:space-y-4 py-4">
                   {messages.map((message) => (
                     <div
                       key={message.id}
-                      className={`flex items-start space-x-3 ${
+                      className={`flex items-start space-x-2 md:space-x-3 ${
                         message.role === "user" ? "justify-end" : "justify-start"
                       }`}
                     >
                       {message.role === "assistant" && (
-                        <div className="bg-primary p-2 rounded-full">
-                          <Bot className="h-4 w-4 text-primary-foreground" />
+                        <div className="bg-primary p-1.5 md:p-2 rounded-full flex-shrink-0">
+                          <Bot className="h-3 w-3 md:h-4 md:w-4 text-primary-foreground" />
                         </div>
                       )}
                       
                       <div
-                        className={`max-w-[80%] p-4 rounded-lg ${
+                        className={`max-w-[85%] md:max-w-[80%] p-3 md:p-4 rounded-lg ${
                           message.role === "user"
                             ? "bg-primary text-primary-foreground"
                             : "bg-muted"
                         }`}
                       >
                         <div className="prose prose-sm max-w-none">
-                          <p className="whitespace-pre-wrap">{message.content}</p>
+                          <p className="whitespace-pre-wrap text-sm md:text-base">{message.content}</p>
                         </div>
                         
                         <div className="flex items-center justify-between mt-2 pt-2 border-t border-current/10">
@@ -294,7 +298,7 @@ export const ChatInterface = ({ category }: ChatInterfaceProps) => {
                             variant="ghost"
                             size="sm"
                             onClick={() => copyToClipboard(message.content)}
-                            className="h-6 px-2 opacity-70 hover:opacity-100"
+                            className="h-5 w-5 md:h-6 md:w-6 p-0 opacity-70 hover:opacity-100"
                           >
                             <Copy className="h-3 w-3" />
                           </Button>
@@ -302,21 +306,21 @@ export const ChatInterface = ({ category }: ChatInterfaceProps) => {
                       </div>
 
                       {message.role === "user" && (
-                        <div className="bg-primary p-2 rounded-full">
-                          <User className="h-4 w-4 text-primary-foreground" />
+                        <div className="bg-primary p-1.5 md:p-2 rounded-full flex-shrink-0">
+                          <User className="h-3 w-3 md:h-4 md:w-4 text-primary-foreground" />
                         </div>
                       )}
                     </div>
                   ))}
                   
                   {isLoading && (
-                    <div className="flex items-start space-x-3">
-                      <div className="bg-primary p-2 rounded-full">
-                        <Bot className="h-4 w-4 text-primary-foreground" />
+                    <div className="flex items-start space-x-2 md:space-x-3">
+                      <div className="bg-primary p-1.5 md:p-2 rounded-full">
+                        <Bot className="h-3 w-3 md:h-4 md:w-4 text-primary-foreground" />
                       </div>
-                      <div className="bg-muted p-4 rounded-lg">
+                      <div className="bg-muted p-3 md:p-4 rounded-lg">
                         <div className="flex items-center space-x-2">
-                          <Loader2 className="h-4 w-4 animate-spin" />
+                          <Loader2 className="h-3 w-3 md:h-4 md:w-4 animate-spin" />
                           <span className="text-sm">Thinking...</span>
                         </div>
                       </div>
@@ -329,7 +333,7 @@ export const ChatInterface = ({ category }: ChatInterfaceProps) => {
           </div>
 
           {/* Input Area */}
-          <div className="border-t p-4 flex-shrink-0">
+          <div className="border-t p-3 md:p-4 flex-shrink-0">
             <div className="flex space-x-2">
               <Input
                 value={inputValue}
@@ -337,12 +341,13 @@ export const ChatInterface = ({ category }: ChatInterfaceProps) => {
                 onKeyPress={handleKeyPress}
                 placeholder={isInputDisabled ? "Please sign in to continue" : "Ask me anything about legal matters..."}
                 disabled={isLoading || isInputDisabled}
-                className="flex-1"
+                className="flex-1 text-sm md:text-base"
               />
               <Button
                 onClick={() => handleSendMessage()}
                 disabled={isLoading || !inputValue.trim() || isInputDisabled}
                 size="icon"
+                className="flex-shrink-0"
               >
                 {isLoading ? (
                   <Loader2 className="h-4 w-4 animate-spin" />
@@ -363,7 +368,7 @@ export const ChatInterface = ({ category }: ChatInterfaceProps) => {
       
       {/* Auth Dialog */}
       <Dialog open={showAuthModal} onOpenChange={setShowAuthModal}>
-        <DialogContent className="sm:max-w-[425px]">
+        <DialogContent className="sm:max-w-[425px] mx-4">
           <DialogHeader>
             <DialogTitle>Sign in to continue</DialogTitle>
             <DialogDescription>
