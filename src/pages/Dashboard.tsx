@@ -1,8 +1,8 @@
-
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { ChatInterface } from "@/components/ChatInterface";
 import { LegalGuides } from "@/components/LegalGuides";
 import { KnowledgeBase } from "@/components/KnowledgeBase";
@@ -15,7 +15,6 @@ import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "next-themes";
 import { useToast } from "@/hooks/use-toast";
-import { useSidebar } from "@/hooks/useSidebar";
 import { 
   Scale, 
   MessageSquare, 
@@ -31,8 +30,6 @@ import {
   Sun,
   Moon,
   AlertTriangle,
-  ChevronLeft,
-  ChevronRight,
   Menu
 } from "lucide-react";
 
@@ -44,13 +41,6 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const { theme, setTheme } = useTheme();
   const { toast } = useToast();
-  const { 
-    isCollapsed, 
-    isExpanded, 
-    toggleSidebar, 
-    handleMouseEnter, 
-    handleMouseLeave 
-  } = useSidebar();
 
   // Redirect to landing if not authenticated
   useEffect(() => {
@@ -125,49 +115,49 @@ const Dashboard = () => {
       id: "home",
       title: "Home",
       icon: Home,
-      description: "Dashboard overview"
+      description: "Dashboard"
     },
     {
       id: "chat",
       title: "AI Chat",
       icon: MessageSquare,
-      description: "Legal assistance chat"
+      description: "Legal Chat"
     },
     {
       id: "lawyers",
-      title: "Find Lawyers",
+      title: "Lawyers",
       icon: Users,
-      description: "Locate legal experts"
+      description: "Find Experts"
     },
     {
       id: "generator",
-      title: "Document Generator",
+      title: "Generator",
       icon: FilePlus,
-      description: "Create legal documents"
+      description: "Create Docs"
     },
     {
       id: "templates",
       title: "Templates",
       icon: FileText,
-      description: "Document templates"
+      description: "Doc Templates"
     },
     {
       id: "guides",
-      title: "Legal Guides",
+      title: "Guides",
       icon: BookOpen,
-      description: "Educational resources"
+      description: "Legal Guides"
     },
     {
       id: "research",
-      title: "Legal Research",
+      title: "Research",
       icon: Search,
-      description: "Case law and statutes"
+      description: "Case Law"
     },
     {
       id: "settings",
       title: "Settings",
       icon: Settings,
-      description: "App preferences"
+      description: "Preferences"
     }
   ];
 
@@ -219,150 +209,118 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background dark:bg-background flex">
-      {/* Collapsible Vertical Sidebar */}
-      <aside 
-        className={`bg-card dark:bg-card border-r border-border dark:border-border flex flex-col transition-all duration-300 ${
-          isExpanded ? 'w-64' : 'w-16'
-        }`}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-      >
-        {/* Header */}
-        <div className="p-4 border-b border-border dark:border-border">
-          <div className="flex items-center justify-between">
-            {isExpanded && (
-              <div className="flex items-center space-x-3">
-                <div className="gradient-primary p-2 rounded-xl">
-                  <Scale className="h-6 w-6 text-white" />
-                </div>
+    <TooltipProvider>
+      <div className="min-h-screen bg-background dark:bg-background flex">
+        {/* Fixed Icon-Only Sidebar */}
+        <aside className="bg-card dark:bg-card border-r border-border dark:border-border flex flex-col w-16">
+          {/* Header */}
+          <div className="p-2 border-b border-border dark:border-border flex justify-center">
+            <div className="gradient-primary p-2 rounded-xl">
+              <Scale className="h-6 w-6 text-white" />
+            </div>
+          </div>
+
+          {/* Navigation */}
+          <nav className="flex-1 p-2">
+            <div className="space-y-2">
+              {sidebarItems.map((item) => (
+                <Tooltip key={item.id} delayDuration={300}>
+                  <TooltipTrigger asChild>
+                    <button
+                      onClick={() => setActiveTab(item.id)}
+                      className={`w-full p-3 rounded-xl transition-all duration-200 flex items-center justify-center ${
+                        activeTab === item.id
+                          ? "bg-primary/10 text-primary border-2 border-primary/20"
+                          : "text-muted-foreground hover:bg-muted hover:text-foreground dark:text-muted-foreground dark:hover:bg-muted dark:hover:text-foreground"
+                      }`}
+                    >
+                      <item.icon className="h-5 w-5" />
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent side="right" className="flex flex-col">
+                    <span className="font-medium">{item.title}</span>
+                    <span className="text-xs opacity-70">{item.description}</span>
+                  </TooltipContent>
+                </Tooltip>
+              ))}
+            </div>
+          </nav>
+        </aside>
+
+        {/* Main Content Area */}
+        <main className="flex-1 flex flex-col min-h-screen">
+          {/* Top Bar */}
+          <header className="bg-card dark:bg-card border-b border-border dark:border-border p-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-4">
                 <div>
-                  <h1 className="text-lg font-bold text-foreground dark:text-foreground">Justicaa</h1>
-                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">Assistant</p>
+                  <h2 className="text-2xl font-bold text-foreground dark:text-foreground capitalize">
+                    {sidebarItems.find(item => item.id === activeTab)?.title || "Dashboard"}
+                  </h2>
+                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">
+                    {sidebarItems.find(item => item.id === activeTab)?.description || "Welcome to your legal assistant"}
+                  </p>
                 </div>
               </div>
-            )}
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={toggleSidebar}
-              className="h-8 w-8"
-            >
-              {isCollapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
-            </Button>
-          </div>
-        </div>
-
-        {/* Navigation */}
-        <nav className="flex-1 p-2">
-          <div className="space-y-1">
-            {sidebarItems.map((item) => (
-              <button
-                key={item.id}
-                onClick={() => setActiveTab(item.id)}
-                className={`w-full text-left p-3 rounded-xl transition-all duration-200 flex items-center ${
-                  isExpanded ? 'space-x-3' : 'justify-center'
-                } ${
-                  activeTab === item.id
-                    ? "bg-primary/10 text-primary border-2 border-primary/20"
-                    : "text-muted-foreground hover:bg-muted hover:text-foreground dark:text-muted-foreground dark:hover:bg-muted dark:hover:text-foreground"
-                }`}
-                title={!isExpanded ? item.title : undefined}
-              >
-                <item.icon className="h-5 w-5 flex-shrink-0" />
-                {isExpanded && (
-                  <div>
-                    <div className="font-medium">{item.title}</div>
-                    <div className="text-xs opacity-70">{item.description}</div>
+              
+              <div className="flex items-center space-x-4">
+                {/* Theme Toggle */}
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+                >
+                  {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+                </Button>
+                
+                {/* User Profile - Only show if authenticated */}
+                {user && (
+                  <div className="flex items-center space-x-3">
+                    <Avatar className="h-8 w-8">
+                      <AvatarImage src={user.user_metadata?.avatar_url} />
+                      <AvatarFallback className="gradient-primary text-white">
+                        {user.email?.charAt(0).toUpperCase() || "U"}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="hidden md:block">
+                      <p className="text-sm font-medium text-foreground dark:text-foreground">{user.email}</p>
+                      <p className="text-xs text-muted-foreground dark:text-muted-foreground">Signed in</p>
+                    </div>
+                    <Button variant="outline" size="sm" onClick={handleSignOut}>
+                      <LogOut className="h-4 w-4 mr-2" />
+                      Sign Out
+                    </Button>
                   </div>
                 )}
-              </button>
-            ))}
-          </div>
-        </nav>
-      </aside>
-
-      {/* Main Content Area */}
-      <main className="flex-1 flex flex-col min-h-screen">
-        {/* Top Bar */}
-        <header className="bg-card dark:bg-card border-b border-border dark:border-border p-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={toggleSidebar}
-                className="md:hidden"
-              >
-                <Menu className="h-5 w-5" />
-              </Button>
-              <div>
-                <h2 className="text-2xl font-bold text-foreground dark:text-foreground capitalize">
-                  {sidebarItems.find(item => item.id === activeTab)?.title || "Dashboard"}
-                </h2>
-                <p className="text-sm text-muted-foreground dark:text-muted-foreground">
-                  {sidebarItems.find(item => item.id === activeTab)?.description || "Welcome to your legal assistant"}
-                </p>
               </div>
             </div>
-            
-            <div className="flex items-center space-x-4">
-              {/* Theme Toggle */}
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-              >
-                {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
-              </Button>
-              
-              {/* User Profile - Only show if authenticated */}
-              {user && (
-                <div className="flex items-center space-x-3">
-                  <Avatar className="h-8 w-8">
-                    <AvatarImage src={user.user_metadata?.avatar_url} />
-                    <AvatarFallback className="gradient-primary text-white">
-                      {user.email?.charAt(0).toUpperCase() || "U"}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div className="hidden md:block">
-                    <p className="text-sm font-medium text-foreground dark:text-foreground">{user.email}</p>
-                    <p className="text-xs text-muted-foreground dark:text-muted-foreground">Signed in</p>
-                  </div>
-                  <Button variant="outline" size="sm" onClick={handleSignOut}>
-                    <LogOut className="h-4 w-4 mr-2" />
-                    Sign Out
-                  </Button>
-                </div>
-              )}
-            </div>
-          </div>
-        </header>
+          </header>
 
-        {/* Session Error Banner */}
-        {sessionError && (
-          <div className="bg-amber-50 dark:bg-amber-900/20 border-b border-amber-200 dark:border-amber-800 p-3">
-            <div className="flex items-center justify-center space-x-2">
-              <AlertTriangle className="h-4 w-4 text-amber-600 dark:text-amber-400" />
-              <p className="text-sm text-amber-800 dark:text-amber-200">{sessionError}</p>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => window.location.reload()}
-                className="ml-4"
-              >
-                Retry
-              </Button>
+          {/* Session Error Banner */}
+          {sessionError && (
+            <div className="bg-amber-50 dark:bg-amber-900/20 border-b border-amber-200 dark:border-amber-800 p-3">
+              <div className="flex items-center justify-center space-x-2">
+                <AlertTriangle className="h-4 w-4 text-amber-600 dark:text-amber-400" />
+                <p className="text-sm text-amber-800 dark:text-amber-200">{sessionError}</p>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => window.location.reload()}
+                  className="ml-4"
+                >
+                  Retry
+                </Button>
+              </div>
             </div>
-          </div>
-        )}
+          )}
 
-        {/* Content */}
-        <div className="flex-1 p-6 overflow-auto">
-          {renderMainContent()}
-        </div>
-      </main>
-    </div>
+          {/* Content */}
+          <div className="flex-1 p-6 overflow-auto">
+            {renderMainContent()}
+          </div>
+        </main>
+      </div>
+    </TooltipProvider>
   );
 };
 
