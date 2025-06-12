@@ -46,12 +46,26 @@ const Dashboard = () => {
   const { toast } = useToast();
   const isMobile = useIsMobile();
 
-  // Redirect to landing if not authenticated
+  // Check if this is trial mode
+  const isTrialMode = !user && (window.location.search.includes('trial=true') || localStorage.getItem('trialMode') === 'true');
+
+  // Handle trial mode initialization
   useEffect(() => {
-    if (!loading && !user) {
+    if (isTrialMode) {
+      localStorage.setItem('trialMode', 'true');
+      // Set default tab to chat for trial users
+      if (!user) {
+        setActiveTab("chat");
+      }
+    }
+  }, [isTrialMode, user]);
+
+  // Redirect to landing if not authenticated and not in trial mode
+  useEffect(() => {
+    if (!loading && !user && !isTrialMode) {
       navigate("/");
     }
-  }, [user, loading, navigate]);
+  }, [user, loading, navigate, isTrialMode]);
 
   useEffect(() => {
     sessionStorage.setItem('lastTab', activeTab);
@@ -94,6 +108,8 @@ const Dashboard = () => {
       
       sessionStorage.clear();
       localStorage.removeItem('lastTab');
+      localStorage.removeItem('trialMode');
+      localStorage.removeItem('trialMessagesUsed');
       
       toast({
         title: "Signed Out",
@@ -115,54 +131,58 @@ const Dashboard = () => {
   };
 
   const sidebarItems = [
-    {
+    // Show home tab only for authenticated users
+    ...(user ? [{
       id: "home",
       title: "Home",
       icon: Home,
       description: "Dashboard"
-    },
+    }] : []),
     {
       id: "chat",
       title: "AI Chat",
       icon: MessageSquare,
       description: "Legal Chat"
     },
-    {
-      id: "lawyers",
-      title: "Lawyers",
-      icon: Users,
-      description: "Find Experts"
-    },
-    {
-      id: "generator",
-      title: "Generator",
-      icon: FilePlus,
-      description: "Create Docs"
-    },
-    {
-      id: "templates",
-      title: "Templates",
-      icon: FileText,
-      description: "Doc Templates"
-    },
-    {
-      id: "guides",
-      title: "Guides",
-      icon: BookOpen,
-      description: "Legal Guides"
-    },
-    {
-      id: "research",
-      title: "Research",
-      icon: Search,
-      description: "Case Law"
-    },
-    {
-      id: "settings",
-      title: "Settings",
-      icon: Settings,
-      description: "Preferences"
-    }
+    // Show other tabs only for authenticated users
+    ...(user ? [
+      {
+        id: "lawyers",
+        title: "Lawyers",
+        icon: Users,
+        description: "Find Experts"
+      },
+      {
+        id: "generator",
+        title: "Generator",
+        icon: FilePlus,
+        description: "Create Docs"
+      },
+      {
+        id: "templates",
+        title: "Templates",
+        icon: FileText,
+        description: "Doc Templates"
+      },
+      {
+        id: "guides",
+        title: "Guides",
+        icon: BookOpen,
+        description: "Legal Guides"
+      },
+      {
+        id: "research",
+        title: "Research",
+        icon: Search,
+        description: "Case Law"
+      },
+      {
+        id: "settings",
+        title: "Settings",
+        icon: Settings,
+        description: "Preferences"
+      }
+    ] : [])
   ];
 
   if (loading) {
@@ -184,12 +204,18 @@ const Dashboard = () => {
     );
   }
 
-  // Don't render dashboard if user is not authenticated
-  if (!user) {
+  // Don't render dashboard if user is not authenticated and not in trial mode
+  if (!user && !isTrialMode) {
     return null;
   }
 
   const renderMainContent = () => {
+    // For trial users, only show chat interface
+    if (isTrialMode && !user) {
+      return <ChatInterface category="all" />;
+    }
+
+    // For authenticated users, show all features
     switch (activeTab) {
       case "home":
         return <UserDashboard />;
@@ -208,7 +234,7 @@ const Dashboard = () => {
       case "settings":
         return <SettingsPanel />;
       default:
-        return <UserDashboard />;
+        return user ? <UserDashboard /> : <ChatInterface category="all" />;
     }
   };
 
@@ -240,7 +266,7 @@ const Dashboard = () => {
           </div>
 
           {/* Navigation */}
-          <nav className="flex-1 p-2 relative z-10">
+          <nav className="flex-1 p-2 relative z-[99999]">
             <div className="space-y-2">
               {sidebarItems.map((item) => (
                 isMobile ? (
@@ -278,7 +304,7 @@ const Dashboard = () => {
                     </TooltipTrigger>
                     <TooltipContent 
                       side="right" 
-                      className="flex flex-col bg-popover dark:bg-gray-800 border border-border dark:border-gray-600 shadow-lg"
+                      className="flex flex-col bg-popover dark:bg-gray-800 border border-border dark:border-gray-600 shadow-lg z-[99999]"
                       sideOffset={8}
                     >
                       <span className="font-medium">{item.title}</span>
@@ -311,10 +337,10 @@ const Dashboard = () => {
                 
                 <div>
                   <h2 className="text-lg md:text-2xl font-bold text-foreground dark:text-white capitalize">
-                    {sidebarItems.find(item => item.id === activeTab)?.title || "Dashboard"}
+                    {isTrialMode && !user ? "Free Trial - AI Chat" : (sidebarItems.find(item => item.id === activeTab)?.title || "Dashboard")}
                   </h2>
                   <p className="text-xs md:text-sm text-muted-foreground dark:text-gray-400 hidden sm:block">
-                    {sidebarItems.find(item => item.id === activeTab)?.description || "Welcome to your legal assistant"}
+                    {isTrialMode && !user ? "Try our AI legal assistant for free" : (sidebarItems.find(item => item.id === activeTab)?.description || "Welcome to your legal assistant")}
                   </p>
                 </div>
               </div>
@@ -331,7 +357,7 @@ const Dashboard = () => {
                 </Button>
                 
                 {/* User Profile - Only show if authenticated */}
-                {user && (
+                {user ? (
                   <div className="flex items-center space-x-2 md:space-x-3">
                     <Avatar className="h-6 w-6 md:h-8 md:w-8">
                       <AvatarImage src={user.user_metadata?.avatar_url} />
@@ -350,10 +376,42 @@ const Dashboard = () => {
                       <span className="hidden sm:inline">Sign Out</span>
                     </Button>
                   </div>
-                )}
+                ) : isTrialMode ? (
+                  <div className="flex items-center space-x-2">
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      onClick={() => window.location.href = '/auth'}
+                      className="text-xs md:text-sm dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700"
+                    >
+                      <User className="h-3 w-3 md:h-4 md:w-4 mr-1 md:mr-2" />
+                      <span className="hidden sm:inline">Sign In</span>
+                    </Button>
+                  </div>
+                ) : null}
               </div>
             </div>
           </header>
+
+          {/* Trial Mode Banner */}
+          {isTrialMode && !user && (
+            <div className="bg-blue-50 dark:bg-blue-900/20 border-b border-blue-200 dark:border-blue-800 p-3 relative z-20">
+              <div className="flex items-center justify-center space-x-2">
+                <MessageSquare className="h-4 w-4 text-blue-600 dark:text-blue-400 flex-shrink-0" />
+                <p className="text-sm text-blue-800 dark:text-blue-200 text-center">
+                  You're using the free trial. Sign up to unlock all features!
+                </p>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => window.location.href = '/auth'}
+                  className="ml-4 text-xs border-blue-300 text-blue-700 hover:bg-blue-100"
+                >
+                  Sign Up
+                </Button>
+              </div>
+            </div>
+          )}
 
           {/* Session Error Banner */}
           {sessionError && (

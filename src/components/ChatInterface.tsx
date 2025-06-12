@@ -1,4 +1,3 @@
-
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -39,7 +38,7 @@ export const ChatInterface = ({ category }: ChatInterfaceProps) => {
   const isMobile = useIsMobile();
 
   // Check if this is trial mode
-  const isTrialMode = !user && window.location.search.includes('trial=true');
+  const isTrialMode = !user && (window.location.search.includes('trial=true') || localStorage.getItem('trialMode') === 'true');
   const TRIAL_MESSAGE_LIMIT = 3;
 
   const scrollToBottom = () => {
@@ -50,9 +49,10 @@ export const ChatInterface = ({ category }: ChatInterfaceProps) => {
     scrollToBottom();
   }, [messages]);
 
-  // Load trial messages count from localStorage
+  // Initialize trial mode and load trial messages count
   useEffect(() => {
     if (isTrialMode) {
+      localStorage.setItem('trialMode', 'true');
       const savedCount = localStorage.getItem('trialMessagesUsed');
       setTrialMessagesUsed(savedCount ? parseInt(savedCount) : 0);
     }
@@ -68,11 +68,14 @@ export const ChatInterface = ({ category }: ChatInterfaceProps) => {
     const authWindow = window.open('/auth', '_blank', 'width=500,height=600,scrollbars=yes,resizable=yes');
     
     // Listen for auth success message
-    const messageHandler = (event) => {
+    const messageHandler = (event: MessageEvent) => {
       if (event.origin === window.location.origin && event.data.type === 'AUTH_SUCCESS') {
         authWindow?.close();
         setShowAuthModal(false);
-        window.location.reload(); // Refresh to update auth state
+        // Clear trial mode and redirect to dashboard
+        localStorage.removeItem('trialMode');
+        localStorage.removeItem('trialMessagesUsed');
+        window.location.href = '/dashboard';
       }
     };
     
@@ -116,7 +119,7 @@ export const ChatInterface = ({ category }: ChatInterfaceProps) => {
     }
 
     try {
-      // Create conversation if not exists
+      // Create conversation if not exists and user is authenticated
       if (!conversationId && user) {
         const { data: conversation, error: convError } = await supabase
           .from("chat_conversations")

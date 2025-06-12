@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { AuthModal } from "@/components/AuthModal";
@@ -42,8 +41,13 @@ const Landing = () => {
   };
 
   const handleTryForFree = () => {
-    // Navigate to dashboard for trial mode
-    window.location.href = "/dashboard?trial=true";
+    if (user) {
+      // If user is already logged in, go to dashboard
+      window.location.href = "/dashboard";
+    } else {
+      // Navigate to dashboard with trial mode
+      window.location.href = "/dashboard?trial=true";
+    }
   };
 
   return (

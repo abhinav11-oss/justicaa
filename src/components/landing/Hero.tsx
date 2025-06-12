@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { ArrowRight } from "lucide-react";
@@ -35,7 +34,7 @@ export const Hero = ({ onCTAClick, onTryForFree }: HeroProps) => {
               size="lg" 
               variant="outline" 
               className="w-full sm:w-auto text-base md:text-lg px-6 md:px-8 py-3 md:py-4 rounded-xl" 
-              onClick={onCTAClick}
+              onClick={user ? () => window.location.href = "/dashboard" : onCTAClick}
             >
               {user ? "Go to Dashboard" : "Sign In"}
               <ArrowRight className="h-4 w-4 md:h-5 md:w-5 ml-2" />
