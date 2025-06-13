@@ -109,7 +109,7 @@ npm run dev
 ---
 
 📸 **Screenshots**  
-##Home page :##
+- Home page :
 - ![image](https://github.com/user-attachments/assets/d935ebb3-fb7d-43fb-90fe-59ceb4b5fab3)
 - ![image](https://github.com/user-attachments/assets/57254ed4-0cbf-4f1f-88be-a05db427a22c)
 - ![image](https://github.com/user-attachments/assets/d976c98d-7031-49f0-805b-4e844f65c05d)
@@ -117,26 +117,47 @@ npm run dev
 - ![image](https://github.com/user-attachments/assets/24ff8a38-6d0e-4176-a038-9eb922878630)
 
 
-##free trial chat interface :##
+
+- free trial chat interface :
 - ![image](https://github.com/user-attachments/assets/73fb3c3a-bf61-4bd9-9152-73850cbfc731)
 
 
+
 - Chatbot interface :
-- ![image](https://github.com/user-attachments/assets/e46ec6eb-5342-406d-a6b4-6f6e81aa9d77)
+- ![image](https://github.com/user-attachments/assets/5cf36563-e1a2-4877-9982-adfc98003756)
+
+
+
+- find lawyers nearby you :
+- ![image](https://github.com/user-attachments/assets/015b61b7-0cdd-45b8-9855-e5fb873f34be)
+- ![image](https://github.com/user-attachments/assets/0c579b87-2789-493b-9e92-c0e2931ccb76)
+
+
+
+- legal guides :
+- ![image](https://github.com/user-attachments/assets/5b7600e4-f8e2-4524-8ad5-c46f20f6350b)
+
+
+
+- legal knowledge base(frequently asked questions) :
+- ![image](https://github.com/user-attachments/assets/ab3c525b-b111-4094-bf23-fb43cd56b05e)
+
 
 
 - Document Generator :
-- ![image](https://github.com/user-attachments/assets/4ff58e25-540b-47a3-ad41-90b4c3d5ddce)
-- ![image](https://github.com/user-attachments/assets/1448bce7-754e-46b8-80c9-ea082dae3cd1)
+- ![image](https://github.com/user-attachments/assets/c91e6acb-ef02-482e-bb59-c8791b8b793c)
+- ![image](https://github.com/user-attachments/assets/f769bac7-b608-4cc3-b6d6-20ef8754f95e)
+
 
 
 - Generated Document :
-- ![image](https://github.com/user-attachments/assets/9e8b12d4-8e1d-4241-a96d-af5fc91ba617)
+- ![image](https://github.com/user-attachments/assets/de2f70f1-697e-43f0-87b4-c167a59fdc67)
+
 
 
 - Login / Signup :
-- ![image](https://github.com/user-attachments/assets/51be440b-9ba4-4d5b-a513-e54cfa3c55d1)
-- ![image](https://github.com/user-attachments/assets/8984fa3d-b0a7-4ecf-86d2-55132d0d8f12)
+- ![image](https://github.com/user-attachments/assets/2a9fca5e-d491-4ad0-bfec-ca1cf4388c51)
+- ![image](https://github.com/user-attachments/assets/cd9e53d7-9468-4108-a164-791720c901d4)
 
 
 ---
