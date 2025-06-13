@@ -109,10 +109,16 @@ npm run dev
 ---
 
 📸 **Screenshots**  
-- Home page :
-- ![image](https://github.com/user-attachments/assets/362d62a3-9a0f-4c0a-bd0a-abed9b343032)
-- ![image](https://github.com/user-attachments/assets/d9818301-4852-4d9e-9733-65741b60dec9)
-- ![image](https://github.com/user-attachments/assets/27bc67e8-29eb-4884-b705-14a5f0491889)
+##Home page :##
+- ![image](https://github.com/user-attachments/assets/d935ebb3-fb7d-43fb-90fe-59ceb4b5fab3)
+- ![image](https://github.com/user-attachments/assets/57254ed4-0cbf-4f1f-88be-a05db427a22c)
+- ![image](https://github.com/user-attachments/assets/d976c98d-7031-49f0-805b-4e844f65c05d)
+- ![image](https://github.com/user-attachments/assets/19abd7b5-4fcd-4ba7-a543-13686cf0c85c)
+- ![image](https://github.com/user-attachments/assets/24ff8a38-6d0e-4176-a038-9eb922878630)
+
+
+##free trial chat interface :##
+- ![image](https://github.com/user-attachments/assets/73fb3c3a-bf61-4bd9-9152-73850cbfc731)
 
 
 - Chatbot interface :
