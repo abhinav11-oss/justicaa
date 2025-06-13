@@ -108,7 +108,7 @@ npm run dev
 
 ---
 
-📸 **Screenshots**  
+## 📸 Screenshots  
 - Home page :
 - ![image](https://github.com/user-attachments/assets/d935ebb3-fb7d-43fb-90fe-59ceb4b5fab3)
 - ![image](https://github.com/user-attachments/assets/57254ed4-0cbf-4f1f-88be-a05db427a22c)
