@@ -110,6 +110,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setSession(session);
         setUser(session.user);
         setSessionError(null);
+        
+        // Close any popup windows after successful sign in
+        if (window.opener) {
+          window.close();
+        }
       } else if (event === "USER_UPDATED" && session) {
         setSession(session);
         setUser(session.user);
@@ -194,6 +199,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         provider: "google",
         options: {
           redirectTo: `${window.location.origin}/`,
+          queryParams: {
+            access_type: 'offline',
+            prompt: 'consent',
+          },
         },
       });
 

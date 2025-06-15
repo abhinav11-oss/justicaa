@@ -1,4 +1,5 @@
-import { useState } from "react";
+
+import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { AuthModal } from "@/components/AuthModal";
 import { Header } from "@/components/landing/Header";
@@ -12,6 +13,19 @@ import { Footer } from "@/components/landing/Footer";
 const Landing = () => {
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const { user } = useAuth();
+
+  // Listen for authentication messages from popup windows
+  useEffect(() => {
+    const handleMessage = (event: MessageEvent) => {
+      if (event.origin === window.location.origin && event.data.type === 'AUTH_SUCCESS') {
+        // Refresh the page to update auth state
+        window.location.reload();
+      }
+    };
+
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
+  }, []);
 
   const handleCTAClick = () => {
     if (user) {
