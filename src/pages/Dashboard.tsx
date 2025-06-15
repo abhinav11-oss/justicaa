@@ -386,6 +386,16 @@ const Dashboard = () => {
               {/* Language Selector */}
               <LanguageSelector />
 
+              {/* Dark mode toggle */}
+              <Button
+                variant="ghost"
+                size="icon"
+                aria-label="Toggle dark mode"
+                onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+              >
+                {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+              </Button>
+
               {/* Action Buttons */}
               <Button variant="ghost" size="icon" className="relative">
                 <Bell className="h-5 w-5" />

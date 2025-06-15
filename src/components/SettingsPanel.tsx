@@ -1,5 +1,4 @@
-
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,12 +9,13 @@ import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
+import { useTheme } from "next-themes";
 import { Moon, Sun, MapPin, User, Save, Upload } from "lucide-react";
 
 export const SettingsPanel = () => {
   const { user } = useAuth();
   const { toast } = useToast();
-  const [darkMode, setDarkMode] = useState(false);
+  const { theme, setTheme } = useTheme();
   const [profile, setProfile] = useState({
     name: "",
     email: "",
@@ -26,15 +26,6 @@ export const SettingsPanel = () => {
   const [unsavedChanges, setUnsavedChanges] = useState(false);
 
   useEffect(() => {
-    // Load dark mode preference
-    const savedTheme = localStorage.getItem('theme');
-    setDarkMode(savedTheme === 'dark');
-    
-    // Apply theme to document
-    if (savedTheme === 'dark') {
-      document.documentElement.classList.add('dark');
-    }
-
     // Load user profile
     if (user) {
       setProfile(prev => ({
@@ -46,20 +37,10 @@ export const SettingsPanel = () => {
   }, [user]);
 
   const handleThemeToggle = () => {
-    const newDarkMode = !darkMode;
-    setDarkMode(newDarkMode);
-    
-    if (newDarkMode) {
-      document.documentElement.classList.add('dark');
-      localStorage.setItem('theme', 'dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-      localStorage.setItem('theme', 'light');
-    }
-    
+    setTheme(theme === "dark" ? "light" : "dark");
     toast({
       title: "Theme Updated",
-      description: `Switched to ${newDarkMode ? 'dark' : 'light'} mode`
+      description: `Switched to ${theme === "dark" ? "light" : "dark"} mode`
     });
   };
 
@@ -69,7 +50,6 @@ export const SettingsPanel = () => {
   };
 
   const handleSaveProfile = () => {
-    // Save profile logic would go here
     toast({
       title: "Profile Saved",
       description: "Your profile has been updated successfully"
@@ -78,7 +58,6 @@ export const SettingsPanel = () => {
   };
 
   const handleAvatarUpload = () => {
-    // Avatar upload logic would go here
     toast({
       title: "Avatar Upload",
       description: "Avatar upload functionality coming soon"
@@ -97,7 +76,7 @@ export const SettingsPanel = () => {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center">
-            {darkMode ? <Moon className="h-5 w-5 mr-2" /> : <Sun className="h-5 w-5 mr-2" />}
+            {theme === "dark" ? <Moon className="h-5 w-5 mr-2" /> : <Sun className="h-5 w-5 mr-2" />}
             Appearance
           </CardTitle>
         </CardHeader>
@@ -111,7 +90,7 @@ export const SettingsPanel = () => {
             </div>
             <Switch
               id="dark-mode"
-              checked={darkMode}
+              checked={theme === "dark"}
               onCheckedChange={handleThemeToggle}
             />
           </div>
