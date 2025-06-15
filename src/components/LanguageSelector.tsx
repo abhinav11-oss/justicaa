@@ -9,9 +9,11 @@ import {
   DropdownMenuTrigger 
 } from "@/components/ui/dropdown-menu";
 import { Globe, Check } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 const languages = [
   { code: 'en', name: 'English', flag: '🇺🇸' },
+  { code: 'hi', name: 'हिन्दी', flag: '🇮🇳' }, // NEW Hindi
   { code: 'es', name: 'Español', flag: '🇪🇸' },
   { code: 'fr', name: 'Français', flag: '🇫🇷' },
   { code: 'de', name: 'Deutsch', flag: '🇩🇪' },
@@ -20,11 +22,19 @@ const languages = [
 
 export const LanguageSelector = () => {
   const { i18n } = useTranslation();
+  const { toast } = useToast();
   const [currentLanguage, setCurrentLanguage] = useState(
     languages.find(lang => lang.code === i18n.language) || languages[0]
   );
 
   const changeLanguage = (languageCode: string) => {
+    if (languageCode === "hi") {
+      toast({
+        title: "Coming Soon",
+        description: "Hindi translations are coming soon!",
+      });
+      return;
+    }
     i18n.changeLanguage(languageCode);
     const newLanguage = languages.find(lang => lang.code === languageCode);
     if (newLanguage) {
@@ -47,6 +57,7 @@ export const LanguageSelector = () => {
             key={language.code}
             onClick={() => changeLanguage(language.code)}
             className="flex items-center justify-between cursor-pointer"
+            disabled={language.code === "hi"}
           >
             <div className="flex items-center space-x-2">
               <span>{language.flag}</span>

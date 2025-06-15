@@ -117,12 +117,12 @@ const Dashboard = () => {
     }
   };
 
+  // New: sidebar icon-tooltips mapping for accessibility and usability.
   const sidebarItems = [
-    // Show home tab only for authenticated users
     ...(user ? [{
       id: "home",
       title: t('dashboard.title'),
-      icon: Home,
+      icon: Home, // Lucide icon
       description: "Overview"
     }] : []),
     {
@@ -131,7 +131,6 @@ const Dashboard = () => {
       icon: MessageSquare,
       description: "Legal Assistant"
     },
-    // Show other tabs only for authenticated users
     ...(user ? [
       {
         id: "lawyers",
@@ -226,7 +225,13 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="min-h-screen flex relative" style={{ background: 'hsl(var(--surface))' }}>
+    <div className="min-h-screen flex relative w-full" 
+      // Improved: use conditional classNames for precise color contrast
+      style={{
+        background: theme === "dark" 
+          ? 'hsl(var(--surface), 1)'
+          : 'hsl(var(--background), 1)'
+      }}>
       {/* Mobile Overlay */}
       {isMobile && sidebarOpen && (
         <div 
@@ -235,106 +240,78 @@ const Dashboard = () => {
         />
       )}
 
-      {/* Sidebar */}
-      <aside className={`
-        ${isMobile ? 'fixed' : 'relative'} 
-        ${isMobile && !sidebarOpen ? '-translate-x-full' : 'translate-x-0'}
-        text-white
-        ${isMobile ? 'w-72 h-full z-50' : 'w-72'} 
-        transition-transform duration-300 ease-in-out
-        flex flex-col
-      `}
-      // Set bg and text for dark mode
-      style={{
-        background: 'hsl(var(--sidebar))',
-        color: 'hsl(var(--sidebar-foreground))',
-      }}>
-        {/* Header */}
-        <div className="p-6 border-b" style={{ borderColor: 'rgba(255, 255, 255, 0.1)' }}>
-          <div className="flex items-center space-x-3">
-            <div className="p-2 rounded-xl gradient-primary">
-              <Scale className="h-6 w-6 text-white" />
-            </div>
-            <span className="text-xl font-semibold">Justicaa</span>
+      {/* Sidebar - Now, icon only w/ tooltips */}
+      <aside
+        className={`
+          ${isMobile ? 'fixed' : 'relative'} 
+          ${isMobile && !sidebarOpen ? '-translate-x-full' : 'translate-x-0'}
+          text-white
+          ${isMobile ? 'w-20 h-full z-50' : 'w-20'} 
+          transition-transform duration-300 ease-in-out
+          flex flex-col items-center pt-2
+        `}
+        style={{
+          background: theme === "dark"
+            ? 'hsl(var(--sidebar))'
+            : 'hsl(var(--card))',
+          color: theme === "dark" 
+            ? 'hsl(var(--sidebar-foreground))'
+            : 'hsl(var(--foreground))'
+        }}
+      >
+        {/* Header (small logo) */}
+        <div className="mb-6 mt-2">
+          <div className="p-2 rounded-xl gradient-primary">
+            <Scale className="h-7 w-7 text-white" />
           </div>
         </div>
-        {/* Navigation */}
-        <nav className="flex-1 p-4">
-          <div className="space-y-2">
-            {sidebarItems.map((item) => (
-              <button
-                key={item.id}
-                onClick={() => {
-                  setActiveTab(item.id);
-                  if (isMobile) setSidebarOpen(false);
-                }}
-                className={`sidebar-item ${activeTab === item.id ? 'active' : ''}`}
-                // Make sure text adapts to dark mode
-                style={{
-                  color: activeTab === item.id ? '#fff' : 'hsl(var(--muted-foreground))',
-                  background:
-                    activeTab === item.id
-                      ? 'linear-gradient(135deg, hsl(var(--purple-gradient-start)) 0%, hsl(var(--purple-gradient-end)) 100%)'
-                      : undefined,
-                }}
-              >
-                <item.icon className="h-5 w-5 flex-shrink-0" />
-                <div>
-                  <div className="font-medium">{item.title}</div>
-                  <div className="text-xs opacity-70">{item.description}</div>
+        {/* Navigation: only icons, each with a Tooltip*/}
+        <nav className="flex-1 flex flex-col space-y-4 items-center w-full">
+          {sidebarItems.map((item) => (
+            <div key={item.id} className="w-full flex justify-center">
+              <div className="relative group">
+                <button
+                  onClick={() => {
+                    setActiveTab(item.id);
+                    if (isMobile) setSidebarOpen(false);
+                  }}
+                  className={`
+                    flex items-center justify-center w-12 h-12 rounded-xl
+                    transition-all duration-200
+                    ${activeTab === item.id
+                      ? "bg-gradient-to-br from-purple-400 to-purple-500 text-white shadow-md"
+                      : "text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-800 hover:text-purple-500"}
+                  `}
+                  style={{
+                    fontSize: 0 // visually hide label, only show icon
+                  }}
+                  aria-label={item.title}
+                >
+                  <item.icon className="h-6 w-6" />
+                </button>
+                {/* Tooltip on hover (hidden on mobile since it's touch) */}
+                <div className="absolute left-14 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 group-hover:pointer-events-auto pointer-events-none transition bg-black bg-opacity-80 text-white text-xs rounded-md px-3 py-1 whitespace-nowrap z-50"
+                  style={{ minWidth: 80 }}
+                >
+                  {item.title}
                 </div>
-              </button>
-            ))}
-          </div>
+              </div>
+            </div>
+          ))}
         </nav>
-
-        {/* User Profile Section */}
-        <div className="p-4 border-t" style={{ borderColor: 'rgba(255, 255, 255, 0.1)' }}>
+        {/* User avatar or trial--now shown at bottom, just an icon */}
+        <div className="p-3 border-t w-full flex flex-col items-center"
+          style={{ borderColor: theme === "dark" ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.07)' }}
+        >
           {user ? (
-            <div className="space-y-3">
-              <div className="flex items-center space-x-3">
-                <Avatar className="h-10 w-10">
-                  <AvatarImage src={user.user_metadata?.avatar_url} />
-                  <AvatarFallback className="gradient-primary text-white">
-                    {user.email?.charAt(0).toUpperCase() || "U"}
-                  </AvatarFallback>
-                </Avatar>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-white truncate">
-                    {user.email}
-                  </p>
-                  <p className="text-xs text-gray-400">{t('dashboard.premiumUser')}</p>
-                </div>
-              </div>
-              <Button 
-                variant="outline" 
-                size="sm" 
-                onClick={handleSignOut}
-                className="w-full bg-transparent border-gray-700 text-gray-300 hover:bg-gray-800"
-              >
-                <LogOut className="h-4 w-4 mr-2" />
-                {t('dashboard.signOut')}
-              </Button>
-            </div>
+            <Avatar className="h-8 w-8">
+              <AvatarImage src={user.user_metadata?.avatar_url} />
+              <AvatarFallback className="gradient-primary text-white">
+                {user.email?.charAt(0).toUpperCase() || "U"}
+              </AvatarFallback>
+            </Avatar>
           ) : isTrialMode ? (
-            <div className="space-y-3">
-              <div className="p-3 rounded-lg border" style={{ 
-                background: 'rgba(125, 106, 255, 0.1)', 
-                borderColor: 'rgba(125, 106, 255, 0.3)' 
-              }}>
-                <p className="text-sm font-medium" style={{ color: 'hsl(var(--primary))' }}>{t('dashboard.freeTrial')}</p>
-                <p className="text-xs text-gray-400">{t('dashboard.limitedAccess')}</p>
-              </div>
-              <Button 
-                variant="outline" 
-                size="sm" 
-                onClick={() => window.location.href = '/auth'}
-                className="w-full bg-transparent border-gray-700 text-gray-300 hover:bg-gray-800"
-              >
-                <User className="h-4 w-4 mr-2" />
-                {t('dashboard.signIn')}
-              </Button>
-            </div>
+            <User className="h-8 w-8 text-purple-500" />
           ) : null}
         </div>
       </aside>
@@ -343,72 +320,74 @@ const Dashboard = () => {
       <main className="flex-1 flex flex-col min-h-screen">
         {/* Top Bar */}
         <header
-          className="px-6 py-4 border-b"
+          className={`px-6 py-4 border-b flex justify-between items-center`}
           style={{
-            background: 'hsl(var(--card))',
+            background: theme === "dark" ? 'hsl(var(--card))' : 'hsl(var(--card), 1)',
             borderColor: 'hsl(var(--border))',
-            color: 'hsl(var(--card-foreground))',
+            color: theme === "dark" ? 'hsl(var(--card-foreground))' : 'hsl(var(--foreground))'
           }}
         >
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              {/* Mobile Menu Button */}
-              {isMobile && (
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => setSidebarOpen(true)}
-                  className="md:hidden"
-                >
-                  <Menu className="h-5 w-5" />
-                </Button>
-              )}
-              <div>
-                <h1 className="text-2xl font-bold"
-                  style={{ color: 'hsl(var(--foreground))' }}
-                >
-                  {isTrialMode && !user ? "Free Trial - AI Chat" : (sidebarItems.find(item => item.id === activeTab)?.title || t('dashboard.title'))}
-                </h1>
-              </div>
-            </div>
-            <div className="flex items-center space-x-4">
-              {/* Search Bar */}
-              <div className="hidden md:flex search-input">
-                <Search className="h-4 w-4 mr-2" style={{ color: 'hsl(var(--text-secondary))' }} />
-                <input 
-                  type="text" 
-                  placeholder={t('dashboard.searchPlaceholder')}
-                  className="bg-transparent border-none outline-none text-sm flex-1"
-                  style={{ color: 'hsl(var(--foreground))', background: 'transparent' }}
-                />
-              </div>
-
-              {/* Language Selector */}
-              <LanguageSelector />
-
-              {/* Dark mode toggle */}
+          <div className="flex items-center space-x-4">
+            {/* Mobile Menu Button */}
+            {isMobile && (
               <Button
                 variant="ghost"
                 size="icon"
-                aria-label="Toggle dark mode"
-                onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+                onClick={() => setSidebarOpen(true)}
+                className="md:hidden"
               >
-                {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+                <Menu className="h-5 w-5" />
               </Button>
-
-              {/* Action Buttons */}
-              <Button variant="ghost" size="icon" className="relative">
-                <Bell className="h-5 w-5" />
-                <span className="absolute -top-1 -right-1 h-3 w-3 bg-red-500 rounded-full"></span>
-              </Button>
-
-              <Button variant="ghost" size="icon">
-                <Mail className="h-5 w-5" />
-              </Button>
+            )}
+            <div>
+              <h1 className="text-2xl font-bold"
+                style={{ color: theme === "dark" ? 'hsl(var(--foreground))' : 'hsl(var(--foreground))' }}
+              >
+                {isTrialMode && !user ? "Free Trial - AI Chat" : (sidebarItems.find(item => item.id === activeTab)?.title || t('dashboard.title'))}
+              </h1>
             </div>
           </div>
-        </header>
+          <div className="flex items-center space-x-3">
+            {/* Language Selector */}
+            <LanguageSelector />
 
+            {/* Dark mode toggle - stays in top right */}
+            <Button
+              variant="ghost"
+              size="icon"
+              aria-label="Toggle dark mode"
+              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+              className={theme === "dark" ? "text-yellow-200" : "text-purple-500"}
+            >
+              {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+            </Button>
+
+            {/* Notifications button */}
+            <Button
+              variant="ghost"
+              size="icon"
+              className="relative"
+              tabIndex={-1}
+              aria-label="Notifications"
+              style={{ color: theme === "dark" ? '#ffd700' : '#8833ff' /* purple or yellow accent */ }}
+              disabled
+            >
+              <Bell className="h-5 w-5" />
+              <span className="absolute -top-1 -right-1 h-3 w-3 bg-red-500 rounded-full border-2 border-card"></span>
+            </Button>
+
+            {/* Mail button */}
+            <Button
+              variant="ghost"
+              size="icon"
+              aria-label="Mail"
+              className={`${theme === "dark" ? "text-teal-200" : "text-blue-500"}`}
+              disabled
+            >
+              <Mail className="h-5 w-5" />
+            </Button>
+          </div>
+        </header>
         {/* Trial Mode Banner */}
         {isTrialMode && !user && (
           <div className="px-6 py-3" style={{ 
