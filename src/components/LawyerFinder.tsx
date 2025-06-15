@@ -32,7 +32,7 @@ interface LawyerFinderProps {
   category?: string;
 }
 
-// Enhanced lawyer data with lawyers across multiple cities
+// Enhanced lawyer data with more lawyers across multiple cities and pincodes
 const lawyersDatabase: Lawyer[] = [
   // Gwalior Lawyers
   {
@@ -126,6 +126,21 @@ const lawyersDatabase: Lawyer[] = [
     latitude: 28.6519,
     longitude: 77.1909
   },
+  {
+    id: "30",
+    name: "Adv. Rohit Sharma",
+    specialization: ["Criminal Law", "Civil Law"],
+    location: "Lajpat Nagar",
+    city: "Delhi",
+    pincode: "110024",
+    phone: "+91-98765-43230",
+    experience: 14,
+    rating: 4.6,
+    address: "Central Market, Lajpat Nagar, Delhi - 110024",
+    verified: true,
+    latitude: 28.5665,
+    longitude: 77.2431
+  },
   // Mumbai Lawyers
   {
     id: "7",
@@ -157,6 +172,21 @@ const lawyersDatabase: Lawyer[] = [
     latitude: 19.1136,
     longitude: 72.8697
   },
+  {
+    id: "31",
+    name: "Adv. Neha Kapoor",
+    specialization: ["Family Law", "Property Law"],
+    location: "Powai",
+    city: "Mumbai",
+    pincode: "400076",
+    phone: "+91-98765-43231",
+    experience: 9,
+    rating: 4.4,
+    address: "Hiranandani Gardens, Powai, Mumbai - 400076",
+    verified: true,
+    latitude: 19.1197,
+    longitude: 72.9073
+  },
   // Bangalore Lawyers
   {
     id: "9",
@@ -187,6 +217,145 @@ const lawyersDatabase: Lawyer[] = [
     verified: true,
     latitude: 12.9279,
     longitude: 77.5937
+  },
+  {
+    id: "32",
+    name: "Adv. Arun Krishnan",
+    specialization: ["Business Law", "Tax Law"],
+    location: "Electronic City",
+    city: "Bangalore",
+    pincode: "560100",
+    phone: "+91-98765-43232",
+    experience: 13,
+    rating: 4.5,
+    address: "Electronic City Phase 1, Bangalore - 560100",
+    verified: true,
+    latitude: 12.8456,
+    longitude: 77.6603
+  },
+  // Jhansi Lawyers
+  {
+    id: "11",
+    name: "Adv. Rakesh Tiwari",
+    specialization: ["Criminal Law", "Family Law"],
+    location: "Civil Lines",
+    city: "Jhansi",
+    pincode: "284001",
+    phone: "+91-98765-43220",
+    experience: 12,
+    rating: 4.3,
+    address: "Near District Court, Civil Lines, Jhansi - 284001",
+    verified: true,
+    latitude: 25.4484,
+    longitude: 78.5685
+  },
+  {
+    id: "12",
+    name: "Adv. Sushma Sharma",
+    specialization: ["Property Law", "Civil Law"],
+    location: "Sadar Bazaar",
+    city: "Jhansi",
+    pincode: "284003",
+    phone: "+91-98765-43221",
+    experience: 8,
+    rating: 4.2,
+    address: "Main Market, Sadar Bazaar, Jhansi - 284003",
+    verified: false,
+    latitude: 25.4540,
+    longitude: 78.5732
+  },
+  // Bhopal Lawyers
+  {
+    id: "13",
+    name: "Adv. Vinod Kumar",
+    specialization: ["Business Law", "Contract Law"],
+    location: "MP Nagar",
+    city: "Bhopal",
+    pincode: "462011",
+    phone: "+91-98765-43222",
+    experience: 16,
+    rating: 4.6,
+    address: "Zone 1, MP Nagar, Bhopal - 462011",
+    verified: true,
+    latitude: 23.2599,
+    longitude: 77.4126
+  },
+  {
+    id: "14",
+    name: "Adv. Rekha Jain",
+    specialization: ["Consumer Law", "Employment Law"],
+    location: "Arera Colony",
+    city: "Bhopal",
+    pincode: "462016",
+    phone: "+91-98765-43223",
+    experience: 10,
+    rating: 4.4,
+    address: "E-5, Arera Colony, Bhopal - 462016",
+    verified: true,
+    latitude: 23.2156,
+    longitude: 77.4304
+  },
+  // Indore Lawyers
+  {
+    id: "15",
+    name: "Adv. Mahesh Patel",
+    specialization: ["Criminal Law", "Civil Law"],
+    location: "Vijay Nagar",
+    city: "Indore",
+    pincode: "452010",
+    phone: "+91-98765-43224",
+    experience: 14,
+    rating: 4.5,
+    address: "Scheme 54, Vijay Nagar, Indore - 452010",
+    verified: true,
+    latitude: 22.7196,
+    longitude: 75.8577
+  },
+  {
+    id: "16",
+    name: "Adv. Anita Singh",
+    specialization: ["Family Law", "Property Law"],
+    location: "Old Palasia",
+    city: "Indore",
+    pincode: "452001",
+    phone: "+91-98765-43225",
+    experience: 11,
+    rating: 4.3,
+    address: "Palasia Square, Indore - 452001",
+    verified: false,
+    latitude: 22.7239,
+    longitude: 75.8570
+  },
+  // Ujjain Lawyers
+  {
+    id: "17",
+    name: "Adv. Ramesh Dubey",
+    specialization: ["Business Law", "Tax Law"],
+    location: "Freeganj",
+    city: "Ujjain",
+    pincode: "456010",
+    phone: "+91-98765-43226",
+    experience: 18,
+    rating: 4.7,
+    address: "Freeganj Market, Ujjain - 456010",
+    verified: true,
+    latitude: 23.1765,
+    longitude: 75.7885
+  },
+  {
+    id: "18",
+    name: "Adv. Geeta Sharma",
+    specialization: ["Consumer Law", "Criminal Law"],
+    location: "Mahakal Road",
+    city: "Ujjain",
+    pincode: "456006",
+    phone: "+91-98765-43227",
+    experience: 7,
+    rating: 4.1,
+    address: "Near Mahakaleshwar Temple, Ujjain - 456006",
+    verified: true,
+    latitude: 23.1828,
+    longitude: 75.7772
   }
 ];
 
@@ -196,7 +365,7 @@ const categoryMap = {
   "Contract Review": ["Contract Law", "Business Law", "Employment Law", "Civil Law"]
 };
 
-// City coordinates for location detection
+// Enhanced city coordinates with more accurate locations
 const cityCoordinates = {
   "Gwalior": { lat: 26.2183, lng: 78.1828 },
   "Delhi": { lat: 28.6139, lng: 77.2090 },
@@ -208,8 +377,20 @@ const cityCoordinates = {
   "Ujjain": { lat: 23.1765, lng: 75.7885 }
 };
 
+// Enhanced pincode to city mapping
+const pincodeToCity: { [key: string]: string } = {
+  "474001": "Gwalior", "474006": "Gwalior", "474011": "Gwalior",
+  "110001": "Delhi", "110005": "Delhi", "110024": "Delhi",
+  "400050": "Mumbai", "400058": "Mumbai", "400076": "Mumbai",
+  "560034": "Bangalore", "560011": "Bangalore", "560100": "Bangalore",
+  "284001": "Jhansi", "284003": "Jhansi",
+  "462011": "Bhopal", "462016": "Bhopal",
+  "452010": "Indore", "452001": "Indore",
+  "456010": "Ujjain", "456006": "Ujjain"
+};
+
 export const LawyerFinder = ({ category }: LawyerFinderProps) => {
-  const [lawyers, setLawyers] = useState<Lawyer[]>([]);
+  const [lawyers, setLawyers] = useState<Lawyer[]>(lawyersDatabase);
   const [filteredLawyers, setFilteredLawyers] = useState<Lawyer[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<keyof typeof categoryMap>("Business Law");
   const [selectedSpecialization, setSelectedSpecialization] = useState<string>("all");
@@ -229,7 +410,20 @@ export const LawyerFinder = ({ category }: LawyerFinderProps) => {
 
   const cities = ["Gwalior", "Delhi", "Mumbai", "Bangalore", "Jhansi", "Bhopal", "Indore", "Ujjain"];
 
-  // Function to detect city from coordinates
+  // Improved distance calculation using Haversine formula
+  const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number): number => {
+    const R = 6371; // Earth's radius in kilometers
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+    const a = 
+      Math.sin(dLat/2) * Math.sin(dLat/2) +
+      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
+      Math.sin(dLon/2) * Math.sin(dLon/2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    return Math.round((R * c) * 10) / 10; // Round to 1 decimal place
+  };
+
+  // Enhanced city detection from coordinates
   const detectCityFromCoordinates = (lat: number, lng: number): string => {
     let closestCity = "Gwalior";
     let minDistance = Infinity;
@@ -245,8 +439,17 @@ export const LawyerFinder = ({ category }: LawyerFinderProps) => {
     return closestCity;
   };
 
+  // Enhanced pincode detection
+  const detectCityFromPincode = (pincode: string): string | null => {
+    // Remove any spaces and get first 6 digits
+    const cleanPincode = pincode.replace(/\s/g, '').substring(0, 6);
+    return pincodeToCity[cleanPincode] || null;
+  };
+
   useEffect(() => {
     setLawyers(lawyersDatabase);
+    // Initialize with all lawyers
+    setFilteredLawyers(lawyersDatabase);
   }, []);
 
   useEffect(() => {
@@ -256,20 +459,20 @@ export const LawyerFinder = ({ category }: LawyerFinderProps) => {
       setUserCity(detectedCity);
       setLocationStatus(`Location detected: ${detectedCity}`);
       
-      // Calculate distances and sort by proximity
+      // Calculate distances for all lawyers
       const lawyersWithDistance = lawyersDatabase.map(lawyer => ({
         ...lawyer,
         distance: calculateDistance(latitude, longitude, lawyer.latitude, lawyer.longitude)
-      })).sort((a, b) => a.distance - b.distance);
+      })).sort((a, b) => (a.distance || 0) - (b.distance || 0));
       
       setLawyers(lawyersWithDistance);
       
       toast({
         title: "Location Detected",
-        description: `Showing lawyers near ${detectedCity}`,
+        description: `Found your location near ${detectedCity}`,
       });
     }
-  }, [latitude, longitude]);
+  }, [latitude, longitude, toast]);
 
   useEffect(() => {
     filterLawyers();
@@ -287,28 +490,16 @@ export const LawyerFinder = ({ category }: LawyerFinderProps) => {
     }
   }, [error]);
 
-  const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number): number => {
-    const R = 6371; // Radius of the Earth in kilometers
-    const dLat = (lat2 - lat1) * Math.PI / 180;
-    const dLon = (lon2 - lon1) * Math.PI / 180;
-    const a = 
-      Math.sin(dLat/2) * Math.sin(dLat/2) +
-      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
-      Math.sin(dLon/2) * Math.sin(dLon/2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-    return R * c;
-  };
-
   const filterLawyers = () => {
-    let filtered = lawyers;
+    let filtered = [...lawyers];
 
-    // Filter by user's detected city or selected city
+    // Filter by user's detected city or nearby locations
     if (userCity) {
-      // Show lawyers from user's city first, then nearby cities
+      // Show lawyers from user's city first, then nearby cities within reasonable distance
       filtered = filtered.filter(lawyer => {
         if (lawyer.city === userCity) return true;
-        // Include nearby lawyers within 100km
-        return lawyer.distance && lawyer.distance <= 100;
+        // Include lawyers within 50km if distance is available
+        return lawyer.distance !== undefined && lawyer.distance <= 50;
       });
     }
 
@@ -327,6 +518,14 @@ export const LawyerFinder = ({ category }: LawyerFinderProps) => {
       );
     }
 
+    // Sort by distance if available, otherwise by rating
+    filtered.sort((a, b) => {
+      if (a.distance !== undefined && b.distance !== undefined) {
+        return a.distance - b.distance;
+      }
+      return b.rating - a.rating;
+    });
+
     setFilteredLawyers(filtered);
   };
 
@@ -334,16 +533,42 @@ export const LawyerFinder = ({ category }: LawyerFinderProps) => {
     if (!manualLocation.trim()) {
       toast({
         title: "Location Required",
-        description: "Please enter a city name",
+        description: "Please enter a city name or pincode",
         variant: "destructive"
       });
       return;
     }
     
-    const inputCity = manualLocation.trim();
+    const inputLocation = manualLocation.trim();
+    
+    // Check if it's a pincode (6 digits)
+    const pincodeMatch = inputLocation.match(/^\d{6}$/);
+    if (pincodeMatch) {
+      const detectedCity = detectCityFromPincode(inputLocation);
+      if (detectedCity && cityCoordinates[detectedCity]) {
+        const coords = cityCoordinates[detectedCity];
+        setGeoLocation(coords.lat, coords.lng);
+        setUserCity(detectedCity);
+        setLocationStatus(`Location set to: ${detectedCity} (Pincode: ${inputLocation})`);
+        toast({
+          title: "Location Set",
+          description: `Found ${detectedCity} for pincode ${inputLocation}`,
+        });
+        return;
+      } else {
+        toast({
+          title: "Pincode Not Found",
+          description: `Pincode ${inputLocation} not found in our database.`,
+          variant: "destructive"
+        });
+        return;
+      }
+    }
+    
+    // Check if it's a city name
     const matchedCity = cities.find(city => 
-      city.toLowerCase().includes(inputCity.toLowerCase()) ||
-      inputCity.toLowerCase().includes(city.toLowerCase())
+      city.toLowerCase().includes(inputLocation.toLowerCase()) ||
+      inputLocation.toLowerCase().includes(city.toLowerCase())
     );
     
     if (matchedCity && cityCoordinates[matchedCity]) {
@@ -357,8 +582,8 @@ export const LawyerFinder = ({ category }: LawyerFinderProps) => {
       });
     } else {
       toast({
-        title: "City Not Found",
-        description: `${inputCity} not found. Please select from available cities.`,
+        title: "Location Not Found",
+        description: `${inputLocation} not found. Please try a different city or pincode.`,
         variant: "destructive"
       });
     }
@@ -475,13 +700,13 @@ export const LawyerFinder = ({ category }: LawyerFinderProps) => {
           
           <div className="flex gap-2">
             <Input
-              placeholder="Enter city name manually"
+              placeholder="Enter city name or 6-digit pincode"
               value={manualLocation}
               onChange={(e) => setManualLocation(e.target.value)}
               onKeyPress={(e) => e.key === 'Enter' && handleLocationSubmit()}
             />
             <Button onClick={handleLocationSubmit} variant="outline">
-              Set
+              Search
             </Button>
           </div>
           
@@ -556,7 +781,7 @@ export const LawyerFinder = ({ category }: LawyerFinderProps) => {
                                 )}
                               </div>
                               <p className="text-slate-600 dark:text-slate-400 text-sm">
-                                {lawyer.location}, {lawyer.city}
+                                {lawyer.location}, {lawyer.city} - {lawyer.pincode}
                               </p>
                             </div>
                             <div className="flex items-center space-x-1">
@@ -597,9 +822,9 @@ export const LawyerFinder = ({ category }: LawyerFinderProps) => {
                               <MapPin className="h-3 w-3 mr-1" />
                               {lawyer.address}
                             </p>
-                            {lawyer.distance && (
+                            {lawyer.distance !== undefined && (
                               <p className="text-blue-600 dark:text-blue-400 font-medium">
-                                {lawyer.distance.toFixed(1)} km away
+                                {lawyer.distance} km away
                               </p>
                             )}
                           </div>
