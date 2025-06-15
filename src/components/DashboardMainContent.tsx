@@ -13,12 +13,14 @@ interface MainContentProps {
   activeTab: string;
   isTrialMode: boolean;
   user: any;
+  t: any;
 }
 
 export const DashboardMainContent: React.FC<MainContentProps> = ({
   activeTab,
   isTrialMode,
-  user
+  user,
+  t
 }) => {
   if (isTrialMode && !user) {
     return <ChatInterface category="all" />;

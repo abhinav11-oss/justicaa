@@ -1,4 +1,3 @@
-
 {
   "dashboard": {
     "title": "Tableau de Bord",
@@ -14,7 +13,14 @@
     "signIn": "Se Connecter",
     "premiumUser": "Utilisateur Premium",
     "freeTrial": "Essai Gratuit",
-    "limitedAccess": "Accès limité"
+    "limitedAccess": "Accès limité",
+    "trialBanner": "Vous utilisez la version d'essai gratuite. Inscrivez-vous pour débloquer toutes les fonctionnalités!",
+    "toggleTheme": "Changer de thème",
+    "notifications": "Notifications",
+    "notificationsDescription": "Aucune nouvelle notification pour le moment.",
+    "mail": "Boîte de réception",
+    "mailDescription": "Aucun nouveau courrier.",
+    "menu": "Menu"
   },
   "chat": {
     "title": "Assistant Juridique IA",

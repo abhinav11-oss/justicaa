@@ -1,4 +1,3 @@
-
 {
   "dashboard": {
     "title": "仪表板",
@@ -14,7 +13,14 @@
     "signIn": "登录",
     "premiumUser": "高级用户",
     "freeTrial": "免费试用",
-    "limitedAccess": "有限访问"
+    "limitedAccess": "有限访问",
+    "trialBanner": "您正在使用免费试用。注册以解锁所有功能！",
+    "toggleTheme": "切换主题",
+    "notifications": "通知",
+    "notificationsDescription": "目前没有新通知。",
+    "mail": "收件箱",
+    "mailDescription": "没有新邮件。",
+    "menu": "菜单"
   },
   "chat": {
     "title": "AI法律助手",

@@ -196,6 +196,7 @@ const Dashboard = () => {
         setActiveTab={setActiveTab}
         sidebarOpen={sidebarOpen}
         setSidebarOpen={setSidebarOpen}
+        t={t}
       />
       <main className="flex-1 flex flex-col min-h-screen">
         <DashboardHeader
@@ -216,7 +217,7 @@ const Dashboard = () => {
             <div className="flex items-center justify-center space-x-2">
               <MessageSquare className="h-4 w-4 flex-shrink-0" style={{ color: 'hsl(var(--primary))' }} />
               <p className="text-sm text-center" style={{ color: 'hsl(var(--primary))' }}>
-                You're using the free trial. Sign up to unlock all features!
+                {t('dashboard.trialBanner', 'You\'re using the free trial. Sign up to unlock all features!')}
               </p>
               <Button
                 variant="outline"
@@ -224,7 +225,7 @@ const Dashboard = () => {
                 onClick={() => window.location.href = '/auth'}
                 className="ml-4 text-xs btn-outline"
               >
-                Sign Up
+                {t('auth.signUp')}
               </Button>
             </div>
           </div>
@@ -259,6 +260,7 @@ const Dashboard = () => {
             activeTab={activeTab}
             isTrialMode={isTrialMode}
             user={user}
+            t={t}
           />
         </div>
       </main>

@@ -25,6 +25,7 @@ export const DashboardHeader: React.FC<HeaderProps> = ({
   isTrialMode,
   user,
   t,
+  sessionError,
 }) => {
   const { theme, setTheme } = useTheme();
   const { toast } = useToast();
@@ -56,13 +57,13 @@ export const DashboardHeader: React.FC<HeaderProps> = ({
       }}
     >
       <div className="flex items-center space-x-4">
-        {/* Mobile Menu Button */}
         {isMobile && (
           <Button
             variant="ghost"
             size="icon"
             onClick={onMenuClick}
             className="md:hidden"
+            aria-label={t('dashboard.menu', 'Menu')}
           >
             <Menu className="h-5 w-5" />
           </Button>
@@ -72,20 +73,19 @@ export const DashboardHeader: React.FC<HeaderProps> = ({
             style={{ color: theme === "dark" ? 'hsl(var(--foreground))' : 'hsl(var(--foreground))' }}
           >
             {isTrialMode && !user
-              ? "Free Trial - AI Chat"
+              ? t('dashboard.freeTrial', 'Free Trial - AI Chat')
               : (sidebarItems.find(item => item.id === activeTab)?.title || t('dashboard.title'))}
           </h1>
         </div>
       </div>
       <div className="flex items-center space-x-3">
-        {/* Language Selector */}
         <LanguageSelector />
 
         {/* Dark mode toggle */}
         <Button
           variant="ghost"
           size="icon"
-          aria-label="Toggle dark mode"
+          aria-label={t('dashboard.toggleTheme', 'Toggle dark mode')}
           onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
           className={theme === "dark" ? "text-yellow-200" : "text-purple-500"}
         >
@@ -97,7 +97,7 @@ export const DashboardHeader: React.FC<HeaderProps> = ({
           variant="ghost"
           size="icon"
           className="relative"
-          aria-label="Notifications"
+          aria-label={t('dashboard.notifications', 'Notifications')}
           onClick={handleNotificationClick}
         >
           <Bell className="h-5 w-5" />
@@ -108,7 +108,7 @@ export const DashboardHeader: React.FC<HeaderProps> = ({
         <Button
           variant="ghost"
           size="icon"
-          aria-label="Mail"
+          aria-label={t('dashboard.mail', 'Mail')}
           className={`${theme === "dark" ? "text-teal-200" : "text-blue-500"}`}
           onClick={handleMailClick}
         >

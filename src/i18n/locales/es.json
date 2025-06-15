@@ -1,4 +1,3 @@
-
 {
   "dashboard": {
     "title": "Panel de Control",
@@ -14,7 +13,14 @@
     "signIn": "Iniciar Sesión",
     "premiumUser": "Usuario Premium",
     "freeTrial": "Prueba Gratuita",
-    "limitedAccess": "Acceso limitado"
+    "limitedAccess": "Acceso limitado",
+    "trialBanner": "Estás usando la prueba gratuita. ¡Regístrate para desbloquear todas las funciones!",
+    "toggleTheme": "Cambiar tema",
+    "notifications": "Notificaciones",
+    "notificationsDescription": "No hay nuevas notificaciones en este momento.",
+    "mail": "Bandeja de entrada",
+    "mailDescription": "No hay correos nuevos.",
+    "menu": "Menú"
   },
   "chat": {
     "title": "Asistente Legal IA",

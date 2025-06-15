@@ -1,4 +1,3 @@
-
 {
   "dashboard": {
     "title": "Dashboard",
@@ -14,7 +13,14 @@
     "signIn": "Sign In",
     "premiumUser": "Premium User",
     "freeTrial": "Free Trial",
-    "limitedAccess": "Limited access"
+    "limitedAccess": "Limited access",
+    "trialBanner": "You're using the free trial. Sign up to unlock all features!",
+    "toggleTheme": "Toggle theme",
+    "notifications": "Notifications",
+    "notificationsDescription": "No new notifications at this time.",
+    "mail": "Inbox",
+    "mailDescription": "No new mail.",
+    "menu": "Menu"
   },
   "chat": {
     "title": "AI Legal Assistant",

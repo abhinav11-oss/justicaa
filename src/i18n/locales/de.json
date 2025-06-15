@@ -1,4 +1,3 @@
-
 {
   "dashboard": {
     "title": "Dashboard",
@@ -14,7 +13,14 @@
     "signIn": "Anmelden",
     "premiumUser": "Premium-Benutzer",
     "freeTrial": "Kostenlose Testversion",
-    "limitedAccess": "Begrenzter Zugang"
+    "limitedAccess": "Begrenzter Zugang",
+    "trialBanner": "Sie nutzen die kostenlose Testversion. Melden Sie sich an, um alle Funktionen freizuschalten!",
+    "toggleTheme": "Thema wechseln",
+    "notifications": "Benachrichtigungen",
+    "notificationsDescription": "Zurzeit keine neuen Benachrichtigungen.",
+    "mail": "Posteingang",
+    "mailDescription": "Keine neue E-Mails.",
+    "menu": "Menü"
   },
   "chat": {
     "title": "KI-Rechtsassistent",

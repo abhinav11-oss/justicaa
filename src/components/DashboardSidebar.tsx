@@ -23,6 +23,7 @@ interface SidebarProps {
   setActiveTab: (id: string) => void;
   sidebarOpen: boolean;
   setSidebarOpen: (open: boolean) => void;
+  t: any; // add translation prop
 }
 
 export const DashboardSidebar: React.FC<SidebarProps> = ({
@@ -31,12 +32,25 @@ export const DashboardSidebar: React.FC<SidebarProps> = ({
   activeTab,
   setActiveTab,
   sidebarOpen,
-  setSidebarOpen
+  setSidebarOpen,
+  t
 }) => {
   const { theme } = useTheme();
   const isMobile = useIsMobile();
 
   const userInitial = user?.email?.charAt(0).toUpperCase() || "U";
+  // Translation applied for sidebar icon titles
+  const sidebarIcons = [
+    { id: "home", icon: Home, title: t('dashboard.title') },
+    { id: "chat", icon: MessageSquare, title: t('dashboard.aiChat') },
+    { id: "lawyers", icon: Users, title: t('dashboard.lawyers', "Find Experts") },
+    { id: "generator", icon: FilePlus, title: t('dashboard.documents', "Generate") },
+    { id: "templates", icon: FileText, title: t('dashboard.templates', "Legal Forms") },
+    { id: "guides", icon: BookOpen, title: t('dashboard.guides', "Legal Info") },
+    { id: "research", icon: Search, title: t('dashboard.research', "Case Law") },
+    { id: "settings", icon: Settings, title: t('dashboard.settings', "Account") }
+  ];
+
   const iconsToShow = user ? sidebarIcons : sidebarIcons.filter(i => ["chat"].includes(i.id));
 
   return (
@@ -61,13 +75,11 @@ export const DashboardSidebar: React.FC<SidebarProps> = ({
           color: theme === "dark" ? 'hsl(var(--sidebar-foreground))' : 'hsl(var(--foreground))'
         }}
       >
-        {/* Header (small logo) */}
         <div className="mb-6 mt-2">
           <div className="p-2 rounded-xl gradient-primary">
             <Scale className="h-7 w-7 text-white" />
           </div>
         </div>
-        {/* Navigation: only icons, each with a Tooltip*/}
         <nav className="flex-1 flex flex-col space-y-4 items-center w-full">
           {iconsToShow.map((item) => (
             <div key={item.id} className="w-full flex justify-center">
