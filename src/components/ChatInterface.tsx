@@ -1,15 +1,18 @@
+
 import { useState, useRef, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Send, Bot, User, Loader2, Copy, MessageSquare, Lock } from "lucide-react";
+import { Send, Bot, User, Loader2, Copy, MessageSquare, Lock, Volume2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { QuickQuestions } from "@/components/QuickQuestions";
+import { VoiceChat, useSpeakText } from "@/components/VoiceChat";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 interface Message {
@@ -24,14 +27,17 @@ interface ChatInterfaceProps {
 }
 
 export const ChatInterface = ({ category }: ChatInterfaceProps) => {
+  const { t } = useTranslation();
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [conversationId, setConversationId] = useState<string | null>(null);
   const [trialMessagesUsed, setTrialMessagesUsed] = useState(0);
   const [showAuthModal, setShowAuthModal] = useState(false);
+  const [isListening, setIsListening] = useState(false);
   const { user } = useAuth();
   const { toast } = useToast();
+  const { speakText, isSpeaking } = useSpeakText();
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const hasUserInteracted = messages.some(msg => msg.role === "user");
@@ -61,6 +67,11 @@ export const ChatInterface = ({ category }: ChatInterfaceProps) => {
   const handleQuestionClick = (question: string) => {
     setInputValue(question);
     handleSendMessage(question);
+  };
+
+  const handleVoiceTranscript = (transcript: string) => {
+    setInputValue(transcript);
+    handleSendMessage(transcript);
   };
 
   const handleAuthAction = () => {
@@ -185,7 +196,7 @@ export const ChatInterface = ({ category }: ChatInterfaceProps) => {
     } catch (error) {
       console.error("Error sending message:", error);
       toast({
-        title: "Error",
+        title: t('common.error'),
         description: "Failed to send message. Please try again.",
         variant: "destructive"
       });
@@ -214,16 +225,20 @@ export const ChatInterface = ({ category }: ChatInterfaceProps) => {
     try {
       await navigator.clipboard.writeText(text);
       toast({
-        title: "Copied",
+        title: t('common.copied'),
         description: "Message copied to clipboard"
       });
     } catch (error) {
       toast({
-        title: "Error",
+        title: t('common.error'),
         description: "Failed to copy message",
         variant: "destructive"
       });
     }
+  };
+
+  const handleSpeakMessage = (text: string) => {
+    speakText(text);
   };
 
   const isInputDisabled = isTrialMode && trialMessagesUsed >= TRIAL_MESSAGE_LIMIT;
@@ -236,16 +251,19 @@ export const ChatInterface = ({ category }: ChatInterfaceProps) => {
             <div>
               <CardTitle className="flex items-center text-lg md:text-xl">
                 <MessageSquare className="h-4 w-4 md:h-5 md:w-5 mr-2" />
-                AI Legal Assistant
+                {t('chat.title')}
               </CardTitle>
               <p className="text-xs md:text-sm text-muted-foreground mt-1">
-                Get instant legal guidance and answers to your questions
+                {t('chat.subtitle')}
               </p>
             </div>
             <div className="flex gap-2">
               {isTrialMode && (
                 <Badge variant="outline" className="text-xs">
-                  Trial: {TRIAL_MESSAGE_LIMIT - trialMessagesUsed}/{TRIAL_MESSAGE_LIMIT} left
+                  {t('chat.trialLimit', { 
+                    remaining: TRIAL_MESSAGE_LIMIT - trialMessagesUsed, 
+                    total: TRIAL_MESSAGE_LIMIT 
+                  })}
                 </Badge>
               )}
               {category && (
@@ -297,14 +315,27 @@ export const ChatInterface = ({ category }: ChatInterfaceProps) => {
                           <span className="text-xs opacity-70">
                             {message.timestamp.toLocaleTimeString()}
                           </span>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => copyToClipboard(message.content)}
-                            className="h-5 w-5 md:h-6 md:w-6 p-0 opacity-70 hover:opacity-100"
-                          >
-                            <Copy className="h-3 w-3" />
-                          </Button>
+                          <div className="flex items-center space-x-1">
+                            {message.role === "assistant" && (
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => handleSpeakMessage(message.content)}
+                                className="h-5 w-5 md:h-6 md:w-6 p-0 opacity-70 hover:opacity-100"
+                                disabled={isSpeaking}
+                              >
+                                <Volume2 className="h-3 w-3" />
+                              </Button>
+                            )}
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => copyToClipboard(message.content)}
+                              className="h-5 w-5 md:h-6 md:w-6 p-0 opacity-70 hover:opacity-100"
+                            >
+                              <Copy className="h-3 w-3" />
+                            </Button>
+                          </div>
                         </div>
                       </div>
 
@@ -324,7 +355,7 @@ export const ChatInterface = ({ category }: ChatInterfaceProps) => {
                       <div className="bg-muted p-3 md:p-4 rounded-lg">
                         <div className="flex items-center space-x-2">
                           <Loader2 className="h-3 w-3 md:h-4 md:w-4 animate-spin" />
-                          <span className="text-sm">Thinking...</span>
+                          <span className="text-sm">{t('chat.thinking')}</span>
                         </div>
                       </div>
                     </div>
@@ -337,33 +368,54 @@ export const ChatInterface = ({ category }: ChatInterfaceProps) => {
 
           {/* Input Area */}
           <div className="border-t p-3 md:p-4 flex-shrink-0">
-            <div className="flex space-x-2">
-              <Input
-                value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)}
-                onKeyPress={handleKeyPress}
-                placeholder={isInputDisabled ? "Please sign in to continue" : "Ask me anything about legal matters..."}
-                disabled={isLoading || isInputDisabled}
-                className="flex-1 text-sm md:text-base"
+            <div className="flex items-center space-x-2 mb-2">
+              <div className="flex-1 flex space-x-2">
+                <Input
+                  value={inputValue}
+                  onChange={(e) => setInputValue(e.target.value)}
+                  onKeyPress={handleKeyPress}
+                  placeholder={isInputDisabled ? t('auth.signInContinue') : t('chat.placeholder')}
+                  disabled={isLoading || isInputDisabled}
+                  className="flex-1 text-sm md:text-base"
+                />
+                <Button
+                  onClick={() => handleSendMessage()}
+                  disabled={isLoading || !inputValue.trim() || isInputDisabled}
+                  size="icon"
+                  className="flex-shrink-0"
+                >
+                  {isLoading ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : isInputDisabled ? (
+                    <Lock className="h-4 w-4" />
+                  ) : (
+                    <Send className="h-4 w-4" />
+                  )}
+                </Button>
+              </div>
+            </div>
+            
+            {/* Voice Chat Controls */}
+            <div className="flex items-center justify-between">
+              <VoiceChat
+                onTranscript={handleVoiceTranscript}
+                isListening={isListening}
+                onListeningChange={setIsListening}
               />
-              <Button
-                onClick={() => handleSendMessage()}
-                disabled={isLoading || !inputValue.trim() || isInputDisabled}
-                size="icon"
-                className="flex-shrink-0"
-              >
-                {isLoading ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                ) : isInputDisabled ? (
-                  <Lock className="h-4 w-4" />
-                ) : (
-                  <Send className="h-4 w-4" />
-                )}
-              </Button>
+              {isListening && (
+                <div className="flex items-center space-x-1 text-primary">
+                  <span className="text-sm">{t('chat.listening')}</span>
+                </div>
+              )}
+              {isSpeaking && (
+                <div className="flex items-center space-x-1 text-primary">
+                  <span className="text-sm">{t('chat.speaking')}</span>
+                </div>
+              )}
             </div>
             
             <p className="text-xs text-muted-foreground mt-2 text-center">
-              This AI assistant provides general legal information only. Consult a qualified lawyer for specific legal advice.
+              {t('chat.disclaimer')}
             </p>
           </div>
         </CardContent>
@@ -373,26 +425,26 @@ export const ChatInterface = ({ category }: ChatInterfaceProps) => {
       <Dialog open={showAuthModal} onOpenChange={setShowAuthModal}>
         <DialogContent className="sm:max-w-[425px] mx-4">
           <DialogHeader>
-            <DialogTitle>Sign in to continue</DialogTitle>
+            <DialogTitle>{t('auth.signInContinue')}</DialogTitle>
             <DialogDescription>
-              You've used all your free trial messages. Sign in or create an account to continue using the AI Legal Assistant.
+              {t('auth.trialComplete')}
             </DialogDescription>
           </DialogHeader>
           <div className="py-4 flex flex-col gap-3">
             <p className="text-sm text-muted-foreground">
-              Creating an account gives you unlimited access to:
+              {t('auth.benefits')}
             </p>
             <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1">
-              <li>AI legal chat</li>
-              <li>Document generation</li>
-              <li>Legal guide repository</li>
-              <li>Lawyer finder</li>
+              <li>{t('auth.aiLegalChat')}</li>
+              <li>{t('auth.documentGeneration')}</li>
+              <li>{t('auth.legalGuides')}</li>
+              <li>{t('auth.lawyerFinder')}</li>
             </ul>
           </div>
           <div className="flex justify-end gap-3">
-            <Button variant="outline" onClick={() => setShowAuthModal(false)}>Cancel</Button>
+            <Button variant="outline" onClick={() => setShowAuthModal(false)}>{t('auth.cancel')}</Button>
             <Button className="gradient-primary text-white border-0" onClick={handleAuthAction}>
-              Sign in / Sign up
+              {t('auth.signUp')}
             </Button>
           </div>
         </DialogContent>

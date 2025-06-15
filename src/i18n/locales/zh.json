@@ -1,0 +1,52 @@
+
+{
+  "dashboard": {
+    "title": "仪表板",
+    "aiChat": "AI聊天",
+    "lawyers": "律师",
+    "documents": "文档",
+    "templates": "模板",
+    "guides": "指南",
+    "research": "研究",
+    "settings": "设置",
+    "searchPlaceholder": "搜索任何内容...",
+    "signOut": "登出",
+    "signIn": "登录",
+    "premiumUser": "高级用户",
+    "freeTrial": "免费试用",
+    "limitedAccess": "有限访问"
+  },
+  "chat": {
+    "title": "AI法律助手",
+    "subtitle": "获得即时法律指导和问题解答",
+    "placeholder": "向我询问任何法律事务...",
+    "thinking": "思考中...",
+    "disclaimer": "此AI助手仅提供一般法律信息。请咨询合格律师获取具体法律建议。",
+    "trialLimit": "试用：剩余{{remaining}}/{{total}}",
+    "startVoiceChat": "开始语音聊天",
+    "stopVoiceChat": "停止语音聊天",
+    "listening": "正在聆听...",
+    "speaking": "正在说话...",
+    "voiceError": "语音功能不可用"
+  },
+  "auth": {
+    "signInContinue": "登录以继续",
+    "trialComplete": "您已用完所有免费试用消息。登录或创建账户以继续使用AI法律助手。",
+    "benefits": "创建账户可无限访问：",
+    "aiLegalChat": "AI法律聊天",
+    "documentGeneration": "文档生成",
+    "legalGuides": "法律指南库",
+    "lawyerFinder": "律师查找器",
+    "cancel": "取消",
+    "signUp": "登录/注册"
+  },
+  "common": {
+    "loading": "加载中...",
+    "error": "错误",
+    "success": "成功",
+    "copied": "已复制",
+    "copy": "复制",
+    "retry": "重试",
+    "close": "关闭"
+  }
+}

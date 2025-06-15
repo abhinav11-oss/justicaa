@@ -1,0 +1,52 @@
+
+{
+  "dashboard": {
+    "title": "Tableau de Bord",
+    "aiChat": "Chat IA",
+    "lawyers": "Avocats",
+    "documents": "Documents",
+    "templates": "Modèles",
+    "guides": "Guides",
+    "research": "Recherche",
+    "settings": "Paramètres",
+    "searchPlaceholder": "Rechercher n'importe quoi...",
+    "signOut": "Se Déconnecter",
+    "signIn": "Se Connecter",
+    "premiumUser": "Utilisateur Premium",
+    "freeTrial": "Essai Gratuit",
+    "limitedAccess": "Accès limité"
+  },
+  "chat": {
+    "title": "Assistant Juridique IA",
+    "subtitle": "Obtenez des conseils juridiques instantanés et des réponses à vos questions",
+    "placeholder": "Demandez-moi n'importe quoi sur les questions juridiques...",
+    "thinking": "En réflexion...",
+    "disclaimer": "Cet assistant IA fournit uniquement des informations juridiques générales. Consultez un avocat qualifié pour des conseils juridiques spécifiques.",
+    "trialLimit": "Essai: {{remaining}}/{{total}} restants",
+    "startVoiceChat": "Démarrer le Chat Vocal",
+    "stopVoiceChat": "Arrêter le Chat Vocal",
+    "listening": "Écoute...",
+    "speaking": "Parle...",
+    "voiceError": "Fonction vocale indisponible"
+  },
+  "auth": {
+    "signInContinue": "Connectez-vous pour continuer",
+    "trialComplete": "Vous avez utilisé tous vos messages d'essai gratuit. Connectez-vous ou créez un compte pour continuer à utiliser l'Assistant Juridique IA.",
+    "benefits": "Créer un compte vous donne un accès illimité à:",
+    "aiLegalChat": "Chat juridique IA",
+    "documentGeneration": "Génération de documents",
+    "legalGuides": "Référentiel de guides juridiques",
+    "lawyerFinder": "Recherche d'avocats",
+    "cancel": "Annuler",
+    "signUp": "Se connecter / S'inscrire"
+  },
+  "common": {
+    "loading": "Chargement...",
+    "error": "Erreur",
+    "success": "Succès",
+    "copied": "Copié",
+    "copy": "Copier",
+    "retry": "Réessayer",
+    "close": "Fermer"
+  }
+}

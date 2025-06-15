@@ -1,0 +1,52 @@
+
+{
+  "dashboard": {
+    "title": "Dashboard",
+    "aiChat": "KI-Chat",
+    "lawyers": "Anwälte",
+    "documents": "Dokumente",
+    "templates": "Vorlagen",
+    "guides": "Leitfäden",
+    "research": "Forschung",
+    "settings": "Einstellungen",
+    "searchPlaceholder": "Alles durchsuchen...",
+    "signOut": "Abmelden",
+    "signIn": "Anmelden",
+    "premiumUser": "Premium-Benutzer",
+    "freeTrial": "Kostenlose Testversion",
+    "limitedAccess": "Begrenzter Zugang"
+  },
+  "chat": {
+    "title": "KI-Rechtsassistent",
+    "subtitle": "Erhalten Sie sofortige Rechtsberatung und Antworten auf Ihre Fragen",
+    "placeholder": "Fragen Sie mich alles über rechtliche Angelegenheiten...",
+    "thinking": "Denke nach...",
+    "disclaimer": "Dieser KI-Assistent bietet nur allgemeine Rechtsinformationen. Konsultieren Sie einen qualifizierten Anwalt für spezifische Rechtsberatung.",
+    "trialLimit": "Testversion: {{remaining}}/{{total}} übrig",
+    "startVoiceChat": "Sprach-Chat starten",
+    "stopVoiceChat": "Sprach-Chat beenden",
+    "listening": "Höre zu...",
+    "speaking": "Spreche...",
+    "voiceError": "Sprachfunktion nicht verfügbar"
+  },
+  "auth": {
+    "signInContinue": "Melden Sie sich an, um fortzufahren",
+    "trialComplete": "Sie haben alle Ihre kostenlosen Testnachrichten verwendet. Melden Sie sich an oder erstellen Sie ein Konto, um den KI-Rechtsassistenten weiter zu nutzen.",
+    "benefits": "Ein Konto zu erstellen gibt Ihnen unbegrenzten Zugang zu:",
+    "aiLegalChat": "KI-Rechts-Chat",
+    "documentGeneration": "Dokumentenerstellung",
+    "legalGuides": "Rechtsleitfaden-Repository",
+    "lawyerFinder": "Anwaltsfinder",
+    "cancel": "Abbrechen",
+    "signUp": "Anmelden / Registrieren"
+  },
+  "common": {
+    "loading": "Laden...",
+    "error": "Fehler",
+    "success": "Erfolg",
+    "copied": "Kopiert",
+    "copy": "Kopieren",
+    "retry": "Wiederholen",
+    "close": "Schließen"
+  }
+}

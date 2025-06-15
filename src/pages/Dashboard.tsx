@@ -1,5 +1,6 @@
 
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -12,6 +13,7 @@ import { DocumentGenerator } from "@/components/DocumentGenerator";
 import { LawyerFinder } from "@/components/LawyerFinder";
 import { UserDashboard } from "@/components/UserDashboard";
 import { SettingsPanel } from "@/components/SettingsPanel";
+import { LanguageSelector } from "@/components/LanguageSelector";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "next-themes";
@@ -40,6 +42,7 @@ import {
 } from "lucide-react";
 
 const Dashboard = () => {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState(() => {
     return sessionStorage.getItem('lastTab') || "home";
   });
@@ -78,13 +81,13 @@ const Dashboard = () => {
   useEffect(() => {
     if (sessionError) {
       toast({
-        title: "Session Error",
+        title: t('common.error'),
         description: sessionError,
         variant: "destructive",
         duration: 5000
       });
     }
-  }, [sessionError, toast]);
+  }, [sessionError, toast, t]);
 
   const handleSignOut = async () => {
     try {
@@ -119,13 +122,13 @@ const Dashboard = () => {
     // Show home tab only for authenticated users
     ...(user ? [{
       id: "home",
-      title: "Dashboard",
+      title: t('dashboard.title'),
       icon: Home,
       description: "Overview"
     }] : []),
     {
       id: "chat",
-      title: "AI Chat",
+      title: t('dashboard.aiChat'),
       icon: MessageSquare,
       description: "Legal Assistant"
     },
@@ -133,37 +136,37 @@ const Dashboard = () => {
     ...(user ? [
       {
         id: "lawyers",
-        title: "Lawyers",
+        title: t('dashboard.lawyers'),
         icon: Users,
         description: "Find Experts"
       },
       {
         id: "generator",
-        title: "Documents",
+        title: t('dashboard.documents'),
         icon: FilePlus,
         description: "Generate"
       },
       {
         id: "templates",
-        title: "Templates",
+        title: t('dashboard.templates'),
         icon: FileText,
         description: "Legal Forms"
       },
       {
         id: "guides",
-        title: "Guides",
+        title: t('dashboard.guides'),
         icon: BookOpen,
         description: "Legal Info"
       },
       {
         id: "research",
-        title: "Research",
+        title: t('dashboard.research'),
         icon: Search,
         description: "Case Law"
       },
       {
         id: "settings",
-        title: "Settings",
+        title: t('dashboard.settings'),
         icon: Settings,
         description: "Account"
       }
@@ -175,7 +178,7 @@ const Dashboard = () => {
       <div className="min-h-screen flex items-center justify-center p-4" style={{ background: 'hsl(var(--surface))' }}>
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 mx-auto mb-4" style={{ borderColor: 'hsl(var(--primary))' }}></div>
-          <p style={{ color: 'hsl(var(--text-secondary))' }}>Loading dashboard...</p>
+          <p style={{ color: 'hsl(var(--text-secondary))' }}>{t('common.loading')}</p>
           {sessionError && (
             <div className="mt-4 p-3 rounded-lg max-w-md status-warning">
               <div className="flex items-center space-x-2">
@@ -289,7 +292,7 @@ const Dashboard = () => {
                   <p className="text-sm font-medium text-white truncate">
                     {user.email}
                   </p>
-                  <p className="text-xs text-gray-400">Premium User</p>
+                  <p className="text-xs text-gray-400">{t('dashboard.premiumUser')}</p>
                 </div>
               </div>
               <Button 
@@ -299,7 +302,7 @@ const Dashboard = () => {
                 className="w-full bg-transparent border-gray-700 text-gray-300 hover:bg-gray-800"
               >
                 <LogOut className="h-4 w-4 mr-2" />
-                Sign Out
+                {t('dashboard.signOut')}
               </Button>
             </div>
           ) : isTrialMode ? (
@@ -308,8 +311,8 @@ const Dashboard = () => {
                 background: 'rgba(125, 106, 255, 0.1)', 
                 borderColor: 'rgba(125, 106, 255, 0.3)' 
               }}>
-                <p className="text-sm font-medium" style={{ color: 'hsl(var(--primary))' }}>Free Trial</p>
-                <p className="text-xs text-gray-400">Limited access</p>
+                <p className="text-sm font-medium" style={{ color: 'hsl(var(--primary))' }}>{t('dashboard.freeTrial')}</p>
+                <p className="text-xs text-gray-400">{t('dashboard.limitedAccess')}</p>
               </div>
               <Button 
                 variant="outline" 
@@ -318,7 +321,7 @@ const Dashboard = () => {
                 className="w-full bg-transparent border-gray-700 text-gray-300 hover:bg-gray-800"
               >
                 <User className="h-4 w-4 mr-2" />
-                Sign In
+                {t('dashboard.signIn')}
               </Button>
             </div>
           ) : null}
@@ -345,7 +348,7 @@ const Dashboard = () => {
               
               <div>
                 <h1 className="text-2xl font-bold" style={{ color: 'hsl(var(--foreground))' }}>
-                  {isTrialMode && !user ? "Free Trial - AI Chat" : (sidebarItems.find(item => item.id === activeTab)?.title || "Dashboard")}
+                  {isTrialMode && !user ? "Free Trial - AI Chat" : (sidebarItems.find(item => item.id === activeTab)?.title || t('dashboard.title'))}
                 </h1>
               </div>
             </div>
@@ -356,11 +359,14 @@ const Dashboard = () => {
                 <Search className="h-4 w-4 mr-2" style={{ color: 'hsl(var(--text-secondary))' }} />
                 <input 
                   type="text" 
-                  placeholder="Search anything..."
+                  placeholder={t('dashboard.searchPlaceholder')}
                   className="bg-transparent border-none outline-none text-sm flex-1"
                   style={{ color: 'hsl(var(--foreground))' }}
                 />
               </div>
+
+              {/* Language Selector */}
+              <LanguageSelector />
 
               {/* Action Buttons */}
               <Button variant="ghost" size="icon" className="relative">
@@ -410,7 +416,7 @@ const Dashboard = () => {
                 onClick={() => window.location.reload()}
                 className="ml-4 text-xs"
               >
-                Retry
+                {t('common.retry')}
               </Button>
             </div>
           </div>

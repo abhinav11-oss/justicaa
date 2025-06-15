@@ -1,0 +1,52 @@
+
+{
+  "dashboard": {
+    "title": "Dashboard",
+    "aiChat": "AI Chat",
+    "lawyers": "Lawyers",
+    "documents": "Documents",
+    "templates": "Templates",
+    "guides": "Guides",
+    "research": "Research",
+    "settings": "Settings",
+    "searchPlaceholder": "Search anything...",
+    "signOut": "Sign Out",
+    "signIn": "Sign In",
+    "premiumUser": "Premium User",
+    "freeTrial": "Free Trial",
+    "limitedAccess": "Limited access"
+  },
+  "chat": {
+    "title": "AI Legal Assistant",
+    "subtitle": "Get instant legal guidance and answers to your questions",
+    "placeholder": "Ask me anything about legal matters...",
+    "thinking": "Thinking...",
+    "disclaimer": "This AI assistant provides general legal information only. Consult a qualified lawyer for specific legal advice.",
+    "trialLimit": "Trial: {{remaining}}/{{total}} left",
+    "startVoiceChat": "Start Voice Chat",
+    "stopVoiceChat": "Stop Voice Chat",
+    "listening": "Listening...",
+    "speaking": "Speaking...",
+    "voiceError": "Voice feature unavailable"
+  },
+  "auth": {
+    "signInContinue": "Sign in to continue",
+    "trialComplete": "You've used all your free trial messages. Sign in or create an account to continue using the AI Legal Assistant.",
+    "benefits": "Creating an account gives you unlimited access to:",
+    "aiLegalChat": "AI legal chat",
+    "documentGeneration": "Document generation",
+    "legalGuides": "Legal guide repository",
+    "lawyerFinder": "Lawyer finder",
+    "cancel": "Cancel",
+    "signUp": "Sign in / Sign up"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "copied": "Copied",
+    "copy": "Copy",
+    "retry": "Retry",
+    "close": "Close"
+  }
+}

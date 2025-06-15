@@ -1,0 +1,52 @@
+
+{
+  "dashboard": {
+    "title": "Panel de Control",
+    "aiChat": "Chat IA",
+    "lawyers": "Abogados",
+    "documents": "Documentos",
+    "templates": "Plantillas",
+    "guides": "Guías",
+    "research": "Investigación",
+    "settings": "Configuración",
+    "searchPlaceholder": "Buscar cualquier cosa...",
+    "signOut": "Cerrar Sesión",
+    "signIn": "Iniciar Sesión",
+    "premiumUser": "Usuario Premium",
+    "freeTrial": "Prueba Gratuita",
+    "limitedAccess": "Acceso limitado"
+  },
+  "chat": {
+    "title": "Asistente Legal IA",
+    "subtitle": "Obtén orientación legal instantánea y respuestas a tus preguntas",
+    "placeholder": "Pregúntame cualquier cosa sobre asuntos legales...",
+    "thinking": "Pensando...",
+    "disclaimer": "Este asistente de IA proporciona solo información legal general. Consulta a un abogado calificado para asesoramiento legal específico.",
+    "trialLimit": "Prueba: {{remaining}}/{{total}} restantes",
+    "startVoiceChat": "Iniciar Chat de Voz",
+    "stopVoiceChat": "Detener Chat de Voz",
+    "listening": "Escuchando...",
+    "speaking": "Hablando...",
+    "voiceError": "Función de voz no disponible"
+  },
+  "auth": {
+    "signInContinue": "Inicia sesión para continuar",
+    "trialComplete": "Has usado todos tus mensajes de prueba gratuita. Inicia sesión o crea una cuenta para continuar usando el Asistente Legal IA.",
+    "benefits": "Crear una cuenta te da acceso ilimitado a:",
+    "aiLegalChat": "Chat legal IA",
+    "documentGeneration": "Generación de documentos",
+    "legalGuides": "Repositorio de guías legales",
+    "lawyerFinder": "Buscador de abogados",
+    "cancel": "Cancelar",
+    "signUp": "Iniciar sesión / Registrarse"
+  },
+  "common": {
+    "loading": "Cargando...",
+    "error": "Error",
+    "success": "Éxito",
+    "copied": "Copiado",
+    "copy": "Copiar",
+    "retry": "Reintentar",
+    "close": "Cerrar"
+  }
+}
