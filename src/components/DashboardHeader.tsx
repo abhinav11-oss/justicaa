@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { LanguageSelector } from "@/components/LanguageSelector";
@@ -92,7 +91,7 @@ export const DashboardHeader: React.FC<HeaderProps> = ({
           {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
         </Button>
 
-        {/* Notifications button */}
+        {/* Notifications button without badge */}
         <Button
           variant="ghost"
           size="icon"
@@ -101,7 +100,6 @@ export const DashboardHeader: React.FC<HeaderProps> = ({
           onClick={handleNotificationClick}
         >
           <Bell className="h-5 w-5" />
-          <span className="absolute -top-1 -right-1 h-3 w-3 bg-red-500 rounded-full border-2 border-card"></span>
         </Button>
 
         {/* Mail button */}
