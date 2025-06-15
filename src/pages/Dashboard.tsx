@@ -160,7 +160,9 @@ const Dashboard = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center p-4" style={{ background: 'hsl(var(--surface))' }}>
+      <div
+        className="min-h-screen flex items-center justify-center p-4" style={{ background: 'hsl(var(--surface))' }}
+      >
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 mx-auto mb-4" style={{ borderColor: 'hsl(var(--primary))' }}></div>
           <p style={{ color: 'hsl(var(--text-secondary))' }}>{t('common.loading')}</p>
@@ -183,12 +185,14 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="min-h-screen flex relative w-full"
+    <div
+      className="min-h-screen flex relative w-full overflow-visible"
       style={{
         background: theme === "dark"
           ? 'hsl(var(--surface), 1)'
           : 'hsl(var(--background), 1)'
-      }}>
+      }}
+    >
       <DashboardSidebar
         user={user}
         isTrialMode={isTrialMode}
