@@ -172,15 +172,15 @@ const Dashboard = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+      <div className="min-h-screen flex items-center justify-center p-4" style={{ background: 'hsl(var(--surface))' }}>
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading dashboard...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 mx-auto mb-4" style={{ borderColor: 'hsl(var(--primary))' }}></div>
+          <p style={{ color: 'hsl(var(--text-secondary))' }}>Loading dashboard...</p>
           {sessionError && (
-            <div className="mt-4 p-3 bg-amber-50 border border-amber-200 rounded-lg max-w-md">
+            <div className="mt-4 p-3 rounded-lg max-w-md status-warning">
               <div className="flex items-center space-x-2">
-                <AlertTriangle className="h-4 w-4 text-amber-600" />
-                <p className="text-sm text-amber-800">{sessionError}</p>
+                <AlertTriangle className="h-4 w-4" />
+                <p className="text-sm">{sessionError}</p>
               </div>
             </div>
           )}
@@ -224,7 +224,7 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex relative">
+    <div className="min-h-screen flex relative" style={{ background: 'hsl(var(--surface))' }}>
       {/* Mobile Overlay */}
       {isMobile && sidebarOpen && (
         <div 
@@ -237,16 +237,16 @@ const Dashboard = () => {
       <aside className={`
         ${isMobile ? 'fixed' : 'relative'} 
         ${isMobile && !sidebarOpen ? '-translate-x-full' : 'translate-x-0'}
-        bg-gray-900 text-white
+        text-white
         ${isMobile ? 'w-72 h-full z-50' : 'w-72'} 
         transition-transform duration-300 ease-in-out
         flex flex-col
-      `}>
+      `} style={{ background: 'hsl(var(--sidebar))' }}>
         {/* Header */}
-        <div className="p-6 border-b border-gray-800">
+        <div className="p-6 border-b" style={{ borderColor: 'rgba(255, 255, 255, 0.1)' }}>
           <div className="flex items-center space-x-3">
-            <div className="bg-white p-2 rounded-xl">
-              <Scale className="h-6 w-6 text-gray-900" />
+            <div className="p-2 rounded-xl gradient-primary">
+              <Scale className="h-6 w-6 text-white" />
             </div>
             <span className="text-xl font-semibold">Justicaa</span>
           </div>
@@ -262,11 +262,7 @@ const Dashboard = () => {
                   setActiveTab(item.id);
                   if (isMobile) setSidebarOpen(false);
                 }}
-                className={`w-full p-3 rounded-xl transition-all duration-200 flex items-center space-x-3 text-left ${
-                  activeTab === item.id
-                    ? "bg-white text-gray-900"
-                    : "text-gray-300 hover:bg-gray-800 hover:text-white"
-                }`}
+                className={`sidebar-item ${activeTab === item.id ? 'active' : ''}`}
               >
                 <item.icon className="h-5 w-5 flex-shrink-0" />
                 <div>
@@ -279,13 +275,13 @@ const Dashboard = () => {
         </nav>
 
         {/* User Profile Section */}
-        <div className="p-4 border-t border-gray-800">
+        <div className="p-4 border-t" style={{ borderColor: 'rgba(255, 255, 255, 0.1)' }}>
           {user ? (
             <div className="space-y-3">
               <div className="flex items-center space-x-3">
                 <Avatar className="h-10 w-10">
                   <AvatarImage src={user.user_metadata?.avatar_url} />
-                  <AvatarFallback className="bg-white text-gray-900">
+                  <AvatarFallback className="gradient-primary text-white">
                     {user.email?.charAt(0).toUpperCase() || "U"}
                   </AvatarFallback>
                 </Avatar>
@@ -308,9 +304,12 @@ const Dashboard = () => {
             </div>
           ) : isTrialMode ? (
             <div className="space-y-3">
-              <div className="p-3 bg-blue-900/50 rounded-lg border border-blue-800">
-                <p className="text-sm font-medium text-blue-200">Free Trial</p>
-                <p className="text-xs text-blue-300">Limited access</p>
+              <div className="p-3 rounded-lg border" style={{ 
+                background: 'rgba(125, 106, 255, 0.1)', 
+                borderColor: 'rgba(125, 106, 255, 0.3)' 
+              }}>
+                <p className="text-sm font-medium" style={{ color: 'hsl(var(--primary))' }}>Free Trial</p>
+                <p className="text-xs text-gray-400">Limited access</p>
               </div>
               <Button 
                 variant="outline" 
@@ -329,7 +328,7 @@ const Dashboard = () => {
       {/* Main Content Area */}
       <main className="flex-1 flex flex-col min-h-screen">
         {/* Top Bar */}
-        <header className="bg-white border-b border-gray-200 px-6 py-4">
+        <header className="bg-white border-b px-6 py-4" style={{ borderColor: 'hsl(var(--border))' }}>
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
               {/* Mobile Menu Button */}
@@ -345,7 +344,7 @@ const Dashboard = () => {
               )}
               
               <div>
-                <h1 className="text-2xl font-bold text-gray-900">
+                <h1 className="text-2xl font-bold" style={{ color: 'hsl(var(--foreground))' }}>
                   {isTrialMode && !user ? "Free Trial - AI Chat" : (sidebarItems.find(item => item.id === activeTab)?.title || "Dashboard")}
                 </h1>
               </div>
@@ -353,12 +352,13 @@ const Dashboard = () => {
             
             <div className="flex items-center space-x-4">
               {/* Search Bar */}
-              <div className="hidden md:flex items-center bg-gray-100 rounded-lg px-3 py-2 w-64">
-                <Search className="h-4 w-4 text-gray-400 mr-2" />
+              <div className="hidden md:flex search-input">
+                <Search className="h-4 w-4 mr-2" style={{ color: 'hsl(var(--text-secondary))' }} />
                 <input 
                   type="text" 
                   placeholder="Search anything..."
                   className="bg-transparent border-none outline-none text-sm flex-1"
+                  style={{ color: 'hsl(var(--foreground))' }}
                 />
               </div>
 
@@ -377,17 +377,20 @@ const Dashboard = () => {
 
         {/* Trial Mode Banner */}
         {isTrialMode && !user && (
-          <div className="bg-blue-50 border-b border-blue-200 px-6 py-3">
+          <div className="px-6 py-3" style={{ 
+            background: 'rgba(125, 106, 255, 0.05)', 
+            borderBottom: '1px solid rgba(125, 106, 255, 0.2)' 
+          }}>
             <div className="flex items-center justify-center space-x-2">
-              <MessageSquare className="h-4 w-4 text-blue-600 flex-shrink-0" />
-              <p className="text-sm text-blue-800 text-center">
+              <MessageSquare className="h-4 w-4 flex-shrink-0" style={{ color: 'hsl(var(--primary))' }} />
+              <p className="text-sm text-center" style={{ color: 'hsl(var(--primary))' }}>
                 You're using the free trial. Sign up to unlock all features!
               </p>
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => window.location.href = '/auth'}
-                className="ml-4 text-xs border-blue-300 text-blue-700 hover:bg-blue-100"
+                className="ml-4 text-xs btn-outline"
               >
                 Sign Up
               </Button>
@@ -397,10 +400,10 @@ const Dashboard = () => {
 
         {/* Session Error Banner */}
         {sessionError && (
-          <div className="bg-amber-50 border-b border-amber-200 px-6 py-3">
+          <div className="px-6 py-3 status-warning">
             <div className="flex items-center justify-center space-x-2">
-              <AlertTriangle className="h-4 w-4 text-amber-600 flex-shrink-0" />
-              <p className="text-sm text-amber-800 text-center">{sessionError}</p>
+              <AlertTriangle className="h-4 w-4 flex-shrink-0" />
+              <p className="text-sm text-center">{sessionError}</p>
               <Button
                 variant="outline"
                 size="sm"

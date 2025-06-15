@@ -7,57 +7,67 @@
 @layer base {
   :root {
     --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    --foreground: 0 0% 18%;
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 0 0% 18%;
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-    --primary: 262.1 83.3% 57.8%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 220 14.3% 95.9%;
-    --secondary-foreground: 220.9 39.3% 11%;
-    --muted: 220 14.3% 95.9%;
-    --muted-foreground: 220 8.9% 46.1%;
-    --accent: 220 14.3% 95.9%;
-    --accent-foreground: 220.9 39.3% 11%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 220 13% 91%;
-    --input: 220 13% 91%;
-    --ring: 262.1 83.3% 57.8%;
+    --popover-foreground: 0 0% 18%;
+    --primary: 252 83% 71%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 240 17% 97%;
+    --secondary-foreground: 0 0% 18%;
+    --muted: 240 17% 97%;
+    --muted-foreground: 0 0% 48%;
+    --accent: 252 83% 71%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 4 90% 58%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 240 17% 94%;
+    --input: 240 17% 94%;
+    --ring: 252 83% 71%;
     --radius: 0.75rem;
-    --chart-1: 12 76% 61%;
-    --chart-2: 173 58% 39%;
-    --chart-3: 197 37% 24%;
-    --chart-4: 43 74% 66%;
-    --chart-5: 27 87% 67%;
+    --chart-1: 252 83% 71%;
+    --chart-2: 142 71% 45%;
+    --chart-3: 4 90% 58%;
+    --chart-4: 45 93% 47%;
+    --chart-5: 197 37% 24%;
+    
+    /* Custom color variables */
+    --surface: 240 17% 97%;
+    --sidebar: 240 20% 17%;
+    --sidebar-foreground: 0 0% 100%;
+    --text-secondary: 0 0% 48%;
+    --success: 142 71% 45%;
+    --warning: 45 93% 47%;
+    --purple-gradient-start: 252 83% 71%;
+    --purple-gradient-end: 255 77% 73%;
   }
 
   .dark {
-    --background: 224 71.4% 4.1%;
-    --foreground: 210 20% 98%;
-    --card: 224 71.4% 4.1%;
-    --card-foreground: 210 20% 98%;
-    --popover: 224 71.4% 4.1%;
-    --popover-foreground: 210 20% 98%;
-    --primary: 263.4 70% 50.4%;
-    --primary-foreground: 210 20% 98%;
-    --secondary: 215 27.9% 16.9%;
-    --secondary-foreground: 210 20% 98%;
-    --muted: 215 27.9% 16.9%;
-    --muted-foreground: 217.9 10.6% 64.9%;
-    --accent: 215 27.9% 16.9%;
-    --accent-foreground: 210 20% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 20% 98%;
-    --border: 215 27.9% 16.9%;
-    --input: 215 27.9% 16.9%;
-    --ring: 263.4 70% 50.4%;
-    --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
+    --background: 240 20% 17%;
+    --foreground: 0 0% 98%;
+    --card: 240 20% 17%;
+    --card-foreground: 0 0% 98%;
+    --popover: 240 20% 17%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 252 83% 71%;
+    --primary-foreground: 0 0% 18%;
+    --secondary: 240 17% 22%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 240 17% 22%;
+    --muted-foreground: 0 0% 64%;
+    --accent: 240 17% 22%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 4 90% 58%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 17% 22%;
+    --input: 240 17% 22%;
+    --ring: 252 83% 71%;
+    --chart-1: 252 83% 71%;
+    --chart-2: 142 71% 45%;
+    --chart-3: 4 90% 58%;
+    --chart-4: 45 93% 47%;
+    --chart-5: 197 37% 24%;
   }
 }
 
@@ -88,11 +98,11 @@
   }
 
   .gradient-primary {
-    background: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(262.1 83.3% 45%) 100%);
+    background: linear-gradient(135deg, hsl(var(--purple-gradient-start)) 0%, hsl(var(--purple-gradient-end)) 100%);
   }
 
   .hero-section {
-    background: linear-gradient(135deg, hsl(var(--background)) 0%, hsl(262.1 83.3% 97%) 50%, hsl(var(--background)) 100%);
+    background: linear-gradient(135deg, hsl(var(--background)) 0%, hsl(var(--surface)) 50%, hsl(var(--background)) 100%);
   }
 
   .card-hover {
@@ -100,12 +110,14 @@
   }
 
   .card-hover:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px -5px rgba(125, 106, 255, 0.1), 0 4px 6px -2px rgba(125, 106, 255, 0.05);
   }
 
   .dashboard-card {
     @apply bg-white rounded-2xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-all duration-200;
+    background: hsl(var(--card));
+    border-color: hsl(var(--border));
   }
 
   .sidebar-item {
@@ -113,14 +125,64 @@
   }
 
   .sidebar-item.active {
-    @apply bg-white text-gray-900 shadow-sm;
+    @apply text-white shadow-sm;
+    background: linear-gradient(135deg, hsl(var(--purple-gradient-start)) 0%, hsl(var(--purple-gradient-end)) 100%);
   }
 
   .sidebar-item:not(.active) {
-    @apply text-gray-300 hover:bg-gray-800 hover:text-white;
+    @apply text-gray-400 hover:bg-gray-800 hover:text-white;
   }
 
   .search-input {
-    @apply bg-gray-100 rounded-lg px-3 py-2 w-64 flex items-center;
+    @apply rounded-lg px-3 py-2 w-64 flex items-center;
+    background: hsl(var(--surface));
+    border: 1px solid hsl(var(--border));
+  }
+
+  .btn-primary {
+    @apply text-white font-medium px-6 py-2 rounded-lg transition-all duration-200;
+    background: linear-gradient(135deg, hsl(var(--purple-gradient-start)) 0%, hsl(var(--purple-gradient-end)) 100%);
+  }
+
+  .btn-primary:hover {
+    @apply shadow-lg;
+    box-shadow: 0 4px 14px 0 rgba(125, 106, 255, 0.3);
+    transform: translateY(-1px);
+  }
+
+  .btn-outline {
+    @apply font-medium px-6 py-2 rounded-lg border transition-all duration-200;
+    color: hsl(var(--primary));
+    border-color: hsl(var(--primary));
+    background: transparent;
+  }
+
+  .btn-outline:hover {
+    background: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
+  }
+
+  .surface-panel {
+    background: hsl(var(--surface));
+    border: 1px solid hsl(var(--border));
+  }
+
+  .text-secondary {
+    color: hsl(var(--text-secondary));
+  }
+
+  .status-success {
+    color: hsl(var(--success));
+    background: hsl(var(--success) / 0.1);
+  }
+
+  .status-error {
+    color: hsl(var(--destructive));
+    background: hsl(var(--destructive) / 0.1);
+  }
+
+  .status-warning {
+    color: hsl(var(--warning));
+    background: hsl(var(--warning) / 0.1);
   }
 }
