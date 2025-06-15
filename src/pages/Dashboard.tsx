@@ -39,6 +39,9 @@ import {
   Bell,
   Mail
 } from "lucide-react";
+import { DashboardSidebar } from "@/components/DashboardSidebar";
+import { DashboardHeader } from "@/components/DashboardHeader";
+import { DashboardMainContent } from "@/components/DashboardMainContent";
 
 const Dashboard = () => {
   const { t } = useTranslation();
@@ -122,52 +125,36 @@ const Dashboard = () => {
     ...(user ? [{
       id: "home",
       title: t('dashboard.title'),
-      icon: Home, // Lucide icon
-      description: "Overview"
     }] : []),
     {
       id: "chat",
       title: t('dashboard.aiChat'),
-      icon: MessageSquare,
-      description: "Legal Assistant"
     },
     ...(user ? [
       {
         id: "lawyers",
         title: t('dashboard.lawyers'),
-        icon: Users,
-        description: "Find Experts"
       },
       {
         id: "generator",
         title: t('dashboard.documents'),
-        icon: FilePlus,
-        description: "Generate"
       },
       {
         id: "templates",
         title: t('dashboard.templates'),
-        icon: FileText,
-        description: "Legal Forms"
       },
       {
         id: "guides",
         title: t('dashboard.guides'),
-        icon: BookOpen,
-        description: "Legal Info"
       },
       {
         id: "research",
         title: t('dashboard.research'),
-        icon: Search,
-        description: "Case Law"
       },
       {
         id: "settings",
         title: t('dashboard.settings'),
-        icon: Settings,
-        description: "Account"
-      }
+      },
     ] : [])
   ];
 
@@ -195,199 +182,31 @@ const Dashboard = () => {
     return null;
   }
 
-  const renderMainContent = () => {
-    // For trial users, only show chat interface
-    if (isTrialMode && !user) {
-      return <ChatInterface category="all" />;
-    }
-
-    // For authenticated users, show all features
-    switch (activeTab) {
-      case "home":
-        return <UserDashboard />;
-      case "chat":
-        return <ChatInterface category="all" />;
-      case "lawyers":
-        return <LawyerFinder category="all" />;
-      case "generator":
-        return <DocumentGenerator category="all" />;
-      case "templates":
-        return <DocumentTemplates />;
-      case "guides":
-        return <LegalGuides />;
-      case "research":
-        return <KnowledgeBase />;
-      case "settings":
-        return <SettingsPanel />;
-      default:
-        return user ? <UserDashboard /> : <ChatInterface category="all" />;
-    }
-  };
-
   return (
-    <div className="min-h-screen flex relative w-full" 
-      // Improved: use conditional classNames for precise color contrast
+    <div className="min-h-screen flex relative w-full"
       style={{
-        background: theme === "dark" 
+        background: theme === "dark"
           ? 'hsl(var(--surface), 1)'
           : 'hsl(var(--background), 1)'
       }}>
-      {/* Mobile Overlay */}
-      {isMobile && sidebarOpen && (
-        <div 
-          className="fixed inset-0 bg-black/50 z-40 md:hidden"
-          onClick={() => setSidebarOpen(false)}
-        />
-      )}
-
-      {/* Sidebar - Now, icon only w/ tooltips */}
-      <aside
-        className={`
-          ${isMobile ? 'fixed' : 'relative'} 
-          ${isMobile && !sidebarOpen ? '-translate-x-full' : 'translate-x-0'}
-          text-white
-          ${isMobile ? 'w-20 h-full z-50' : 'w-20'} 
-          transition-transform duration-300 ease-in-out
-          flex flex-col items-center pt-2
-        `}
-        style={{
-          background: theme === "dark"
-            ? 'hsl(var(--sidebar))'
-            : 'hsl(var(--card))',
-          color: theme === "dark" 
-            ? 'hsl(var(--sidebar-foreground))'
-            : 'hsl(var(--foreground))'
-        }}
-      >
-        {/* Header (small logo) */}
-        <div className="mb-6 mt-2">
-          <div className="p-2 rounded-xl gradient-primary">
-            <Scale className="h-7 w-7 text-white" />
-          </div>
-        </div>
-        {/* Navigation: only icons, each with a Tooltip*/}
-        <nav className="flex-1 flex flex-col space-y-4 items-center w-full">
-          {sidebarItems.map((item) => (
-            <div key={item.id} className="w-full flex justify-center">
-              <div className="relative group">
-                <button
-                  onClick={() => {
-                    setActiveTab(item.id);
-                    if (isMobile) setSidebarOpen(false);
-                  }}
-                  className={`
-                    flex items-center justify-center w-12 h-12 rounded-xl
-                    transition-all duration-200
-                    ${activeTab === item.id
-                      ? "bg-gradient-to-br from-purple-400 to-purple-500 text-white shadow-md"
-                      : "text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-800 hover:text-purple-500"}
-                  `}
-                  style={{
-                    fontSize: 0 // visually hide label, only show icon
-                  }}
-                  aria-label={item.title}
-                >
-                  <item.icon className="h-6 w-6" />
-                </button>
-                {/* Tooltip on hover (hidden on mobile since it's touch) */}
-                <div className="absolute left-14 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 group-hover:pointer-events-auto pointer-events-none transition bg-black bg-opacity-80 text-white text-xs rounded-md px-3 py-1 whitespace-nowrap z-50"
-                  style={{ minWidth: 80 }}
-                >
-                  {item.title}
-                </div>
-              </div>
-            </div>
-          ))}
-        </nav>
-        {/* User avatar or trial--now shown at bottom, just an icon */}
-        <div className="p-3 border-t w-full flex flex-col items-center"
-          style={{ borderColor: theme === "dark" ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.07)' }}
-        >
-          {user ? (
-            <Avatar className="h-8 w-8">
-              <AvatarImage src={user.user_metadata?.avatar_url} />
-              <AvatarFallback className="gradient-primary text-white">
-                {user.email?.charAt(0).toUpperCase() || "U"}
-              </AvatarFallback>
-            </Avatar>
-          ) : isTrialMode ? (
-            <User className="h-8 w-8 text-purple-500" />
-          ) : null}
-        </div>
-      </aside>
-
-      {/* Main Content Area */}
+      <DashboardSidebar
+        user={user}
+        isTrialMode={isTrialMode}
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+        sidebarOpen={sidebarOpen}
+        setSidebarOpen={setSidebarOpen}
+      />
       <main className="flex-1 flex flex-col min-h-screen">
-        {/* Top Bar */}
-        <header
-          className={`px-6 py-4 border-b flex justify-between items-center`}
-          style={{
-            background: theme === "dark" ? 'hsl(var(--card))' : 'hsl(var(--card), 1)',
-            borderColor: 'hsl(var(--border))',
-            color: theme === "dark" ? 'hsl(var(--card-foreground))' : 'hsl(var(--foreground))'
-          }}
-        >
-          <div className="flex items-center space-x-4">
-            {/* Mobile Menu Button */}
-            {isMobile && (
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setSidebarOpen(true)}
-                className="md:hidden"
-              >
-                <Menu className="h-5 w-5" />
-              </Button>
-            )}
-            <div>
-              <h1 className="text-2xl font-bold"
-                style={{ color: theme === "dark" ? 'hsl(var(--foreground))' : 'hsl(var(--foreground))' }}
-              >
-                {isTrialMode && !user ? "Free Trial - AI Chat" : (sidebarItems.find(item => item.id === activeTab)?.title || t('dashboard.title'))}
-              </h1>
-            </div>
-          </div>
-          <div className="flex items-center space-x-3">
-            {/* Language Selector */}
-            <LanguageSelector />
-
-            {/* Dark mode toggle - stays in top right */}
-            <Button
-              variant="ghost"
-              size="icon"
-              aria-label="Toggle dark mode"
-              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-              className={theme === "dark" ? "text-yellow-200" : "text-purple-500"}
-            >
-              {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
-            </Button>
-
-            {/* Notifications button */}
-            <Button
-              variant="ghost"
-              size="icon"
-              className="relative"
-              tabIndex={-1}
-              aria-label="Notifications"
-              style={{ color: theme === "dark" ? '#ffd700' : '#8833ff' /* purple or yellow accent */ }}
-              disabled
-            >
-              <Bell className="h-5 w-5" />
-              <span className="absolute -top-1 -right-1 h-3 w-3 bg-red-500 rounded-full border-2 border-card"></span>
-            </Button>
-
-            {/* Mail button */}
-            <Button
-              variant="ghost"
-              size="icon"
-              aria-label="Mail"
-              className={`${theme === "dark" ? "text-teal-200" : "text-blue-500"}`}
-              disabled
-            >
-              <Mail className="h-5 w-5" />
-            </Button>
-          </div>
-        </header>
+        <DashboardHeader
+          isMobile={isMobile}
+          onMenuClick={() => setSidebarOpen(true)}
+          activeTab={activeTab}
+          sidebarItems={sidebarItems}
+          isTrialMode={isTrialMode}
+          user={user}
+          t={t}
+        />
         {/* Trial Mode Banner */}
         {isTrialMode && !user && (
           <div className="px-6 py-3" style={{ 
@@ -436,7 +255,11 @@ const Dashboard = () => {
             color: 'hsl(var(--foreground))',
           }}
         >
-          {renderMainContent()}
+          <DashboardMainContent
+            activeTab={activeTab}
+            isTrialMode={isTrialMode}
+            user={user}
+          />
         </div>
       </main>
     </div>
