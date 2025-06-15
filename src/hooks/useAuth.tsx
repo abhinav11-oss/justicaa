@@ -110,20 +110,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setSession(session);
         setUser(session.user);
         setSessionError(null);
-        
-        // Redirect to dashboard after successful sign in
-        if (window.location.pathname === "/" || window.location.pathname === "/auth") {
-          window.location.href = "/dashboard";
-        }
-        
-        // Close any popup windows after successful sign in
-        if (window.opener) {
-          window.opener.postMessage(
-            { type: "AUTH_SUCCESS", user: session.user },
-            window.location.origin
-          );
-          window.close();
-        }
       } else if (event === "USER_UPDATED" && session) {
         setSession(session);
         setUser(session.user);
@@ -207,7 +193,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
-          redirectTo: `${window.location.origin}/dashboard`,
+          redirectTo: `${window.location.origin}/auth`,
           queryParams: {
             access_type: 'offline',
             prompt: 'consent',

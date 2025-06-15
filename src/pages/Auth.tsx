@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import {
   Card,
@@ -35,8 +36,10 @@ const Auth = () => {
           window.location.origin,
         );
         window.close();
+      } else {
+        // For non-popup flow, redirect to dashboard.
+        window.location.href = "/dashboard";
       }
-      // The main redirection is handled by the useAuth hook
     }
   }, [user]);
 
