@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Home, MessageSquare, Users, FilePlus, FileText, BookOpen, Search, Settings, User, Scale } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -102,7 +101,8 @@ export const DashboardSidebar: React.FC<SidebarProps> = ({
                   <item.icon className="h-6 w-6" />
                 </button>
                 {/* Tooltip on hover (hidden on mobile) */}
-                <div className="absolute left-14 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 group-hover:pointer-events-auto pointer-events-none transition bg-black bg-opacity-80 text-white text-xs rounded-md px-3 py-1 whitespace-nowrap z-50 shadow-lg"
+                <div
+                  className="absolute left-14 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 group-hover:pointer-events-auto pointer-events-none transition bg-black bg-opacity-80 text-white text-xs rounded-md px-3 py-1 whitespace-nowrap z-[99999] shadow-lg"
                   style={{ minWidth: 90 }}
                 >
                   {item.title}
