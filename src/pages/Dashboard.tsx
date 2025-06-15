@@ -1,8 +1,9 @@
+
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Badge } from "@/components/ui/badge";
 import { ChatInterface } from "@/components/ChatInterface";
 import { LegalGuides } from "@/components/LegalGuides";
 import { KnowledgeBase } from "@/components/KnowledgeBase";
@@ -32,7 +33,10 @@ import {
   Moon,
   AlertTriangle,
   Menu,
-  X
+  X,
+  Plus,
+  Bell,
+  Mail
 } from "lucide-react";
 
 const Dashboard = () => {
@@ -53,7 +57,6 @@ const Dashboard = () => {
   useEffect(() => {
     if (isTrialMode) {
       localStorage.setItem('trialMode', 'true');
-      // Set default tab to chat for trial users
       if (!user) {
         setActiveTab("chat");
       }
@@ -70,24 +73,6 @@ const Dashboard = () => {
   useEffect(() => {
     sessionStorage.setItem('lastTab', activeTab);
   }, [activeTab]);
-
-  useEffect(() => {
-    const saveScrollPosition = () => {
-      sessionStorage.setItem('scrollY', window.scrollY.toString());
-    };
-
-    window.addEventListener('scroll', saveScrollPosition);
-    return () => window.removeEventListener('scroll', saveScrollPosition);
-  }, []);
-
-  useEffect(() => {
-    if (user) {
-      const savedScrollY = sessionStorage.getItem('scrollY');
-      if (savedScrollY) {
-        window.scrollTo(0, parseInt(savedScrollY));
-      }
-    }
-  }, [user]);
 
   // Show session error notification
   useEffect(() => {
@@ -134,15 +119,15 @@ const Dashboard = () => {
     // Show home tab only for authenticated users
     ...(user ? [{
       id: "home",
-      title: "Home",
+      title: "Dashboard",
       icon: Home,
-      description: "Dashboard"
+      description: "Overview"
     }] : []),
     {
       id: "chat",
       title: "AI Chat",
       icon: MessageSquare,
-      description: "Legal Chat"
+      description: "Legal Assistant"
     },
     // Show other tabs only for authenticated users
     ...(user ? [
@@ -154,21 +139,21 @@ const Dashboard = () => {
       },
       {
         id: "generator",
-        title: "Generator",
+        title: "Documents",
         icon: FilePlus,
-        description: "Create Docs"
+        description: "Generate"
       },
       {
         id: "templates",
         title: "Templates",
         icon: FileText,
-        description: "Doc Templates"
+        description: "Legal Forms"
       },
       {
         id: "guides",
         title: "Guides",
         icon: BookOpen,
-        description: "Legal Guides"
+        description: "Legal Info"
       },
       {
         id: "research",
@@ -180,17 +165,17 @@ const Dashboard = () => {
         id: "settings",
         title: "Settings",
         icon: Settings,
-        description: "Preferences"
+        description: "Account"
       }
     ] : [])
   ];
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center p-4">
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Loading dashboard...</p>
+          <p className="text-gray-600">Loading dashboard...</p>
           {sessionError && (
             <div className="mt-4 p-3 bg-amber-50 border border-amber-200 rounded-lg max-w-md">
               <div className="flex items-center space-x-2">
@@ -239,205 +224,201 @@ const Dashboard = () => {
   };
 
   return (
-    <TooltipProvider delayDuration={300}>
-      <div className="min-h-screen bg-background dark:bg-gray-900 flex flex-col md:flex-row relative">
-        {/* Mobile Overlay */}
-        {isMobile && sidebarOpen && (
-          <div 
-            className="fixed inset-0 bg-black/50 z-40 md:hidden"
-            onClick={() => setSidebarOpen(false)}
-          />
-        )}
+    <div className="min-h-screen bg-gray-50 flex relative">
+      {/* Mobile Overlay */}
+      {isMobile && sidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-black/50 z-40 md:hidden"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
 
-        {/* Sidebar */}
-        <aside className={`
-          ${isMobile ? 'fixed' : 'relative'} 
-          ${isMobile && !sidebarOpen ? '-translate-x-full' : 'translate-x-0'}
-          bg-card dark:bg-gray-800 border-r border-border dark:border-gray-700 
-          ${isMobile ? 'w-64 h-full z-50' : 'w-16'} 
-          transition-transform duration-300 ease-in-out
-          flex flex-col
-        `}>
-          {/* Header */}
-          <div className="p-2 border-b border-border dark:border-gray-700 flex justify-center">
-            <div className="gradient-primary p-2 rounded-xl">
-              <Scale className="h-6 w-6 text-white" />
+      {/* Sidebar */}
+      <aside className={`
+        ${isMobile ? 'fixed' : 'relative'} 
+        ${isMobile && !sidebarOpen ? '-translate-x-full' : 'translate-x-0'}
+        bg-gray-900 text-white
+        ${isMobile ? 'w-72 h-full z-50' : 'w-72'} 
+        transition-transform duration-300 ease-in-out
+        flex flex-col
+      `}>
+        {/* Header */}
+        <div className="p-6 border-b border-gray-800">
+          <div className="flex items-center space-x-3">
+            <div className="bg-white p-2 rounded-xl">
+              <Scale className="h-6 w-6 text-gray-900" />
             </div>
+            <span className="text-xl font-semibold">Justicaa</span>
           </div>
+        </div>
 
-          {/* Navigation */}
-          <nav className="flex-1 p-2 relative z-[99999]">
-            <div className="space-y-2">
-              {sidebarItems.map((item) => (
-                isMobile ? (
-                  <button
-                    key={item.id}
-                    onClick={() => {
-                      setActiveTab(item.id);
-                      setSidebarOpen(false);
-                    }}
-                    className={`w-full p-3 rounded-xl transition-all duration-200 flex items-center space-x-3 ${
-                      activeTab === item.id
-                        ? "bg-primary/10 text-primary border-2 border-primary/20"
-                        : "text-muted-foreground hover:bg-muted hover:text-foreground dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white"
-                    }`}
-                  >
-                    <item.icon className="h-5 w-5 flex-shrink-0" />
-                    <div className="text-left">
-                      <div className="font-medium">{item.title}</div>
-                      <div className="text-xs opacity-70">{item.description}</div>
-                    </div>
-                  </button>
-                ) : (
-                  <Tooltip key={item.id} delayDuration={300}>
-                    <TooltipTrigger asChild>
-                      <button
-                        onClick={() => setActiveTab(item.id)}
-                        className={`w-full p-3 rounded-xl transition-all duration-200 flex items-center justify-center relative ${
-                          activeTab === item.id
-                            ? "bg-primary/10 text-primary border-2 border-primary/20"
-                            : "text-muted-foreground hover:bg-muted hover:text-foreground dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white"
-                        }`}
-                      >
-                        <item.icon className="h-5 w-5" />
-                      </button>
-                    </TooltipTrigger>
-                    <TooltipContent 
-                      side="right" 
-                      className="flex flex-col bg-popover dark:bg-gray-800 border border-border dark:border-gray-600 shadow-lg z-[99999]"
-                      sideOffset={8}
-                    >
-                      <span className="font-medium">{item.title}</span>
-                      <span className="text-xs opacity-70">{item.description}</span>
-                    </TooltipContent>
-                  </Tooltip>
-                )
-              ))}
-            </div>
-          </nav>
-        </aside>
-
-        {/* Main Content Area */}
-        <main className="flex-1 flex flex-col min-h-screen relative">
-          {/* Top Bar */}
-          <header className="bg-card dark:bg-gray-800 border-b border-border dark:border-gray-700 p-3 md:p-4 relative z-30">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-2 md:space-x-4">
-                {/* Mobile Menu Button */}
-                {isMobile && (
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => setSidebarOpen(true)}
-                    className="md:hidden dark:text-gray-300 dark:hover:bg-gray-700"
-                  >
-                    <Menu className="h-5 w-5" />
-                  </Button>
-                )}
-                
+        {/* Navigation */}
+        <nav className="flex-1 p-4">
+          <div className="space-y-2">
+            {sidebarItems.map((item) => (
+              <button
+                key={item.id}
+                onClick={() => {
+                  setActiveTab(item.id);
+                  if (isMobile) setSidebarOpen(false);
+                }}
+                className={`w-full p-3 rounded-xl transition-all duration-200 flex items-center space-x-3 text-left ${
+                  activeTab === item.id
+                    ? "bg-white text-gray-900"
+                    : "text-gray-300 hover:bg-gray-800 hover:text-white"
+                }`}
+              >
+                <item.icon className="h-5 w-5 flex-shrink-0" />
                 <div>
-                  <h2 className="text-lg md:text-2xl font-bold text-foreground dark:text-white capitalize">
-                    {isTrialMode && !user ? "Free Trial - AI Chat" : (sidebarItems.find(item => item.id === activeTab)?.title || "Dashboard")}
-                  </h2>
-                  <p className="text-xs md:text-sm text-muted-foreground dark:text-gray-400 hidden sm:block">
-                    {isTrialMode && !user ? "Try our AI legal assistant for free" : (sidebarItems.find(item => item.id === activeTab)?.description || "Welcome to your legal assistant")}
+                  <div className="font-medium">{item.title}</div>
+                  <div className="text-xs opacity-70">{item.description}</div>
+                </div>
+              </button>
+            ))}
+          </div>
+        </nav>
+
+        {/* User Profile Section */}
+        <div className="p-4 border-t border-gray-800">
+          {user ? (
+            <div className="space-y-3">
+              <div className="flex items-center space-x-3">
+                <Avatar className="h-10 w-10">
+                  <AvatarImage src={user.user_metadata?.avatar_url} />
+                  <AvatarFallback className="bg-white text-gray-900">
+                    {user.email?.charAt(0).toUpperCase() || "U"}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium text-white truncate">
+                    {user.email}
                   </p>
+                  <p className="text-xs text-gray-400">Premium User</p>
                 </div>
               </div>
-              
-              <div className="flex items-center space-x-2 md:space-x-4">
-                {/* Theme Toggle */}
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={handleSignOut}
+                className="w-full bg-transparent border-gray-700 text-gray-300 hover:bg-gray-800"
+              >
+                <LogOut className="h-4 w-4 mr-2" />
+                Sign Out
+              </Button>
+            </div>
+          ) : isTrialMode ? (
+            <div className="space-y-3">
+              <div className="p-3 bg-blue-900/50 rounded-lg border border-blue-800">
+                <p className="text-sm font-medium text-blue-200">Free Trial</p>
+                <p className="text-xs text-blue-300">Limited access</p>
+              </div>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={() => window.location.href = '/auth'}
+                className="w-full bg-transparent border-gray-700 text-gray-300 hover:bg-gray-800"
+              >
+                <User className="h-4 w-4 mr-2" />
+                Sign In
+              </Button>
+            </div>
+          ) : null}
+        </div>
+      </aside>
+
+      {/* Main Content Area */}
+      <main className="flex-1 flex flex-col min-h-screen">
+        {/* Top Bar */}
+        <header className="bg-white border-b border-gray-200 px-6 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-4">
+              {/* Mobile Menu Button */}
+              {isMobile && (
                 <Button
                   variant="ghost"
                   size="icon"
-                  onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-                  className="h-8 w-8 md:h-10 md:w-10 dark:text-gray-300 dark:hover:bg-gray-700"
+                  onClick={() => setSidebarOpen(true)}
+                  className="md:hidden"
                 >
-                  {theme === "dark" ? <Sun className="h-4 w-4 md:h-5 md:w-5" /> : <Moon className="h-4 w-4 md:h-5 md:w-5" />}
+                  <Menu className="h-5 w-5" />
                 </Button>
-                
-                {/* User Profile - Only show if authenticated */}
-                {user ? (
-                  <div className="flex items-center space-x-2 md:space-x-3">
-                    <Avatar className="h-6 w-6 md:h-8 md:w-8">
-                      <AvatarImage src={user.user_metadata?.avatar_url} />
-                      <AvatarFallback className="gradient-primary text-white text-xs">
-                        {user.email?.charAt(0).toUpperCase() || "U"}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className="hidden lg:block">
-                      <p className="text-sm font-medium text-foreground dark:text-white truncate max-w-32">
-                        {user.email}
-                      </p>
-                      <p className="text-xs text-muted-foreground dark:text-gray-400">Signed in</p>
-                    </div>
-                    <Button variant="outline" size="sm" onClick={handleSignOut} className="text-xs md:text-sm dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700">
-                      <LogOut className="h-3 w-3 md:h-4 md:w-4 mr-1 md:mr-2" />
-                      <span className="hidden sm:inline">Sign Out</span>
-                    </Button>
-                  </div>
-                ) : isTrialMode ? (
-                  <div className="flex items-center space-x-2">
-                    <Button 
-                      variant="outline" 
-                      size="sm" 
-                      onClick={() => window.location.href = '/auth'}
-                      className="text-xs md:text-sm dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700"
-                    >
-                      <User className="h-3 w-3 md:h-4 md:w-4 mr-1 md:mr-2" />
-                      <span className="hidden sm:inline">Sign In</span>
-                    </Button>
-                  </div>
-                ) : null}
+              )}
+              
+              <div>
+                <h1 className="text-2xl font-bold text-gray-900">
+                  {isTrialMode && !user ? "Free Trial - AI Chat" : (sidebarItems.find(item => item.id === activeTab)?.title || "Dashboard")}
+                </h1>
               </div>
             </div>
-          </header>
-
-          {/* Trial Mode Banner */}
-          {isTrialMode && !user && (
-            <div className="bg-blue-50 dark:bg-blue-900/20 border-b border-blue-200 dark:border-blue-800 p-3 relative z-20">
-              <div className="flex items-center justify-center space-x-2">
-                <MessageSquare className="h-4 w-4 text-blue-600 dark:text-blue-400 flex-shrink-0" />
-                <p className="text-sm text-blue-800 dark:text-blue-200 text-center">
-                  You're using the free trial. Sign up to unlock all features!
-                </p>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => window.location.href = '/auth'}
-                  className="ml-4 text-xs border-blue-300 text-blue-700 hover:bg-blue-100"
-                >
-                  Sign Up
-                </Button>
+            
+            <div className="flex items-center space-x-4">
+              {/* Search Bar */}
+              <div className="hidden md:flex items-center bg-gray-100 rounded-lg px-3 py-2 w-64">
+                <Search className="h-4 w-4 text-gray-400 mr-2" />
+                <input 
+                  type="text" 
+                  placeholder="Search anything..."
+                  className="bg-transparent border-none outline-none text-sm flex-1"
+                />
               </div>
-            </div>
-          )}
 
-          {/* Session Error Banner */}
-          {sessionError && (
-            <div className="bg-amber-50 dark:bg-amber-900/20 border-b border-amber-200 dark:border-amber-800 p-3 relative z-20">
-              <div className="flex items-center justify-center space-x-2">
-                <AlertTriangle className="h-4 w-4 text-amber-600 dark:text-amber-400 flex-shrink-0" />
-                <p className="text-sm text-amber-800 dark:text-amber-200 text-center">{sessionError}</p>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => window.location.reload()}
-                  className="ml-4 text-xs"
-                >
-                  Retry
-                </Button>
-              </div>
-            </div>
-          )}
+              {/* Action Buttons */}
+              <Button variant="ghost" size="icon" className="relative">
+                <Bell className="h-5 w-5" />
+                <span className="absolute -top-1 -right-1 h-3 w-3 bg-red-500 rounded-full"></span>
+              </Button>
 
-          {/* Content */}
-          <div className="flex-1 p-3 md:p-6 overflow-auto bg-background dark:bg-gray-900 relative z-10">
-            {renderMainContent()}
+              <Button variant="ghost" size="icon">
+                <Mail className="h-5 w-5" />
+              </Button>
+            </div>
           </div>
-        </main>
-      </div>
-    </TooltipProvider>
+        </header>
+
+        {/* Trial Mode Banner */}
+        {isTrialMode && !user && (
+          <div className="bg-blue-50 border-b border-blue-200 px-6 py-3">
+            <div className="flex items-center justify-center space-x-2">
+              <MessageSquare className="h-4 w-4 text-blue-600 flex-shrink-0" />
+              <p className="text-sm text-blue-800 text-center">
+                You're using the free trial. Sign up to unlock all features!
+              </p>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => window.location.href = '/auth'}
+                className="ml-4 text-xs border-blue-300 text-blue-700 hover:bg-blue-100"
+              >
+                Sign Up
+              </Button>
+            </div>
+          </div>
+        )}
+
+        {/* Session Error Banner */}
+        {sessionError && (
+          <div className="bg-amber-50 border-b border-amber-200 px-6 py-3">
+            <div className="flex items-center justify-center space-x-2">
+              <AlertTriangle className="h-4 w-4 text-amber-600 flex-shrink-0" />
+              <p className="text-sm text-amber-800 text-center">{sessionError}</p>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => window.location.reload()}
+                className="ml-4 text-xs"
+              >
+                Retry
+              </Button>
+            </div>
+          </div>
+        )}
+
+        {/* Content */}
+        <div className="flex-1 p-6 overflow-auto">
+          {renderMainContent()}
+        </div>
+      </main>
+    </div>
   );
 };
 

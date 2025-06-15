@@ -103,4 +103,24 @@
     transform: translateY(-4px);
     box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
   }
+
+  .dashboard-card {
+    @apply bg-white rounded-2xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-all duration-200;
+  }
+
+  .sidebar-item {
+    @apply w-full p-3 rounded-xl transition-all duration-200 flex items-center space-x-3 text-left;
+  }
+
+  .sidebar-item.active {
+    @apply bg-white text-gray-900 shadow-sm;
+  }
+
+  .sidebar-item:not(.active) {
+    @apply text-gray-300 hover:bg-gray-800 hover:text-white;
+  }
+
+  .search-input {
+    @apply bg-gray-100 rounded-lg px-3 py-2 w-64 flex items-center;
+  }
 }
