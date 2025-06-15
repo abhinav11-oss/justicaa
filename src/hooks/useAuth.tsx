@@ -236,23 +236,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       if (error) {
         console.error("Sign out error:", error);
-
         // Even if signOut fails, clear local state
         setSession(null);
         setUser(null);
-        localStorage.clear();
-        sessionStorage.clear();
-
         return { error };
       }
 
-      // Clear local state
+      // Clear local state. supabase.auth.signOut() handles storage.
       setSession(null);
       setUser(null);
-
-      // Clear any remaining local storage
-      localStorage.clear();
-      sessionStorage.clear();
 
       return { error: null };
     } catch (error) {
@@ -261,9 +253,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       // Force clear local state even on error
       setSession(null);
       setUser(null);
-      localStorage.clear();
-      sessionStorage.clear();
-
       return { error };
     }
   };

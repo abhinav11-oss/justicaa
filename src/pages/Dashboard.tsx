@@ -181,7 +181,9 @@ const Dashboard = () => {
 
   // IMPORTANT: Only check redirect/return null after loading is complete!
   if (!user && !isTrialMode) {
-    navigate("/");
+    // The useEffect hook will handle the navigation.
+    // We return null here to prevent rendering the rest of the dashboard
+    // which might depend on the user object.
     return null;
   }
 

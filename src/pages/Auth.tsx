@@ -28,17 +28,15 @@ const Auth = () => {
   // Redirect and notify parent window on successful auth
   useEffect(() => {
     if (user) {
-      // Send message to parent window
+      // Send message to parent window for popup flow
       if (window.opener) {
         window.opener.postMessage(
           { type: "AUTH_SUCCESS", user },
           window.location.origin,
         );
         window.close();
-      } else {
-        // Fallback - redirect to dashboard
-        window.location.href = "/dashboard";
       }
+      // The main redirection is handled by the useAuth hook
     }
   }, [user]);
 
