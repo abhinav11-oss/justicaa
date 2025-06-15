@@ -179,8 +179,9 @@ const Dashboard = () => {
     );
   }
 
-  // Don't render dashboard if user is not authenticated and not in trial mode
+  // IMPORTANT: Only check redirect/return null after loading is complete!
   if (!user && !isTrialMode) {
+    navigate("/");
     return null;
   }
 
