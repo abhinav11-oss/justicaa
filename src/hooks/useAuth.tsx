@@ -111,8 +111,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setUser(session.user);
         setSessionError(null);
         
+        // Redirect to dashboard after successful sign in
+        if (window.location.pathname === "/" || window.location.pathname === "/auth") {
+          window.location.href = "/dashboard";
+        }
+        
         // Close any popup windows after successful sign in
         if (window.opener) {
+          window.opener.postMessage(
+            { type: "AUTH_SUCCESS", user: session.user },
+            window.location.origin
+          );
           window.close();
         }
       } else if (event === "USER_UPDATED" && session) {
@@ -135,7 +144,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const signUp = async (email: string, password: string, fullName?: string) => {
     try {
       setSessionError(null);
-      const redirectUrl = `${window.location.origin}/`;
+      const redirectUrl = `${window.location.origin}/dashboard`;
 
       const { error } = await supabase.auth.signUp({
         email,
@@ -198,7 +207,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
-          redirectTo: `${window.location.origin}/`,
+          redirectTo: `${window.location.origin}/dashboard`,
           queryParams: {
             access_type: 'offline',
             prompt: 'consent',
@@ -263,7 +272,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       setSessionError(null);
 
-      const redirectUrl = `${window.location.origin}/`;
+      const redirectUrl = `${window.location.origin}/dashboard`;
 
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
         redirectTo: redirectUrl,

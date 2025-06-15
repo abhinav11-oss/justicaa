@@ -18,14 +18,21 @@ const Landing = () => {
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
       if (event.origin === window.location.origin && event.data.type === 'AUTH_SUCCESS') {
-        // Refresh the page to update auth state
-        window.location.reload();
+        // Redirect to dashboard instead of just reloading
+        window.location.href = "/dashboard";
       }
     };
 
     window.addEventListener('message', handleMessage);
     return () => window.removeEventListener('message', handleMessage);
   }, []);
+
+  // Redirect to dashboard if user is already logged in
+  useEffect(() => {
+    if (user) {
+      window.location.href = "/dashboard";
+    }
+  }, [user]);
 
   const handleCTAClick = () => {
     if (user) {
@@ -38,7 +45,7 @@ const Landing = () => {
       const messageHandler = (event: MessageEvent) => {
         if (event.origin === window.location.origin && event.data.type === 'AUTH_SUCCESS') {
           authWindow?.close();
-          window.location.reload(); // Refresh to update auth state
+          window.location.href = "/dashboard"; // Redirect to dashboard instead of reload
         }
       };
       
