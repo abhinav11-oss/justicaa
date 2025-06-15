@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
@@ -244,7 +243,12 @@ const Dashboard = () => {
         ${isMobile ? 'w-72 h-full z-50' : 'w-72'} 
         transition-transform duration-300 ease-in-out
         flex flex-col
-      `} style={{ background: 'hsl(var(--sidebar))' }}>
+      `}
+      // Set bg and text for dark mode
+      style={{
+        background: 'hsl(var(--sidebar))',
+        color: 'hsl(var(--sidebar-foreground))',
+      }}>
         {/* Header */}
         <div className="p-6 border-b" style={{ borderColor: 'rgba(255, 255, 255, 0.1)' }}>
           <div className="flex items-center space-x-3">
@@ -254,7 +258,6 @@ const Dashboard = () => {
             <span className="text-xl font-semibold">Justicaa</span>
           </div>
         </div>
-
         {/* Navigation */}
         <nav className="flex-1 p-4">
           <div className="space-y-2">
@@ -266,6 +269,14 @@ const Dashboard = () => {
                   if (isMobile) setSidebarOpen(false);
                 }}
                 className={`sidebar-item ${activeTab === item.id ? 'active' : ''}`}
+                // Make sure text adapts to dark mode
+                style={{
+                  color: activeTab === item.id ? '#fff' : 'hsl(var(--muted-foreground))',
+                  background:
+                    activeTab === item.id
+                      ? 'linear-gradient(135deg, hsl(var(--purple-gradient-start)) 0%, hsl(var(--purple-gradient-end)) 100%)'
+                      : undefined,
+                }}
               >
                 <item.icon className="h-5 w-5 flex-shrink-0" />
                 <div>
@@ -331,7 +342,14 @@ const Dashboard = () => {
       {/* Main Content Area */}
       <main className="flex-1 flex flex-col min-h-screen">
         {/* Top Bar */}
-        <header className="bg-white border-b px-6 py-4" style={{ borderColor: 'hsl(var(--border))' }}>
+        <header
+          className="px-6 py-4 border-b"
+          style={{
+            background: 'hsl(var(--card))',
+            borderColor: 'hsl(var(--border))',
+            color: 'hsl(var(--card-foreground))',
+          }}
+        >
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
               {/* Mobile Menu Button */}
@@ -345,14 +363,14 @@ const Dashboard = () => {
                   <Menu className="h-5 w-5" />
                 </Button>
               )}
-              
               <div>
-                <h1 className="text-2xl font-bold" style={{ color: 'hsl(var(--foreground))' }}>
+                <h1 className="text-2xl font-bold"
+                  style={{ color: 'hsl(var(--foreground))' }}
+                >
                   {isTrialMode && !user ? "Free Trial - AI Chat" : (sidebarItems.find(item => item.id === activeTab)?.title || t('dashboard.title'))}
                 </h1>
               </div>
             </div>
-            
             <div className="flex items-center space-x-4">
               {/* Search Bar */}
               <div className="hidden md:flex search-input">
@@ -361,7 +379,7 @@ const Dashboard = () => {
                   type="text" 
                   placeholder={t('dashboard.searchPlaceholder')}
                   className="bg-transparent border-none outline-none text-sm flex-1"
-                  style={{ color: 'hsl(var(--foreground))' }}
+                  style={{ color: 'hsl(var(--foreground))', background: 'transparent' }}
                 />
               </div>
 
@@ -423,7 +441,12 @@ const Dashboard = () => {
         )}
 
         {/* Content */}
-        <div className="flex-1 p-6 overflow-auto">
+        <div className="flex-1 p-6 overflow-auto"
+          style={{
+            background: 'hsl(var(--surface))',
+            color: 'hsl(var(--foreground))',
+          }}
+        >
           {renderMainContent()}
         </div>
       </main>

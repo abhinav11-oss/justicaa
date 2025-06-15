@@ -118,6 +118,65 @@ const documentTemplates: DocumentTemplate[] = [
       { id: "partner2_investment", label: "Partner 2 Investment (₹)", type: "number", required: true },
       { id: "profit_sharing", label: "Profit Sharing Ratio", type: "text", required: true, placeholder: "e.g., 50:50" }
     ]
+  },
+  // NEW TEMPLATES BELOW
+
+  // Power of Attorney
+  {
+    id: "power-attorney",
+    name: "Power of Attorney",
+    description: "Grants authority to another individual to act on your behalf",
+    category: ["Personal Legal"],
+    fields: [
+      { id: "principal_name", label: "Principal Name", type: "text", required: true },
+      { id: "attorney_name", label: "Attorney-in-fact Name", type: "text", required: true },
+      { id: "powers_granted", label: "Powers Granted", type: "textarea", required: true },
+      { id: "effective_date", label: "Effective Date", type: "date", required: true },
+      { id: "place", label: "Place of Execution", type: "text", required: true }
+    ]
+  },
+  // Will Template
+  {
+    id: "will",
+    name: "Last Will & Testament",
+    description: "Template for declaring testamentary intent",
+    category: ["Personal Legal"],
+    fields: [
+      { id: "testator_name", label: "Testator Name", type: "text", required: true },
+      { id: "testator_address", label: "Testator Address", type: "textarea", required: true },
+      { id: "beneficiaries", label: "Beneficiaries (name and relationship)", type: "textarea", required: true, placeholder: "List each" },
+      { id: "executor", label: "Executor Name", type: "text", required: true },
+      { id: "will_date", label: "Date", type: "date", required: true }
+    ]
+  },
+  // Offer Letter Template
+  {
+    id: "offer-letter",
+    name: "Job Offer Letter",
+    description: "Offer letter for new employee",
+    category: ["Business Law"],
+    fields: [
+      { id: "company_name", label: "Company Name", type: "text", required: true },
+      { id: "candidate_name", label: "Candidate Name", type: "text", required: true },
+      { id: "job_title", label: "Job Title", type: "text", required: true },
+      { id: "salary", label: "Monthly Salary (₹)", type: "number", required: true },
+      { id: "joining_date", label: "Joining Date", type: "date", required: true },
+      { id: "location", label: "Work Location", type: "text", required: true }
+    ]
+  },
+  // Resignation Letter Template
+  {
+    id: "resignation-letter",
+    name: "Resignation Letter",
+    description: "Official resignation template",
+    category: ["Business Law", "Personal Legal"],
+    fields: [
+      { id: "employee_name", label: "Employee Name", type: "text", required: true },
+      { id: "employer_name", label: "Employer Name", type: "text", required: true },
+      { id: "notice_period", label: "Notice Period (days)", type: "number", required: true },
+      { id: "last_working_day", label: "Last Working Day", type: "date", required: true },
+      { id: "reason", label: "Reason for Resignation", type: "textarea", required: false }
+    ]
   }
 ];
 
@@ -490,6 +549,86 @@ This deed is governed by the laws of India.
 
 Partner 1: _________________        Partner 2: _________________
 Date: ${today}                     Date: ${today}`;
+          break;
+
+        case "power-attorney":
+          content = `POWER OF ATTORNEY
+
+This Power of Attorney is executed on ${formData.effective_date || today} at ${formData.place || '[Place]'}.
+
+I, ${formData.principal_name || '[Principal Name]'}, hereby appoint ${formData.attorney_name || '[Attorney-in-fact Name]'} as my true and lawful attorney to perform, execute and do all acts and things in connection with:
+${formData.powers_granted || '[List of Powers Granted]'}
+
+IN WITNESS WHEREOF, I have executed this Power of Attorney on this date.
+
+Principal: _________________
+${formData.principal_name || '[Principal Name]'}
+Attorney-in-fact: _________________
+${formData.attorney_name || '[Attorney-in-fact Name]'}
+Date: ${formData.effective_date || today}
+Place: ${formData.place || '[Place]'}`;
+          break;
+
+        case "will":
+          content = `LAST WILL & TESTAMENT
+
+I, ${formData.testator_name || '[Testator Name]'}, residing at ${formData.testator_address || '[Address]'}, hereby declare this as my Last Will and Testament.
+
+1. BENEFICIARIES:
+${formData.beneficiaries || '[Names and Relationships]'}
+
+2. EXECUTOR:
+I appoint ${formData.executor || '[Executor Name]'} as executor of this will.
+
+3. REVOCATION:
+I revoke all previous wills and codicils made by me.
+
+IN WITNESS WHEREOF, I have executed this last will at this date.
+
+Testator: _________________
+${formData.testator_name || '[Testator Name]'}    Date: ${formData.will_date || today}`;
+          break;
+
+        case "offer-letter":
+          content = `OFFER LETTER
+
+${formData.company_name || '[Company Name]'}
+Date: ${today}
+
+To,
+${formData.candidate_name || '[Candidate Name]'}
+
+Subject: Offer of Employment
+
+Dear ${formData.candidate_name || '[Candidate Name]'},
+We are pleased to offer you the position of ${formData.job_title || '[Job Title]'} with a monthly salary of ₹${formData.salary || '[Salary]'} at our ${formData.location || '[Work Location]'} office. Your joining date will be ${formData.joining_date || '[Date]'}.
+
+Please confirm your acceptance of this offer.
+
+Yours sincerely,
+Authorized Signatory,
+${formData.company_name || '[Company Name]'}`;
+          break;
+
+        case "resignation-letter":
+          content = `RESIGNATION LETTER
+
+To,
+${formData.employer_name || '[Employer Name]'}
+
+Subject: Resignation Letter
+
+Dear Sir/Madam,
+
+I, ${formData.employee_name || '[Employee Name]'}, am submitting my resignation with a notice period of ${formData.notice_period || '[Notice Period]'} days. My last working day will be ${formData.last_working_day || '[Date]'}.
+
+${formData.reason ? `Reason: ${formData.reason}` : ""}
+
+Thank you for the opportunities given to me.
+
+Sincerely,
+${formData.employee_name || '[Employee Name]'}
+Date: ${today}`;
           break;
 
         default:
