@@ -202,7 +202,7 @@ const Dashboard = () => {
         setSidebarOpen={setSidebarOpen}
         t={t}
       />
-      <main className="flex-1 flex flex-col min-h-screen">
+      <main className="flex-1 flex flex-col min-h-screen z-0 relative">
         <DashboardHeader
           isMobile={isMobile}
           onMenuClick={() => setSidebarOpen(true)}
@@ -254,7 +254,7 @@ const Dashboard = () => {
         )}
 
         {/* Content */}
-        <div className="flex-1 p-6 overflow-auto"
+        <div className="flex flex-col z-0 relative overflow-visible flex-1 p-6"
           style={{
             background: 'hsl(var(--surface))',
             color: 'hsl(var(--foreground))',

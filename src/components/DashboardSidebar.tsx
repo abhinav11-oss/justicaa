@@ -110,7 +110,7 @@ export const DashboardSidebar: React.FC<SidebarProps> = ({
                     <TooltipContent
                       side="right"
                       align="center"
-                      className="z-[99999] px-3 py-1 text-xs rounded-md whitespace-nowrap"
+                      className="z-[99999] absolute px-3 py-1 text-xs rounded-md bg-white shadow-md text-black whitespace-nowrap"
                       style={{ minWidth: 90 }}
                     >
                       {item.title}
