@@ -3,7 +3,8 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { LanguageSelector } from "@/components/LanguageSelector";
 import { useTheme } from "next-themes";
-import { Sun, Moon, Menu, Bell, Mail, AlertTriangle } from "lucide-react";
+import { Sun, Moon, Menu, Bell, Mail } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 interface HeaderProps {
   isMobile: boolean;
@@ -26,6 +27,24 @@ export const DashboardHeader: React.FC<HeaderProps> = ({
   t,
 }) => {
   const { theme, setTheme } = useTheme();
+  const { toast } = useToast();
+
+  // Helper handlers for notification/mail actions
+  const handleNotificationClick = () => {
+    toast({
+      title: t?.('dashboard.notifications') || "Notifications",
+      description: t?.('dashboard.notificationsDescription') || "No new notifications at this time.",
+      duration: 4000,
+    });
+  };
+
+  const handleMailClick = () => {
+    toast({
+      title: t?.('dashboard.mail') || "Inbox",
+      description: t?.('dashboard.mailDescription') || "No new mail.",
+      duration: 4000,
+    });
+  };
 
   return (
     <header
@@ -79,9 +98,9 @@ export const DashboardHeader: React.FC<HeaderProps> = ({
           size="icon"
           className="relative"
           aria-label="Notifications"
+          onClick={handleNotificationClick}
         >
           <Bell className="h-5 w-5" />
-          {/* Place notification indicator */}
           <span className="absolute -top-1 -right-1 h-3 w-3 bg-red-500 rounded-full border-2 border-card"></span>
         </Button>
 
@@ -91,6 +110,7 @@ export const DashboardHeader: React.FC<HeaderProps> = ({
           size="icon"
           aria-label="Mail"
           className={`${theme === "dark" ? "text-teal-200" : "text-blue-500"}`}
+          onClick={handleMailClick}
         >
           <Mail className="h-5 w-5" />
         </Button>

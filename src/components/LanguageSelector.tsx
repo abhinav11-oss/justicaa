@@ -13,7 +13,7 @@ import { useToast } from "@/hooks/use-toast";
 
 const languages = [
   { code: 'en', name: 'English', flag: '🇺🇸' },
-  { code: 'hi', name: 'हिन्दी', flag: '🇮🇳' }, // NEW Hindi
+  { code: 'hi', name: 'हिन्दी', flag: '🇮🇳' },
   { code: 'es', name: 'Español', flag: '🇪🇸' },
   { code: 'fr', name: 'Français', flag: '🇫🇷' },
   { code: 'de', name: 'Deutsch', flag: '🇩🇪' },
@@ -28,18 +28,19 @@ export const LanguageSelector = () => {
   );
 
   const changeLanguage = (languageCode: string) => {
-    if (languageCode === "hi") {
-      toast({
-        title: "Coming Soon",
-        description: "Hindi translations are coming soon!",
-      });
-      return;
-    }
-    i18n.changeLanguage(languageCode);
-    const newLanguage = languages.find(lang => lang.code === languageCode);
-    if (newLanguage) {
-      setCurrentLanguage(newLanguage);
-    }
+    i18n.changeLanguage(languageCode).then(() => {
+      const newLanguage = languages.find(lang => lang.code === languageCode);
+      if (newLanguage) {
+        setCurrentLanguage(newLanguage);
+      }
+      // If Hindi and no translations, show toast
+      if (languageCode === 'hi') {
+        toast({
+          title: "Hindi Enabled",
+          description: "App switched to Hindi. Some text may still appear in English until Hindi translations are completed.",
+        });
+      }
+    });
   };
 
   return (
@@ -57,7 +58,7 @@ export const LanguageSelector = () => {
             key={language.code}
             onClick={() => changeLanguage(language.code)}
             className="flex items-center justify-between cursor-pointer"
-            disabled={language.code === "hi"}
+            // Now all languages are selectable
           >
             <div className="flex items-center space-x-2">
               <span>{language.flag}</span>
