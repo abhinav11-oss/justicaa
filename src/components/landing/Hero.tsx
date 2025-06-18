@@ -157,7 +157,7 @@ export const Hero = ({ onCTAClick, onTryForFree }: HeroProps) => {
             {/* Trust Indicators */}
             <motion.div
               variants={itemVariants}
-              className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-8"
+              className="grid grid-cols-2 md:grid-cols-4 gap-6 pt-8 max-w-2xl mx-auto"
             >
               {[
                 { icon: Users, number: "50K+", label: "Users" },
@@ -165,63 +165,24 @@ export const Hero = ({ onCTAClick, onTryForFree }: HeroProps) => {
                 { icon: Clock, number: "24/7", label: "Support" },
                 { icon: Shield, number: "100%", label: "Secure" },
               ].map((stat, index) => (
-                <div key={index} className="text-center">
-                  <div className="bg-primary/10 w-12 h-12 rounded-lg flex items-center justify-center mx-auto mb-2">
-                    <stat.icon className="h-5 w-5 text-primary" />
+                <motion.div
+                  key={index}
+                  className="text-center"
+                  whileHover={{ scale: 1.05 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <div className="bg-primary/10 w-14 h-14 rounded-lg flex items-center justify-center mx-auto mb-2">
+                    <stat.icon className="h-6 w-6 text-primary" />
                   </div>
-                  <div className="text-sm font-semibold text-foreground">
+                  <div className="text-lg font-semibold text-foreground">
                     {stat.number}
                   </div>
-                  <div className="text-xs text-muted-foreground">
+                  <div className="text-sm text-muted-foreground">
                     {stat.label}
                   </div>
-                </div>
+                </motion.div>
               ))}
             </motion.div>
-          </motion.div>
-
-          {/* Right Image */}
-          <motion.div
-            variants={imageVariants}
-            initial="hidden"
-            animate="visible"
-            className="relative"
-          >
-            <div className="relative">
-              {/* Main Interface Image */}
-              <motion.div
-                className="relative rounded-2xl overflow-hidden shadow-2xl"
-                whileHover={{ scale: 1.02 }}
-                transition={{ duration: 0.3 }}
-              >
-                <img
-                  src="https://cdn.builder.io/api/v1/assets/63769d15090142bca58e9fb61656483f/image-3a7b3b?format=webp&width=800"
-                  alt="AI Lawyer interface showing legal chat conversations"
-                  className="w-full h-auto"
-                />
-              </motion.div>
-
-              {/* Floating Badge */}
-              <motion.div
-                className="absolute -top-4 -right-4 bg-background border border-border rounded-full px-4 py-2 shadow-lg"
-                initial={{ opacity: 0, scale: 0 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 1, duration: 0.5 }}
-              >
-                <div className="flex items-center space-x-2">
-                  <Star className="w-4 h-4 text-yellow-500 fill-current" />
-                  <span className="text-sm font-medium">
-                    Product of the day
-                  </span>
-                </div>
-              </motion.div>
-
-              {/* Glowing Effect */}
-              <div className="absolute inset-0 rounded-2xl bg-gradient-to-tr from-primary/20 via-transparent to-primary/10 pointer-events-none" />
-            </div>
-
-            {/* Background Accent */}
-            <div className="absolute -inset-4 bg-gradient-to-r from-primary/5 to-primary/10 rounded-3xl blur-xl -z-10" />
           </motion.div>
         </div>
       </div>
