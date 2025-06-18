@@ -21,7 +21,7 @@ export const Header = ({ onCTAClick, onTryForFree }: HeaderProps) => {
   const headerBackground = useTransform(
     scrollY,
     [0, 100],
-    ["rgba(0, 0, 0, 0.1)", "rgba(0, 0, 0, 0.8)"]
+    ["rgba(0, 0, 0, 0.1)", "rgba(0, 0, 0, 0.8)"],
   );
 
   useEffect(() => {
@@ -33,7 +33,7 @@ export const Header = ({ onCTAClick, onTryForFree }: HeaderProps) => {
   return (
     <motion.header
       className={`backdrop-blur-md border-b border-border/50 sticky top-0 z-50 transition-all duration-300 ${
-        isScrolled ? 'bg-background/90 shadow-lg' : 'bg-background/60'
+        isScrolled ? "bg-background/90 shadow-lg" : "bg-background/60"
       }`}
       initial={{ y: -100 }}
       animate={{ y: 0 }}
@@ -47,16 +47,33 @@ export const Header = ({ onCTAClick, onTryForFree }: HeaderProps) => {
             </div>
             <div>
               <h1 className="text-2xl font-bold text-foreground">Justicaa</h1>
-              <p className="text-sm text-muted-foreground">Your AI Legal Assistant</p>
+              <p className="text-sm text-muted-foreground">
+                Your AI Legal Assistant
+              </p>
             </div>
           </div>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-6">
             <nav className="flex items-center space-x-6">
-              <a href="#features" className="text-muted-foreground hover:text-foreground transition-colors">Features</a>
-              <a href="#about" className="text-muted-foreground hover:text-foreground transition-colors">About</a>
-              <a href="#contact" className="text-muted-foreground hover:text-foreground transition-colors">Contact</a>
+              <a
+                href="#features"
+                className="text-muted-foreground hover:text-foreground transition-colors"
+              >
+                Features
+              </a>
+              <a
+                href="#about"
+                className="text-muted-foreground hover:text-foreground transition-colors"
+              >
+                About
+              </a>
+              <a
+                href="#contact"
+                className="text-muted-foreground hover:text-foreground transition-colors"
+              >
+                Contact
+              </a>
             </nav>
 
             <Button
@@ -64,7 +81,11 @@ export const Header = ({ onCTAClick, onTryForFree }: HeaderProps) => {
               size="icon"
               onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
             >
-              {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+              {theme === "dark" ? (
+                <Sun className="h-5 w-5" />
+              ) : (
+                <Moon className="h-5 w-5" />
+              )}
             </Button>
 
             {user ? (
@@ -79,7 +100,10 @@ export const Header = ({ onCTAClick, onTryForFree }: HeaderProps) => {
                 <Button variant="ghost" onClick={onCTAClick}>
                   Sign in
                 </Button>
-                <Button className="gradient-primary text-white border-0" onClick={onTryForFree}>
+                <Button
+                  className="gradient-primary text-white border-0"
+                  onClick={onTryForFree}
+                >
                   Try for free
                 </Button>
               </>
@@ -93,14 +117,22 @@ export const Header = ({ onCTAClick, onTryForFree }: HeaderProps) => {
               size="icon"
               onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
             >
-              {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+              {theme === "dark" ? (
+                <Sun className="h-5 w-5" />
+              ) : (
+                <Moon className="h-5 w-5" />
+              )}
             </Button>
             <Button
               variant="ghost"
               size="icon"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             >
-              {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+              {mobileMenuOpen ? (
+                <X className="h-5 w-5" />
+              ) : (
+                <Menu className="h-5 w-5" />
+              )}
             </Button>
           </div>
         </div>
@@ -110,9 +142,24 @@ export const Header = ({ onCTAClick, onTryForFree }: HeaderProps) => {
           <div className="md:hidden mt-4 pb-4 border-t border-border">
             <div className="flex flex-col space-y-4 pt-4">
               <nav className="flex flex-col space-y-2">
-                <a href="#features" className="text-muted-foreground hover:text-foreground transition-colors">Features</a>
-                <a href="#about" className="text-muted-foreground hover:text-foreground transition-colors">About</a>
-                <a href="#contact" className="text-muted-foreground hover:text-foreground transition-colors">Contact</a>
+                <a
+                  href="#features"
+                  className="text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  Features
+                </a>
+                <a
+                  href="#about"
+                  className="text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  About
+                </a>
+                <a
+                  href="#contact"
+                  className="text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  Contact
+                </a>
               </nav>
               {user ? (
                 <Link to="/dashboard">
@@ -123,10 +170,17 @@ export const Header = ({ onCTAClick, onTryForFree }: HeaderProps) => {
                 </Link>
               ) : (
                 <div className="space-y-2">
-                  <Button variant="outline" onClick={onCTAClick} className="w-full">
+                  <Button
+                    variant="outline"
+                    onClick={onCTAClick}
+                    className="w-full"
+                  >
                     Sign in
                   </Button>
-                  <Button onClick={onTryForFree} className="w-full gradient-primary text-white border-0">
+                  <Button
+                    onClick={onTryForFree}
+                    className="w-full gradient-primary text-white border-0"
+                  >
                     Try for free
                   </Button>
                 </div>
@@ -135,6 +189,6 @@ export const Header = ({ onCTAClick, onTryForFree }: HeaderProps) => {
           </div>
         )}
       </div>
-    </header>
+    </motion.header>
   );
 };
