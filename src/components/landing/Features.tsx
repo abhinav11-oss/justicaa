@@ -186,7 +186,13 @@ export const Features = () => {
       </motion.div>
 
       {/* Additional Features Grid */}
-      <div className="bg-muted/30 rounded-3xl p-8">
+      <motion.div
+        className="bg-muted/30 rounded-3xl p-8"
+        initial={{ opacity: 0, y: 50 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        viewport={{ once: true }}
+      >
         <div className="text-center mb-12">
           <h3 className="text-2xl font-bold text-foreground mb-2">
             Additional Legal Services
@@ -196,11 +202,19 @@ export const Features = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <motion.div
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+        >
           {additionalFeatures.slice(0, 6).map((feature, index) => (
-            <div
+            <motion.div
               key={index}
+              variants={itemVariants}
               className="bg-background rounded-xl p-6 card-hover"
+              whileHover={{ scale: 1.02 }}
             >
               <div className="bg-primary/10 w-12 h-12 rounded-xl flex items-center justify-center mb-4">
                 <feature.icon className="h-6 w-6 text-primary" />
@@ -211,10 +225,10 @@ export const Features = () => {
               <p className="text-sm text-muted-foreground">
                 {feature.description}
               </p>
-            </div>
+            </motion.div>
           ))}
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
     </section>
   );
 };
