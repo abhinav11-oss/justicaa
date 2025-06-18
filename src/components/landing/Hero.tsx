@@ -307,12 +307,12 @@ export const Hero = ({ onCTAClick, onTryForFree }: HeroProps) => {
                 </div>
               </motion.div>
 
-              {/* Floating Elements around Image */}
+              {/* Enhanced Floating Elements with Legal AI Theme */}
               <motion.div
-                className="absolute -top-6 -right-6 w-24 h-24 bg-gradient-to-br from-primary/30 to-primary/10 rounded-full blur-xl"
+                className="absolute -top-6 -right-6 w-24 h-24 bg-gradient-to-br from-blue-500/40 to-primary/20 rounded-full blur-xl"
                 animate={{
-                  scale: [1, 1.3, 1],
-                  opacity: [0.4, 0.8, 0.4],
+                  scale: [1, 1.4, 1],
+                  opacity: [0.5, 0.9, 0.5],
                 }}
                 transition={{
                   duration: 4,
@@ -321,16 +321,32 @@ export const Hero = ({ onCTAClick, onTryForFree }: HeroProps) => {
                 }}
               />
               <motion.div
-                className="absolute -bottom-8 -left-8 w-32 h-32 bg-gradient-to-tl from-primary/20 to-transparent rounded-full blur-2xl"
+                className="absolute -bottom-8 -left-8 w-32 h-32 bg-gradient-to-tl from-primary/30 to-blue-600/20 rounded-full blur-2xl"
                 animate={{
-                  scale: [1, 1.2, 1],
-                  opacity: [0.3, 0.7, 0.3],
+                  scale: [1, 1.3, 1],
+                  opacity: [0.4, 0.8, 0.4],
                 }}
                 transition={{
                   duration: 5,
                   repeat: Infinity,
                   ease: "easeInOut",
                   delay: 1,
+                }}
+              />
+
+              {/* Additional Legal Tech Elements */}
+              <motion.div
+                className="absolute top-1/2 -right-4 w-16 h-16 bg-gradient-to-br from-blue-400/30 to-primary/15 rounded-full blur-lg"
+                animate={{
+                  scale: [1, 1.5, 1],
+                  opacity: [0.3, 0.6, 0.3],
+                  rotate: [0, 180, 360],
+                }}
+                transition={{
+                  duration: 6,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                  delay: 2,
                 }}
               />
 
