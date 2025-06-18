@@ -76,18 +76,6 @@ export const Header = ({ onCTAClick, onTryForFree }: HeaderProps) => {
               </a>
             </nav>
 
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-            >
-              {theme === "dark" ? (
-                <Sun className="h-5 w-5" />
-              ) : (
-                <Moon className="h-5 w-5" />
-              )}
-            </Button>
-
             {user ? (
               <Link to="/dashboard">
                 <Button className="gradient-primary text-white border-0">
