@@ -110,12 +110,8 @@ export const DashboardSidebar: React.FC<SidebarProps> = ({
           flex flex-col items-center pt-2
         `}
         style={{
-          background:
-            theme === "dark" ? "hsl(var(--sidebar))" : "hsl(var(--card))",
-          color:
-            theme === "dark"
-              ? "hsl(var(--sidebar-foreground))"
-              : "hsl(var(--foreground))",
+          background: "hsl(var(--sidebar))",
+          color: "hsl(var(--sidebar-foreground))",
         }}
       >
         <div className="mb-6 mt-2">
