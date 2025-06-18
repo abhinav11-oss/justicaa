@@ -293,13 +293,17 @@ export const Hero = ({ onCTAClick, onTryForFree }: HeroProps) => {
               >
                 <div className="aspect-[4/5] relative">
                   <img
-                    src="https://images.pexels.com/photos/17485819/pexels-photo-17485819.png"
-                    alt="AI innovation in legal technology"
+                    src="https://images.pexels.com/photos/8728289/pexels-photo-8728289.jpeg"
+                    alt="Futuristic AI lawyer assistant with advanced legal technology"
                     className="w-full h-full object-cover"
                   />
-                  {/* Gradient Overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-tr from-primary/20 via-transparent to-primary/10"></div>
-                  <div className="absolute inset-0 bg-gradient-to-br from-transparent via-background/10 to-background/30"></div>
+                  {/* Enhanced Blue-themed Gradient Overlays */}
+                  <div className="absolute inset-0 bg-gradient-to-tr from-primary/30 via-transparent to-primary/20"></div>
+                  <div className="absolute inset-0 bg-gradient-to-br from-blue-600/20 via-background/10 to-background/30"></div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent"></div>
+
+                  {/* Legal Tech Overlay Effect */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-transparent to-primary/15 mix-blend-overlay"></div>
                 </div>
               </motion.div>
 
