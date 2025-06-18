@@ -103,11 +103,11 @@ export const Hero = ({ onCTAClick, onTryForFree }: HeroProps) => {
             {/* Main Heading */}
             <motion.div variants={itemVariants}>
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground leading-tight">
-                AI Lawyer: your{" "}
+                Justicaa: Your{" "}
                 <span className="gradient-primary bg-clip-text text-transparent">
-                  personal legal AI
+                  AI Partner
                 </span>{" "}
-                assistant
+                for Legal Help, Documents & Lawyers
               </h1>
             </motion.div>
 
