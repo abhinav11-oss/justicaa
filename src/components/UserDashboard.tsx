@@ -462,48 +462,115 @@ export function UserDashboard() {
       initial="hidden"
       animate="visible"
     >
-      {/* Welcome Section with Hero Image */}
+      {/* Welcome Section with Enhanced Gradients and Animations */}
       <motion.div variants={itemVariants}>
-        <Card className="relative overflow-hidden bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5 border-primary/20">
-          <div className="absolute inset-0 opacity-5">
+        <Card className="relative overflow-hidden border-primary/20">
+          {/* Multiple Background Layers */}
+          <div className="absolute inset-0">
+            <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-primary/10 to-primary/5"></div>
+            <div className="absolute inset-0 bg-gradient-to-tl from-transparent via-primary/3 to-transparent"></div>
             <img
               src="https://images.pexels.com/photos/6077797/pexels-photo-6077797.jpeg"
               alt="Professional legal workspace"
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover opacity-5"
             />
           </div>
-          <CardContent className="relative p-8">
+
+          {/* Animated Gradient Orbs */}
+          <motion.div
+            className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-primary/20 to-transparent rounded-full blur-3xl"
+            animate={{
+              scale: [1, 1.2, 1],
+              opacity: [0.3, 0.6, 0.3],
+            }}
+            transition={{
+              duration: 4,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+          />
+          <motion.div
+            className="absolute bottom-0 left-0 w-48 h-48 bg-gradient-to-tr from-primary/15 to-transparent rounded-full blur-2xl"
+            animate={{
+              scale: [1, 1.3, 1],
+              opacity: [0.2, 0.5, 0.2],
+            }}
+            transition={{
+              duration: 5,
+              repeat: Infinity,
+              ease: "easeInOut",
+              delay: 1,
+            }}
+          />
+
+          <CardContent className="relative p-8 z-10">
             <div className="flex items-center justify-between">
-              <div className="space-y-2">
-                <div className="flex items-center gap-2">
-                  <Sparkles className="h-5 w-5 text-primary" />
+              <div className="space-y-4">
+                <motion.div
+                  className="flex items-center gap-2"
+                  initial={{ x: -20, opacity: 0 }}
+                  animate={{ x: 0, opacity: 1 }}
+                  transition={{ delay: 0.2 }}
+                >
+                  <motion.div
+                    animate={{ rotate: 360 }}
+                    transition={{
+                      duration: 3,
+                      repeat: Infinity,
+                      ease: "linear",
+                    }}
+                  >
+                    <Sparkles className="h-5 w-5 text-primary" />
+                  </motion.div>
                   <span className="text-sm font-medium text-primary">
                     Welcome back
                   </span>
-                </div>
-                <h1 className="text-3xl font-bold text-foreground">
+                </motion.div>
+                <motion.h1
+                  className="text-3xl font-bold text-foreground"
+                  initial={{ y: 20, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ delay: 0.3, type: "spring", bounce: 0.4 }}
+                >
                   Hello,{" "}
                   {user?.user_metadata?.full_name ||
                     user?.email?.split("@")[0] ||
                     "User"}
                   ! 👋
-                </h1>
-                <p className="text-muted-foreground text-lg">
+                </motion.h1>
+                <motion.p
+                  className="text-muted-foreground text-lg"
+                  initial={{ y: 20, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ delay: 0.4 }}
+                >
                   Ready to tackle your legal matters? Your AI assistant is here
                   to help.
-                </p>
+                </motion.p>
               </div>
               <motion.div
-                whileHover={{ scale: 1.05 }}
+                initial={{ scale: 0, rotate: -180 }}
+                animate={{ scale: 1, rotate: 0 }}
+                transition={{ delay: 0.5, type: "spring", bounce: 0.3 }}
+                whileHover={{ scale: 1.05, y: -2 }}
                 whileTap={{ scale: 0.95 }}
               >
                 <Button
                   onClick={createNewConversation}
-                  className="gradient-primary text-white border-0 shadow-lg px-6 py-3"
+                  className="gradient-primary text-white border-0 shadow-lg px-6 py-3 relative overflow-hidden"
                 >
-                  <Zap className="h-5 w-5 mr-2" />
-                  Start New Consultation
-                  <ArrowUpRight className="h-4 w-4 ml-2" />
+                  <motion.div
+                    className="absolute inset-0 bg-white/20"
+                    animate={{ x: [-100, 100] }}
+                    transition={{
+                      duration: 2,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    }}
+                  />
+                  <Zap className="h-5 w-5 mr-2 relative z-10" />
+                  <span className="relative z-10">Start New Consultation</span>
+                  <ArrowUpRight className="h-4 w-4 ml-2 relative z-10" />
                 </Button>
               </motion.div>
             </div>
