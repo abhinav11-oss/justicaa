@@ -278,13 +278,7 @@ const Dashboard = () => {
         )}
 
         {/* Content */}
-        <div
-          className="flex flex-col z-0 relative overflow-visible flex-1 p-6"
-          style={{
-            background: "hsl(var(--surface))",
-            color: "hsl(var(--foreground))",
-          }}
-        >
+        <div className="flex flex-col z-0 relative overflow-visible flex-1 p-6 bg-background text-foreground">
           <DashboardMainContent
             activeTab={activeTab}
             isTrialMode={isTrialMode}
