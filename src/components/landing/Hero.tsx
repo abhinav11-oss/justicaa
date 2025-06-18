@@ -134,15 +134,50 @@ export const Hero = ({ onCTAClick, onTryForFree }: HeroProps) => {
               </Badge>
             </motion.div>
 
-            {/* Main Heading */}
+            {/* Main Heading with Rolling Animation */}
             <motion.div variants={itemVariants}>
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground leading-tight">
-                Justicaa: Your{" "}
-                <span className="gradient-primary bg-clip-text text-transparent">
+              <motion.h1
+                className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground leading-tight"
+                initial={{ rotateX: -90, opacity: 0 }}
+                animate={{ rotateX: 0, opacity: 1 }}
+                transition={{ duration: 0.8, delay: 0.5 }}
+              >
+                <motion.span
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.8 }}
+                >
+                  Justicaa: Your{" "}
+                </motion.span>
+                <motion.span
+                  className="gradient-primary bg-clip-text text-transparent relative"
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.6, delay: 1.0 }}
+                >
                   AI Partner
-                </span>{" "}
-                for Legal Help, Documents & Lawyers
-              </h1>
+                  <motion.div
+                    className="absolute inset-0 bg-gradient-to-r from-primary/20 to-primary/40 blur-xl"
+                    animate={{
+                      scale: [1, 1.2, 1],
+                      opacity: [0.3, 0.6, 0.3],
+                    }}
+                    transition={{
+                      duration: 3,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    }}
+                  />
+                </motion.span>
+                <motion.span
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 1.2 }}
+                >
+                  {" "}
+                  for Legal Help, Documents & Lawyers
+                </motion.span>
+              </motion.h1>
             </motion.div>
 
             {/* Description */}
