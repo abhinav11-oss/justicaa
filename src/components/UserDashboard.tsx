@@ -312,7 +312,7 @@ export function UserDashboard() {
       case "draft":
         return "bg-gray-100 text-gray-800";
       case "archived":
-        return "bg-purple-100 text-purple-800";
+        return "bg-primary/10 text-primary";
       default:
         return "bg-gray-100 text-gray-800";
     }
