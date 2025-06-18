@@ -304,32 +304,32 @@ export function UserDashboard() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "active":
-        return "bg-green-100 text-green-800";
+        return "bg-green-500/10 text-green-400 border border-green-500/20";
       case "completed":
-        return "bg-blue-100 text-blue-800";
+        return "bg-blue-500/10 text-blue-400 border border-blue-500/20";
       case "pending":
-        return "bg-yellow-100 text-yellow-800";
+        return "bg-yellow-500/10 text-yellow-400 border border-yellow-500/20";
       case "draft":
-        return "bg-gray-100 text-gray-800";
+        return "bg-muted text-muted-foreground border border-border";
       case "archived":
-        return "bg-primary/10 text-primary";
+        return "bg-primary/10 text-primary border border-primary/20";
       default:
-        return "bg-gray-100 text-gray-800";
+        return "bg-muted text-muted-foreground border border-border";
     }
   };
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
       case "high":
-        return "bg-red-100 text-red-800";
+        return "bg-red-500/10 text-red-400 border border-red-500/20";
       case "medium":
-        return "bg-yellow-100 text-yellow-800";
+        return "bg-yellow-500/10 text-yellow-400 border border-yellow-500/20";
       case "low":
-        return "bg-green-100 text-green-800";
+        return "bg-green-500/10 text-green-400 border border-green-500/20";
       case "urgent":
-        return "bg-red-200 text-red-900";
+        return "bg-red-600/20 text-red-300 border border-red-600/30";
       default:
-        return "bg-gray-100 text-gray-800";
+        return "bg-muted text-muted-foreground border border-border";
     }
   };
 
