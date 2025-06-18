@@ -117,51 +117,73 @@ export const DashboardSidebar: React.FC<SidebarProps> = ({
           text-card-foreground
         `}
       >
-        <div className="mb-6 mt-2">
-          <div className="p-2 rounded-xl gradient-primary">
+        <motion.div
+          className="mb-8 mt-2"
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          transition={{ delay: 0.2 }}
+        >
+          <div className="p-3 rounded-2xl gradient-primary shadow-lg">
             <Scale className="h-7 w-7 text-white" />
           </div>
-        </div>
-        <nav className="flex-1 flex flex-col space-y-4 items-center w-full">
-          {iconsToShow.map((item) => (
-            <div key={item.id} className="w-full flex justify-center">
+        </motion.div>
+        <nav className="flex-1 flex flex-col space-y-3 items-center w-full px-2">
+          {iconsToShow.map((item, index) => (
+            <motion.div
+              key={item.id}
+              className="w-full flex justify-center"
+              initial={{ x: -50, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              transition={{ delay: 0.1 * index }}
+            >
               <div className="relative group">
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <button
+                    <motion.button
                       onClick={() => {
                         setActiveTab(item.id);
                         if (isMobile) setSidebarOpen(false);
                       }}
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.95 }}
                       className={`
-                        flex items-center justify-center w-12 h-12 rounded-xl
-                        transition-all duration-200
+                        flex items-center justify-center w-14 h-14 rounded-2xl
+                        transition-all duration-300 relative overflow-hidden
                         ${
                           activeTab === item.id
-                            ? "gradient-primary text-white shadow-md"
-                            : "text-muted-foreground hover:bg-muted hover:text-primary"
+                            ? "gradient-primary text-white shadow-lg"
+                            : "text-muted-foreground hover:bg-primary/10 hover:text-primary"
                         }
                       `}
-                      style={{ fontSize: 0 }}
                       aria-label={item.title}
                     >
-                      <item.icon className="h-6 w-6" />
-                    </button>
+                      {activeTab === item.id && (
+                        <motion.div
+                          layoutId="activeTab"
+                          className="absolute inset-0 gradient-primary rounded-2xl"
+                          transition={{
+                            type: "spring",
+                            bounce: 0.2,
+                            duration: 0.6,
+                          }}
+                        />
+                      )}
+                      <item.icon className="h-6 w-6 relative z-10" />
+                    </motion.button>
                   </TooltipTrigger>
                   {/* Always show Tooltip above all and only on desktop (not mobile) */}
                   {!isMobile && (
                     <TooltipContent
                       side="right"
                       align="center"
-                      className="z-[99999] absolute px-3 py-1 text-xs rounded-md bg-white shadow-md text-black whitespace-nowrap"
-                      style={{ minWidth: 90 }}
+                      className="z-[99999] px-3 py-2 text-sm rounded-xl bg-card border border-border shadow-lg text-card-foreground"
                     >
                       {item.title}
                     </TooltipContent>
                   )}
                 </Tooltip>
               </div>
-            </div>
+            </motion.div>
           ))}
         </nav>
         {/* User avatar or trial -- at bottom, just an icon */}
