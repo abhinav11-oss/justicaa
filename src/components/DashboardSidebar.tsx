@@ -1,24 +1,9 @@
 import React from "react";
 import { motion } from "framer-motion";
-import {
-  Home,
-  MessageSquare,
-  Users,
-  FilePlus,
-  FileText,
-  BookOpen,
-  Search,
-  Settings,
-  User,
-  Scale,
-} from "lucide-react";
+import { Home, MessageSquare, Users, FilePlus, FileText, BookOpen, Search, Settings, User, Scale } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useIsMobile } from "@/hooks/use-mobile";
-import {
-  Tooltip,
-  TooltipTrigger,
-  TooltipContent,
-} from "@/components/ui/tooltip";
+import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 
 const sidebarIcons = [
   { id: "home", icon: Home, title: "Dashboard" },
@@ -28,7 +13,7 @@ const sidebarIcons = [
   { id: "templates", icon: FileText, title: "Legal Forms" },
   { id: "guides", icon: BookOpen, title: "Legal Info" },
   { id: "research", icon: Search, title: "Case Law" },
-  { id: "settings", icon: Settings, title: "Account" },
+  { id: "settings", icon: Settings, title: "Account" }
 ];
 
 interface SidebarProps {
@@ -48,72 +33,48 @@ export const DashboardSidebar: React.FC<SidebarProps> = ({
   setActiveTab,
   sidebarOpen,
   setSidebarOpen,
-  t,
+  t
 }) => {
   const isMobile = useIsMobile();
 
   const userInitial = user?.email?.charAt(0).toUpperCase() || "U";
   // Translation applied for sidebar icon titles
   const sidebarIcons = [
-    { id: "home", icon: Home, title: t("dashboard.title") },
-    { id: "chat", icon: MessageSquare, title: t("dashboard.aiChat") },
-    {
-      id: "lawyers",
-      icon: Users,
-      title: t("dashboard.lawyers", "Find Experts"),
-    },
-    {
-      id: "generator",
-      icon: FilePlus,
-      title: t("dashboard.documents", "Generate"),
-    },
-    {
-      id: "templates",
-      icon: FileText,
-      title: t("dashboard.templates", "Legal Forms"),
-    },
-    {
-      id: "guides",
-      icon: BookOpen,
-      title: t("dashboard.guides", "Legal Info"),
-    },
-    {
-      id: "research",
-      icon: Search,
-      title: t("dashboard.research", "Case Law"),
-    },
-    {
-      id: "settings",
-      icon: Settings,
-      title: t("dashboard.settings", "Account"),
-    },
+    { id: "home", icon: Home, title: t('dashboard.title') },
+    { id: "chat", icon: MessageSquare, title: t('dashboard.aiChat') },
+    { id: "lawyers", icon: Users, title: t('dashboard.lawyers', "Find Experts") },
+    { id: "generator", icon: FilePlus, title: t('dashboard.documents', "Generate") },
+    { id: "templates", icon: FileText, title: t('dashboard.templates', "Legal Forms") },
+    { id: "guides", icon: BookOpen, title: t('dashboard.guides', "Legal Info") },
+    { id: "research", icon: Search, title: t('dashboard.research', "Case Law") },
+    { id: "settings", icon: Settings, title: t('dashboard.settings', "Account") }
   ];
 
-  const iconsToShow = user
-    ? sidebarIcons
-    : sidebarIcons.filter((i) => ["chat"].includes(i.id));
+  const iconsToShow = user ? sidebarIcons : sidebarIcons.filter(i => ["chat"].includes(i.id));
 
   return (
     <>
       {isMobile && sidebarOpen && (
-        <div
-          className="fixed inset-0 bg-black/50 z-40 md:hidden"
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 bg-black/50 z-40 md:hidden backdrop-blur-sm"
           onClick={() => setSidebarOpen(false)}
         />
       )}
-      <aside
+      <motion.aside
+        initial={{ x: isMobile ? -100 : 0 }}
+        animate={{ x: 0 }}
         className={`
-          ${isMobile ? "fixed" : "relative"}
-          ${isMobile && !sidebarOpen ? "-translate-x-full" : "translate-x-0"}
-          text-white
-          ${isMobile ? "w-20 h-full z-50" : "w-20"}
+          ${isMobile ? 'fixed' : 'relative'}
+          ${isMobile && !sidebarOpen ? '-translate-x-full' : 'translate-x-0'}
+          ${isMobile ? 'w-20 h-full z-50' : 'w-20'}
           transition-transform duration-300 ease-in-out
-          flex flex-col items-center pt-2
+          flex flex-col items-center pt-4
+          bg-card/80 backdrop-blur-xl border-r border-border
+          text-card-foreground
         `}
-        style={{
-          background: "hsl(var(--sidebar))",
-          color: "hsl(var(--sidebar-foreground))",
-        }}
       >
         <div className="mb-6 mt-2">
           <div className="p-2 rounded-xl gradient-primary">
@@ -134,11 +95,9 @@ export const DashboardSidebar: React.FC<SidebarProps> = ({
                       className={`
                         flex items-center justify-center w-12 h-12 rounded-xl
                         transition-all duration-200
-                        ${
-                          activeTab === item.id
-                            ? "gradient-primary text-white shadow-md"
-                            : "text-muted-foreground hover:bg-muted hover:text-primary"
-                        }
+                        ${activeTab === item.id
+                          ? "gradient-primary text-white shadow-md"
+                          : "text-muted-foreground hover:bg-muted hover:text-primary"}
                       `}
                       style={{ fontSize: 0 }}
                       aria-label={item.title}
@@ -163,9 +122,8 @@ export const DashboardSidebar: React.FC<SidebarProps> = ({
           ))}
         </nav>
         {/* User avatar or trial -- at bottom, just an icon */}
-        <div
-          className="p-3 border-t w-full flex flex-col items-center"
-          style={{ borderColor: "rgba(255,255,255,0.08)" }}
+        <div className="p-3 border-t w-full flex flex-col items-center"
+          style={{ borderColor: 'rgba(255,255,255,0.08)' }}
         >
           {user ? (
             <Avatar className="h-8 w-8">
