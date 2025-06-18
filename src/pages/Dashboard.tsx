@@ -202,10 +202,7 @@ const Dashboard = () => {
     <div
       className="min-h-screen flex relative w-full overflow-visible"
       style={{
-        background:
-          theme === "dark"
-            ? "hsl(var(--surface), 1)"
-            : "hsl(var(--background), 1)",
+        background: "hsl(var(--surface), 1)",
       }}
     >
       <DashboardSidebar
