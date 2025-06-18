@@ -1,5 +1,5 @@
-
 import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
 import { useAuth } from "@/hooks/useAuth";
 import { AuthModal } from "@/components/AuthModal";
 import { Header } from "@/components/landing/Header";
@@ -7,6 +7,7 @@ import { Hero } from "@/components/landing/Hero";
 import { Features } from "@/components/landing/Features";
 import { Benefits } from "@/components/landing/Benefits";
 import { About } from "@/components/landing/About";
+import { Testimonials } from "@/components/landing/Testimonials";
 import { CTASection } from "@/components/landing/CTASection";
 import { Footer } from "@/components/landing/Footer";
 
@@ -17,14 +18,17 @@ const Landing = () => {
   // Listen for authentication messages from popup windows
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
-      if (event.origin === window.location.origin && event.data.type === 'AUTH_SUCCESS') {
+      if (
+        event.origin === window.location.origin &&
+        event.data.type === "AUTH_SUCCESS"
+      ) {
         // Redirect to dashboard instead of just reloading
         window.location.href = "/dashboard";
       }
     };
 
-    window.addEventListener('message', handleMessage);
-    return () => window.removeEventListener('message', handleMessage);
+    window.addEventListener("message", handleMessage);
+    return () => window.removeEventListener("message", handleMessage);
   }, []);
 
   // Redirect to dashboard if user is already logged in
@@ -39,22 +43,29 @@ const Landing = () => {
       window.location.href = "/dashboard";
     } else {
       // Open auth in new tab
-      const authWindow = window.open('/auth', '_blank', 'width=500,height=600,scrollbars=yes,resizable=yes');
-      
+      const authWindow = window.open(
+        "/auth",
+        "_blank",
+        "width=500,height=600,scrollbars=yes,resizable=yes",
+      );
+
       // Listen for auth success message
       const messageHandler = (event: MessageEvent) => {
-        if (event.origin === window.location.origin && event.data.type === 'AUTH_SUCCESS') {
+        if (
+          event.origin === window.location.origin &&
+          event.data.type === "AUTH_SUCCESS"
+        ) {
           authWindow?.close();
           window.location.href = "/dashboard"; // Redirect to dashboard instead of reload
         }
       };
-      
-      window.addEventListener('message', messageHandler);
-      
+
+      window.addEventListener("message", messageHandler);
+
       // Cleanup listener if window is closed manually
       const checkClosed = setInterval(() => {
         if (authWindow?.closed) {
-          window.removeEventListener('message', messageHandler);
+          window.removeEventListener("message", messageHandler);
           clearInterval(checkClosed);
         }
       }, 1000);
@@ -80,7 +91,10 @@ const Landing = () => {
       <About />
       <CTASection onTryForFree={handleTryForFree} />
       <Footer />
-      <AuthModal isOpen={authModalOpen} onClose={() => setAuthModalOpen(false)} />
+      <AuthModal
+        isOpen={authModalOpen}
+        onClose={() => setAuthModalOpen(false)}
+      />
     </div>
   );
 };
