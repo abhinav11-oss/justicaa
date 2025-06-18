@@ -20,7 +20,6 @@ import { MapPin, User, Save, Upload } from "lucide-react";
 export const SettingsPanel = () => {
   const { user } = useAuth();
   const { toast } = useToast();
-  const { theme, setTheme } = useTheme();
   const [profile, setProfile] = useState({
     name: "",
     email: "",
