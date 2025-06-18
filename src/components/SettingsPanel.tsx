@@ -40,14 +40,6 @@ export const SettingsPanel = () => {
     }
   }, [user]);
 
-  const handleThemeToggle = () => {
-    setTheme(theme === "dark" ? "light" : "dark");
-    toast({
-      title: "Theme Updated",
-      description: `Switched to ${theme === "dark" ? "light" : "dark"} mode`,
-    });
-  };
-
   const handleProfileChange = (field: string, value: string) => {
     setProfile((prev) => ({ ...prev, [field]: value }));
     setUnsavedChanges(true);
