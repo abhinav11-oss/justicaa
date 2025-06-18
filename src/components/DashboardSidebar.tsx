@@ -174,7 +174,7 @@ export const DashboardSidebar: React.FC<SidebarProps> = ({
               </AvatarFallback>
             </Avatar>
           ) : isTrialMode ? (
-            <User className="h-8 w-8 text-purple-500" />
+            <User className="h-8 w-8 text-primary" />
           ) : null}
         </div>
       </aside>
