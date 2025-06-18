@@ -482,38 +482,20 @@ export function UserDashboard() {
       </div>
 
       {/* Main Content */}
-      <Card className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border-slate-200 dark:border-gray-700 shadow-xl">
+      <Card className="bg-card/80 backdrop-blur-sm border-border shadow-xl">
         <CardHeader>
           <Tabs
             value={activeTab}
             onValueChange={setActiveTab}
             className="w-full"
           >
-            <TabsList className="grid w-full grid-cols-4 bg-slate-100 dark:bg-gray-700">
-              <TabsTrigger
-                value="conversations"
-                className="dark:text-gray-300 dark:data-[state=active]:bg-gray-600 dark:data-[state=active]:text-white"
-              >
+            <TabsList className="grid w-full grid-cols-4 bg-muted">
+              <TabsTrigger value="conversations">
                 Recent Conversations
               </TabsTrigger>
-              <TabsTrigger
-                value="archived"
-                className="dark:text-gray-300 dark:data-[state=active]:bg-gray-600 dark:data-[state=active]:text-white"
-              >
-                Archived Chats
-              </TabsTrigger>
-              <TabsTrigger
-                value="documents"
-                className="dark:text-gray-300 dark:data-[state=active]:bg-gray-600 dark:data-[state=active]:text-white"
-              >
-                Documents
-              </TabsTrigger>
-              <TabsTrigger
-                value="matters"
-                className="dark:text-gray-300 dark:data-[state=active]:bg-gray-600 dark:data-[state=active]:text-white"
-              >
-                Legal Matters
-              </TabsTrigger>
+              <TabsTrigger value="archived">Archived Chats</TabsTrigger>
+              <TabsTrigger value="documents">Documents</TabsTrigger>
+              <TabsTrigger value="matters">Legal Matters</TabsTrigger>
             </TabsList>
           </Tabs>
         </CardHeader>
