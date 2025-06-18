@@ -117,7 +117,13 @@ export const Benefits = () => {
   return (
     <section className="py-20">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-16">
+        <motion.div
+          className="text-center mb-16"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          viewport={{ once: true }}
+        >
           <Badge variant="outline" className="mb-4 px-4 py-2">
             Why Choose Justicaa
           </Badge>
@@ -128,46 +134,55 @@ export const Benefits = () => {
             Experience the difference of modern, AI-powered legal assistance
             designed specifically for India
           </p>
-        </div>
+        </motion.div>
 
         {/* Main Benefits */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-16">
+        <motion.div
+          className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-16"
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+        >
           {mainBenefits.map((benefit, index) => (
-            <Card
-              key={index}
-              className="card-hover border-2 hover:border-primary/20 bg-card/50 backdrop-blur-sm"
-            >
-              <CardContent className="p-6">
-                <div className="gradient-primary w-16 h-16 rounded-2xl flex items-center justify-center mb-4">
-                  <benefit.icon className="h-8 w-8 text-white" />
-                </div>
-                <Badge
-                  variant="secondary"
-                  className="mb-3 bg-primary/10 text-primary"
-                >
-                  {benefit.stat}
-                </Badge>
-                <h3 className="text-xl font-semibold text-foreground mb-3">
-                  {benefit.title}
-                </h3>
-                <p className="text-muted-foreground mb-4 leading-relaxed">
-                  {benefit.description}
-                </p>
-                <ul className="space-y-2">
-                  {benefit.details.map((detail, idx) => (
-                    <li
-                      key={idx}
-                      className="flex items-center text-sm text-muted-foreground"
-                    >
-                      <CheckCircle className="w-4 h-4 text-primary mr-2 flex-shrink-0" />
-                      {detail}
-                    </li>
-                  ))}
-                </ul>
-              </CardContent>
-            </Card>
+            <motion.div key={index} variants={itemVariants}>
+              <Card className="card-hover border-2 hover:border-primary/20 bg-card/50 backdrop-blur-sm h-full">
+                <CardContent className="p-6">
+                  <motion.div
+                    className="gradient-primary w-16 h-16 rounded-2xl flex items-center justify-center mb-4"
+                    whileHover={{ scale: 1.1, rotate: 5 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <benefit.icon className="h-8 w-8 text-white" />
+                  </motion.div>
+                  <Badge
+                    variant="secondary"
+                    className="mb-3 bg-primary/10 text-primary"
+                  >
+                    {benefit.stat}
+                  </Badge>
+                  <h3 className="text-xl font-semibold text-foreground mb-3">
+                    {benefit.title}
+                  </h3>
+                  <p className="text-muted-foreground mb-4 leading-relaxed">
+                    {benefit.description}
+                  </p>
+                  <ul className="space-y-2">
+                    {benefit.details.map((detail, idx) => (
+                      <li
+                        key={idx}
+                        className="flex items-center text-sm text-muted-foreground"
+                      >
+                        <CheckCircle className="w-4 h-4 text-primary mr-2 flex-shrink-0" />
+                        {detail}
+                      </li>
+                    ))}
+                  </ul>
+                </CardContent>
+              </Card>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
 
         {/* Comparison Table */}
         <div className="bg-muted/30 rounded-3xl p-8 mb-16">
