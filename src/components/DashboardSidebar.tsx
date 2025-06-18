@@ -164,10 +164,7 @@ export const DashboardSidebar: React.FC<SidebarProps> = ({
         {/* User avatar or trial -- at bottom, just an icon */}
         <div
           className="p-3 border-t w-full flex flex-col items-center"
-          style={{
-            borderColor:
-              theme === "dark" ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.07)",
-          }}
+          style={{ borderColor: "rgba(255,255,255,0.08)" }}
         >
           {user ? (
             <Avatar className="h-8 w-8">
