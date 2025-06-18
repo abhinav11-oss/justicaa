@@ -83,35 +83,6 @@ export const SettingsPanel = () => {
 
   return (
     <div className="space-y-6">
-      {/* Appearance Settings */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center">
-            {theme === "dark" ? (
-              <Moon className="h-5 w-5 mr-2" />
-            ) : (
-              <Sun className="h-5 w-5 mr-2" />
-            )}
-            Appearance
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <Label htmlFor="dark-mode">Dark Mode</Label>
-              <p className="text-sm text-slate-600 dark:text-slate-400">
-                Switch between light and dark themes
-              </p>
-            </div>
-            <Switch
-              id="dark-mode"
-              checked={theme === "dark"}
-              onCheckedChange={handleThemeToggle}
-            />
-          </div>
-        </CardContent>
-      </Card>
-
       {/* Profile Settings */}
       <Card>
         <CardHeader>
