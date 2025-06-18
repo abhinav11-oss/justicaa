@@ -49,7 +49,6 @@ export const DashboardSidebar: React.FC<SidebarProps> = ({
   setSidebarOpen,
   t,
 }) => {
-  const { theme } = useTheme();
   const isMobile = useIsMobile();
 
   const userInitial = user?.email?.charAt(0).toUpperCase() || "U";
