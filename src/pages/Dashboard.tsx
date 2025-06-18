@@ -165,20 +165,12 @@ const Dashboard = () => {
 
   if (loading) {
     return (
-      <div
-        className="min-h-screen flex items-center justify-center p-4"
-        style={{ background: "hsl(var(--surface))" }}
-      >
+      <div className="min-h-screen flex items-center justify-center p-4 bg-background">
         <div className="text-center">
-          <div
-            className="animate-spin rounded-full h-12 w-12 border-b-2 mx-auto mb-4"
-            style={{ borderColor: "hsl(var(--primary))" }}
-          ></div>
-          <p style={{ color: "hsl(var(--text-secondary))" }}>
-            {t("common.loading")}
-          </p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-muted-foreground">{t("common.loading")}</p>
           {sessionError && (
-            <div className="mt-4 p-3 rounded-lg max-w-md status-warning">
+            <div className="mt-4 p-3 rounded-lg max-w-md bg-destructive/10 border border-destructive/20 text-destructive">
               <div className="flex items-center space-x-2">
                 <AlertTriangle className="h-4 w-4" />
                 <p className="text-sm">{sessionError}</p>
