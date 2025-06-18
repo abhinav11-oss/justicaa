@@ -12,8 +12,68 @@ interface HeroProps {
 export const Hero = ({ onCTAClick, onTryForFree }: HeroProps) => {
   const { user } = useAuth();
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.2,
+        delayChildren: 0.3,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 50 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.6, ease: "easeOut" },
+    },
+  };
+
+  const floatingVariants = {
+    float: {
+      y: [-10, 10, -10],
+      transition: {
+        duration: 6,
+        repeat: Infinity,
+        ease: "easeInOut",
+      },
+    },
+  };
+
   return (
-    <section className="hero-section relative overflow-hidden">
+    <section className="hero-section relative overflow-hidden min-h-screen flex items-center">
+      {/* Background Image with Overlay */}
+      <div className="absolute inset-0 z-0">
+        <img
+          src="https://images.pexels.com/photos/6077797/pexels-photo-6077797.jpeg"
+          alt="Golden justice scales on a desk beside a laptop"
+          className="w-full h-full object-cover opacity-10"
+        />
+        <div className="absolute inset-0 bg-gradient-to-br from-background/95 via-background/90 to-background/95"></div>
+      </div>
+
+      {/* Floating Elements */}
+      <motion.div
+        className="absolute top-20 left-10 w-20 h-20 border border-primary/20 rounded-full"
+        variants={floatingVariants}
+        animate="float"
+      />
+      <motion.div
+        className="absolute top-40 right-20 w-16 h-16 border border-primary/30 rounded-full"
+        variants={floatingVariants}
+        animate="float"
+        transition={{ delay: 1 }}
+      />
+      <motion.div
+        className="absolute bottom-40 left-1/4 w-12 h-12 border border-primary/25 rounded-full"
+        variants={floatingVariants}
+        animate="float"
+        transition={{ delay: 2 }}
+      />
+
       <div className="container mx-auto px-4 py-12 md:py-20 relative z-10">
         <div className="max-w-6xl mx-auto">
           {/* Hero Badge */}
