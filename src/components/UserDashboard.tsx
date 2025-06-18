@@ -627,12 +627,12 @@ export function UserDashboard() {
 
             <TabsContent value="documents" className="space-y-4">
               <div className="flex justify-between items-center">
-                <h3 className="text-lg font-semibold dark:text-white">
+                <h3 className="text-lg font-semibold text-foreground">
                   Legal Documents
                 </h3>
                 <Button
                   size="sm"
-                  className="dark:bg-primary dark:hover:bg-primary/90"
+                  className="gradient-primary text-white border-0"
                 >
                   <Plus className="h-4 w-4 mr-2" />
                   New Document
@@ -640,8 +640,8 @@ export function UserDashboard() {
               </div>
 
               {documents.length === 0 ? (
-                <div className="text-center py-8 text-slate-500 dark:text-gray-400">
-                  <FileText className="h-12 w-12 mx-auto mb-4 text-slate-300 dark:text-gray-600" />
+                <div className="text-center py-8 text-muted-foreground">
+                  <FileText className="h-12 w-12 mx-auto mb-4 text-muted-foreground/50" />
                   <p>No documents yet. Create your first legal document!</p>
                 </div>
               ) : (
@@ -649,17 +649,17 @@ export function UserDashboard() {
                   {documents.map((document) => (
                     <div
                       key={document.id}
-                      className="p-4 border border-slate-200 dark:border-gray-600 rounded-lg hover:bg-slate-50 dark:hover:bg-gray-700/50 transition-colors"
+                      className="p-4 border border-border rounded-lg hover:bg-muted/50 transition-colors"
                     >
                       <div className="flex justify-between items-start">
                         <div className="flex-1">
-                          <h4 className="font-medium dark:text-white">
+                          <h4 className="font-medium text-foreground">
                             {document.title}
                           </h4>
-                          <p className="text-sm text-slate-600 dark:text-gray-400 capitalize">
+                          <p className="text-sm text-muted-foreground capitalize">
                             {document.document_type}
                           </p>
-                          <p className="text-xs text-slate-400 dark:text-gray-500">
+                          <p className="text-xs text-muted-foreground">
                             {new Date(document.created_at).toLocaleDateString()}
                           </p>
                         </div>
@@ -671,7 +671,7 @@ export function UserDashboard() {
                             variant="outline"
                             size="sm"
                             onClick={() => downloadDocument(document)}
-                            className="dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700"
+                            className="border-border text-foreground hover:bg-muted"
                           >
                             <Download className="h-4 w-4 mr-2" />
                             Download
