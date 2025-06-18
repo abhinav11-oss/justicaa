@@ -73,7 +73,13 @@ export const About = () => {
   return (
     <section id="about" className="py-20 bg-muted/30">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-16">
+        <motion.div
+          className="text-center mb-16"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          viewport={{ once: true }}
+        >
           <Badge variant="outline" className="mb-4 px-4 py-2">
             About Us
           </Badge>
@@ -84,29 +90,38 @@ export const About = () => {
             Bridging the gap between complex legal systems and everyday citizens
             through innovative AI technology
           </p>
-        </div>
+        </motion.div>
 
         {/* Stats Section */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+        <motion.div
+          className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-16"
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+        >
           {stats.map((stat, index) => (
-            <Card
-              key={index}
-              className="text-center bg-background border-0 shadow-sm"
-            >
-              <CardContent className="pt-6">
-                <div className="bg-primary/10 w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3">
-                  <stat.icon className="h-6 w-6 text-primary" />
-                </div>
-                <div className="text-3xl font-bold text-foreground mb-1">
-                  {stat.number}
-                </div>
-                <div className="text-sm text-muted-foreground">
-                  {stat.label}
-                </div>
-              </CardContent>
-            </Card>
+            <motion.div key={index} variants={itemVariants}>
+              <Card className="text-center bg-background border-0 shadow-sm card-hover">
+                <CardContent className="pt-6">
+                  <motion.div
+                    className="bg-primary/10 w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3"
+                    whileHover={{ scale: 1.1, rotate: 5 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <stat.icon className="h-6 w-6 text-primary" />
+                  </motion.div>
+                  <div className="text-3xl font-bold text-foreground mb-1">
+                    {stat.number}
+                  </div>
+                  <div className="text-sm text-muted-foreground">
+                    {stat.label}
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
 
         {/* Main About Content */}
         <div className="max-w-6xl mx-auto">
