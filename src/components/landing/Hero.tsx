@@ -350,29 +350,49 @@ export const Hero = ({ onCTAClick, onTryForFree }: HeroProps) => {
                 }}
               />
 
-              {/* Floating Badge */}
+              {/* Enhanced Legal AI Badge */}
               <motion.div
-                className="absolute -top-4 -left-4 bg-card/90 backdrop-blur-lg border border-primary/20 rounded-2xl px-4 py-2 shadow-xl"
-                initial={{ scale: 0, rotate: -10 }}
+                className="absolute -top-4 -left-4 bg-card/95 backdrop-blur-xl border border-primary/30 rounded-2xl px-4 py-3 shadow-2xl"
+                initial={{ scale: 0, rotate: -15 }}
                 animate={{ scale: 1, rotate: 0 }}
                 transition={{ delay: 1.5, type: "spring", bounce: 0.4 }}
-                whileHover={{ scale: 1.05 }}
+                whileHover={{ scale: 1.08, y: -2 }}
               >
-                <div className="flex items-center space-x-2">
+                <div className="flex items-center space-x-3">
                   <motion.div
+                    className="relative"
                     animate={{ rotate: 360 }}
                     transition={{
-                      duration: 3,
+                      duration: 4,
                       repeat: Infinity,
                       ease: "linear",
                     }}
                   >
-                    <Sparkles className="w-4 h-4 text-primary" />
+                    <div className="w-6 h-6 bg-gradient-to-br from-primary to-blue-600 rounded-full flex items-center justify-center">
+                      <Sparkles className="w-3 h-3 text-white" />
+                    </div>
+                    <motion.div
+                      className="absolute inset-0 bg-gradient-to-r from-primary/30 to-blue-500/30 rounded-full blur-sm"
+                      animate={{ scale: [1, 1.5, 1], opacity: [0.5, 1, 0.5] }}
+                      transition={{ duration: 2, repeat: Infinity }}
+                    />
                   </motion.div>
-                  <span className="text-xs font-medium text-foreground">
-                    AI Powered
-                  </span>
+                  <div>
+                    <span className="text-xs font-bold text-foreground block">
+                      Legal AI
+                    </span>
+                    <span className="text-xs text-primary font-medium">
+                      Assistant
+                    </span>
+                  </div>
                 </div>
+
+                {/* Badge Glow Effect */}
+                <motion.div
+                  className="absolute inset-0 bg-gradient-to-r from-primary/20 to-blue-500/20 rounded-2xl blur-md -z-10"
+                  animate={{ opacity: [0.5, 1, 0.5] }}
+                  transition={{ duration: 3, repeat: Infinity }}
+                />
               </motion.div>
             </div>
           </motion.div>
