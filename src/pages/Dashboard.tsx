@@ -15,17 +15,16 @@ import { SettingsPanel } from "@/components/SettingsPanel";
 import { LanguageSelector } from "@/components/LanguageSelector";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
-import { useTheme } from "next-themes";
 import { useToast } from "@/hooks/use-toast";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { 
-  Scale, 
-  MessageSquare, 
-  BookOpen, 
-  FileText, 
-  Users, 
-  User, 
-  LogOut, 
+import {
+  Scale,
+  MessageSquare,
+  BookOpen,
+  FileText,
+  Users,
+  User,
+  LogOut,
   FilePlus,
   Home,
   Settings,
@@ -37,7 +36,7 @@ import {
   X,
   Plus,
   Bell,
-  Mail
+  Mail,
 } from "lucide-react";
 import { DashboardSidebar } from "@/components/DashboardSidebar";
 import { DashboardHeader } from "@/components/DashboardHeader";
@@ -46,7 +45,7 @@ import { DashboardMainContent } from "@/components/DashboardMainContent";
 const Dashboard = () => {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState(() => {
-    return sessionStorage.getItem('lastTab') || "home";
+    return sessionStorage.getItem("lastTab") || "home";
   });
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { user, signOut, loading, sessionError } = useAuth();
@@ -56,12 +55,15 @@ const Dashboard = () => {
   const isMobile = useIsMobile();
 
   // Check if this is trial mode
-  const isTrialMode = !user && (window.location.search.includes('trial=true') || localStorage.getItem('trialMode') === 'true');
+  const isTrialMode =
+    !user &&
+    (window.location.search.includes("trial=true") ||
+      localStorage.getItem("trialMode") === "true");
 
   // Handle trial mode initialization
   useEffect(() => {
     if (isTrialMode) {
-      localStorage.setItem('trialMode', 'true');
+      localStorage.setItem("trialMode", "true");
       if (!user) {
         setActiveTab("chat");
       }
@@ -76,17 +78,17 @@ const Dashboard = () => {
   }, [user, loading, navigate, isTrialMode]);
 
   useEffect(() => {
-    sessionStorage.setItem('lastTab', activeTab);
+    sessionStorage.setItem("lastTab", activeTab);
   }, [activeTab]);
 
   // Show session error notification
   useEffect(() => {
     if (sessionError) {
       toast({
-        title: t('common.error'),
+        title: t("common.error"),
         description: sessionError,
         variant: "destructive",
-        duration: 5000
+        duration: 5000,
       });
     }
   }, [sessionError, toast, t]);
@@ -95,77 +97,89 @@ const Dashboard = () => {
     try {
       setActiveTab("home");
       await signOut();
-      
+
       sessionStorage.clear();
-      localStorage.removeItem('lastTab');
-      localStorage.removeItem('trialMode');
-      localStorage.removeItem('trialMessagesUsed');
-      
+      localStorage.removeItem("lastTab");
+      localStorage.removeItem("trialMode");
+      localStorage.removeItem("trialMessagesUsed");
+
       toast({
         title: "Signed Out",
-        description: "You have been successfully signed out."
+        description: "You have been successfully signed out.",
       });
-      
+
       navigate("/");
     } catch (error) {
-      console.error('Logout error:', error);
-      
+      console.error("Logout error:", error);
+
       toast({
         title: "Logout Error",
         description: "There was an issue signing out. Redirecting anyway.",
-        variant: "destructive"
+        variant: "destructive",
       });
-      
+
       navigate("/");
     }
   };
 
   // New: sidebar icon-tooltips mapping for accessibility and usability.
   const sidebarItems = [
-    ...(user ? [{
-      id: "home",
-      title: t('dashboard.title'),
-    }] : []),
+    ...(user
+      ? [
+          {
+            id: "home",
+            title: t("dashboard.title"),
+          },
+        ]
+      : []),
     {
       id: "chat",
-      title: t('dashboard.aiChat'),
+      title: t("dashboard.aiChat"),
     },
-    ...(user ? [
-      {
-        id: "lawyers",
-        title: t('dashboard.lawyers'),
-      },
-      {
-        id: "generator",
-        title: t('dashboard.documents'),
-      },
-      {
-        id: "templates",
-        title: t('dashboard.templates'),
-      },
-      {
-        id: "guides",
-        title: t('dashboard.guides'),
-      },
-      {
-        id: "research",
-        title: t('dashboard.research'),
-      },
-      {
-        id: "settings",
-        title: t('dashboard.settings'),
-      },
-    ] : [])
+    ...(user
+      ? [
+          {
+            id: "lawyers",
+            title: t("dashboard.lawyers"),
+          },
+          {
+            id: "generator",
+            title: t("dashboard.documents"),
+          },
+          {
+            id: "templates",
+            title: t("dashboard.templates"),
+          },
+          {
+            id: "guides",
+            title: t("dashboard.guides"),
+          },
+          {
+            id: "research",
+            title: t("dashboard.research"),
+          },
+          {
+            id: "settings",
+            title: t("dashboard.settings"),
+          },
+        ]
+      : []),
   ];
 
   if (loading) {
     return (
       <div
-        className="min-h-screen flex items-center justify-center p-4" style={{ background: 'hsl(var(--surface))' }}
+        className="min-h-screen flex items-center justify-center p-4"
+        style={{ background: "hsl(var(--surface))" }}
       >
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 mx-auto mb-4" style={{ borderColor: 'hsl(var(--primary))' }}></div>
-          <p style={{ color: 'hsl(var(--text-secondary))' }}>{t('common.loading')}</p>
+          <div
+            className="animate-spin rounded-full h-12 w-12 border-b-2 mx-auto mb-4"
+            style={{ borderColor: "hsl(var(--primary))" }}
+          ></div>
+          <p style={{ color: "hsl(var(--text-secondary))" }}>
+            {t("common.loading")}
+          </p>
           {sessionError && (
             <div className="mt-4 p-3 rounded-lg max-w-md status-warning">
               <div className="flex items-center space-x-2">
@@ -191,9 +205,10 @@ const Dashboard = () => {
     <div
       className="min-h-screen flex relative w-full overflow-visible"
       style={{
-        background: theme === "dark"
-          ? 'hsl(var(--surface), 1)'
-          : 'hsl(var(--background), 1)'
+        background:
+          theme === "dark"
+            ? "hsl(var(--surface), 1)"
+            : "hsl(var(--background), 1)",
       }}
     >
       <DashboardSidebar
@@ -217,22 +232,34 @@ const Dashboard = () => {
         />
         {/* Trial Mode Banner */}
         {isTrialMode && !user && (
-          <div className="px-6 py-3" style={{ 
-            background: 'rgba(125, 106, 255, 0.05)', 
-            borderBottom: '1px solid rgba(125, 106, 255, 0.2)' 
-          }}>
+          <div
+            className="px-6 py-3"
+            style={{
+              background: "rgba(125, 106, 255, 0.05)",
+              borderBottom: "1px solid rgba(125, 106, 255, 0.2)",
+            }}
+          >
             <div className="flex items-center justify-center space-x-2">
-              <MessageSquare className="h-4 w-4 flex-shrink-0" style={{ color: 'hsl(var(--primary))' }} />
-              <p className="text-sm text-center" style={{ color: 'hsl(var(--primary))' }}>
-                {t('dashboard.trialBanner', 'You\'re using the free trial. Sign up to unlock all features!')}
+              <MessageSquare
+                className="h-4 w-4 flex-shrink-0"
+                style={{ color: "hsl(var(--primary))" }}
+              />
+              <p
+                className="text-sm text-center"
+                style={{ color: "hsl(var(--primary))" }}
+              >
+                {t(
+                  "dashboard.trialBanner",
+                  "You're using the free trial. Sign up to unlock all features!",
+                )}
               </p>
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => window.location.href = '/auth'}
+                onClick={() => (window.location.href = "/auth")}
                 className="ml-4 text-xs btn-outline"
               >
-                {t('auth.signUp')}
+                {t("auth.signUp")}
               </Button>
             </div>
           </div>
@@ -250,17 +277,18 @@ const Dashboard = () => {
                 onClick={() => window.location.reload()}
                 className="ml-4 text-xs"
               >
-                {t('common.retry')}
+                {t("common.retry")}
               </Button>
             </div>
           </div>
         )}
 
         {/* Content */}
-        <div className="flex flex-col z-0 relative overflow-visible flex-1 p-6"
+        <div
+          className="flex flex-col z-0 relative overflow-visible flex-1 p-6"
           style={{
-            background: 'hsl(var(--surface))',
-            color: 'hsl(var(--foreground))',
+            background: "hsl(var(--surface))",
+            color: "hsl(var(--foreground))",
           }}
         >
           <DashboardMainContent
