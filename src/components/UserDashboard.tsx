@@ -578,7 +578,7 @@ export function UserDashboard() {
         </Card>
       </motion.div>
 
-      {/* Enhanced Stats Grid */}
+      {/* Enhanced Stats Grid with Rolling Animations */}
       <motion.div
         variants={itemVariants}
         className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
@@ -623,35 +623,101 @@ export function UserDashboard() {
         ].map((stat, index) => (
           <motion.div
             key={index}
-            variants={cardHoverVariants}
-            whileHover="hover"
+            initial={{ rotateY: -90, opacity: 0 }}
+            animate={{ rotateY: 0, opacity: 1 }}
+            transition={{
+              duration: 0.6,
+              delay: 0.6 + index * 0.1,
+              type: "spring",
+              stiffness: 200,
+            }}
+            whileHover={{
+              scale: 1.05,
+              rotateY: 5,
+              transition: { duration: 0.2 },
+            }}
           >
             <Card
-              className={`${stat.bg} ${stat.border} border backdrop-blur-sm`}
+              className={`${stat.bg} ${stat.border} border backdrop-blur-sm relative overflow-hidden group`}
             >
-              <CardContent className="p-6">
+              {/* Animated Background Gradient */}
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-primary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+
+              <CardContent className="p-6 relative z-10">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-muted-foreground">
+                    <motion.p
+                      className="text-sm font-medium text-muted-foreground"
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.8 + index * 0.1 }}
+                    >
                       {stat.title}
-                    </p>
+                    </motion.p>
                     <div className="flex items-center gap-2 mt-2">
-                      <p className="text-3xl font-bold text-foreground">
+                      <motion.p
+                        className="text-3xl font-bold text-foreground"
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        transition={{
+                          delay: 0.9 + index * 0.1,
+                          type: "spring",
+                          bounce: 0.6,
+                        }}
+                      >
                         {stat.value}
-                      </p>
-                      <div className="flex items-center text-xs text-green-400">
-                        <TrendingUp className="h-3 w-3 mr-1" />
+                      </motion.p>
+                      <motion.div
+                        className="flex items-center text-xs text-green-400"
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 1.0 + index * 0.1 }}
+                      >
+                        <motion.div
+                          animate={{ y: [0, -2, 0] }}
+                          transition={{
+                            duration: 2,
+                            repeat: Infinity,
+                            delay: index * 0.5,
+                          }}
+                        >
+                          <TrendingUp className="h-3 w-3 mr-1" />
+                        </motion.div>
                         {stat.trend}
-                      </div>
+                      </motion.div>
                     </div>
                   </div>
-                  <div
-                    className={`bg-gradient-to-br ${stat.color} p-3 rounded-2xl shadow-lg`}
+                  <motion.div
+                    className={`bg-gradient-to-br ${stat.color} p-3 rounded-2xl shadow-lg relative overflow-hidden`}
+                    whileHover={{ rotate: 5, scale: 1.1 }}
+                    transition={{ duration: 0.2 }}
                   >
-                    <stat.icon className="h-6 w-6 text-white" />
-                  </div>
+                    <stat.icon className="h-6 w-6 text-white relative z-10" />
+                    <motion.div
+                      className="absolute inset-0 bg-white/20"
+                      animate={{ rotate: 360 }}
+                      transition={{
+                        duration: 4,
+                        repeat: Infinity,
+                        ease: "linear",
+                        delay: index * 0.5,
+                      }}
+                    />
+                  </motion.div>
                 </div>
               </CardContent>
+
+              {/* Shimmer Effect */}
+              <motion.div
+                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent"
+                animate={{ x: [-100, 300] }}
+                transition={{
+                  duration: 3,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                  delay: index * 0.8,
+                }}
+              />
             </Card>
           </motion.div>
         ))}
