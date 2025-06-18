@@ -1,10 +1,23 @@
-
 import React from "react";
-import { Home, MessageSquare, Users, FilePlus, FileText, BookOpen, Search, Settings, User, Scale } from "lucide-react";
+import {
+  Home,
+  MessageSquare,
+  Users,
+  FilePlus,
+  FileText,
+  BookOpen,
+  Search,
+  Settings,
+  User,
+  Scale,
+} from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useTheme } from "next-themes";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
+import {
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+} from "@/components/ui/tooltip";
 
 const sidebarIcons = [
   { id: "home", icon: Home, title: "Dashboard" },
@@ -14,7 +27,7 @@ const sidebarIcons = [
   { id: "templates", icon: FileText, title: "Legal Forms" },
   { id: "guides", icon: BookOpen, title: "Legal Info" },
   { id: "research", icon: Search, title: "Case Law" },
-  { id: "settings", icon: Settings, title: "Account" }
+  { id: "settings", icon: Settings, title: "Account" },
 ];
 
 interface SidebarProps {
@@ -34,7 +47,7 @@ export const DashboardSidebar: React.FC<SidebarProps> = ({
   setActiveTab,
   sidebarOpen,
   setSidebarOpen,
-  t
+  t,
 }) => {
   const { theme } = useTheme();
   const isMobile = useIsMobile();
@@ -42,38 +55,68 @@ export const DashboardSidebar: React.FC<SidebarProps> = ({
   const userInitial = user?.email?.charAt(0).toUpperCase() || "U";
   // Translation applied for sidebar icon titles
   const sidebarIcons = [
-    { id: "home", icon: Home, title: t('dashboard.title') },
-    { id: "chat", icon: MessageSquare, title: t('dashboard.aiChat') },
-    { id: "lawyers", icon: Users, title: t('dashboard.lawyers', "Find Experts") },
-    { id: "generator", icon: FilePlus, title: t('dashboard.documents', "Generate") },
-    { id: "templates", icon: FileText, title: t('dashboard.templates', "Legal Forms") },
-    { id: "guides", icon: BookOpen, title: t('dashboard.guides', "Legal Info") },
-    { id: "research", icon: Search, title: t('dashboard.research', "Case Law") },
-    { id: "settings", icon: Settings, title: t('dashboard.settings', "Account") }
+    { id: "home", icon: Home, title: t("dashboard.title") },
+    { id: "chat", icon: MessageSquare, title: t("dashboard.aiChat") },
+    {
+      id: "lawyers",
+      icon: Users,
+      title: t("dashboard.lawyers", "Find Experts"),
+    },
+    {
+      id: "generator",
+      icon: FilePlus,
+      title: t("dashboard.documents", "Generate"),
+    },
+    {
+      id: "templates",
+      icon: FileText,
+      title: t("dashboard.templates", "Legal Forms"),
+    },
+    {
+      id: "guides",
+      icon: BookOpen,
+      title: t("dashboard.guides", "Legal Info"),
+    },
+    {
+      id: "research",
+      icon: Search,
+      title: t("dashboard.research", "Case Law"),
+    },
+    {
+      id: "settings",
+      icon: Settings,
+      title: t("dashboard.settings", "Account"),
+    },
   ];
 
-  const iconsToShow = user ? sidebarIcons : sidebarIcons.filter(i => ["chat"].includes(i.id));
+  const iconsToShow = user
+    ? sidebarIcons
+    : sidebarIcons.filter((i) => ["chat"].includes(i.id));
 
   return (
     <>
       {isMobile && sidebarOpen && (
-        <div 
+        <div
           className="fixed inset-0 bg-black/50 z-40 md:hidden"
           onClick={() => setSidebarOpen(false)}
         />
       )}
       <aside
         className={`
-          ${isMobile ? 'fixed' : 'relative'} 
-          ${isMobile && !sidebarOpen ? '-translate-x-full' : 'translate-x-0'}
+          ${isMobile ? "fixed" : "relative"}
+          ${isMobile && !sidebarOpen ? "-translate-x-full" : "translate-x-0"}
           text-white
-          ${isMobile ? 'w-20 h-full z-50' : 'w-20'} 
+          ${isMobile ? "w-20 h-full z-50" : "w-20"}
           transition-transform duration-300 ease-in-out
           flex flex-col items-center pt-2
         `}
         style={{
-          background: theme === "dark" ? 'hsl(var(--sidebar))' : 'hsl(var(--card))',
-          color: theme === "dark" ? 'hsl(var(--sidebar-foreground))' : 'hsl(var(--foreground))'
+          background:
+            theme === "dark" ? "hsl(var(--sidebar))" : "hsl(var(--card))",
+          color:
+            theme === "dark"
+              ? "hsl(var(--sidebar-foreground))"
+              : "hsl(var(--foreground))",
         }}
       >
         <div className="mb-6 mt-2">
@@ -95,9 +138,11 @@ export const DashboardSidebar: React.FC<SidebarProps> = ({
                       className={`
                         flex items-center justify-center w-12 h-12 rounded-xl
                         transition-all duration-200
-                        ${activeTab === item.id
-                          ? "bg-gradient-to-br from-purple-400 to-purple-500 text-white shadow-md"
-                          : "text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-800 hover:text-purple-500"}
+                        ${
+                          activeTab === item.id
+                            ? "bg-gradient-to-br from-purple-400 to-purple-500 text-white shadow-md"
+                            : "text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-800 hover:text-purple-500"
+                        }
                       `}
                       style={{ fontSize: 0 }}
                       aria-label={item.title}
@@ -122,8 +167,12 @@ export const DashboardSidebar: React.FC<SidebarProps> = ({
           ))}
         </nav>
         {/* User avatar or trial -- at bottom, just an icon */}
-        <div className="p-3 border-t w-full flex flex-col items-center"
-          style={{ borderColor: theme === "dark" ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.07)' }}
+        <div
+          className="p-3 border-t w-full flex flex-col items-center"
+          style={{
+            borderColor:
+              theme === "dark" ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.07)",
+          }}
         >
           {user ? (
             <Avatar className="h-8 w-8">
@@ -140,4 +189,3 @@ export const DashboardSidebar: React.FC<SidebarProps> = ({
     </>
   );
 };
-
