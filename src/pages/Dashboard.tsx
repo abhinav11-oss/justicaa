@@ -29,8 +29,6 @@ import {
   Home,
   Settings,
   Search,
-  Sun,
-  Moon,
   AlertTriangle,
   Menu,
   X,
