@@ -199,12 +199,7 @@ const Dashboard = () => {
   }
 
   return (
-    <div
-      className="min-h-screen flex relative w-full overflow-visible"
-      style={{
-        background: "hsl(var(--surface), 1)",
-      }}
-    >
+    <div className="min-h-screen flex relative w-full overflow-visible bg-background">
       <DashboardSidebar
         user={user}
         isTrialMode={isTrialMode}
