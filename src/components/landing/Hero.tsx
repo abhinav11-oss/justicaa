@@ -9,6 +9,7 @@ import {
   Users,
   Clock,
   CheckCircle,
+  Sparkles,
 } from "lucide-react";
 
 interface HeroProps {
