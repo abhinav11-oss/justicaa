@@ -121,7 +121,7 @@ export const Features = () => {
           </motion.p>
         </motion.div>
 
-      {/* Main Features with Images */}
+      {/* Main Features with Enhanced Animations */}
       <motion.div
         className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-16"
         variants={containerVariants}
@@ -130,25 +130,68 @@ export const Features = () => {
         viewport={{ once: true }}
       >
         {mainFeatures.map((feature, index) => (
-          <motion.div key={index} variants={itemVariants}>
-            <Card className="card-hover border-2 hover:border-primary/20 bg-card/50 backdrop-blur-sm h-full overflow-hidden">
-              {/* Feature Image */}
+          <motion.div
+            key={index}
+            variants={itemVariants}
+            initial={{ rotateY: -90, opacity: 0 }}
+            whileInView={{ rotateY: 0, opacity: 1 }}
+            transition={{
+              duration: 0.8,
+              delay: index * 0.2,
+              type: "spring",
+              stiffness: 100
+            }}
+            viewport={{ once: true }}
+            whileHover={{
+              scale: 1.05,
+              rotateY: 5,
+              transition: { duration: 0.3 }
+            }}
+          >
+            <Card className="card-hover border-2 hover:border-primary/20 bg-card/50 backdrop-blur-sm h-full overflow-hidden relative group">
+              {/* Animated Background Gradient */}
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-primary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+
+              {/* Feature Image with Enhanced Effects */}
               <div className="relative h-48 overflow-hidden">
-                <img
+                <motion.img
                   src={
                     index === 0 ? "https://images.pexels.com/photos/8112172/pexels-photo-8112172.jpeg" :
                     index === 1 ? "https://images.pexels.com/photos/5816291/pexels-photo-5816291.jpeg" :
                     "https://images.pexels.com/photos/4427430/pexels-photo-4427430.jpeg"
                   }
                   alt={`${feature.title} illustration`}
-                  className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
+                  className="w-full h-full object-cover"
+                  whileHover={{ scale: 1.1 }}
+                  transition={{ duration: 0.5 }}
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-transparent to-transparent" />
-                <div className="absolute bottom-4 left-4">
-                  <div className="gradient-primary w-12 h-12 rounded-xl flex items-center justify-center">
-                    <feature.icon className="h-6 w-6 text-white" />
+                {/* Multiple Gradient Overlays */}
+                <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/30 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
+                {/* Animated Icon */}
+                <motion.div
+                  className="absolute bottom-4 left-4"
+                  whileHover={{ scale: 1.2, rotate: 5 }}
+                  transition={{ type: "spring", stiffness: 400 }}
+                >
+                  <div className="gradient-primary w-12 h-12 rounded-xl flex items-center justify-center relative overflow-hidden">
+                    <feature.icon className="h-6 w-6 text-white relative z-10" />
+                    <motion.div
+                      className="absolute inset-0 bg-white/20"
+                      animate={{
+                        x: [-100, 100],
+                        opacity: [0, 1, 0]
+                      }}
+                      transition={{
+                        duration: 2,
+                        repeat: Infinity,
+                        ease: "easeInOut",
+                        delay: index * 0.5
+                      }}
+                    />
                   </div>
-                </div>
+                </motion.div>
               </div>
 
               <CardHeader className="pb-4">
