@@ -3,8 +3,7 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
-import { Scale, ArrowRight, Sun, Moon, Menu, X } from "lucide-react";
-import { useTheme } from "next-themes";
+import { Scale, ArrowRight, Menu, X } from "lucide-react";
 
 interface HeaderProps {
   onCTAClick: () => void;
