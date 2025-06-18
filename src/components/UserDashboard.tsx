@@ -571,14 +571,14 @@ export function UserDashboard() {
 
             <TabsContent value="archived" className="space-y-4">
               <div className="flex justify-between items-center">
-                <h3 className="text-lg font-semibold dark:text-white">
+                <h3 className="text-lg font-semibold text-foreground">
                   Archived Conversations
                 </h3>
               </div>
 
               {archivedConversations.length === 0 ? (
-                <div className="text-center py-8 text-slate-500 dark:text-gray-400">
-                  <Archive className="h-12 w-12 mx-auto mb-4 text-slate-300 dark:text-gray-600" />
+                <div className="text-center py-8 text-muted-foreground">
+                  <Archive className="h-12 w-12 mx-auto mb-4 text-muted-foreground/50" />
                   <p>No archived conversations yet.</p>
                 </div>
               ) : (
@@ -586,7 +586,7 @@ export function UserDashboard() {
                   {archivedConversations.map((conversation) => (
                     <div
                       key={conversation.id}
-                      className="p-4 border border-slate-200 dark:border-gray-600 rounded-lg hover:bg-slate-50 dark:hover:bg-gray-700/50 transition-colors"
+                      className="p-4 border border-border rounded-lg hover:bg-muted/50 transition-colors"
                     >
                       <div className="flex justify-between items-start">
                         <div
@@ -595,13 +595,13 @@ export function UserDashboard() {
                             handleConversationClick(conversation.id)
                           }
                         >
-                          <h4 className="font-medium dark:text-white">
+                          <h4 className="font-medium text-foreground">
                             {conversation.title}
                           </h4>
-                          <p className="text-sm text-slate-600 dark:text-gray-400 capitalize">
+                          <p className="text-sm text-muted-foreground capitalize">
                             {conversation.legal_category}
                           </p>
-                          <p className="text-xs text-slate-400 dark:text-gray-500">
+                          <p className="text-xs text-muted-foreground">
                             {new Date(
                               conversation.created_at,
                             ).toLocaleDateString()}
