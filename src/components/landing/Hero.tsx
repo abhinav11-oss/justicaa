@@ -18,9 +18,9 @@ export const Hero = ({ onCTAClick, onTryForFree }: HeroProps) => {
       opacity: 1,
       transition: {
         staggerChildren: 0.2,
-        delayChildren: 0.3,
-      },
-    },
+        delayChildren: 0.3
+      }
+    }
   };
 
   const itemVariants = {
@@ -28,8 +28,8 @@ export const Hero = ({ onCTAClick, onTryForFree }: HeroProps) => {
     visible: {
       opacity: 1,
       y: 0,
-      transition: { duration: 0.6, ease: "easeOut" },
-    },
+      transition: { duration: 0.6, ease: "easeOut" }
+    }
   };
 
   const floatingVariants = {
@@ -38,9 +38,9 @@ export const Hero = ({ onCTAClick, onTryForFree }: HeroProps) => {
       transition: {
         duration: 6,
         repeat: Infinity,
-        ease: "easeInOut",
-      },
-    },
+        ease: "easeInOut"
+      }
+    }
   };
 
   return (
@@ -75,34 +75,30 @@ export const Hero = ({ onCTAClick, onTryForFree }: HeroProps) => {
       />
 
       <div className="container mx-auto px-4 py-12 md:py-20 relative z-10">
-        <div className="max-w-6xl mx-auto">
+        <motion.div
+          className="max-w-6xl mx-auto"
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+        >
           {/* Hero Badge */}
-          <div className="text-center mb-6">
-            <Badge
-              variant="outline"
-              className="px-4 py-2 text-sm font-medium border-primary/20 bg-primary/5"
-            >
+          <motion.div className="text-center mb-6" variants={itemVariants}>
+            <Badge variant="outline" className="px-4 py-2 text-sm font-medium border-primary/20 bg-primary/5 backdrop-blur-sm">
               <Shield className="w-4 h-4 mr-2" />
               Trusted Legal AI Platform for India
             </Badge>
-          </div>
+          </motion.div>
 
           {/* Main Heading */}
           <div className="text-center mb-8">
             <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-foreground mb-6 leading-tight">
-              Your{" "}
-              <span className="gradient-primary bg-clip-text text-transparent">
-                Trusted Legal
-              </span>
-              <br />
+              Your <span className="gradient-primary bg-clip-text text-transparent">Trusted Legal</span><br />
               AI Assistant
             </h1>
 
             <p className="text-lg md:text-xl text-muted-foreground mb-8 max-w-3xl mx-auto leading-relaxed">
-              Get instant, reliable legal guidance specialized in Indian law. No
-              more expensive consultations, confusing legal jargon, or long
-              waiting times. Professional legal help is now just a conversation
-              away.
+              Get instant, reliable legal guidance specialized in Indian law. No more expensive consultations,
+              confusing legal jargon, or long waiting times. Professional legal help is now just a conversation away.
             </p>
           </div>
 
@@ -120,11 +116,7 @@ export const Hero = ({ onCTAClick, onTryForFree }: HeroProps) => {
                 size="lg"
                 variant="outline"
                 className="w-full sm:w-auto text-lg px-8 py-4 rounded-xl"
-                onClick={
-                  user
-                    ? () => (window.location.href = "/dashboard")
-                    : onCTAClick
-                }
+                onClick={user ? () => window.location.href = "/dashboard" : onCTAClick}
               >
                 {user ? "Go to Dashboard" : "Sign In"}
                 <ArrowRight className="h-5 w-5 ml-2" />
