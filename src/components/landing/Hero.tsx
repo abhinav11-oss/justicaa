@@ -81,8 +81,8 @@ export const Hero = ({ onCTAClick, onTryForFree }: HeroProps) => {
       />
 
       <div className="container mx-auto px-4 py-12 md:py-20 relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center max-w-7xl mx-auto">
-          {/* Left Content */}
+        <div className="max-w-5xl mx-auto text-center">
+          {/* Main Content */}
           <motion.div
             variants={containerVariants}
             initial="hidden"
