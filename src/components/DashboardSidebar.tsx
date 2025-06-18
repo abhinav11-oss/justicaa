@@ -135,8 +135,8 @@ export const DashboardSidebar: React.FC<SidebarProps> = ({
                         transition-all duration-200
                         ${
                           activeTab === item.id
-                            ? "bg-gradient-to-br from-purple-400 to-purple-500 text-white shadow-md"
-                            : "text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-800 hover:text-purple-500"
+                            ? "gradient-primary text-white shadow-md"
+                            : "text-muted-foreground hover:bg-muted hover:text-primary"
                         }
                       `}
                       style={{ fontSize: 0 }}
