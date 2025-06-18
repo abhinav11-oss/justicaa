@@ -223,10 +223,10 @@ export const Hero = ({ onCTAClick, onTryForFree }: HeroProps) => {
               </motion.div>
             </motion.div>
 
-            {/* Trust Indicators */}
+            {/* Trust Indicators with Rolling Animation */}
             <motion.div
               variants={itemVariants}
-              className="grid grid-cols-2 md:grid-cols-4 gap-6 pt-8 max-w-2xl mx-auto"
+              className="grid grid-cols-2 md:grid-cols-4 gap-6 pt-8"
             >
               {[
                 { icon: Users, number: "50K+", label: "Users" },
@@ -237,21 +237,123 @@ export const Hero = ({ onCTAClick, onTryForFree }: HeroProps) => {
                 <motion.div
                   key={index}
                   className="text-center"
-                  whileHover={{ scale: 1.05 }}
-                  transition={{ duration: 0.2 }}
+                  initial={{ rotateY: -90, opacity: 0 }}
+                  animate={{ rotateY: 0, opacity: 1 }}
+                  transition={{ duration: 0.6, delay: 1.4 + index * 0.1 }}
+                  whileHover={{ scale: 1.05, rotateY: 5 }}
                 >
-                  <div className="bg-primary/10 w-14 h-14 rounded-lg flex items-center justify-center mx-auto mb-2">
+                  <motion.div
+                    className="bg-primary/10 w-14 h-14 rounded-lg flex items-center justify-center mx-auto mb-2 relative overflow-hidden"
+                    whileHover={{
+                      backgroundColor: "hsl(var(--primary) / 0.2)",
+                    }}
+                  >
                     <stat.icon className="h-6 w-6 text-primary" />
-                  </div>
-                  <div className="text-lg font-semibold text-foreground">
+                    <motion.div
+                      className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/20 to-transparent"
+                      animate={{ x: [-100, 100] }}
+                      transition={{
+                        duration: 2,
+                        repeat: Infinity,
+                        ease: "easeInOut",
+                        delay: index * 0.5,
+                      }}
+                    />
+                  </motion.div>
+                  <motion.div
+                    className="text-lg font-semibold text-foreground"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 1.6 + index * 0.1 }}
+                  >
                     {stat.number}
-                  </div>
+                  </motion.div>
                   <div className="text-sm text-muted-foreground">
                     {stat.label}
                   </div>
                 </motion.div>
               ))}
             </motion.div>
+          </motion.div>
+
+          {/* Right Side Image with Animations */}
+          <motion.div
+            className="relative"
+            initial={{ opacity: 0, x: 100 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8, delay: 0.3 }}
+          >
+            <div className="relative">
+              {/* Main Image */}
+              <motion.div
+                className="relative rounded-3xl overflow-hidden shadow-2xl"
+                whileHover={{ scale: 1.02, rotateY: 5 }}
+                transition={{ duration: 0.3 }}
+              >
+                <div className="aspect-[4/5] relative">
+                  <img
+                    src="https://images.pexels.com/photos/17485819/pexels-photo-17485819.png"
+                    alt="AI innovation in legal technology"
+                    className="w-full h-full object-cover"
+                  />
+                  {/* Gradient Overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-tr from-primary/20 via-transparent to-primary/10"></div>
+                  <div className="absolute inset-0 bg-gradient-to-br from-transparent via-background/10 to-background/30"></div>
+                </div>
+              </motion.div>
+
+              {/* Floating Elements around Image */}
+              <motion.div
+                className="absolute -top-6 -right-6 w-24 h-24 bg-gradient-to-br from-primary/30 to-primary/10 rounded-full blur-xl"
+                animate={{
+                  scale: [1, 1.3, 1],
+                  opacity: [0.4, 0.8, 0.4],
+                }}
+                transition={{
+                  duration: 4,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+              />
+              <motion.div
+                className="absolute -bottom-8 -left-8 w-32 h-32 bg-gradient-to-tl from-primary/20 to-transparent rounded-full blur-2xl"
+                animate={{
+                  scale: [1, 1.2, 1],
+                  opacity: [0.3, 0.7, 0.3],
+                }}
+                transition={{
+                  duration: 5,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                  delay: 1,
+                }}
+              />
+
+              {/* Floating Badge */}
+              <motion.div
+                className="absolute -top-4 -left-4 bg-card/90 backdrop-blur-lg border border-primary/20 rounded-2xl px-4 py-2 shadow-xl"
+                initial={{ scale: 0, rotate: -10 }}
+                animate={{ scale: 1, rotate: 0 }}
+                transition={{ delay: 1.5, type: "spring", bounce: 0.4 }}
+                whileHover={{ scale: 1.05 }}
+              >
+                <div className="flex items-center space-x-2">
+                  <motion.div
+                    animate={{ rotate: 360 }}
+                    transition={{
+                      duration: 3,
+                      repeat: Infinity,
+                      ease: "linear",
+                    }}
+                  >
+                    <Sparkles className="w-4 h-4 text-primary" />
+                  </motion.div>
+                  <span className="text-xs font-medium text-foreground">
+                    AI Powered
+                  </span>
+                </div>
+              </motion.div>
+            </div>
           </motion.div>
         </div>
       </div>
