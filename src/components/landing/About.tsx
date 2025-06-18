@@ -123,7 +123,7 @@ export const About = () => {
           </motion.p>
         </motion.div>
 
-        {/* Stats Section */}
+        {/* Stats Section with Rolling Animation */}
         <motion.div
           className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-16"
           variants={containerVariants}
@@ -132,23 +132,71 @@ export const About = () => {
           viewport={{ once: true }}
         >
           {stats.map((stat, index) => (
-            <motion.div key={index} variants={itemVariants}>
-              <Card className="text-center bg-background border-0 shadow-sm card-hover">
-                <CardContent className="pt-6">
+            <motion.div
+              key={index}
+              variants={itemVariants}
+              initial={{ rotateX: -90, opacity: 0 }}
+              whileInView={{ rotateX: 0, opacity: 1 }}
+              transition={{
+                duration: 0.6,
+                delay: index * 0.1,
+                type: "spring",
+                stiffness: 200,
+              }}
+              viewport={{ once: true }}
+              whileHover={{ scale: 1.05, rotateY: 10 }}
+            >
+              <Card className="text-center bg-background/80 backdrop-blur-sm border-0 shadow-sm card-hover relative overflow-hidden group">
+                {/* Animated Background */}
+                <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-primary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+
+                <CardContent className="pt-6 relative z-10">
                   <motion.div
-                    className="bg-primary/10 w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3"
-                    whileHover={{ scale: 1.1, rotate: 5 }}
-                    transition={{ duration: 0.2 }}
+                    className="bg-primary/10 w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3 relative overflow-hidden"
+                    whileHover={{ scale: 1.2, rotate: 360 }}
+                    transition={{ duration: 0.6 }}
                   >
-                    <stat.icon className="h-6 w-6 text-primary" />
+                    <stat.icon className="h-6 w-6 text-primary relative z-10" />
+                    <motion.div
+                      className="absolute inset-0 bg-primary/20"
+                      animate={{ rotate: 360 }}
+                      transition={{
+                        duration: 4,
+                        repeat: Infinity,
+                        ease: "linear",
+                        delay: index * 0.5,
+                      }}
+                    />
                   </motion.div>
-                  <div className="text-3xl font-bold text-foreground mb-1">
+                  <motion.div
+                    className="text-3xl font-bold text-foreground mb-1"
+                    initial={{ scale: 0 }}
+                    whileInView={{ scale: 1 }}
+                    transition={{
+                      delay: 0.5 + index * 0.1,
+                      type: "spring",
+                      bounce: 0.5,
+                    }}
+                    viewport={{ once: true }}
+                  >
                     {stat.number}
-                  </div>
+                  </motion.div>
                   <div className="text-sm text-muted-foreground">
                     {stat.label}
                   </div>
                 </CardContent>
+
+                {/* Shimmer Effect */}
+                <motion.div
+                  className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/20 to-transparent"
+                  animate={{ x: [-100, 200] }}
+                  transition={{
+                    duration: 3,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                    delay: index * 0.7,
+                  }}
+                />
               </Card>
             </motion.div>
           ))}
