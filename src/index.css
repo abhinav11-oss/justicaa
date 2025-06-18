@@ -138,8 +138,8 @@
     @apply text-white shadow-sm;
     background: linear-gradient(
       135deg,
-      hsl(var(--purple-gradient-start)) 0%,
-      hsl(var(--purple-gradient-end)) 100%
+      hsl(var(--blue-gradient-start)) 0%,
+      hsl(var(--blue-gradient-end)) 100%
     );
   }
 
