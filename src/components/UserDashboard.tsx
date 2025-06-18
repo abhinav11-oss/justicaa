@@ -686,12 +686,12 @@ export function UserDashboard() {
 
             <TabsContent value="matters" className="space-y-4">
               <div className="flex justify-between items-center">
-                <h3 className="text-lg font-semibold dark:text-white">
+                <h3 className="text-lg font-semibold text-foreground">
                   Legal Matters
                 </h3>
                 <Button
                   size="sm"
-                  className="dark:bg-primary dark:hover:bg-primary/90"
+                  className="gradient-primary text-white border-0"
                 >
                   <Plus className="h-4 w-4 mr-2" />
                   New Matter
@@ -699,8 +699,8 @@ export function UserDashboard() {
               </div>
 
               {matters.length === 0 ? (
-                <div className="text-center py-8 text-slate-500 dark:text-gray-400">
-                  <Calendar className="h-12 w-12 mx-auto mb-4 text-slate-300 dark:text-gray-600" />
+                <div className="text-center py-8 text-muted-foreground">
+                  <Calendar className="h-12 w-12 mx-auto mb-4 text-muted-foreground/50" />
                   <p>No legal matters yet. Add your first case!</p>
                 </div>
               ) : (
@@ -708,25 +708,25 @@ export function UserDashboard() {
                   {matters.map((matter) => (
                     <div
                       key={matter.id}
-                      className="p-4 border border-slate-200 dark:border-gray-600 rounded-lg hover:bg-slate-50 dark:hover:bg-gray-700/50 transition-colors"
+                      className="p-4 border border-border rounded-lg hover:bg-muted/50 transition-colors"
                     >
                       <div className="flex justify-between items-start">
                         <div>
-                          <h4 className="font-medium dark:text-white">
+                          <h4 className="font-medium text-foreground">
                             {matter.title}
                           </h4>
-                          <p className="text-sm text-slate-600 dark:text-gray-400 capitalize">
+                          <p className="text-sm text-muted-foreground capitalize">
                             {matter.matter_type}
                           </p>
                           {matter.deadline_date && (
-                            <p className="text-xs text-red-600 dark:text-red-400">
+                            <p className="text-xs text-destructive">
                               Deadline:{" "}
                               {new Date(
                                 matter.deadline_date,
                               ).toLocaleDateString()}
                             </p>
                           )}
-                          <p className="text-xs text-slate-400 dark:text-gray-500">
+                          <p className="text-xs text-muted-foreground">
                             Created:{" "}
                             {new Date(matter.created_at).toLocaleDateString()}
                           </p>
