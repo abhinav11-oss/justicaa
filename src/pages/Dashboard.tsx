@@ -48,7 +48,6 @@ const Dashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { user, signOut, loading, sessionError } = useAuth();
   const navigate = useNavigate();
-  const { theme, setTheme } = useTheme();
   const { toast } = useToast();
   const isMobile = useIsMobile();
 
