@@ -1,8 +1,7 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { LanguageSelector } from "@/components/LanguageSelector";
-import { useTheme } from "next-themes";
-import { Sun, Moon, Menu, Bell, Mail } from "lucide-react";
+import { Menu, Bell, Mail } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 interface HeaderProps {
@@ -32,16 +31,18 @@ export const DashboardHeader: React.FC<HeaderProps> = ({
   // Helper handlers for notification/mail actions
   const handleNotificationClick = () => {
     toast({
-      title: t?.('dashboard.notifications') || "Notifications",
-      description: t?.('dashboard.notificationsDescription') || "No new notifications at this time.",
+      title: t?.("dashboard.notifications") || "Notifications",
+      description:
+        t?.("dashboard.notificationsDescription") ||
+        "No new notifications at this time.",
       duration: 4000,
     });
   };
 
   const handleMailClick = () => {
     toast({
-      title: t?.('dashboard.mail') || "Inbox",
-      description: t?.('dashboard.mailDescription') || "No new mail.",
+      title: t?.("dashboard.mail") || "Inbox",
+      description: t?.("dashboard.mailDescription") || "No new mail.",
       duration: 4000,
     });
   };
@@ -50,9 +51,13 @@ export const DashboardHeader: React.FC<HeaderProps> = ({
     <header
       className={`px-6 py-4 border-b flex justify-between items-center`}
       style={{
-        background: theme === "dark" ? 'hsl(var(--card))' : 'hsl(var(--card), 1)',
-        borderColor: 'hsl(var(--border))',
-        color: theme === "dark" ? 'hsl(var(--card-foreground))' : 'hsl(var(--foreground))'
+        background:
+          theme === "dark" ? "hsl(var(--card))" : "hsl(var(--card), 1)",
+        borderColor: "hsl(var(--border))",
+        color:
+          theme === "dark"
+            ? "hsl(var(--card-foreground))"
+            : "hsl(var(--foreground))",
       }}
     >
       <div className="flex items-center space-x-4">
@@ -62,18 +67,25 @@ export const DashboardHeader: React.FC<HeaderProps> = ({
             size="icon"
             onClick={onMenuClick}
             className="md:hidden"
-            aria-label={t('dashboard.menu', 'Menu')}
+            aria-label={t("dashboard.menu", "Menu")}
           >
             <Menu className="h-5 w-5" />
           </Button>
         )}
         <div>
-          <h1 className="text-2xl font-bold"
-            style={{ color: theme === "dark" ? 'hsl(var(--foreground))' : 'hsl(var(--foreground))' }}
+          <h1
+            className="text-2xl font-bold"
+            style={{
+              color:
+                theme === "dark"
+                  ? "hsl(var(--foreground))"
+                  : "hsl(var(--foreground))",
+            }}
           >
             {isTrialMode && !user
-              ? t('dashboard.freeTrial', 'Free Trial - AI Chat')
-              : (sidebarItems.find(item => item.id === activeTab)?.title || t('dashboard.title'))}
+              ? t("dashboard.freeTrial", "Free Trial - AI Chat")
+              : sidebarItems.find((item) => item.id === activeTab)?.title ||
+                t("dashboard.title")}
           </h1>
         </div>
       </div>
@@ -84,11 +96,15 @@ export const DashboardHeader: React.FC<HeaderProps> = ({
         <Button
           variant="ghost"
           size="icon"
-          aria-label={t('dashboard.toggleTheme', 'Toggle dark mode')}
+          aria-label={t("dashboard.toggleTheme", "Toggle dark mode")}
           onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
           className={theme === "dark" ? "text-yellow-200" : "text-purple-500"}
         >
-          {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+          {theme === "dark" ? (
+            <Sun className="h-5 w-5" />
+          ) : (
+            <Moon className="h-5 w-5" />
+          )}
         </Button>
 
         {/* Notifications button without badge */}
@@ -96,7 +112,7 @@ export const DashboardHeader: React.FC<HeaderProps> = ({
           variant="ghost"
           size="icon"
           className="relative"
-          aria-label={t('dashboard.notifications', 'Notifications')}
+          aria-label={t("dashboard.notifications", "Notifications")}
           onClick={handleNotificationClick}
         >
           <Bell className="h-5 w-5" />
@@ -106,7 +122,7 @@ export const DashboardHeader: React.FC<HeaderProps> = ({
         <Button
           variant="ghost"
           size="icon"
-          aria-label={t('dashboard.mail', 'Mail')}
+          aria-label={t("dashboard.mail", "Mail")}
           className={`${theme === "dark" ? "text-teal-200" : "text-blue-500"}`}
           onClick={handleMailClick}
         >
