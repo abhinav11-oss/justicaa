@@ -82,15 +82,46 @@ const Landing = () => {
     }
   };
 
+  const fadeInUp = {
+    initial: { opacity: 0, y: 60 },
+    animate: { opacity: 1, y: 0 },
+    transition: { duration: 0.6 },
+  };
+
+  const stagger = {
+    animate: {
+      transition: {
+        staggerChildren: 0.1,
+      },
+    },
+  };
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Header onCTAClick={handleCTAClick} onTryForFree={handleTryForFree} />
-      <Hero onCTAClick={handleCTAClick} onTryForFree={handleTryForFree} />
-      <Features />
-      <Benefits />
-      <About />
-      <CTASection onTryForFree={handleTryForFree} />
-      <Footer />
+      <motion.div initial="initial" animate="animate" variants={stagger}>
+        <motion.div variants={fadeInUp}>
+          <Hero onCTAClick={handleCTAClick} onTryForFree={handleTryForFree} />
+        </motion.div>
+        <motion.div variants={fadeInUp}>
+          <Features />
+        </motion.div>
+        <motion.div variants={fadeInUp}>
+          <Benefits />
+        </motion.div>
+        <motion.div variants={fadeInUp}>
+          <About />
+        </motion.div>
+        <motion.div variants={fadeInUp}>
+          <Testimonials />
+        </motion.div>
+        <motion.div variants={fadeInUp}>
+          <CTASection onTryForFree={handleTryForFree} />
+        </motion.div>
+        <motion.div variants={fadeInUp}>
+          <Footer />
+        </motion.div>
+      </motion.div>
       <AuthModal
         isOpen={authModalOpen}
         onClose={() => setAuthModalOpen(false)}
