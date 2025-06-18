@@ -4,13 +4,18 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
-import { useTheme } from "next-themes";
-import { Moon, Sun, MapPin, User, Save, Upload } from "lucide-react";
+import { MapPin, User, Save, Upload } from "lucide-react";
 
 export const SettingsPanel = () => {
   const { user } = useAuth();
@@ -21,17 +26,17 @@ export const SettingsPanel = () => {
     email: "",
     phone: "",
     location: "Gwalior",
-    avatar: ""
+    avatar: "",
   });
   const [unsavedChanges, setUnsavedChanges] = useState(false);
 
   useEffect(() => {
     // Load user profile
     if (user) {
-      setProfile(prev => ({
+      setProfile((prev) => ({
         ...prev,
-        name: user.user_metadata?.full_name || user.email?.split('@')[0] || "",
-        email: user.email || ""
+        name: user.user_metadata?.full_name || user.email?.split("@")[0] || "",
+        email: user.email || "",
       }));
     }
   }, [user]);
@@ -40,19 +45,19 @@ export const SettingsPanel = () => {
     setTheme(theme === "dark" ? "light" : "dark");
     toast({
       title: "Theme Updated",
-      description: `Switched to ${theme === "dark" ? "light" : "dark"} mode`
+      description: `Switched to ${theme === "dark" ? "light" : "dark"} mode`,
     });
   };
 
   const handleProfileChange = (field: string, value: string) => {
-    setProfile(prev => ({ ...prev, [field]: value }));
+    setProfile((prev) => ({ ...prev, [field]: value }));
     setUnsavedChanges(true);
   };
 
   const handleSaveProfile = () => {
     toast({
       title: "Profile Saved",
-      description: "Your profile has been updated successfully"
+      description: "Your profile has been updated successfully",
     });
     setUnsavedChanges(false);
   };
@@ -60,14 +65,29 @@ export const SettingsPanel = () => {
   const handleAvatarUpload = () => {
     toast({
       title: "Avatar Upload",
-      description: "Avatar upload functionality coming soon"
+      description: "Avatar upload functionality coming soon",
     });
   };
 
   const cities = [
-    "Gwalior", "Delhi", "Mumbai", "Kolkata", "Chennai", "Bangalore", 
-    "Hyderabad", "Pune", "Ahmedabad", "Surat", "Jaipur", "Lucknow",
-    "Kanpur", "Nagpur", "Indore", "Bhopal", "Visakhapatnam", "Patna"
+    "Gwalior",
+    "Delhi",
+    "Mumbai",
+    "Kolkata",
+    "Chennai",
+    "Bangalore",
+    "Hyderabad",
+    "Pune",
+    "Ahmedabad",
+    "Surat",
+    "Jaipur",
+    "Lucknow",
+    "Kanpur",
+    "Nagpur",
+    "Indore",
+    "Bhopal",
+    "Visakhapatnam",
+    "Patna",
   ];
 
   return (
@@ -76,7 +96,11 @@ export const SettingsPanel = () => {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center">
-            {theme === "dark" ? <Moon className="h-5 w-5 mr-2" /> : <Sun className="h-5 w-5 mr-2" />}
+            {theme === "dark" ? (
+              <Moon className="h-5 w-5 mr-2" />
+            ) : (
+              <Sun className="h-5 w-5 mr-2" />
+            )}
             Appearance
           </CardTitle>
         </CardHeader>
@@ -111,7 +135,7 @@ export const SettingsPanel = () => {
             <Avatar className="h-16 w-16">
               <AvatarImage src={profile.avatar} />
               <AvatarFallback className="text-lg">
-                {profile.name.charAt(0).toUpperCase() || 'U'}
+                {profile.name.charAt(0).toUpperCase() || "U"}
               </AvatarFallback>
             </Avatar>
             <Button variant="outline" onClick={handleAvatarUpload}>
@@ -129,22 +153,24 @@ export const SettingsPanel = () => {
               <Input
                 id="name"
                 value={profile.name}
-                onChange={(e) => handleProfileChange('name', e.target.value)}
+                onChange={(e) => handleProfileChange("name", e.target.value)}
                 placeholder="Enter your full name"
               />
             </div>
-            
+
             <div>
               <Label htmlFor="email">Email</Label>
               <Input
                 id="email"
                 type="email"
                 value={profile.email}
-                onChange={(e) => handleProfileChange('email', e.target.value)}
+                onChange={(e) => handleProfileChange("email", e.target.value)}
                 placeholder="Enter your email"
                 disabled
               />
-              <p className="text-xs text-slate-500 mt-1">Email cannot be changed</p>
+              <p className="text-xs text-slate-500 mt-1">
+                Email cannot be changed
+              </p>
             </div>
 
             <div>
@@ -152,14 +178,19 @@ export const SettingsPanel = () => {
               <Input
                 id="phone"
                 value={profile.phone}
-                onChange={(e) => handleProfileChange('phone', e.target.value)}
+                onChange={(e) => handleProfileChange("phone", e.target.value)}
                 placeholder="+91 XXXXX XXXXX"
               />
             </div>
 
             <div>
               <Label htmlFor="location">Location</Label>
-              <Select value={profile.location} onValueChange={(value) => handleProfileChange('location', value)}>
+              <Select
+                value={profile.location}
+                onValueChange={(value) =>
+                  handleProfileChange("location", value)
+                }
+              >
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
@@ -197,12 +228,14 @@ export const SettingsPanel = () => {
           <div>
             <Label>Authentication Method</Label>
             <p className="text-sm text-slate-600 dark:text-slate-400">
-              {user?.app_metadata?.provider === 'google' ? 'Google Account' : 'Email & Password'}
+              {user?.app_metadata?.provider === "google"
+                ? "Google Account"
+                : "Email & Password"}
             </p>
           </div>
-          
+
           <Separator />
-          
+
           <div className="space-y-2">
             <Label>Data & Privacy</Label>
             <p className="text-sm text-slate-600 dark:text-slate-400">
