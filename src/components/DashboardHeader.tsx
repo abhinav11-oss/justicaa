@@ -25,7 +25,6 @@ export const DashboardHeader: React.FC<HeaderProps> = ({
   t,
   sessionError,
 }) => {
-  const { theme, setTheme } = useTheme();
   const { toast } = useToast();
 
   // Helper handlers for notification/mail actions
