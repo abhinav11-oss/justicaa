@@ -157,14 +157,14 @@
     @apply text-white font-medium px-6 py-2 rounded-lg transition-all duration-200;
     background: linear-gradient(
       135deg,
-      hsl(var(--purple-gradient-start)) 0%,
-      hsl(var(--purple-gradient-end)) 100%
+      hsl(var(--blue-gradient-start)) 0%,
+      hsl(var(--blue-gradient-end)) 100%
     );
   }
 
   .btn-primary:hover {
     @apply shadow-lg;
-    box-shadow: 0 4px 14px 0 rgba(125, 106, 255, 0.3);
+    box-shadow: 0 4px 14px 0 rgba(59, 130, 246, 0.3);
     transform: translateY(-1px);
   }
 
