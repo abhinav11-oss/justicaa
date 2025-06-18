@@ -48,15 +48,9 @@ export const DashboardHeader: React.FC<HeaderProps> = ({
 
   return (
     <header
-      className={`px-6 py-4 border-b flex justify-between items-center`}
+      className={`px-6 py-4 border-b flex justify-between items-center bg-card text-card-foreground`}
       style={{
-        background:
-          theme === "dark" ? "hsl(var(--card))" : "hsl(var(--card), 1)",
         borderColor: "hsl(var(--border))",
-        color:
-          theme === "dark"
-            ? "hsl(var(--card-foreground))"
-            : "hsl(var(--foreground))",
       }}
     >
       <div className="flex items-center space-x-4">
@@ -72,15 +66,7 @@ export const DashboardHeader: React.FC<HeaderProps> = ({
           </Button>
         )}
         <div>
-          <h1
-            className="text-2xl font-bold"
-            style={{
-              color:
-                theme === "dark"
-                  ? "hsl(var(--foreground))"
-                  : "hsl(var(--foreground))",
-            }}
-          >
+          <h1 className="text-2xl font-bold text-foreground">
             {isTrialMode && !user
               ? t("dashboard.freeTrial", "Free Trial - AI Chat")
               : sidebarItems.find((item) => item.id === activeTab)?.title ||
@@ -90,21 +76,6 @@ export const DashboardHeader: React.FC<HeaderProps> = ({
       </div>
       <div className="flex items-center space-x-3">
         <LanguageSelector />
-
-        {/* Dark mode toggle */}
-        <Button
-          variant="ghost"
-          size="icon"
-          aria-label={t("dashboard.toggleTheme", "Toggle dark mode")}
-          onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-          className={theme === "dark" ? "text-yellow-200" : "text-purple-500"}
-        >
-          {theme === "dark" ? (
-            <Sun className="h-5 w-5" />
-          ) : (
-            <Moon className="h-5 w-5" />
-          )}
-        </Button>
 
         {/* Notifications button without badge */}
         <Button
@@ -122,7 +93,7 @@ export const DashboardHeader: React.FC<HeaderProps> = ({
           variant="ghost"
           size="icon"
           aria-label={t("dashboard.mail", "Mail")}
-          className={`${theme === "dark" ? "text-teal-200" : "text-blue-500"}`}
+          className="text-primary"
           onClick={handleMailClick}
         >
           <Mail className="h-5 w-5" />
