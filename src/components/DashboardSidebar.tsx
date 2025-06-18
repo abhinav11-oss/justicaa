@@ -187,21 +187,30 @@ export const DashboardSidebar: React.FC<SidebarProps> = ({
           ))}
         </nav>
         {/* User avatar or trial -- at bottom, just an icon */}
-        <div
-          className="p-3 border-t w-full flex flex-col items-center"
-          style={{ borderColor: "rgba(255,255,255,0.08)" }}
+        <motion.div
+          className="p-4 border-t border-border/50 w-full flex flex-col items-center"
+          initial={{ y: 50, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.5 }}
         >
           {user ? (
-            <Avatar className="h-8 w-8">
-              <AvatarImage src={user.user_metadata?.avatar_url} />
-              <AvatarFallback className="gradient-primary text-white">
-                {userInitial}
-              </AvatarFallback>
-            </Avatar>
+            <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}>
+              <Avatar className="h-10 w-10 ring-2 ring-primary/20 ring-offset-2 ring-offset-background">
+                <AvatarImage src={user.user_metadata?.avatar_url} />
+                <AvatarFallback className="gradient-primary text-white font-semibold">
+                  {userInitial}
+                </AvatarFallback>
+              </Avatar>
+            </motion.div>
           ) : isTrialMode ? (
-            <User className="h-8 w-8 text-primary" />
+            <motion.div
+              whileHover={{ scale: 1.1 }}
+              className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center"
+            >
+              <User className="h-5 w-5 text-primary" />
+            </motion.div>
           ) : null}
-        </div>
+        </motion.div>
       </motion.aside>
     </>
   );
