@@ -60,8 +60,15 @@ export const Hero = ({ onCTAClick, onTryForFree }: HeroProps) => {
   };
 
   return (
-    <section className="hero-section relative overflow-hidden min-h-screen flex items-center bg-gradient-to-br from-background via-background to-muted/30">
-      {/* Floating Elements */}
+    <section className="hero-section relative overflow-hidden min-h-screen flex items-center">
+      {/* Animated Background with Multiple Gradients */}
+      <div className="absolute inset-0">
+        <div className="absolute inset-0 bg-gradient-to-br from-background via-background/95 to-primary/5"></div>
+        <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-primary/3 to-transparent"></div>
+        <div className="absolute inset-0 bg-gradient-to-bl from-transparent via-background/90 to-background"></div>
+      </div>
+
+      {/* Animated Floating Elements */}
       <motion.div
         className="absolute top-20 left-10 w-20 h-20 border border-primary/20 rounded-full"
         variants={floatingVariants}
@@ -80,8 +87,35 @@ export const Hero = ({ onCTAClick, onTryForFree }: HeroProps) => {
         transition={{ delay: 2 }}
       />
 
+      {/* Animated Gradient Orbs */}
+      <motion.div
+        className="absolute top-1/4 right-1/4 w-64 h-64 bg-gradient-to-r from-primary/10 to-transparent rounded-full blur-3xl"
+        animate={{
+          scale: [1, 1.2, 1],
+          opacity: [0.3, 0.6, 0.3],
+        }}
+        transition={{
+          duration: 8,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+      />
+      <motion.div
+        className="absolute bottom-1/4 left-1/4 w-48 h-48 bg-gradient-to-l from-primary/15 to-transparent rounded-full blur-2xl"
+        animate={{
+          scale: [1, 1.3, 1],
+          opacity: [0.2, 0.5, 0.2],
+        }}
+        transition={{
+          duration: 6,
+          repeat: Infinity,
+          ease: "easeInOut",
+          delay: 2,
+        }}
+      />
+
       <div className="container mx-auto px-4 py-12 md:py-20 relative z-10">
-        <div className="max-w-5xl mx-auto text-center">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center max-w-7xl mx-auto">
           {/* Main Content */}
           <motion.div
             variants={containerVariants}
