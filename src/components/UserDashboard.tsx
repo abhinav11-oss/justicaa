@@ -26,6 +26,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { motion } from "framer-motion";
 import {
   MessageSquare,
   FileText,
@@ -36,6 +37,13 @@ import {
   Trash2,
   Download,
   Eye,
+  TrendingUp,
+  Clock,
+  Users,
+  Briefcase,
+  ArrowUpRight,
+  Sparkles,
+  Zap,
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
@@ -83,6 +91,33 @@ export function UserDashboard() {
     string | null
   >(null);
   const [activeTab, setActiveTab] = useState("conversations");
+
+  // Animation variants
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.5, ease: "easeOut" },
+    },
+  };
+
+  const cardHoverVariants = {
+    hover: {
+      scale: 1.02,
+      transition: { duration: 0.2 },
+    },
+  };
 
   useEffect(() => {
     if (user) {
@@ -421,333 +456,605 @@ export function UserDashboard() {
   }
 
   return (
-    <div className="space-y-6">
-      {/* Quick Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <Card className="bg-card/50 backdrop-blur-sm border-border">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-foreground">
-              Active Conversations
-            </CardTitle>
-            <MessageSquare className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-foreground">
-              {conversations.length}
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="bg-card/50 backdrop-blur-sm border-border">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-foreground">
-              Archived Chats
-            </CardTitle>
-            <Archive className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-foreground">
-              {archivedConversations.length}
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="bg-card/50 backdrop-blur-sm border-border">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-foreground">
-              Documents
-            </CardTitle>
-            <FileText className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-foreground">
-              {documents.length}
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="bg-card/50 backdrop-blur-sm border-border">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-foreground">
-              Active Matters
-            </CardTitle>
-            <Calendar className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-foreground">
-              {matters.filter((m) => m.status === "active").length}
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Main Content */}
-      <Card className="bg-card/80 backdrop-blur-sm border-border shadow-xl">
-        <CardHeader>
-          <Tabs
-            value={activeTab}
-            onValueChange={setActiveTab}
-            className="w-full"
-          >
-            <TabsList className="grid w-full grid-cols-4 bg-muted">
-              <TabsTrigger value="conversations">
-                Recent Conversations
-              </TabsTrigger>
-              <TabsTrigger value="archived">Archived Chats</TabsTrigger>
-              <TabsTrigger value="documents">Documents</TabsTrigger>
-              <TabsTrigger value="matters">Legal Matters</TabsTrigger>
-            </TabsList>
-          </Tabs>
-        </CardHeader>
-
-        <CardContent>
-          <Tabs
-            value={activeTab}
-            onValueChange={setActiveTab}
-            className="w-full"
-          >
-            <TabsContent value="conversations" className="space-y-4">
-              <div className="flex justify-between items-center">
-                <h3 className="text-lg font-semibold text-foreground">
-                  Recent Conversations
-                </h3>
+    <motion.div
+      className="space-y-8"
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+    >
+      {/* Welcome Section with Hero Image */}
+      <motion.div variants={itemVariants}>
+        <Card className="relative overflow-hidden bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5 border-primary/20">
+          <div className="absolute inset-0 opacity-5">
+            <img
+              src="https://images.pexels.com/photos/6077797/pexels-photo-6077797.jpeg"
+              alt="Professional legal workspace"
+              className="w-full h-full object-cover"
+            />
+          </div>
+          <CardContent className="relative p-8">
+            <div className="flex items-center justify-between">
+              <div className="space-y-2">
+                <div className="flex items-center gap-2">
+                  <Sparkles className="h-5 w-5 text-primary" />
+                  <span className="text-sm font-medium text-primary">
+                    Welcome back
+                  </span>
+                </div>
+                <h1 className="text-3xl font-bold text-foreground">
+                  Hello,{" "}
+                  {user?.user_metadata?.full_name ||
+                    user?.email?.split("@")[0] ||
+                    "User"}
+                  ! 👋
+                </h1>
+                <p className="text-muted-foreground text-lg">
+                  Ready to tackle your legal matters? Your AI assistant is here
+                  to help.
+                </p>
+              </div>
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
                 <Button
                   onClick={createNewConversation}
-                  size="sm"
-                  className="gradient-primary text-white border-0"
+                  className="gradient-primary text-white border-0 shadow-lg px-6 py-3"
                 >
-                  <Plus className="h-4 w-4 mr-2" />
-                  New Chat
+                  <Zap className="h-5 w-5 mr-2" />
+                  Start New Consultation
+                  <ArrowUpRight className="h-4 w-4 ml-2" />
                 </Button>
-              </div>
+              </motion.div>
+            </div>
+          </CardContent>
+        </Card>
+      </motion.div>
 
-              {conversations.length === 0 ? (
-                <div className="text-center py-8 text-muted-foreground">
-                  <MessageSquare className="h-12 w-12 mx-auto mb-4 text-muted-foreground/50" />
-                  <p>
-                    No conversations yet. Start your first legal consultation!
-                  </p>
-                </div>
-              ) : (
-                <div className="space-y-3">
-                  {conversations.map((conversation) => (
-                    <div
-                      key={conversation.id}
-                      className="p-4 border border-border rounded-lg hover:bg-muted/50 transition-colors"
-                    >
-                      <div className="flex justify-between items-start">
-                        <div
-                          className="flex-1 cursor-pointer"
-                          onClick={() =>
-                            handleConversationClick(conversation.id)
-                          }
-                        >
-                          <h4 className="font-medium text-foreground">
-                            {conversation.title}
-                          </h4>
-                          <p className="text-sm text-muted-foreground capitalize">
-                            {conversation.legal_category}
-                          </p>
-                          <p className="text-xs text-muted-foreground">
-                            {new Date(
-                              conversation.created_at,
-                            ).toLocaleDateString()}
-                          </p>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <Badge
-                            className={getStatusColor(conversation.status)}
-                          >
-                            {conversation.status}
-                          </Badge>
-                          <ConversationActions conversation={conversation} />
-                        </div>
+      {/* Enhanced Stats Grid */}
+      <motion.div
+        variants={itemVariants}
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
+      >
+        {[
+          {
+            title: "Active Conversations",
+            value: conversations.length,
+            icon: MessageSquare,
+            trend: "+12%",
+            color: "from-blue-500 to-blue-600",
+            bg: "bg-blue-500/10",
+            border: "border-blue-500/20",
+          },
+          {
+            title: "Archived Chats",
+            value: archivedConversations.length,
+            icon: Archive,
+            trend: "+8%",
+            color: "from-purple-500 to-purple-600",
+            bg: "bg-purple-500/10",
+            border: "border-purple-500/20",
+          },
+          {
+            title: "Documents Generated",
+            value: documents.length,
+            icon: FileText,
+            trend: "+25%",
+            color: "from-green-500 to-green-600",
+            bg: "bg-green-500/10",
+            border: "border-green-500/20",
+          },
+          {
+            title: "Active Matters",
+            value: matters.filter((m) => m.status === "active").length,
+            icon: Briefcase,
+            trend: "+5%",
+            color: "from-orange-500 to-orange-600",
+            bg: "bg-orange-500/10",
+            border: "border-orange-500/20",
+          },
+        ].map((stat, index) => (
+          <motion.div
+            key={index}
+            variants={cardHoverVariants}
+            whileHover="hover"
+          >
+            <Card
+              className={`${stat.bg} ${stat.border} border backdrop-blur-sm`}
+            >
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium text-muted-foreground">
+                      {stat.title}
+                    </p>
+                    <div className="flex items-center gap-2 mt-2">
+                      <p className="text-3xl font-bold text-foreground">
+                        {stat.value}
+                      </p>
+                      <div className="flex items-center text-xs text-green-400">
+                        <TrendingUp className="h-3 w-3 mr-1" />
+                        {stat.trend}
                       </div>
                     </div>
-                  ))}
+                  </div>
+                  <div
+                    className={`bg-gradient-to-br ${stat.color} p-3 rounded-2xl shadow-lg`}
+                  >
+                    <stat.icon className="h-6 w-6 text-white" />
+                  </div>
                 </div>
-              )}
-            </TabsContent>
+              </CardContent>
+            </Card>
+          </motion.div>
+        ))}
+      </motion.div>
 
-            <TabsContent value="archived" className="space-y-4">
-              <div className="flex justify-between items-center">
-                <h3 className="text-lg font-semibold text-foreground">
-                  Archived Conversations
-                </h3>
+      {/* Enhanced Main Content */}
+      <motion.div variants={itemVariants}>
+        <Card className="bg-card/80 backdrop-blur-xl border-border shadow-2xl">
+          <CardHeader className="pb-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle className="text-2xl">Your Legal Workspace</CardTitle>
+                <CardDescription className="text-muted-foreground">
+                  Manage conversations, documents, and legal matters in one
+                  place
+                </CardDescription>
               </div>
-
-              {archivedConversations.length === 0 ? (
-                <div className="text-center py-8 text-muted-foreground">
-                  <Archive className="h-12 w-12 mx-auto mb-4 text-muted-foreground/50" />
-                  <p>No archived conversations yet.</p>
-                </div>
-              ) : (
-                <div className="space-y-3">
-                  {archivedConversations.map((conversation) => (
-                    <div
-                      key={conversation.id}
-                      className="p-4 border border-border rounded-lg hover:bg-muted/50 transition-colors"
-                    >
-                      <div className="flex justify-between items-start">
-                        <div
-                          className="flex-1 cursor-pointer"
-                          onClick={() =>
-                            handleConversationClick(conversation.id)
-                          }
-                        >
-                          <h4 className="font-medium text-foreground">
-                            {conversation.title}
-                          </h4>
-                          <p className="text-sm text-muted-foreground capitalize">
-                            {conversation.legal_category}
-                          </p>
-                          <p className="text-xs text-muted-foreground">
-                            {new Date(
-                              conversation.created_at,
-                            ).toLocaleDateString()}
-                          </p>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <Badge
-                            className={getStatusColor(conversation.status)}
-                          >
-                            {conversation.status}
-                          </Badge>
-                          <ConversationActions
-                            conversation={conversation}
-                            isArchived={true}
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </TabsContent>
-
-            <TabsContent value="documents" className="space-y-4">
-              <div className="flex justify-between items-center">
-                <h3 className="text-lg font-semibold text-foreground">
-                  Legal Documents
-                </h3>
-                <Button
-                  size="sm"
-                  className="gradient-primary text-white border-0"
+            </div>
+            <Tabs
+              value={activeTab}
+              onValueChange={setActiveTab}
+              className="w-full"
+            >
+              <TabsList className="grid w-full grid-cols-4 bg-muted/50 backdrop-blur-sm">
+                <TabsTrigger
+                  value="conversations"
+                  className="data-[state=active]:bg-primary data-[state=active]:text-white"
                 >
-                  <Plus className="h-4 w-4 mr-2" />
-                  New Document
-                </Button>
-              </div>
-
-              {documents.length === 0 ? (
-                <div className="text-center py-8 text-muted-foreground">
-                  <FileText className="h-12 w-12 mx-auto mb-4 text-muted-foreground/50" />
-                  <p>No documents yet. Create your first legal document!</p>
-                </div>
-              ) : (
-                <div className="space-y-3">
-                  {documents.map((document) => (
-                    <div
-                      key={document.id}
-                      className="p-4 border border-border rounded-lg hover:bg-muted/50 transition-colors"
-                    >
-                      <div className="flex justify-between items-start">
-                        <div className="flex-1">
-                          <h4 className="font-medium text-foreground">
-                            {document.title}
-                          </h4>
-                          <p className="text-sm text-muted-foreground capitalize">
-                            {document.document_type}
-                          </p>
-                          <p className="text-xs text-muted-foreground">
-                            {new Date(document.created_at).toLocaleDateString()}
-                          </p>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <Badge className={getStatusColor(document.status)}>
-                            {document.status}
-                          </Badge>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => downloadDocument(document)}
-                            className="border-border text-foreground hover:bg-muted"
-                          >
-                            <Download className="h-4 w-4 mr-2" />
-                            Download
-                          </Button>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </TabsContent>
-
-            <TabsContent value="matters" className="space-y-4">
-              <div className="flex justify-between items-center">
-                <h3 className="text-lg font-semibold text-foreground">
-                  Legal Matters
-                </h3>
-                <Button
-                  size="sm"
-                  className="gradient-primary text-white border-0"
+                  <MessageSquare className="h-4 w-4 mr-2" />
+                  Conversations
+                </TabsTrigger>
+                <TabsTrigger
+                  value="archived"
+                  className="data-[state=active]:bg-primary data-[state=active]:text-white"
                 >
-                  <Plus className="h-4 w-4 mr-2" />
-                  New Matter
-                </Button>
-              </div>
+                  <Archive className="h-4 w-4 mr-2" />
+                  Archived
+                </TabsTrigger>
+                <TabsTrigger
+                  value="documents"
+                  className="data-[state=active]:bg-primary data-[state=active]:text-white"
+                >
+                  <FileText className="h-4 w-4 mr-2" />
+                  Documents
+                </TabsTrigger>
+                <TabsTrigger
+                  value="matters"
+                  className="data-[state=active]:bg-primary data-[state=active]:text-white"
+                >
+                  <Calendar className="h-4 w-4 mr-2" />
+                  Matters
+                </TabsTrigger>
+              </TabsList>
+            </Tabs>
+          </CardHeader>
 
-              {matters.length === 0 ? (
-                <div className="text-center py-8 text-muted-foreground">
-                  <Calendar className="h-12 w-12 mx-auto mb-4 text-muted-foreground/50" />
-                  <p>No legal matters yet. Add your first case!</p>
-                </div>
-              ) : (
-                <div className="space-y-3">
-                  {matters.map((matter) => (
-                    <div
-                      key={matter.id}
-                      className="p-4 border border-border rounded-lg hover:bg-muted/50 transition-colors"
-                    >
-                      <div className="flex justify-between items-start">
-                        <div>
-                          <h4 className="font-medium text-foreground">
-                            {matter.title}
-                          </h4>
-                          <p className="text-sm text-muted-foreground capitalize">
-                            {matter.matter_type}
-                          </p>
-                          {matter.deadline_date && (
-                            <p className="text-xs text-destructive">
-                              Deadline:{" "}
-                              {new Date(
-                                matter.deadline_date,
-                              ).toLocaleDateString()}
-                            </p>
-                          )}
-                          <p className="text-xs text-muted-foreground">
-                            Created:{" "}
-                            {new Date(matter.created_at).toLocaleDateString()}
-                          </p>
-                        </div>
-                        <div className="flex flex-col space-y-1">
-                          <Badge className={getStatusColor(matter.status)}>
-                            {matter.status}
-                          </Badge>
-                          <Badge className={getPriorityColor(matter.priority)}>
-                            {matter.priority}
-                          </Badge>
-                        </div>
-                      </div>
+          <CardContent className="space-y-6">
+            <Tabs
+              value={activeTab}
+              onValueChange={setActiveTab}
+              className="w-full"
+            >
+              <TabsContent value="conversations" className="space-y-6">
+                <div className="flex justify-between items-center">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                      <MessageSquare className="h-5 w-5 text-primary" />
                     </div>
-                  ))}
+                    <div>
+                      <h3 className="text-xl font-semibold text-foreground">
+                        Recent Conversations
+                      </h3>
+                      <p className="text-sm text-muted-foreground">
+                        Your latest legal consultations
+                      </p>
+                    </div>
+                  </div>
+                  <Button
+                    onClick={createNewConversation}
+                    className="gradient-primary text-white border-0 shadow-md"
+                  >
+                    <Plus className="h-4 w-4 mr-2" />
+                    New Chat
+                  </Button>
                 </div>
-              )}
-            </TabsContent>
-          </Tabs>
-        </CardContent>
-      </Card>
-    </div>
+
+                {conversations.length === 0 ? (
+                  <div className="text-center py-12">
+                    <div className="relative w-48 h-32 mx-auto mb-6 opacity-20">
+                      <img
+                        src="https://images.pexels.com/photos/416405/pexels-photo-416405.jpeg"
+                        alt="Team collaboration"
+                        className="w-full h-full object-cover rounded-xl"
+                      />
+                    </div>
+                    <MessageSquare className="h-12 w-12 mx-auto mb-4 text-muted-foreground/50" />
+                    <h4 className="text-lg font-medium text-foreground mb-2">
+                      No conversations yet
+                    </h4>
+                    <p className="text-muted-foreground mb-4">
+                      Start your first legal consultation to get personalized
+                      advice
+                    </p>
+                    <Button
+                      onClick={createNewConversation}
+                      className="gradient-primary text-white border-0"
+                    >
+                      <Sparkles className="h-4 w-4 mr-2" />
+                      Start Your First Consultation
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="grid gap-4">
+                    {conversations.map((conversation, index) => (
+                      <motion.div
+                        key={conversation.id}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: index * 0.1 }}
+                        whileHover={{ scale: 1.01 }}
+                        className="group"
+                      >
+                        <Card className="border-border hover:border-primary/30 transition-all duration-300 bg-card/50 backdrop-blur-sm">
+                          <CardContent className="p-6">
+                            <div className="flex justify-between items-start">
+                              <div
+                                className="flex-1 cursor-pointer"
+                                onClick={() =>
+                                  handleConversationClick(conversation.id)
+                                }
+                              >
+                                <div className="flex items-center gap-3 mb-3">
+                                  <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+                                    <MessageSquare className="h-5 w-5 text-primary" />
+                                  </div>
+                                  <div>
+                                    <h4 className="font-semibold text-foreground group-hover:text-primary transition-colors">
+                                      {conversation.title}
+                                    </h4>
+                                    <p className="text-sm text-muted-foreground capitalize">
+                                      {conversation.legal_category}
+                                    </p>
+                                  </div>
+                                </div>
+                                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                                  <Clock className="h-3 w-3" />
+                                  {new Date(
+                                    conversation.created_at,
+                                  ).toLocaleDateString()}
+                                </div>
+                              </div>
+                              <div className="flex items-center space-x-3">
+                                <Badge
+                                  className={getStatusColor(
+                                    conversation.status,
+                                  )}
+                                >
+                                  {conversation.status}
+                                </Badge>
+                                <ConversationActions
+                                  conversation={conversation}
+                                />
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      </motion.div>
+                    ))}
+                  </div>
+                )}
+              </TabsContent>
+
+              <TabsContent value="archived" className="space-y-6">
+                <div className="flex justify-between items-center">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                      <Archive className="h-5 w-5 text-primary" />
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-semibold text-foreground">
+                        Archived Conversations
+                      </h3>
+                      <p className="text-sm text-muted-foreground">
+                        Previously completed consultations
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {archivedConversations.length === 0 ? (
+                  <div className="text-center py-12">
+                    <Archive className="h-12 w-12 mx-auto mb-4 text-muted-foreground/50" />
+                    <h4 className="text-lg font-medium text-foreground mb-2">
+                      No archived conversations
+                    </h4>
+                    <p className="text-muted-foreground">
+                      Completed conversations will appear here for future
+                      reference
+                    </p>
+                  </div>
+                ) : (
+                  <div className="grid gap-4">
+                    {archivedConversations.map((conversation, index) => (
+                      <motion.div
+                        key={conversation.id}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: index * 0.1 }}
+                        whileHover={{ scale: 1.01 }}
+                        className="group"
+                      >
+                        <Card className="border-border hover:border-primary/30 transition-all duration-300 bg-card/50 backdrop-blur-sm">
+                          <CardContent className="p-6">
+                            <div className="flex justify-between items-start">
+                              <div
+                                className="flex-1 cursor-pointer"
+                                onClick={() =>
+                                  handleConversationClick(conversation.id)
+                                }
+                              >
+                                <div className="flex items-center gap-3 mb-3">
+                                  <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
+                                    <Archive className="h-5 w-5 text-muted-foreground" />
+                                  </div>
+                                  <div>
+                                    <h4 className="font-semibold text-foreground">
+                                      {conversation.title}
+                                    </h4>
+                                    <p className="text-sm text-muted-foreground capitalize">
+                                      {conversation.legal_category}
+                                    </p>
+                                  </div>
+                                </div>
+                                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                                  <Clock className="h-3 w-3" />
+                                  {new Date(
+                                    conversation.created_at,
+                                  ).toLocaleDateString()}
+                                </div>
+                              </div>
+                              <div className="flex items-center space-x-3">
+                                <Badge
+                                  className={getStatusColor(
+                                    conversation.status,
+                                  )}
+                                >
+                                  {conversation.status}
+                                </Badge>
+                                <ConversationActions
+                                  conversation={conversation}
+                                  isArchived={true}
+                                />
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      </motion.div>
+                    ))}
+                  </div>
+                )}
+              </TabsContent>
+
+              <TabsContent value="documents" className="space-y-6">
+                <div className="flex justify-between items-center">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                      <FileText className="h-5 w-5 text-primary" />
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-semibold text-foreground">
+                        Legal Documents
+                      </h3>
+                      <p className="text-sm text-muted-foreground">
+                        Generated contracts and legal papers
+                      </p>
+                    </div>
+                  </div>
+                  <Button className="gradient-primary text-white border-0 shadow-md">
+                    <Plus className="h-4 w-4 mr-2" />
+                    New Document
+                  </Button>
+                </div>
+
+                {documents.length === 0 ? (
+                  <div className="text-center py-12">
+                    <div className="relative w-48 h-32 mx-auto mb-6 opacity-20">
+                      <img
+                        src="https://images.pexels.com/photos/3760067/pexels-photo-3760067.jpeg"
+                        alt="Contract signing"
+                        className="w-full h-full object-cover rounded-xl"
+                      />
+                    </div>
+                    <FileText className="h-12 w-12 mx-auto mb-4 text-muted-foreground/50" />
+                    <h4 className="text-lg font-medium text-foreground mb-2">
+                      No documents yet
+                    </h4>
+                    <p className="text-muted-foreground mb-4">
+                      Create professional legal documents with AI assistance
+                    </p>
+                    <Button className="gradient-primary text-white border-0">
+                      <Sparkles className="h-4 w-4 mr-2" />
+                      Generate Your First Document
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="grid gap-4">
+                    {documents.map((document, index) => (
+                      <motion.div
+                        key={document.id}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: index * 0.1 }}
+                        whileHover={{ scale: 1.01 }}
+                        className="group"
+                      >
+                        <Card className="border-border hover:border-primary/30 transition-all duration-300 bg-card/50 backdrop-blur-sm">
+                          <CardContent className="p-6">
+                            <div className="flex justify-between items-start">
+                              <div className="flex-1">
+                                <div className="flex items-center gap-3 mb-3">
+                                  <div className="w-10 h-10 rounded-full bg-green-500/10 flex items-center justify-center">
+                                    <FileText className="h-5 w-5 text-green-500" />
+                                  </div>
+                                  <div>
+                                    <h4 className="font-semibold text-foreground">
+                                      {document.title}
+                                    </h4>
+                                    <p className="text-sm text-muted-foreground capitalize">
+                                      {document.document_type}
+                                    </p>
+                                  </div>
+                                </div>
+                                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                                  <Clock className="h-3 w-3" />
+                                  {new Date(
+                                    document.created_at,
+                                  ).toLocaleDateString()}
+                                </div>
+                              </div>
+                              <div className="flex items-center space-x-3">
+                                <Badge
+                                  className={getStatusColor(document.status)}
+                                >
+                                  {document.status}
+                                </Badge>
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => downloadDocument(document)}
+                                  className="border-border text-foreground hover:bg-muted"
+                                >
+                                  <Download className="h-4 w-4 mr-2" />
+                                  Download
+                                </Button>
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      </motion.div>
+                    ))}
+                  </div>
+                )}
+              </TabsContent>
+
+              <TabsContent value="matters" className="space-y-6">
+                <div className="flex justify-between items-center">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                      <Briefcase className="h-5 w-5 text-primary" />
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-semibold text-foreground">
+                        Legal Matters
+                      </h3>
+                      <p className="text-sm text-muted-foreground">
+                        Track your ongoing legal cases
+                      </p>
+                    </div>
+                  </div>
+                  <Button className="gradient-primary text-white border-0 shadow-md">
+                    <Plus className="h-4 w-4 mr-2" />
+                    New Matter
+                  </Button>
+                </div>
+
+                {matters.length === 0 ? (
+                  <div className="text-center py-12">
+                    <Briefcase className="h-12 w-12 mx-auto mb-4 text-muted-foreground/50" />
+                    <h4 className="text-lg font-medium text-foreground mb-2">
+                      No legal matters yet
+                    </h4>
+                    <p className="text-muted-foreground mb-4">
+                      Add your first case to start tracking legal matters
+                    </p>
+                    <Button className="gradient-primary text-white border-0">
+                      <Plus className="h-4 w-4 mr-2" />
+                      Add Your First Case
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="grid gap-4">
+                    {matters.map((matter, index) => (
+                      <motion.div
+                        key={matter.id}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: index * 0.1 }}
+                        whileHover={{ scale: 1.01 }}
+                        className="group"
+                      >
+                        <Card className="border-border hover:border-primary/30 transition-all duration-300 bg-card/50 backdrop-blur-sm">
+                          <CardContent className="p-6">
+                            <div className="flex justify-between items-start">
+                              <div className="flex-1">
+                                <div className="flex items-center gap-3 mb-3">
+                                  <div className="w-10 h-10 rounded-full bg-orange-500/10 flex items-center justify-center">
+                                    <Briefcase className="h-5 w-5 text-orange-500" />
+                                  </div>
+                                  <div>
+                                    <h4 className="font-semibold text-foreground">
+                                      {matter.title}
+                                    </h4>
+                                    <p className="text-sm text-muted-foreground capitalize">
+                                      {matter.matter_type}
+                                    </p>
+                                  </div>
+                                </div>
+                                <div className="space-y-1">
+                                  {matter.deadline_date && (
+                                    <div className="flex items-center gap-2 text-xs text-destructive">
+                                      <Calendar className="h-3 w-3" />
+                                      Deadline:{" "}
+                                      {new Date(
+                                        matter.deadline_date,
+                                      ).toLocaleDateString()}
+                                    </div>
+                                  )}
+                                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                                    <Clock className="h-3 w-3" />
+                                    Created:{" "}
+                                    {new Date(
+                                      matter.created_at,
+                                    ).toLocaleDateString()}
+                                  </div>
+                                </div>
+                              </div>
+                              <div className="flex flex-col space-y-2">
+                                <Badge
+                                  className={getStatusColor(matter.status)}
+                                >
+                                  {matter.status}
+                                </Badge>
+                                <Badge
+                                  className={getPriorityColor(matter.priority)}
+                                >
+                                  {matter.priority}
+                                </Badge>
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      </motion.div>
+                    ))}
+                  </div>
+                )}
+              </TabsContent>
+            </Tabs>
+          </CardContent>
+        </Card>
+      </motion.div>
+    </motion.div>
   );
 }
