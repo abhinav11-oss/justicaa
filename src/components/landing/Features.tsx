@@ -123,44 +123,67 @@ export const Features = () => {
         </p>
       </motion.div>
 
-      {/* Main Features */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-16">
+      {/* Main Features with Images */}
+      <motion.div
+        className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-16"
+        variants={containerVariants}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true }}
+      >
         {mainFeatures.map((feature, index) => (
-          <Card
-            key={index}
-            className="card-hover border-2 hover:border-primary/20 bg-card/50 backdrop-blur-sm h-full"
-          >
-            <CardHeader className="pb-4">
-              <div className="gradient-primary w-16 h-16 rounded-2xl flex items-center justify-center mb-4">
-                <feature.icon className="h-8 w-8 text-white" />
+          <motion.div key={index} variants={itemVariants}>
+            <Card className="card-hover border-2 hover:border-primary/20 bg-card/50 backdrop-blur-sm h-full overflow-hidden">
+              {/* Feature Image */}
+              <div className="relative h-48 overflow-hidden">
+                <img
+                  src={
+                    index === 0
+                      ? "https://images.pexels.com/photos/8112172/pexels-photo-8112172.jpeg"
+                      : index === 1
+                        ? "https://images.pexels.com/photos/5816291/pexels-photo-5816291.jpeg"
+                        : "https://images.pexels.com/photos/4427430/pexels-photo-4427430.jpeg"
+                  }
+                  alt={`${feature.title} illustration`}
+                  className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-transparent to-transparent" />
+                <div className="absolute bottom-4 left-4">
+                  <div className="gradient-primary w-12 h-12 rounded-xl flex items-center justify-center">
+                    <feature.icon className="h-6 w-6 text-white" />
+                  </div>
+                </div>
               </div>
-              <Badge
-                variant="secondary"
-                className="mb-3 bg-primary/10 text-primary text-sm w-fit"
-              >
-                {feature.highlight}
-              </Badge>
-              <CardTitle className="text-xl mb-2">{feature.title}</CardTitle>
-              <CardDescription className="text-base leading-relaxed">
-                {feature.description}
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="pt-0">
-              <ul className="space-y-2">
-                {feature.benefits.map((benefit, idx) => (
-                  <li
-                    key={idx}
-                    className="flex items-center text-sm text-muted-foreground"
-                  >
-                    <div className="w-1.5 h-1.5 bg-primary rounded-full mr-2"></div>
-                    {benefit}
-                  </li>
-                ))}
-              </ul>
-            </CardContent>
-          </Card>
+
+              <CardHeader className="pb-4">
+                <Badge
+                  variant="secondary"
+                  className="mb-3 bg-primary/10 text-primary text-sm w-fit"
+                >
+                  {feature.highlight}
+                </Badge>
+                <CardTitle className="text-xl mb-2">{feature.title}</CardTitle>
+                <CardDescription className="text-base leading-relaxed">
+                  {feature.description}
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="pt-0">
+                <ul className="space-y-2">
+                  {feature.benefits.map((benefit, idx) => (
+                    <li
+                      key={idx}
+                      className="flex items-center text-sm text-muted-foreground"
+                    >
+                      <div className="w-1.5 h-1.5 bg-primary rounded-full mr-2"></div>
+                      {benefit}
+                    </li>
+                  ))}
+                </ul>
+              </CardContent>
+            </Card>
+          </motion.div>
         ))}
-      </div>
+      </motion.div>
 
       {/* Additional Features Grid */}
       <div className="bg-muted/30 rounded-3xl p-8">
