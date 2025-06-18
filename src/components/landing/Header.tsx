@@ -14,7 +14,6 @@ export const Header = ({ onCTAClick, onTryForFree }: HeaderProps) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const { user } = useAuth();
-  const { theme, setTheme } = useTheme();
   const { scrollY } = useScroll();
 
   const headerBackground = useTransform(
