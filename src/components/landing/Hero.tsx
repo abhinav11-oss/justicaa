@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/hooks/useAuth";
+import { motion } from "framer-motion";
 import { ArrowRight, Shield, Star, Users, Clock } from "lucide-react";
 
 interface HeroProps {
