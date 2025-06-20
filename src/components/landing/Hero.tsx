@@ -217,7 +217,7 @@ export const Hero = ({ onCTAClick, onTryForFree }: HeroProps) => {
                 <Button
                   size="lg"
                   className="text-lg px-8 py-4 gradient-primary text-white border-0 rounded-xl"
-                  onClick={onTryForFree}
+                  onClick={user ? () => onCTAClick() : onCTAClick}
                 >
                   Try for free
                 </Button>
