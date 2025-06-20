@@ -24,11 +24,12 @@ const Auth = () => {
   const [showPassword, setShowPassword] = useState(false);
   const { signIn, signUp, signInWithGoogle, user } = useAuth();
   const { toast } = useToast();
+  const navigate = useNavigate();
 
-  // Redirect and notify parent window on successful auth
+  // Redirect to dashboard on successful auth
   useEffect(() => {
     if (user) {
-      // Send message to parent window for popup flow
+      // Send message to parent window for popup flow (legacy support)
       if (window.opener) {
         window.opener.postMessage(
           { type: "AUTH_SUCCESS", user },
@@ -36,11 +37,11 @@ const Auth = () => {
         );
         window.close();
       } else {
-        // For non-popup flow, redirect to dashboard.
-        window.location.href = "/dashboard";
+        // Navigate to dashboard using React Router
+        navigate("/dashboard");
       }
     }
-  }, [user]);
+  }, [user, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
