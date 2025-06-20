@@ -15,11 +15,13 @@ import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
-import { MapPin, User, Save, Upload } from "lucide-react";
+import { MapPin, User, Save, Upload, LogOut } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 export const SettingsPanel = () => {
-  const { user } = useAuth();
+  const { user, signOut } = useAuth();
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [profile, setProfile] = useState({
     name: "",
     email: "",
@@ -58,6 +60,27 @@ export const SettingsPanel = () => {
       title: "Avatar Upload",
       description: "Avatar upload functionality coming soon",
     });
+  };
+
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+      localStorage.removeItem("lastTab");
+      localStorage.removeItem("trialMode");
+      localStorage.removeItem("trialMessagesUsed");
+      toast({
+        title: "Signed Out",
+        description: "You have been successfully signed out.",
+      });
+      navigate("/");
+    } catch (error) {
+      console.error("Logout error:", error);
+      toast({
+        title: "Logout Error",
+        description: "There was an issue signing out. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
   const cities = [
@@ -203,6 +226,18 @@ export const SettingsPanel = () => {
             <p className="text-sm text-slate-600 dark:text-slate-400">
               Your data is securely stored and never shared with third parties.
             </p>
+          </div>
+
+          {/* Sign Out Button */}
+          <div className="pt-4">
+            <Button 
+              variant="destructive" 
+              onClick={handleSignOut} 
+              className="w-full"
+            >
+              <LogOut className="h-4 w-4 mr-2" />
+              Sign Out
+            </Button>
           </div>
         </CardContent>
       </Card>

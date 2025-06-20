@@ -11,6 +11,7 @@ import {
   Settings,
   User,
   Scale,
+  LogOut,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -19,6 +20,10 @@ import {
   TooltipTrigger,
   TooltipContent,
 } from "@/components/ui/tooltip";
+import { Button } from "@/components/ui/button";
+import { useAuth } from "@/hooks/useAuth";
+import { useNavigate } from "react-router-dom";
+import { useToast } from "@/hooks/use-toast";
 
 const sidebarIcons = [
   { id: "home", icon: Home, title: "Dashboard" },
@@ -51,6 +56,9 @@ export const DashboardSidebar: React.FC<SidebarProps> = ({
   t,
 }) => {
   const isMobile = useIsMobile();
+  const { signOut } = useAuth();
+  const navigate = useNavigate();
+  const { toast } = useToast();
 
   const userInitial = user?.email?.charAt(0).toUpperCase() || "U";
   // Translation applied for sidebar icon titles
@@ -92,6 +100,27 @@ export const DashboardSidebar: React.FC<SidebarProps> = ({
   const iconsToShow = user
     ? sidebarIcons
     : sidebarIcons.filter((i) => ["chat"].includes(i.id));
+
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+      localStorage.removeItem("lastTab");
+      localStorage.removeItem("trialMode");
+      localStorage.removeItem("trialMessagesUsed");
+      toast({
+        title: "Signed Out",
+        description: "You have been successfully signed out.",
+      });
+      navigate("/");
+    } catch (error) {
+      console.error("Logout error:", error);
+      toast({
+        title: "Logout Error",
+        description: "There was an issue signing out. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
 
   return (
     <>
@@ -210,6 +239,37 @@ export const DashboardSidebar: React.FC<SidebarProps> = ({
               <User className="h-5 w-5 text-primary" />
             </motion.div>
           ) : null}
+          {user && (
+            <motion.div
+              className="mt-4 w-full flex justify-center"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.6 }}
+            >
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={handleSignOut}
+                    className="w-14 h-14 rounded-2xl text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
+                    aria-label={t("dashboard.signOut", "Sign Out")}
+                  >
+                    <LogOut className="h-6 w-6" />
+                  </Button>
+                </TooltipTrigger>
+                {!isMobile && (
+                  <TooltipContent
+                    side="right"
+                    align="center"
+                    className="z-[99999] px-3 py-2 text-sm rounded-xl bg-card border border-border shadow-lg text-card-foreground"
+                  >
+                    {t("dashboard.signOut", "Sign Out")}
+                  </TooltipContent>
+                )}
+              </Tooltip>
+            </motion.div>
+          )}
         </motion.div>
       </motion.aside>
     </>
