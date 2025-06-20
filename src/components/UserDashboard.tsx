@@ -1,15 +1,54 @@
-import { useState, useEffect } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
-import { MessageSquare, FileText, Calendar, Plus, MoreVertical, Archive, Trash2, Download, Eye } from 'lucide-react';
-import { useAuth } from '@/hooks/useAuth';
-import { supabase } from '@/integrations/supabase/client';
-import { useToast } from '@/hooks/use-toast';
-import { ConversationDetail } from './ConversationDetail';
+import { useState, useEffect } from "react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { motion } from "framer-motion";
+import {
+  MessageSquare,
+  FileText,
+  Calendar,
+  Plus,
+  MoreVertical,
+  Archive,
+  Trash2,
+  Download,
+  Eye,
+  TrendingUp,
+  Clock,
+  Users,
+  Briefcase,
+  ArrowUpRight,
+  Sparkles,
+  Zap,
+} from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
+import { ConversationDetail } from "./ConversationDetail";
 
 interface Conversation {
   id: string;
@@ -42,12 +81,43 @@ export function UserDashboard() {
   const { user } = useAuth();
   const { toast } = useToast();
   const [conversations, setConversations] = useState<Conversation[]>([]);
-  const [archivedConversations, setArchivedConversations] = useState<Conversation[]>([]);
+  const [archivedConversations, setArchivedConversations] = useState<
+    Conversation[]
+  >([]);
   const [documents, setDocuments] = useState<LegalDocument[]>([]);
   const [matters, setMatters] = useState<LegalMatter[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedConversationId, setSelectedConversationId] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState('conversations');
+  const [selectedConversationId, setSelectedConversationId] = useState<
+    string | null
+  >(null);
+  const [activeTab, setActiveTab] = useState("conversations");
+
+  // Animation variants
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.5, ease: "easeOut" },
+    },
+  };
+
+  const cardHoverVariants = {
+    hover: {
+      scale: 1.02,
+      transition: { duration: 0.2 },
+    },
+  };
 
   useEffect(() => {
     if (user) {
@@ -59,32 +129,32 @@ export function UserDashboard() {
     try {
       // Fetch active conversations
       const { data: conversationsData } = await supabase
-        .from('chat_conversations')
-        .select('*')
-        .eq('status', 'active')
-        .order('created_at', { ascending: false })
+        .from("chat_conversations")
+        .select("*")
+        .eq("status", "active")
+        .order("created_at", { ascending: false })
         .limit(10);
 
       // Fetch archived conversations
       const { data: archivedData } = await supabase
-        .from('chat_conversations')
-        .select('*')
-        .eq('status', 'archived')
-        .order('created_at', { ascending: false })
+        .from("chat_conversations")
+        .select("*")
+        .eq("status", "archived")
+        .order("created_at", { ascending: false })
         .limit(10);
 
       // Fetch documents
       const { data: documentsData } = await supabase
-        .from('legal_documents')
-        .select('*')
-        .order('created_at', { ascending: false })
+        .from("legal_documents")
+        .select("*")
+        .order("created_at", { ascending: false })
         .limit(10);
 
       // Fetch legal matters
       const { data: mattersData } = await supabase
-        .from('legal_matters')
-        .select('*')
-        .order('created_at', { ascending: false })
+        .from("legal_matters")
+        .select("*")
+        .order("created_at", { ascending: false })
         .limit(10);
 
       setConversations(conversationsData || []);
@@ -92,11 +162,11 @@ export function UserDashboard() {
       setDocuments(documentsData || []);
       setMatters(mattersData || []);
     } catch (error) {
-      console.error('Error fetching user data:', error);
+      console.error("Error fetching user data:", error);
       toast({
         title: "Error",
         description: "Failed to load your data. Please try again.",
-        variant: "destructive"
+        variant: "destructive",
       });
     } finally {
       setLoading(false);
@@ -106,14 +176,14 @@ export function UserDashboard() {
   const createNewConversation = async () => {
     try {
       const { data, error } = await supabase
-        .from('chat_conversations')
+        .from("chat_conversations")
         .insert([
           {
             user_id: user?.id,
-            title: 'New Legal Consultation',
-            legal_category: 'general',
-            status: 'active'
-          }
+            title: "New Legal Consultation",
+            legal_category: "general",
+            status: "active",
+          },
         ])
         .select()
         .single();
@@ -122,16 +192,16 @@ export function UserDashboard() {
 
       toast({
         title: "New Conversation",
-        description: "Started a new legal consultation."
+        description: "Started a new legal consultation.",
       });
-      
+
       fetchUserData();
     } catch (error) {
-      console.error('Error creating conversation:', error);
+      console.error("Error creating conversation:", error);
       toast({
         title: "Error",
         description: "Failed to create new conversation.",
-        variant: "destructive"
+        variant: "destructive",
       });
     }
   };
@@ -139,24 +209,24 @@ export function UserDashboard() {
   const archiveConversation = async (conversationId: string) => {
     try {
       const { error } = await supabase
-        .from('chat_conversations')
-        .update({ status: 'archived' })
-        .eq('id', conversationId);
+        .from("chat_conversations")
+        .update({ status: "archived" })
+        .eq("id", conversationId);
 
       if (error) throw error;
 
       toast({
         title: "Conversation Archived",
-        description: "The conversation has been moved to archives."
+        description: "The conversation has been moved to archives.",
       });
-      
+
       fetchUserData();
     } catch (error) {
-      console.error('Error archiving conversation:', error);
+      console.error("Error archiving conversation:", error);
       toast({
         title: "Error",
         description: "Failed to archive conversation.",
-        variant: "destructive"
+        variant: "destructive",
       });
     }
   };
@@ -164,24 +234,24 @@ export function UserDashboard() {
   const deleteConversation = async (conversationId: string) => {
     try {
       const { error } = await supabase
-        .from('chat_conversations')
+        .from("chat_conversations")
         .delete()
-        .eq('id', conversationId);
+        .eq("id", conversationId);
 
       if (error) throw error;
 
       toast({
         title: "Conversation Deleted",
-        description: "The conversation has been permanently deleted."
+        description: "The conversation has been permanently deleted.",
       });
-      
+
       fetchUserData();
     } catch (error) {
-      console.error('Error deleting conversation:', error);
+      console.error("Error deleting conversation:", error);
       toast({
         title: "Error",
         description: "Failed to delete conversation.",
-        variant: "destructive"
+        variant: "destructive",
       });
     }
   };
@@ -189,60 +259,60 @@ export function UserDashboard() {
   const restoreConversation = async (conversationId: string) => {
     try {
       const { error } = await supabase
-        .from('chat_conversations')
-        .update({ status: 'active' })
-        .eq('id', conversationId);
+        .from("chat_conversations")
+        .update({ status: "active" })
+        .eq("id", conversationId);
 
       if (error) throw error;
 
       toast({
         title: "Conversation Restored",
-        description: "The conversation has been restored to active chats."
+        description: "The conversation has been restored to active chats.",
       });
-      
+
       fetchUserData();
     } catch (error) {
-      console.error('Error restoring conversation:', error);
+      console.error("Error restoring conversation:", error);
       toast({
         title: "Error",
         description: "Failed to restore conversation.",
-        variant: "destructive"
+        variant: "destructive",
       });
     }
   };
 
   const downloadDocument = (doc: LegalDocument) => {
     try {
-      let content = '';
-      let fileName = '';
-      let mimeType = '';
-      
-      if (typeof doc.content === 'string') {
+      let content = "";
+      let fileName = "";
+      let mimeType = "";
+
+      if (typeof doc.content === "string") {
         content = doc.content;
-      } else if (typeof doc.content === 'object' && doc.content !== null) {
+      } else if (typeof doc.content === "object" && doc.content !== null) {
         // Check if it's HTML content
         if (doc.content.html) {
           content = doc.content.html;
-          fileName = `${doc.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.html`;
-          mimeType = 'text/html';
+          fileName = `${doc.title.replace(/[^a-z0-9]/gi, "_").toLowerCase()}.html`;
+          mimeType = "text/html";
         } else {
           content = JSON.stringify(doc.content, null, 2);
-          fileName = `${doc.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.json`;
-          mimeType = 'application/json';
+          fileName = `${doc.title.replace(/[^a-z0-9]/gi, "_").toLowerCase()}.json`;
+          mimeType = "application/json";
         }
       } else {
         content = String(doc.content);
-        fileName = `${doc.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.txt`;
-        mimeType = 'text/plain';
+        fileName = `${doc.title.replace(/[^a-z0-9]/gi, "_").toLowerCase()}.txt`;
+        mimeType = "text/plain";
       }
 
       // Create and download the file
       const blob = new Blob([content], { type: mimeType });
       const url = URL.createObjectURL(blob);
-      const link = window.document.createElement('a');
+      const link = window.document.createElement("a");
       link.href = url;
       link.download = fileName;
-      link.style.display = 'none';
+      link.style.display = "none";
       window.document.body.appendChild(link);
       link.click();
       window.document.body.removeChild(link);
@@ -250,14 +320,14 @@ export function UserDashboard() {
 
       toast({
         title: "Document Downloaded",
-        description: `${doc.title} has been downloaded successfully.`
+        description: `${doc.title} has been downloaded successfully.`,
       });
     } catch (error) {
-      console.error('Error downloading document:', error);
+      console.error("Error downloading document:", error);
       toast({
         title: "Download Failed",
         description: "Failed to download the document. Please try again.",
-        variant: "destructive"
+        variant: "destructive",
       });
     }
   };
@@ -268,26 +338,43 @@ export function UserDashboard() {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'active': return 'bg-green-100 text-green-800';
-      case 'completed': return 'bg-blue-100 text-blue-800';
-      case 'pending': return 'bg-yellow-100 text-yellow-800';
-      case 'draft': return 'bg-gray-100 text-gray-800';
-      case 'archived': return 'bg-purple-100 text-purple-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case "active":
+        return "bg-green-500/10 text-green-400 border border-green-500/20";
+      case "completed":
+        return "bg-blue-500/10 text-blue-400 border border-blue-500/20";
+      case "pending":
+        return "bg-yellow-500/10 text-yellow-400 border border-yellow-500/20";
+      case "draft":
+        return "bg-muted text-muted-foreground border border-border";
+      case "archived":
+        return "bg-primary/10 text-primary border border-primary/20";
+      default:
+        return "bg-muted text-muted-foreground border border-border";
     }
   };
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
-      case 'high': return 'bg-red-100 text-red-800';
-      case 'medium': return 'bg-yellow-100 text-yellow-800';
-      case 'low': return 'bg-green-100 text-green-800';
-      case 'urgent': return 'bg-red-200 text-red-900';
-      default: return 'bg-gray-100 text-gray-800';
+      case "high":
+        return "bg-red-500/10 text-red-400 border border-red-500/20";
+      case "medium":
+        return "bg-yellow-500/10 text-yellow-400 border border-yellow-500/20";
+      case "low":
+        return "bg-green-500/10 text-green-400 border border-green-500/20";
+      case "urgent":
+        return "bg-red-600/20 text-red-300 border border-red-600/30";
+      default:
+        return "bg-muted text-muted-foreground border border-border";
     }
   };
 
-  const ConversationActions = ({ conversation, isArchived = false }: { conversation: Conversation, isArchived?: boolean }) => (
+  const ConversationActions = ({
+    conversation,
+    isArchived = false,
+  }: {
+    conversation: Conversation;
+    isArchived?: boolean;
+  }) => (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
@@ -295,17 +382,23 @@ export function UserDashboard() {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuItem onClick={() => handleConversationClick(conversation.id)}>
+        <DropdownMenuItem
+          onClick={() => handleConversationClick(conversation.id)}
+        >
           <Eye className="h-4 w-4 mr-2" />
           View Details
         </DropdownMenuItem>
         {!isArchived ? (
-          <DropdownMenuItem onClick={() => archiveConversation(conversation.id)}>
+          <DropdownMenuItem
+            onClick={() => archiveConversation(conversation.id)}
+          >
             <Archive className="h-4 w-4 mr-2" />
             Archive
           </DropdownMenuItem>
         ) : (
-          <DropdownMenuItem onClick={() => restoreConversation(conversation.id)}>
+          <DropdownMenuItem
+            onClick={() => restoreConversation(conversation.id)}
+          >
             <Archive className="h-4 w-4 mr-2" />
             Restore
           </DropdownMenuItem>
@@ -321,12 +414,15 @@ export function UserDashboard() {
             <AlertDialogHeader>
               <AlertDialogTitle>Delete Conversation</AlertDialogTitle>
               <AlertDialogDescription>
-                Are you sure you want to delete this conversation? This action cannot be undone.
+                Are you sure you want to delete this conversation? This action
+                cannot be undone.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction onClick={() => deleteConversation(conversation.id)}>
+              <AlertDialogAction
+                onClick={() => deleteConversation(conversation.id)}
+              >
                 Delete
               </AlertDialogAction>
             </AlertDialogFooter>
@@ -340,8 +436,8 @@ export function UserDashboard() {
     return (
       <div className="flex items-center justify-center py-12">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-slate-600">Loading your dashboard...</p>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Loading your dashboard...</p>
         </div>
       </div>
     );
@@ -351,7 +447,7 @@ export function UserDashboard() {
   if (selectedConversationId) {
     return (
       <div className="space-y-6">
-        <ConversationDetail 
+        <ConversationDetail
           conversationId={selectedConversationId}
           onBack={() => setSelectedConversationId(null)}
         />
@@ -360,246 +456,738 @@ export function UserDashboard() {
   }
 
   return (
-    <div className="space-y-6">
-      {/* Quick Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <Card className="bg-white/60 dark:bg-gray-800/60 backdrop-blur-sm border-slate-200 dark:border-gray-700">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium dark:text-white">Active Conversations</CardTitle>
-            <MessageSquare className="h-4 w-4 text-muted-foreground dark:text-gray-400" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold dark:text-white">{conversations.length}</div>
-          </CardContent>
-        </Card>
-        
-        <Card className="bg-white/60 dark:bg-gray-800/60 backdrop-blur-sm border-slate-200 dark:border-gray-700">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium dark:text-white">Archived Chats</CardTitle>
-            <Archive className="h-4 w-4 text-muted-foreground dark:text-gray-400" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold dark:text-white">{archivedConversations.length}</div>
-          </CardContent>
-        </Card>
-        
-        <Card className="bg-white/60 dark:bg-gray-800/60 backdrop-blur-sm border-slate-200 dark:border-gray-700">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium dark:text-white">Documents</CardTitle>
-            <FileText className="h-4 w-4 text-muted-foreground dark:text-gray-400" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold dark:text-white">{documents.length}</div>
-          </CardContent>
-        </Card>
-        
-        <Card className="bg-white/60 dark:bg-gray-800/60 backdrop-blur-sm border-slate-200 dark:border-gray-700">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium dark:text-white">Active Matters</CardTitle>
-            <Calendar className="h-4 w-4 text-muted-foreground dark:text-gray-400" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold dark:text-white">{matters.filter(m => m.status === 'active').length}</div>
-          </CardContent>
-        </Card>
-      </div>
+    <motion.div
+      className="space-y-8"
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+    >
+      {/* Welcome Section with Enhanced Gradients and Animations */}
+      <motion.div variants={itemVariants}>
+        <Card className="relative overflow-hidden border-primary/20">
+          {/* Multiple Background Layers */}
+          <div className="absolute inset-0">
+            <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-primary/10 to-primary/5"></div>
+            <div className="absolute inset-0 bg-gradient-to-tl from-transparent via-primary/3 to-transparent"></div>
+            <img
+              src="https://images.pexels.com/photos/6077797/pexels-photo-6077797.jpeg"
+              alt="Professional legal workspace"
+              className="w-full h-full object-cover opacity-5"
+            />
+          </div>
 
-      {/* Main Content */}
-      <Card className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border-slate-200 dark:border-gray-700 shadow-xl">
-        <CardHeader>
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid w-full grid-cols-4 bg-slate-100 dark:bg-gray-700">
-              <TabsTrigger value="conversations" className="dark:text-gray-300 dark:data-[state=active]:bg-gray-600 dark:data-[state=active]:text-white">Recent Conversations</TabsTrigger>
-              <TabsTrigger value="archived" className="dark:text-gray-300 dark:data-[state=active]:bg-gray-600 dark:data-[state=active]:text-white">Archived Chats</TabsTrigger>
-              <TabsTrigger value="documents" className="dark:text-gray-300 dark:data-[state=active]:bg-gray-600 dark:data-[state=active]:text-white">Documents</TabsTrigger>
-              <TabsTrigger value="matters" className="dark:text-gray-300 dark:data-[state=active]:bg-gray-600 dark:data-[state=active]:text-white">Legal Matters</TabsTrigger>
-            </TabsList>
-          </Tabs>
-        </CardHeader>
-        
-        <CardContent>
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsContent value="conversations" className="space-y-4">
-              <div className="flex justify-between items-center">
-                <h3 className="text-lg font-semibold dark:text-white">Recent Conversations</h3>
-                <Button onClick={createNewConversation} size="sm" className="dark:bg-primary dark:hover:bg-primary/90">
-                  <Plus className="h-4 w-4 mr-2" />
-                  New Chat
-                </Button>
-              </div>
-              
-              {conversations.length === 0 ? (
-                <div className="text-center py-8 text-slate-500 dark:text-gray-400">
-                  <MessageSquare className="h-12 w-12 mx-auto mb-4 text-slate-300 dark:text-gray-600" />
-                  <p>No conversations yet. Start your first legal consultation!</p>
-                </div>
-              ) : (
-                <div className="space-y-3">
-                  {conversations.map((conversation) => (
-                    <div 
-                      key={conversation.id} 
-                      className="p-4 border border-slate-200 dark:border-gray-600 rounded-lg hover:bg-slate-50 dark:hover:bg-gray-700/50 transition-colors"
-                    >
-                      <div className="flex justify-between items-start">
-                        <div 
-                          className="flex-1 cursor-pointer"
-                          onClick={() => handleConversationClick(conversation.id)}
-                        >
-                          <h4 className="font-medium dark:text-white">{conversation.title}</h4>
-                          <p className="text-sm text-slate-600 dark:text-gray-400 capitalize">{conversation.legal_category}</p>
-                          <p className="text-xs text-slate-400 dark:text-gray-500">
-                            {new Date(conversation.created_at).toLocaleDateString()}
-                          </p>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <Badge className={getStatusColor(conversation.status)}>
-                            {conversation.status}
-                          </Badge>
-                          <ConversationActions conversation={conversation} />
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </TabsContent>
+          {/* Animated Gradient Orbs */}
+          <motion.div
+            className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-primary/20 to-transparent rounded-full blur-3xl"
+            animate={{
+              scale: [1, 1.2, 1],
+              opacity: [0.3, 0.6, 0.3],
+            }}
+            transition={{
+              duration: 4,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+          />
+          <motion.div
+            className="absolute bottom-0 left-0 w-48 h-48 bg-gradient-to-tr from-primary/15 to-transparent rounded-full blur-2xl"
+            animate={{
+              scale: [1, 1.3, 1],
+              opacity: [0.2, 0.5, 0.2],
+            }}
+            transition={{
+              duration: 5,
+              repeat: Infinity,
+              ease: "easeInOut",
+              delay: 1,
+            }}
+          />
 
-            <TabsContent value="archived" className="space-y-4">
-              <div className="flex justify-between items-center">
-                <h3 className="text-lg font-semibold dark:text-white">Archived Conversations</h3>
+          <CardContent className="relative p-8 z-10">
+            <div className="flex items-center justify-between">
+              <div className="space-y-4">
+                <motion.div
+                  className="flex items-center gap-2"
+                  initial={{ x: -20, opacity: 0 }}
+                  animate={{ x: 0, opacity: 1 }}
+                  transition={{ delay: 0.2 }}
+                >
+                  <motion.div
+                    animate={{ rotate: 360 }}
+                    transition={{
+                      duration: 3,
+                      repeat: Infinity,
+                      ease: "linear",
+                    }}
+                  >
+                    <Sparkles className="h-5 w-5 text-primary" />
+                  </motion.div>
+                  <span className="text-sm font-medium text-primary">
+                    Welcome back
+                  </span>
+                </motion.div>
+                <motion.h1
+                  className="text-3xl font-bold text-foreground"
+                  initial={{ y: 20, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ delay: 0.3, type: "spring", bounce: 0.4 }}
+                >
+                  Hello,{" "}
+                  {user?.user_metadata?.full_name ||
+                    user?.email?.split("@")[0] ||
+                    "User"}
+                  ! 👋
+                </motion.h1>
+                <motion.p
+                  className="text-muted-foreground text-lg"
+                  initial={{ y: 20, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ delay: 0.4 }}
+                >
+                  Ready to tackle your legal matters? Your AI assistant is here
+                  to help.
+                </motion.p>
               </div>
-              
-              {archivedConversations.length === 0 ? (
-                <div className="text-center py-8 text-slate-500 dark:text-gray-400">
-                  <Archive className="h-12 w-12 mx-auto mb-4 text-slate-300 dark:text-gray-600" />
-                  <p>No archived conversations yet.</p>
-                </div>
-              ) : (
-                <div className="space-y-3">
-                  {archivedConversations.map((conversation) => (
-                    <div 
-                      key={conversation.id} 
-                      className="p-4 border border-slate-200 dark:border-gray-600 rounded-lg hover:bg-slate-50 dark:hover:bg-gray-700/50 transition-colors"
+              <motion.div
+                initial={{ scale: 0, rotate: -180 }}
+                animate={{ scale: 1, rotate: 0 }}
+                transition={{ delay: 0.5, type: "spring", bounce: 0.3 }}
+                whileHover={{ scale: 1.05, y: -2 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <Button
+                  onClick={createNewConversation}
+                  className="gradient-primary text-white border-0 shadow-lg px-6 py-3 relative overflow-hidden"
+                >
+                  <motion.div
+                    className="absolute inset-0 bg-white/20"
+                    animate={{ x: [-100, 100] }}
+                    transition={{
+                      duration: 2,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    }}
+                  />
+                  <Zap className="h-5 w-5 mr-2 relative z-10" />
+                  <span className="relative z-10">Start New Consultation</span>
+                  <ArrowUpRight className="h-4 w-4 ml-2 relative z-10" />
+                </Button>
+              </motion.div>
+            </div>
+          </CardContent>
+        </Card>
+      </motion.div>
+
+      {/* Enhanced Stats Grid with Rolling Animations */}
+      <motion.div
+        variants={itemVariants}
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
+      >
+        {[
+          {
+            title: "Active Conversations",
+            value: conversations.length,
+            icon: MessageSquare,
+            trend: "+12%",
+            color: "from-blue-500 to-blue-600",
+            bg: "bg-blue-500/10",
+            border: "border-blue-500/20",
+          },
+          {
+            title: "Archived Chats",
+            value: archivedConversations.length,
+            icon: Archive,
+            trend: "+8%",
+            color: "from-purple-500 to-purple-600",
+            bg: "bg-purple-500/10",
+            border: "border-purple-500/20",
+          },
+          {
+            title: "Documents Generated",
+            value: documents.length,
+            icon: FileText,
+            trend: "+25%",
+            color: "from-green-500 to-green-600",
+            bg: "bg-green-500/10",
+            border: "border-green-500/20",
+          },
+          {
+            title: "Active Matters",
+            value: matters.filter((m) => m.status === "active").length,
+            icon: Briefcase,
+            trend: "+5%",
+            color: "from-orange-500 to-orange-600",
+            bg: "bg-orange-500/10",
+            border: "border-orange-500/20",
+          },
+        ].map((stat, index) => (
+          <motion.div
+            key={index}
+            initial={{ rotateY: -90, opacity: 0 }}
+            animate={{ rotateY: 0, opacity: 1 }}
+            transition={{
+              duration: 0.6,
+              delay: 0.6 + index * 0.1,
+              type: "spring",
+              stiffness: 200,
+            }}
+            whileHover={{
+              scale: 1.05,
+              rotateY: 5,
+              transition: { duration: 0.2 },
+            }}
+          >
+            <Card
+              className={`${stat.bg} ${stat.border} border backdrop-blur-sm relative overflow-hidden group`}
+            >
+              {/* Animated Background Gradient */}
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-primary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+
+              <CardContent className="p-6 relative z-10">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <motion.p
+                      className="text-sm font-medium text-muted-foreground"
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.8 + index * 0.1 }}
                     >
-                      <div className="flex justify-between items-start">
-                        <div 
-                          className="flex-1 cursor-pointer"
-                          onClick={() => handleConversationClick(conversation.id)}
+                      {stat.title}
+                    </motion.p>
+                    <div className="flex items-center gap-2 mt-2">
+                      <motion.p
+                        className="text-3xl font-bold text-foreground"
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        transition={{
+                          delay: 0.9 + index * 0.1,
+                          type: "spring",
+                          bounce: 0.6,
+                        }}
+                      >
+                        {stat.value}
+                      </motion.p>
+                      <motion.div
+                        className="flex items-center text-xs text-green-400"
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 1.0 + index * 0.1 }}
+                      >
+                        <motion.div
+                          animate={{ y: [0, -2, 0] }}
+                          transition={{
+                            duration: 2,
+                            repeat: Infinity,
+                            delay: index * 0.5,
+                          }}
                         >
-                          <h4 className="font-medium dark:text-white">{conversation.title}</h4>
-                          <p className="text-sm text-slate-600 dark:text-gray-400 capitalize">{conversation.legal_category}</p>
-                          <p className="text-xs text-slate-400 dark:text-gray-500">
-                            {new Date(conversation.created_at).toLocaleDateString()}
-                          </p>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <Badge className={getStatusColor(conversation.status)}>
-                            {conversation.status}
-                          </Badge>
-                          <ConversationActions conversation={conversation} isArchived={true} />
-                        </div>
-                      </div>
+                          <TrendingUp className="h-3 w-3 mr-1" />
+                        </motion.div>
+                        {stat.trend}
+                      </motion.div>
                     </div>
-                  ))}
+                  </div>
+                  <motion.div
+                    className={`bg-gradient-to-br ${stat.color} p-3 rounded-2xl shadow-lg relative overflow-hidden`}
+                    whileHover={{ rotate: 5, scale: 1.1 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <stat.icon className="h-6 w-6 text-white relative z-10" />
+                    <motion.div
+                      className="absolute inset-0 bg-white/20"
+                      animate={{ rotate: 360 }}
+                      transition={{
+                        duration: 4,
+                        repeat: Infinity,
+                        ease: "linear",
+                        delay: index * 0.5,
+                      }}
+                    />
+                  </motion.div>
                 </div>
-              )}
-            </TabsContent>
-            
-            <TabsContent value="documents" className="space-y-4">
-              <div className="flex justify-between items-center">
-                <h3 className="text-lg font-semibold dark:text-white">Legal Documents</h3>
-                <Button size="sm" className="dark:bg-primary dark:hover:bg-primary/90">
-                  <Plus className="h-4 w-4 mr-2" />
-                  New Document
-                </Button>
+              </CardContent>
+
+              {/* Shimmer Effect */}
+              <motion.div
+                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent"
+                animate={{ x: [-100, 300] }}
+                transition={{
+                  duration: 3,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                  delay: index * 0.8,
+                }}
+              />
+            </Card>
+          </motion.div>
+        ))}
+      </motion.div>
+
+      {/* Enhanced Main Content */}
+      <motion.div variants={itemVariants}>
+        <Card className="bg-card/80 backdrop-blur-xl border-border shadow-2xl">
+          <CardHeader className="pb-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle className="text-2xl">Your Legal Workspace</CardTitle>
+                <CardDescription className="text-muted-foreground">
+                  Manage conversations, documents, and legal matters in one
+                  place
+                </CardDescription>
               </div>
-              
-              {documents.length === 0 ? (
-                <div className="text-center py-8 text-slate-500 dark:text-gray-400">
-                  <FileText className="h-12 w-12 mx-auto mb-4 text-slate-300 dark:text-gray-600" />
-                  <p>No documents yet. Create your first legal document!</p>
-                </div>
-              ) : (
-                <div className="space-y-3">
-                  {documents.map((document) => (
-                    <div key={document.id} className="p-4 border border-slate-200 dark:border-gray-600 rounded-lg hover:bg-slate-50 dark:hover:bg-gray-700/50 transition-colors">
-                      <div className="flex justify-between items-start">
-                        <div className="flex-1">
-                          <h4 className="font-medium dark:text-white">{document.title}</h4>
-                          <p className="text-sm text-slate-600 dark:text-gray-400 capitalize">{document.document_type}</p>
-                          <p className="text-xs text-slate-400 dark:text-gray-500">
-                            {new Date(document.created_at).toLocaleDateString()}
-                          </p>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <Badge className={getStatusColor(document.status)}>
-                            {document.status}
-                          </Badge>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => downloadDocument(document)}
-                            className="dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700"
-                          >
-                            <Download className="h-4 w-4 mr-2" />
-                            Download
-                          </Button>
-                        </div>
-                      </div>
+            </div>
+            <Tabs
+              value={activeTab}
+              onValueChange={setActiveTab}
+              className="w-full"
+            >
+              <TabsList className="grid w-full grid-cols-4 bg-muted/50 backdrop-blur-sm">
+                <TabsTrigger
+                  value="conversations"
+                  className="data-[state=active]:bg-primary data-[state=active]:text-white"
+                >
+                  <MessageSquare className="h-4 w-4 mr-2" />
+                  Conversations
+                </TabsTrigger>
+                <TabsTrigger
+                  value="archived"
+                  className="data-[state=active]:bg-primary data-[state=active]:text-white"
+                >
+                  <Archive className="h-4 w-4 mr-2" />
+                  Archived
+                </TabsTrigger>
+                <TabsTrigger
+                  value="documents"
+                  className="data-[state=active]:bg-primary data-[state=active]:text-white"
+                >
+                  <FileText className="h-4 w-4 mr-2" />
+                  Documents
+                </TabsTrigger>
+                <TabsTrigger
+                  value="matters"
+                  className="data-[state=active]:bg-primary data-[state=active]:text-white"
+                >
+                  <Calendar className="h-4 w-4 mr-2" />
+                  Matters
+                </TabsTrigger>
+              </TabsList>
+            </Tabs>
+          </CardHeader>
+
+          <CardContent className="space-y-6">
+            <Tabs
+              value={activeTab}
+              onValueChange={setActiveTab}
+              className="w-full"
+            >
+              <TabsContent value="conversations" className="space-y-6">
+                <div className="flex justify-between items-center">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                      <MessageSquare className="h-5 w-5 text-primary" />
                     </div>
-                  ))}
-                </div>
-              )}
-            </TabsContent>
-            
-            <TabsContent value="matters" className="space-y-4">
-              <div className="flex justify-between items-center">
-                <h3 className="text-lg font-semibold dark:text-white">Legal Matters</h3>
-                <Button size="sm" className="dark:bg-primary dark:hover:bg-primary/90">
-                  <Plus className="h-4 w-4 mr-2" />
-                  New Matter
-                </Button>
-              </div>
-              
-              {matters.length === 0 ? (
-                <div className="text-center py-8 text-slate-500 dark:text-gray-400">
-                  <Calendar className="h-12 w-12 mx-auto mb-4 text-slate-300 dark:text-gray-600" />
-                  <p>No legal matters yet. Add your first case!</p>
-                </div>
-              ) : (
-                <div className="space-y-3">
-                  {matters.map((matter) => (
-                    <div key={matter.id} className="p-4 border border-slate-200 dark:border-gray-600 rounded-lg hover:bg-slate-50 dark:hover:bg-gray-700/50 transition-colors">
-                      <div className="flex justify-between items-start">
-                        <div>
-                          <h4 className="font-medium dark:text-white">{matter.title}</h4>
-                          <p className="text-sm text-slate-600 dark:text-gray-400 capitalize">{matter.matter_type}</p>
-                          {matter.deadline_date && (
-                            <p className="text-xs text-red-600 dark:text-red-400">
-                              Deadline: {new Date(matter.deadline_date).toLocaleDateString()}
-                            </p>
-                          )}
-                          <p className="text-xs text-slate-400 dark:text-gray-500">
-                            Created: {new Date(matter.created_at).toLocaleDateString()}
-                          </p>
-                        </div>
-                        <div className="flex flex-col space-y-1">
-                          <Badge className={getStatusColor(matter.status)}>
-                            {matter.status}
-                          </Badge>
-                          <Badge className={getPriorityColor(matter.priority)}>
-                            {matter.priority}
-                          </Badge>
-                        </div>
-                      </div>
+                    <div>
+                      <h3 className="text-xl font-semibold text-foreground">
+                        Recent Conversations
+                      </h3>
+                      <p className="text-sm text-muted-foreground">
+                        Your latest legal consultations
+                      </p>
                     </div>
-                  ))}
+                  </div>
+                  <Button
+                    onClick={createNewConversation}
+                    className="gradient-primary text-white border-0 shadow-md"
+                  >
+                    <Plus className="h-4 w-4 mr-2" />
+                    New Chat
+                  </Button>
                 </div>
-              )}
-            </TabsContent>
-          </Tabs>
-        </CardContent>
-      </Card>
-    </div>
+
+                {conversations.length === 0 ? (
+                  <div className="text-center py-12">
+                    <div className="relative w-48 h-32 mx-auto mb-6 opacity-20">
+                      <img
+                        src="https://images.pexels.com/photos/416405/pexels-photo-416405.jpeg"
+                        alt="Team collaboration"
+                        className="w-full h-full object-cover rounded-xl"
+                      />
+                    </div>
+                    <MessageSquare className="h-12 w-12 mx-auto mb-4 text-muted-foreground/50" />
+                    <h4 className="text-lg font-medium text-foreground mb-2">
+                      No conversations yet
+                    </h4>
+                    <p className="text-muted-foreground mb-4">
+                      Start your first legal consultation to get personalized
+                      advice
+                    </p>
+                    <Button
+                      onClick={createNewConversation}
+                      className="gradient-primary text-white border-0"
+                    >
+                      <Sparkles className="h-4 w-4 mr-2" />
+                      Start Your First Consultation
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="grid gap-4">
+                    {conversations.map((conversation, index) => (
+                      <motion.div
+                        key={conversation.id}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: index * 0.1 }}
+                        whileHover={{ scale: 1.01 }}
+                        className="group"
+                      >
+                        <Card className="border-border hover:border-primary/30 transition-all duration-300 bg-card/50 backdrop-blur-sm">
+                          <CardContent className="p-6">
+                            <div className="flex justify-between items-start">
+                              <div
+                                className="flex-1 cursor-pointer"
+                                onClick={() =>
+                                  handleConversationClick(conversation.id)
+                                }
+                              >
+                                <div className="flex items-center gap-3 mb-3">
+                                  <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+                                    <MessageSquare className="h-5 w-5 text-primary" />
+                                  </div>
+                                  <div>
+                                    <h4 className="font-semibold text-foreground group-hover:text-primary transition-colors">
+                                      {conversation.title}
+                                    </h4>
+                                    <p className="text-sm text-muted-foreground capitalize">
+                                      {conversation.legal_category}
+                                    </p>
+                                  </div>
+                                </div>
+                                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                                  <Clock className="h-3 w-3" />
+                                  {new Date(
+                                    conversation.created_at,
+                                  ).toLocaleDateString()}
+                                </div>
+                              </div>
+                              <div className="flex items-center space-x-3">
+                                <Badge
+                                  className={getStatusColor(
+                                    conversation.status,
+                                  )}
+                                >
+                                  {conversation.status}
+                                </Badge>
+                                <ConversationActions
+                                  conversation={conversation}
+                                />
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      </motion.div>
+                    ))}
+                  </div>
+                )}
+              </TabsContent>
+
+              <TabsContent value="archived" className="space-y-6">
+                <div className="flex justify-between items-center">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                      <Archive className="h-5 w-5 text-primary" />
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-semibold text-foreground">
+                        Archived Conversations
+                      </h3>
+                      <p className="text-sm text-muted-foreground">
+                        Previously completed consultations
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {archivedConversations.length === 0 ? (
+                  <div className="text-center py-12">
+                    <Archive className="h-12 w-12 mx-auto mb-4 text-muted-foreground/50" />
+                    <h4 className="text-lg font-medium text-foreground mb-2">
+                      No archived conversations
+                    </h4>
+                    <p className="text-muted-foreground">
+                      Completed conversations will appear here for future
+                      reference
+                    </p>
+                  </div>
+                ) : (
+                  <div className="grid gap-4">
+                    {archivedConversations.map((conversation, index) => (
+                      <motion.div
+                        key={conversation.id}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: index * 0.1 }}
+                        whileHover={{ scale: 1.01 }}
+                        className="group"
+                      >
+                        <Card className="border-border hover:border-primary/30 transition-all duration-300 bg-card/50 backdrop-blur-sm">
+                          <CardContent className="p-6">
+                            <div className="flex justify-between items-start">
+                              <div
+                                className="flex-1 cursor-pointer"
+                                onClick={() =>
+                                  handleConversationClick(conversation.id)
+                                }
+                              >
+                                <div className="flex items-center gap-3 mb-3">
+                                  <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
+                                    <Archive className="h-5 w-5 text-muted-foreground" />
+                                  </div>
+                                  <div>
+                                    <h4 className="font-semibold text-foreground">
+                                      {conversation.title}
+                                    </h4>
+                                    <p className="text-sm text-muted-foreground capitalize">
+                                      {conversation.legal_category}
+                                    </p>
+                                  </div>
+                                </div>
+                                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                                  <Clock className="h-3 w-3" />
+                                  {new Date(
+                                    conversation.created_at,
+                                  ).toLocaleDateString()}
+                                </div>
+                              </div>
+                              <div className="flex items-center space-x-3">
+                                <Badge
+                                  className={getStatusColor(
+                                    conversation.status,
+                                  )}
+                                >
+                                  {conversation.status}
+                                </Badge>
+                                <ConversationActions
+                                  conversation={conversation}
+                                  isArchived={true}
+                                />
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      </motion.div>
+                    ))}
+                  </div>
+                )}
+              </TabsContent>
+
+              <TabsContent value="documents" className="space-y-6">
+                <div className="flex justify-between items-center">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                      <FileText className="h-5 w-5 text-primary" />
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-semibold text-foreground">
+                        Legal Documents
+                      </h3>
+                      <p className="text-sm text-muted-foreground">
+                        Generated contracts and legal papers
+                      </p>
+                    </div>
+                  </div>
+                  <Button className="gradient-primary text-white border-0 shadow-md">
+                    <Plus className="h-4 w-4 mr-2" />
+                    New Document
+                  </Button>
+                </div>
+
+                {documents.length === 0 ? (
+                  <div className="text-center py-12">
+                    <div className="relative w-48 h-32 mx-auto mb-6 opacity-20">
+                      <img
+                        src="https://images.pexels.com/photos/3760067/pexels-photo-3760067.jpeg"
+                        alt="Contract signing"
+                        className="w-full h-full object-cover rounded-xl"
+                      />
+                    </div>
+                    <FileText className="h-12 w-12 mx-auto mb-4 text-muted-foreground/50" />
+                    <h4 className="text-lg font-medium text-foreground mb-2">
+                      No documents yet
+                    </h4>
+                    <p className="text-muted-foreground mb-4">
+                      Create professional legal documents with AI assistance
+                    </p>
+                    <Button className="gradient-primary text-white border-0">
+                      <Sparkles className="h-4 w-4 mr-2" />
+                      Generate Your First Document
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="grid gap-4">
+                    {documents.map((document, index) => (
+                      <motion.div
+                        key={document.id}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: index * 0.1 }}
+                        whileHover={{ scale: 1.01 }}
+                        className="group"
+                      >
+                        <Card className="border-border hover:border-primary/30 transition-all duration-300 bg-card/50 backdrop-blur-sm">
+                          <CardContent className="p-6">
+                            <div className="flex justify-between items-start">
+                              <div className="flex-1">
+                                <div className="flex items-center gap-3 mb-3">
+                                  <div className="w-10 h-10 rounded-full bg-green-500/10 flex items-center justify-center">
+                                    <FileText className="h-5 w-5 text-green-500" />
+                                  </div>
+                                  <div>
+                                    <h4 className="font-semibold text-foreground">
+                                      {document.title}
+                                    </h4>
+                                    <p className="text-sm text-muted-foreground capitalize">
+                                      {document.document_type}
+                                    </p>
+                                  </div>
+                                </div>
+                                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                                  <Clock className="h-3 w-3" />
+                                  {new Date(
+                                    document.created_at,
+                                  ).toLocaleDateString()}
+                                </div>
+                              </div>
+                              <div className="flex items-center space-x-3">
+                                <Badge
+                                  className={getStatusColor(document.status)}
+                                >
+                                  {document.status}
+                                </Badge>
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => downloadDocument(document)}
+                                  className="border-border text-foreground hover:bg-muted"
+                                >
+                                  <Download className="h-4 w-4 mr-2" />
+                                  Download
+                                </Button>
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      </motion.div>
+                    ))}
+                  </div>
+                )}
+              </TabsContent>
+
+              <TabsContent value="matters" className="space-y-6">
+                <div className="flex justify-between items-center">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                      <Briefcase className="h-5 w-5 text-primary" />
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-semibold text-foreground">
+                        Legal Matters
+                      </h3>
+                      <p className="text-sm text-muted-foreground">
+                        Track your ongoing legal cases
+                      </p>
+                    </div>
+                  </div>
+                  <Button className="gradient-primary text-white border-0 shadow-md">
+                    <Plus className="h-4 w-4 mr-2" />
+                    New Matter
+                  </Button>
+                </div>
+
+                {matters.length === 0 ? (
+                  <div className="text-center py-12">
+                    <Briefcase className="h-12 w-12 mx-auto mb-4 text-muted-foreground/50" />
+                    <h4 className="text-lg font-medium text-foreground mb-2">
+                      No legal matters yet
+                    </h4>
+                    <p className="text-muted-foreground mb-4">
+                      Add your first case to start tracking legal matters
+                    </p>
+                    <Button className="gradient-primary text-white border-0">
+                      <Plus className="h-4 w-4 mr-2" />
+                      Add Your First Case
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="grid gap-4">
+                    {matters.map((matter, index) => (
+                      <motion.div
+                        key={matter.id}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: index * 0.1 }}
+                        whileHover={{ scale: 1.01 }}
+                        className="group"
+                      >
+                        <Card className="border-border hover:border-primary/30 transition-all duration-300 bg-card/50 backdrop-blur-sm">
+                          <CardContent className="p-6">
+                            <div className="flex justify-between items-start">
+                              <div className="flex-1">
+                                <div className="flex items-center gap-3 mb-3">
+                                  <div className="w-10 h-10 rounded-full bg-orange-500/10 flex items-center justify-center">
+                                    <Briefcase className="h-5 w-5 text-orange-500" />
+                                  </div>
+                                  <div>
+                                    <h4 className="font-semibold text-foreground">
+                                      {matter.title}
+                                    </h4>
+                                    <p className="text-sm text-muted-foreground capitalize">
+                                      {matter.matter_type}
+                                    </p>
+                                  </div>
+                                </div>
+                                <div className="space-y-1">
+                                  {matter.deadline_date && (
+                                    <div className="flex items-center gap-2 text-xs text-destructive">
+                                      <Calendar className="h-3 w-3" />
+                                      Deadline:{" "}
+                                      {new Date(
+                                        matter.deadline_date,
+                                      ).toLocaleDateString()}
+                                    </div>
+                                  )}
+                                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                                    <Clock className="h-3 w-3" />
+                                    Created:{" "}
+                                    {new Date(
+                                      matter.created_at,
+                                    ).toLocaleDateString()}
+                                  </div>
+                                </div>
+                              </div>
+                              <div className="flex flex-col space-y-2">
+                                <Badge
+                                  className={getStatusColor(matter.status)}
+                                >
+                                  {matter.status}
+                                </Badge>
+                                <Badge
+                                  className={getPriorityColor(matter.priority)}
+                                >
+                                  {matter.priority}
+                                </Badge>
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      </motion.div>
+                    ))}
+                  </div>
+                )}
+              </TabsContent>
+            </Tabs>
+          </CardContent>
+        </Card>
+      </motion.div>
+    </motion.div>
   );
 }

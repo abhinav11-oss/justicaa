@@ -1,8 +1,7 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { LanguageSelector } from "@/components/LanguageSelector";
-import { useTheme } from "next-themes";
-import { Sun, Moon, Menu, Bell, Mail } from "lucide-react";
+import { Menu, Bell, Mail } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 interface HeaderProps {
@@ -26,33 +25,32 @@ export const DashboardHeader: React.FC<HeaderProps> = ({
   t,
   sessionError,
 }) => {
-  const { theme, setTheme } = useTheme();
   const { toast } = useToast();
 
   // Helper handlers for notification/mail actions
   const handleNotificationClick = () => {
     toast({
-      title: t?.('dashboard.notifications') || "Notifications",
-      description: t?.('dashboard.notificationsDescription') || "No new notifications at this time.",
+      title: t?.("dashboard.notifications") || "Notifications",
+      description:
+        t?.("dashboard.notificationsDescription") ||
+        "No new notifications at this time.",
       duration: 4000,
     });
   };
 
   const handleMailClick = () => {
     toast({
-      title: t?.('dashboard.mail') || "Inbox",
-      description: t?.('dashboard.mailDescription') || "No new mail.",
+      title: t?.("dashboard.mail") || "Inbox",
+      description: t?.("dashboard.mailDescription") || "No new mail.",
       duration: 4000,
     });
   };
 
   return (
     <header
-      className={`px-6 py-4 border-b flex justify-between items-center`}
+      className={`px-6 py-4 border-b flex justify-between items-center bg-card text-card-foreground`}
       style={{
-        background: theme === "dark" ? 'hsl(var(--card))' : 'hsl(var(--card), 1)',
-        borderColor: 'hsl(var(--border))',
-        color: theme === "dark" ? 'hsl(var(--card-foreground))' : 'hsl(var(--foreground))'
+        borderColor: "hsl(var(--border))",
       }}
     >
       <div className="flex items-center space-x-4">
@@ -62,41 +60,29 @@ export const DashboardHeader: React.FC<HeaderProps> = ({
             size="icon"
             onClick={onMenuClick}
             className="md:hidden"
-            aria-label={t('dashboard.menu', 'Menu')}
+            aria-label={t("dashboard.menu", "Menu")}
           >
             <Menu className="h-5 w-5" />
           </Button>
         )}
         <div>
-          <h1 className="text-2xl font-bold"
-            style={{ color: theme === "dark" ? 'hsl(var(--foreground))' : 'hsl(var(--foreground))' }}
-          >
+          <h1 className="text-2xl font-bold text-foreground">
             {isTrialMode && !user
-              ? t('dashboard.freeTrial', 'Free Trial - AI Chat')
-              : (sidebarItems.find(item => item.id === activeTab)?.title || t('dashboard.title'))}
+              ? t("dashboard.freeTrial", "Free Trial - AI Chat")
+              : sidebarItems.find((item) => item.id === activeTab)?.title ||
+                t("dashboard.title")}
           </h1>
         </div>
       </div>
       <div className="flex items-center space-x-3">
         <LanguageSelector />
 
-        {/* Dark mode toggle */}
-        <Button
-          variant="ghost"
-          size="icon"
-          aria-label={t('dashboard.toggleTheme', 'Toggle dark mode')}
-          onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-          className={theme === "dark" ? "text-yellow-200" : "text-purple-500"}
-        >
-          {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
-        </Button>
-
         {/* Notifications button without badge */}
         <Button
           variant="ghost"
           size="icon"
           className="relative"
-          aria-label={t('dashboard.notifications', 'Notifications')}
+          aria-label={t("dashboard.notifications", "Notifications")}
           onClick={handleNotificationClick}
         >
           <Bell className="h-5 w-5" />
@@ -106,8 +92,8 @@ export const DashboardHeader: React.FC<HeaderProps> = ({
         <Button
           variant="ghost"
           size="icon"
-          aria-label={t('dashboard.mail', 'Mail')}
-          className={`${theme === "dark" ? "text-teal-200" : "text-blue-500"}`}
+          aria-label={t("dashboard.mail", "Mail")}
+          className="text-primary"
           onClick={handleMailClick}
         >
           <Mail className="h-5 w-5" />

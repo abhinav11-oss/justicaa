@@ -1,10 +1,24 @@
-
 import React from "react";
-import { Home, MessageSquare, Users, FilePlus, FileText, BookOpen, Search, Settings, User, Scale } from "lucide-react";
+import { motion } from "framer-motion";
+import {
+  Home,
+  MessageSquare,
+  Users,
+  FilePlus,
+  FileText,
+  BookOpen,
+  Search,
+  Settings,
+  User,
+  Scale,
+} from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useTheme } from "next-themes";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
+import {
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+} from "@/components/ui/tooltip";
 
 const sidebarIcons = [
   { id: "home", icon: Home, title: "Dashboard" },
@@ -14,7 +28,7 @@ const sidebarIcons = [
   { id: "templates", icon: FileText, title: "Legal Forms" },
   { id: "guides", icon: BookOpen, title: "Legal Info" },
   { id: "research", icon: Search, title: "Case Law" },
-  { id: "settings", icon: Settings, title: "Account" }
+  { id: "settings", icon: Settings, title: "Account" },
 ];
 
 interface SidebarProps {
@@ -34,110 +48,170 @@ export const DashboardSidebar: React.FC<SidebarProps> = ({
   setActiveTab,
   sidebarOpen,
   setSidebarOpen,
-  t
+  t,
 }) => {
-  const { theme } = useTheme();
   const isMobile = useIsMobile();
 
   const userInitial = user?.email?.charAt(0).toUpperCase() || "U";
   // Translation applied for sidebar icon titles
   const sidebarIcons = [
-    { id: "home", icon: Home, title: t('dashboard.title') },
-    { id: "chat", icon: MessageSquare, title: t('dashboard.aiChat') },
-    { id: "lawyers", icon: Users, title: t('dashboard.lawyers', "Find Experts") },
-    { id: "generator", icon: FilePlus, title: t('dashboard.documents', "Generate") },
-    { id: "templates", icon: FileText, title: t('dashboard.templates', "Legal Forms") },
-    { id: "guides", icon: BookOpen, title: t('dashboard.guides', "Legal Info") },
-    { id: "research", icon: Search, title: t('dashboard.research', "Case Law") },
-    { id: "settings", icon: Settings, title: t('dashboard.settings', "Account") }
+    { id: "home", icon: Home, title: t("dashboard.title") },
+    { id: "chat", icon: MessageSquare, title: t("dashboard.aiChat") },
+    {
+      id: "lawyers",
+      icon: Users,
+      title: t("dashboard.lawyers", "Find Experts"),
+    },
+    {
+      id: "generator",
+      icon: FilePlus,
+      title: t("dashboard.documents", "Generate"),
+    },
+    {
+      id: "templates",
+      icon: FileText,
+      title: t("dashboard.templates", "Legal Forms"),
+    },
+    {
+      id: "guides",
+      icon: BookOpen,
+      title: t("dashboard.guides", "Legal Info"),
+    },
+    {
+      id: "research",
+      icon: Search,
+      title: t("dashboard.research", "Case Law"),
+    },
+    {
+      id: "settings",
+      icon: Settings,
+      title: t("dashboard.settings", "Account"),
+    },
   ];
 
-  const iconsToShow = user ? sidebarIcons : sidebarIcons.filter(i => ["chat"].includes(i.id));
+  const iconsToShow = user
+    ? sidebarIcons
+    : sidebarIcons.filter((i) => ["chat"].includes(i.id));
 
   return (
     <>
       {isMobile && sidebarOpen && (
-        <div 
-          className="fixed inset-0 bg-black/50 z-40 md:hidden"
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 bg-black/50 z-40 md:hidden backdrop-blur-sm"
           onClick={() => setSidebarOpen(false)}
         />
       )}
-      <aside
+      <motion.aside
+        initial={{ x: isMobile ? -100 : 0 }}
+        animate={{ x: 0 }}
         className={`
-          ${isMobile ? 'fixed' : 'relative'} 
-          ${isMobile && !sidebarOpen ? '-translate-x-full' : 'translate-x-0'}
-          text-white
-          ${isMobile ? 'w-20 h-full z-50' : 'w-20'} 
+          ${isMobile ? "fixed" : "relative"}
+          ${isMobile && !sidebarOpen ? "-translate-x-full" : "translate-x-0"}
+          ${isMobile ? "w-20 h-full z-50" : "w-20"}
           transition-transform duration-300 ease-in-out
-          flex flex-col items-center pt-2
+          flex flex-col items-center pt-4
+          bg-card/80 backdrop-blur-xl border-r border-border
+          text-card-foreground
         `}
-        style={{
-          background: theme === "dark" ? 'hsl(var(--sidebar))' : 'hsl(var(--card))',
-          color: theme === "dark" ? 'hsl(var(--sidebar-foreground))' : 'hsl(var(--foreground))'
-        }}
       >
-        <div className="mb-6 mt-2">
-          <div className="p-2 rounded-xl gradient-primary">
+        <motion.div
+          className="mb-8 mt-2"
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          transition={{ delay: 0.2 }}
+        >
+          <div className="p-3 rounded-2xl gradient-primary shadow-lg">
             <Scale className="h-7 w-7 text-white" />
           </div>
-        </div>
-        <nav className="flex-1 flex flex-col space-y-4 items-center w-full">
-          {iconsToShow.map((item) => (
-            <div key={item.id} className="w-full flex justify-center">
+        </motion.div>
+        <nav className="flex-1 flex flex-col space-y-3 items-center w-full px-2">
+          {iconsToShow.map((item, index) => (
+            <motion.div
+              key={item.id}
+              className="w-full flex justify-center"
+              initial={{ x: -50, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              transition={{ delay: 0.1 * index }}
+            >
               <div className="relative group">
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <button
+                    <motion.button
                       onClick={() => {
                         setActiveTab(item.id);
                         if (isMobile) setSidebarOpen(false);
                       }}
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.95 }}
                       className={`
-                        flex items-center justify-center w-12 h-12 rounded-xl
-                        transition-all duration-200
-                        ${activeTab === item.id
-                          ? "bg-gradient-to-br from-purple-400 to-purple-500 text-white shadow-md"
-                          : "text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-800 hover:text-purple-500"}
+                        flex items-center justify-center w-14 h-14 rounded-2xl
+                        transition-all duration-300 relative overflow-hidden
+                        ${
+                          activeTab === item.id
+                            ? "gradient-primary text-white shadow-lg"
+                            : "text-muted-foreground hover:bg-primary/10 hover:text-primary"
+                        }
                       `}
-                      style={{ fontSize: 0 }}
                       aria-label={item.title}
                     >
-                      <item.icon className="h-6 w-6" />
-                    </button>
+                      {activeTab === item.id && (
+                        <motion.div
+                          layoutId="activeTab"
+                          className="absolute inset-0 gradient-primary rounded-2xl"
+                          transition={{
+                            type: "spring",
+                            bounce: 0.2,
+                            duration: 0.6,
+                          }}
+                        />
+                      )}
+                      <item.icon className="h-6 w-6 relative z-10" />
+                    </motion.button>
                   </TooltipTrigger>
                   {/* Always show Tooltip above all and only on desktop (not mobile) */}
                   {!isMobile && (
                     <TooltipContent
                       side="right"
                       align="center"
-                      className="z-[99999] absolute px-3 py-1 text-xs rounded-md bg-white shadow-md text-black whitespace-nowrap"
-                      style={{ minWidth: 90 }}
+                      className="z-[99999] px-3 py-2 text-sm rounded-xl bg-card border border-border shadow-lg text-card-foreground"
                     >
                       {item.title}
                     </TooltipContent>
                   )}
                 </Tooltip>
               </div>
-            </div>
+            </motion.div>
           ))}
         </nav>
         {/* User avatar or trial -- at bottom, just an icon */}
-        <div className="p-3 border-t w-full flex flex-col items-center"
-          style={{ borderColor: theme === "dark" ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.07)' }}
+        <motion.div
+          className="p-4 border-t border-border/50 w-full flex flex-col items-center"
+          initial={{ y: 50, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.5 }}
         >
           {user ? (
-            <Avatar className="h-8 w-8">
-              <AvatarImage src={user.user_metadata?.avatar_url} />
-              <AvatarFallback className="gradient-primary text-white">
-                {userInitial}
-              </AvatarFallback>
-            </Avatar>
+            <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}>
+              <Avatar className="h-10 w-10 ring-2 ring-primary/20 ring-offset-2 ring-offset-background">
+                <AvatarImage src={user.user_metadata?.avatar_url} />
+                <AvatarFallback className="gradient-primary text-white font-semibold">
+                  {userInitial}
+                </AvatarFallback>
+              </Avatar>
+            </motion.div>
           ) : isTrialMode ? (
-            <User className="h-8 w-8 text-purple-500" />
+            <motion.div
+              whileHover={{ scale: 1.1 }}
+              className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center"
+            >
+              <User className="h-5 w-5 text-primary" />
+            </motion.div>
           ) : null}
-        </div>
-      </aside>
+        </motion.div>
+      </motion.aside>
     </>
   );
 };
-

@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import {
   Card,
@@ -13,7 +12,7 @@ import { Label } from "@/components/ui/label";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { Scale, Mail, Lock, User, ArrowLeft, Eye, EyeOff } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Auth = () => {
   const [isSignUp, setIsSignUp] = useState(false);
@@ -25,11 +24,12 @@ const Auth = () => {
   const [showPassword, setShowPassword] = useState(false);
   const { signIn, signUp, signInWithGoogle, user } = useAuth();
   const { toast } = useToast();
+  const navigate = useNavigate();
 
-  // Redirect and notify parent window on successful auth
+  // Redirect to dashboard on successful auth
   useEffect(() => {
     if (user) {
-      // Send message to parent window for popup flow
+      // Send message to parent window for popup flow (legacy support)
       if (window.opener) {
         window.opener.postMessage(
           { type: "AUTH_SUCCESS", user },
@@ -37,11 +37,11 @@ const Auth = () => {
         );
         window.close();
       } else {
-        // For non-popup flow, redirect to dashboard.
-        window.location.href = "/dashboard";
+        // Navigate to dashboard using React Router
+        navigate("/dashboard");
       }
     }
-  }, [user]);
+  }, [user, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

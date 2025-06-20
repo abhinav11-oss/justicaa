@@ -1,71 +1,304 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Scale, Users, Gavel, MessageSquare } from "lucide-react";
+import { motion } from "framer-motion";
+import {
+  Scale,
+  Users,
+  Gavel,
+  MessageSquare,
+  Award,
+  BookOpen,
+  Shield,
+  Target,
+} from "lucide-react";
 
 export const About = () => {
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 30 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.6, ease: "easeOut" },
+    },
+  };
+
+  const stats = [
+    {
+      number: "50,000+",
+      label: "Legal Questions Answered",
+      icon: MessageSquare,
+    },
+    { number: "1,000+", label: "Legal Documents Generated", icon: BookOpen },
+    { number: "500+", label: "Verified Lawyers", icon: Users },
+    { number: "24/7", label: "Support Available", icon: Shield },
+  ];
+
+  const values = [
+    {
+      icon: Scale,
+      title: "Justice for All",
+      description:
+        "We believe legal help should be accessible to everyone, regardless of economic background",
+    },
+    {
+      icon: Shield,
+      title: "Trust & Security",
+      description:
+        "Your legal matters are confidential and handled with the highest level of security",
+    },
+    {
+      icon: Award,
+      title: "Expert Quality",
+      description:
+        "AI trained on extensive legal databases and verified by legal professionals",
+    },
+    {
+      icon: Target,
+      title: "Results Focused",
+      description:
+        "We measure success by the legal problems we solve and lives we improve",
+    },
+  ];
+
   return (
-    <section id="about" className="container mx-auto px-4 py-20">
-      <div className="text-center mb-16">
-        <Badge variant="outline" className="mb-4">About Us</Badge>
-        <h3 className="text-4xl font-bold text-foreground mb-4">Meet Team Ctrl+Alt+Elite</h3>
-        <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-          Passionate developers revolutionizing legal accessibility through AI technology
-        </p>
+    <section id="about" className="relative py-20 overflow-hidden">
+      {/* Background with Multiple Fade Gradients */}
+      <div className="absolute inset-0">
+        <div className="absolute inset-0 bg-gradient-to-br from-muted/30 via-background to-muted/20"></div>
+        <div className="absolute inset-0 bg-gradient-to-tl from-primary/5 via-transparent to-primary/10"></div>
+        <div className="absolute top-1/4 left-0 w-96 h-96 bg-gradient-to-r from-primary/8 to-transparent rounded-full blur-3xl"></div>
+        <div className="absolute bottom-1/4 right-0 w-80 h-80 bg-gradient-to-l from-primary/6 to-transparent rounded-full blur-2xl"></div>
+        <div className="absolute top-0 right-1/3 w-64 h-64 bg-gradient-to-br from-primary/4 to-transparent rounded-full blur-xl"></div>
       </div>
-      
-      <div className="max-w-4xl mx-auto">
-        <Card className="card-hover border-2 bg-card/50 backdrop-blur-sm">
-          <CardHeader className="text-center">
-            <div className="gradient-primary w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-4">
-              <Scale className="h-10 w-10 text-white" />
-            </div>
-            <CardTitle className="text-3xl mb-2">Justicaa</CardTitle>
-            <Badge variant="secondary" className="mb-4 bg-primary/10 text-primary">
-              AI Legal Platform
+
+      <div className="container mx-auto px-4 relative z-10">
+        <motion.div
+          className="text-center mb-16"
+          initial={{ opacity: 0, y: 50 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          viewport={{ once: true }}
+        >
+          <motion.div
+            initial={{ scale: 0, rotate: -180 }}
+            whileInView={{ scale: 1, rotate: 0 }}
+            transition={{ duration: 0.6, type: "spring", bounce: 0.4 }}
+            viewport={{ once: true }}
+          >
+            <Badge
+              variant="outline"
+              className="mb-4 px-4 py-2 bg-primary/5 border-primary/20"
+            >
+              About Us
             </Badge>
-          </CardHeader>
-          <CardContent className="text-center space-y-6">
-            <p className="text-lg text-muted-foreground leading-relaxed">
-              Justicaa is an innovative AI-powered legal assistance platform designed specifically for the Indian legal system. 
-              Our mission is to democratize legal knowledge and make quality legal guidance accessible to every Indian citizen.
-            </p>
-            
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
-              <div className="text-center">
-                <div className="gradient-primary w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3">
-                  <Users className="h-6 w-6 text-white" />
-                </div>
-                <h4 className="font-semibold text-foreground mb-2">Our Team</h4>
-                <p className="text-sm text-muted-foreground">Ctrl+Alt+Elite</p>
-              </div>
-              
-              <div className="text-center">
-                <div className="gradient-primary w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3">
-                  <Gavel className="h-6 w-6 text-white" />
-                </div>
-                <h4 className="font-semibold text-foreground mb-2">Focus</h4>
-                <p className="text-sm text-muted-foreground">Indian Legal System</p>
-              </div>
-              
-              <div className="text-center">
-                <div className="gradient-primary w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3">
-                  <MessageSquare className="h-6 w-6 text-white" />
-                </div>
-                <h4 className="font-semibold text-foreground mb-2">Mission</h4>
-                <p className="text-sm text-muted-foreground">Accessible Legal AI</p>
+          </motion.div>
+          <motion.h2
+            className="text-4xl md:text-5xl font-bold text-foreground mb-4"
+            initial={{ rotateY: 90, opacity: 0 }}
+            whileInView={{ rotateY: 0, opacity: 1 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            viewport={{ once: true }}
+          >
+            Revolutionizing Legal Access in India
+          </motion.h2>
+          <motion.p
+            className="text-xl text-muted-foreground max-w-3xl mx-auto"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+            viewport={{ once: true }}
+          >
+            Bridging the gap between complex legal systems and everyday citizens
+            through innovative AI technology
+          </motion.p>
+        </motion.div>
+
+        {/* Stats Section with Rolling Animation */}
+        <motion.div
+          className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-16"
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+        >
+          {stats.map((stat, index) => (
+            <motion.div
+              key={index}
+              variants={itemVariants}
+              initial={{ rotateX: -90, opacity: 0 }}
+              whileInView={{ rotateX: 0, opacity: 1 }}
+              transition={{
+                duration: 0.6,
+                delay: index * 0.1,
+                type: "spring",
+                stiffness: 200,
+              }}
+              viewport={{ once: true }}
+              whileHover={{ scale: 1.05, rotateY: 10 }}
+            >
+              <Card className="text-center bg-background/80 backdrop-blur-sm border-0 shadow-sm card-hover relative overflow-hidden group">
+                {/* Animated Background */}
+                <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-primary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+
+                <CardContent className="pt-6 relative z-10">
+                  <motion.div
+                    className="bg-primary/10 w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3 relative overflow-hidden"
+                    whileHover={{ scale: 1.2, rotate: 360 }}
+                    transition={{ duration: 0.6 }}
+                  >
+                    <stat.icon className="h-6 w-6 text-primary relative z-10" />
+                    <motion.div
+                      className="absolute inset-0 bg-primary/20"
+                      animate={{ rotate: 360 }}
+                      transition={{
+                        duration: 4,
+                        repeat: Infinity,
+                        ease: "linear",
+                        delay: index * 0.5,
+                      }}
+                    />
+                  </motion.div>
+                  <motion.div
+                    className="text-3xl font-bold text-foreground mb-1"
+                    initial={{ scale: 0 }}
+                    whileInView={{ scale: 1 }}
+                    transition={{
+                      delay: 0.5 + index * 0.1,
+                      type: "spring",
+                      bounce: 0.5,
+                    }}
+                    viewport={{ once: true }}
+                  >
+                    {stat.number}
+                  </motion.div>
+                  <div className="text-sm text-muted-foreground">
+                    {stat.label}
+                  </div>
+                </CardContent>
+
+                {/* Shimmer Effect */}
+                <motion.div
+                  className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/20 to-transparent"
+                  animate={{ x: [-100, 200] }}
+                  transition={{
+                    duration: 3,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                    delay: index * 0.7,
+                  }}
+                />
+              </Card>
+            </motion.div>
+          ))}
+        </motion.div>
+
+        {/* Main About Content */}
+        <div className="max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-16">
+            <div>
+              <h3 className="text-3xl font-bold text-foreground mb-6">
+                Our Story
+              </h3>
+              <div className="space-y-4 text-muted-foreground">
+                <p className="text-lg leading-relaxed">
+                  Justicaa was born from a simple observation: millions of
+                  Indians struggle to access quality legal help due to high
+                  costs, language barriers, and complex procedures. Our team of
+                  passionate technologists and legal experts set out to change
+                  this reality.
+                </p>
+                <p className="text-lg leading-relaxed">
+                  By combining cutting-edge AI technology with deep knowledge of
+                  Indian laws, we've created a platform that makes legal
+                  assistance as simple as having a conversation. From rural
+                  farmers to urban entrepreneurs, everyone deserves access to
+                  justice.
+                </p>
+                <p className="text-lg leading-relaxed">
+                  Today, Justicaa serves thousands of users across India,
+                  providing instant legal guidance, document generation, and
+                  connections to qualified lawyers. We're not just building
+                  software – we're building a more just society.
+                </p>
               </div>
             </div>
-            
-            <div className="border-t border-border pt-6 mt-8">
-              <p className="text-muted-foreground">
-                We believe that legal knowledge should not be a privilege of the few, but a right accessible to all. 
-                Through cutting-edge AI technology and deep understanding of Indian laws, we're building a platform 
-                that empowers citizens with instant, accurate, and affordable legal guidance.
-              </p>
+
+            <Card className="bg-background border-0 shadow-lg">
+              <CardHeader className="text-center">
+                <div className="gradient-primary w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                  <Scale className="h-10 w-10 text-white" />
+                </div>
+                <CardTitle className="text-2xl mb-2">
+                  Team Ctrl+Alt+Elite
+                </CardTitle>
+                <Badge
+                  variant="secondary"
+                  className="bg-primary/10 text-primary"
+                >
+                  Innovation in Legal Tech
+                </Badge>
+              </CardHeader>
+              <CardContent className="text-center">
+                <p className="text-muted-foreground mb-6">
+                  A multidisciplinary team of software engineers, legal experts,
+                  and AI researchers dedicated to making legal help accessible
+                  to every Indian citizen.
+                </p>
+                <div className="grid grid-cols-2 gap-4 text-sm">
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-primary">5+</div>
+                    <div className="text-muted-foreground">
+                      Years Experience
+                    </div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-primary">100%</div>
+                    <div className="text-muted-foreground">
+                      Indian Laws Focus
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Values Section */}
+          <div>
+            <h3 className="text-3xl font-bold text-foreground text-center mb-12">
+              Our Core Values
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {values.map((value, index) => (
+                <Card
+                  key={index}
+                  className="text-center bg-background border-0 shadow-sm card-hover"
+                >
+                  <CardContent className="pt-6">
+                    <div className="gradient-primary w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                      <value.icon className="h-7 w-7 text-white" />
+                    </div>
+                    <h4 className="font-semibold text-foreground mb-3">
+                      {value.title}
+                    </h4>
+                    <p className="text-sm text-muted-foreground leading-relaxed">
+                      {value.description}
+                    </p>
+                  </CardContent>
+                </Card>
+              ))}
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </div>
     </section>
   );
