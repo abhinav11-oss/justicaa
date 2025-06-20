@@ -12,73 +12,32 @@ import { CTASection } from "@/components/landing/CTASection";
 import { Footer } from "@/components/landing/Footer";
 
 const Landing = () => {
-  const [authModalOpen, setAuthModalOpen] = useState(false);
   const { user } = useAuth();
-
-  // Listen for authentication messages from popup windows
-  useEffect(() => {
-    const handleMessage = (event: MessageEvent) => {
-      if (
-        event.origin === window.location.origin &&
-        event.data.type === "AUTH_SUCCESS"
-      ) {
-        // Redirect to dashboard instead of just reloading
-        window.location.href = "/dashboard";
-      }
-    };
-
-    window.addEventListener("message", handleMessage);
-    return () => window.removeEventListener("message", handleMessage);
-  }, []);
+  const navigate = useNavigate();
 
   // Redirect to dashboard if user is already logged in
   useEffect(() => {
     if (user) {
-      window.location.href = "/dashboard";
+      navigate("/dashboard");
     }
-  }, [user]);
+  }, [user, navigate]);
 
   const handleCTAClick = () => {
     if (user) {
-      window.location.href = "/dashboard";
+      navigate("/dashboard");
     } else {
-      // Open auth in new tab
-      const authWindow = window.open(
-        "/auth",
-        "_blank",
-        "width=500,height=600,scrollbars=yes,resizable=yes",
-      );
-
-      // Listen for auth success message
-      const messageHandler = (event: MessageEvent) => {
-        if (
-          event.origin === window.location.origin &&
-          event.data.type === "AUTH_SUCCESS"
-        ) {
-          authWindow?.close();
-          window.location.href = "/dashboard"; // Redirect to dashboard instead of reload
-        }
-      };
-
-      window.addEventListener("message", messageHandler);
-
-      // Cleanup listener if window is closed manually
-      const checkClosed = setInterval(() => {
-        if (authWindow?.closed) {
-          window.removeEventListener("message", messageHandler);
-          clearInterval(checkClosed);
-        }
-      }, 1000);
+      // Navigate to auth page in same window
+      navigate("/auth");
     }
   };
 
   const handleTryForFree = () => {
     if (user) {
       // If user is already logged in, go to dashboard
-      window.location.href = "/dashboard";
+      navigate("/dashboard");
     } else {
       // Navigate to dashboard with trial mode
-      window.location.href = "/dashboard?trial=true";
+      navigate("/dashboard?trial=true");
     }
   };
 
