@@ -110,54 +110,60 @@ npm run dev
 
 ## 📸 Screenshots  
 - Home page :
-- ![image](https://github.com/user-attachments/assets/d935ebb3-fb7d-43fb-90fe-59ceb4b5fab3)
-- ![image](https://github.com/user-attachments/assets/57254ed4-0cbf-4f1f-88be-a05db427a22c)
-- ![image](https://github.com/user-attachments/assets/d976c98d-7031-49f0-805b-4e844f65c05d)
-- ![image](https://github.com/user-attachments/assets/19abd7b5-4fcd-4ba7-a543-13686cf0c85c)
-- ![image](https://github.com/user-attachments/assets/24ff8a38-6d0e-4176-a038-9eb922878630)
+- ![image](https://github.com/user-attachments/assets/0af0c22e-05f6-4b35-a348-fb708dd5f0ad)
+- ![image](https://github.com/user-attachments/assets/8ba7cf1b-d89a-4b9e-b343-c5e73c635ed4)
+- ![image](https://github.com/user-attachments/assets/dbd53d27-5e60-4797-b703-a80fd9ed13bb)
+- ![image](https://github.com/user-attachments/assets/dc5b2218-5795-42f6-bcf0-dbc4cc104ffa)
+- ![image](https://github.com/user-attachments/assets/ae7d837f-93da-48eb-b6a6-81b4a464ddd5)
+- ![image](https://github.com/user-attachments/assets/eb293d01-5202-47ea-8df6-810e11d8176b)
+- ![image](https://github.com/user-attachments/assets/62a3dea5-d375-43e4-b956-6e64b9f6d757)
+- ![image](https://github.com/user-attachments/assets/1add8e32-79ed-46c6-b28e-aa6bfeadff7f)
+- ![image](https://github.com/user-attachments/assets/490e66c9-9b69-4e5c-93b7-032a149c9712)
 
 
 
 - free trial chat interface :
-- ![image](https://github.com/user-attachments/assets/73fb3c3a-bf61-4bd9-9152-73850cbfc731)
+- ![image](https://github.com/user-attachments/assets/67e9a41a-4dd2-4cff-b81e-4c6bc60216bb)
 
 
 
 - Chatbot interface :
-- ![image](https://github.com/user-attachments/assets/5cf36563-e1a2-4877-9982-adfc98003756)
+- ![image](https://github.com/user-attachments/assets/54fc47d1-8935-4e42-847f-765aaf85446e)
 
 
 
 - find lawyers nearby you :
-- ![image](https://github.com/user-attachments/assets/015b61b7-0cdd-45b8-9855-e5fb873f34be)
-- ![image](https://github.com/user-attachments/assets/0c579b87-2789-493b-9e92-c0e2931ccb76)
+- ![image](https://github.com/user-attachments/assets/b40bee5a-1f75-4473-8d98-8c065c59eb9e)
+- ![image](https://github.com/user-attachments/assets/c86ee9f4-42b3-473e-8166-6043e48dd3bc)
 
 
 
 - legal guides :
-- ![image](https://github.com/user-attachments/assets/5b7600e4-f8e2-4524-8ad5-c46f20f6350b)
+- ![image](https://github.com/user-attachments/assets/01ddf31c-df99-44d7-b39e-7bd478c905e7)
 
 
 
 - legal knowledge base(frequently asked questions) :
-- ![image](https://github.com/user-attachments/assets/ab3c525b-b111-4094-bf23-fb43cd56b05e)
+- ![image](https://github.com/user-attachments/assets/ce796147-4a2c-4ec2-8972-68ac72de66a9)
 
 
 
 - Document Generator :
-- ![image](https://github.com/user-attachments/assets/c91e6acb-ef02-482e-bb59-c8791b8b793c)
-- ![image](https://github.com/user-attachments/assets/f769bac7-b608-4cc3-b6d6-20ef8754f95e)
+- ![image](https://github.com/user-attachments/assets/e75ca317-f1fa-4613-8d88-e108a8859ba3)
+- ![image](https://github.com/user-attachments/assets/da7f25d4-cb0c-4206-813c-cfc8c3db7de4)
+
 
 
 
 - Generated Document :
-- ![image](https://github.com/user-attachments/assets/de2f70f1-697e-43f0-87b4-c167a59fdc67)
+- ![image](https://github.com/user-attachments/assets/6c19e14d-56da-41e7-b8d0-a2fb7c3795b3)
 
 
 
 - Login / Signup :
-- ![image](https://github.com/user-attachments/assets/2a9fca5e-d491-4ad0-bfec-ca1cf4388c51)
-- ![image](https://github.com/user-attachments/assets/cd9e53d7-9468-4108-a164-791720c901d4)
+- ![image](https://github.com/user-attachments/assets/343707b8-8873-4961-8155-a7531d784f8b)
+- ![image](https://github.com/user-attachments/assets/c6837d70-70d2-49c9-9dcc-09502997c99e)
+
 
 
 ---
