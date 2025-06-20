@@ -81,10 +81,6 @@ const Landing = () => {
           <Footer />
         </motion.div>
       </motion.div>
-      <AuthModal
-        isOpen={authModalOpen}
-        onClose={() => setAuthModalOpen(false)}
-      />
     </div>
   );
 };
