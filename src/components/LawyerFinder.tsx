@@ -1,5 +1,4 @@
-
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -390,7 +389,6 @@ const pincodeToCity: { [key: string]: string } = {
 };
 
 export const LawyerFinder = ({ category }: LawyerFinderProps) => {
-  const [lawyers, setLawyers] = useState<Lawyer[]>(lawyersDatabase);
   const [filteredLawyers, setFilteredLawyers] = useState<Lawyer[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<keyof typeof categoryMap>("Business Law");
   const [selectedSpecialization, setSelectedSpecialization] = useState<string>("all");
@@ -446,57 +444,21 @@ export const LawyerFinder = ({ category }: LawyerFinderProps) => {
     return pincodeToCity[cleanPincode] || null;
   };
 
-  useEffect(() => {
-    setLawyers(lawyersDatabase);
-    // Initialize with all lawyers
-    setFilteredLawyers(lawyersDatabase);
-  }, []);
+  // Memoized filter function to ensure it only re-runs when dependencies change
+  const filterLawyers = useCallback(() => {
+    let currentLawyers = [...lawyersDatabase]; // Always start from the original database
 
-  useEffect(() => {
-    if (latitude && longitude) {
-      // Detect user's city based on coordinates
-      const detectedCity = detectCityFromCoordinates(latitude, longitude);
-      setUserCity(detectedCity);
-      setLocationStatus(`Location detected: ${detectedCity}`);
-      
-      // Calculate distances for all lawyers
-      const lawyersWithDistance = lawyersDatabase.map(lawyer => ({
+    // Apply distance calculation if location is available
+    if (latitude !== null && longitude !== null) {
+      currentLawyers = currentLawyers.map(lawyer => ({
         ...lawyer,
         distance: calculateDistance(latitude, longitude, lawyer.latitude, lawyer.longitude)
-      })).sort((a, b) => (a.distance || 0) - (b.distance || 0));
-      
-      setLawyers(lawyersWithDistance);
-      
-      toast({
-        title: "Location Detected",
-        description: `Found your location near ${detectedCity}`,
-      });
+      }));
     }
-  }, [latitude, longitude, toast]);
-
-  useEffect(() => {
-    filterLawyers();
-  }, [selectedSpecialization, selectedCategory, userCity, lawyers]);
-
-  useEffect(() => {
-    if (category && categoryMap[category as keyof typeof categoryMap]) {
-      setSelectedCategory(category as keyof typeof categoryMap);
-    }
-  }, [category]);
-
-  useEffect(() => {
-    if (error) {
-      setLocationStatus("Location access denied. Please select your city manually or enable location permissions.");
-    }
-  }, [error]);
-
-  const filterLawyers = () => {
-    let filtered = [...lawyers];
 
     // Filter by user's detected city or nearby locations
     if (userCity) {
-      // Show lawyers from user's city first, then nearby cities within reasonable distance
-      filtered = filtered.filter(lawyer => {
+      currentLawyers = currentLawyers.filter(lawyer => {
         if (lawyer.city === userCity) return true;
         // Include lawyers within 50km if distance is available
         return lawyer.distance !== undefined && lawyer.distance <= 50;
@@ -506,28 +468,60 @@ export const LawyerFinder = ({ category }: LawyerFinderProps) => {
     // Filter by category
     const relevantSpecs = categoryMap[selectedCategory] || [];
     if (relevantSpecs.length > 0) {
-      filtered = filtered.filter(lawyer => 
+      currentLawyers = currentLawyers.filter(lawyer => 
         lawyer.specialization.some(spec => relevantSpecs.includes(spec))
       );
     }
 
     // Filter by specialization
     if (selectedSpecialization !== "all") {
-      filtered = filtered.filter(lawyer => 
+      currentLawyers = currentLawyers.filter(lawyer => 
         lawyer.specialization.includes(selectedSpecialization)
       );
     }
 
     // Sort by distance if available, otherwise by rating
-    filtered.sort((a, b) => {
+    currentLawyers.sort((a, b) => {
       if (a.distance !== undefined && b.distance !== undefined) {
         return a.distance - b.distance;
       }
       return b.rating - a.rating;
     });
 
-    setFilteredLawyers(filtered);
-  };
+    setFilteredLawyers(currentLawyers);
+  }, [latitude, longitude, userCity, selectedCategory, selectedSpecialization]);
+
+  // Effect to run filterLawyers whenever its dependencies change
+  useEffect(() => {
+    filterLawyers();
+  }, [filterLawyers]);
+
+  // Effect to detect user's city from coordinates and set userCity
+  useEffect(() => {
+    if (latitude && longitude) {
+      const detectedCity = detectCityFromCoordinates(latitude, longitude);
+      setUserCity(detectedCity);
+      setLocationStatus(`Location detected: ${detectedCity}`);
+      toast({
+        title: "Location Detected",
+        description: `Found your location near ${detectedCity}`,
+      });
+    }
+  }, [latitude, longitude, toast]);
+
+  // Effect to handle initial category prop
+  useEffect(() => {
+    if (category && categoryMap[category as keyof typeof categoryMap]) {
+      setSelectedCategory(category as keyof typeof categoryMap);
+    }
+  }, [category]);
+
+  // Effect to show error if geolocation fails
+  useEffect(() => {
+    if (error) {
+      setLocationStatus("Location access denied. Please select your city manually or enable location permissions.");
+    }
+  }, [error]);
 
   const handleLocationSubmit = () => {
     if (!manualLocation.trim()) {
@@ -547,8 +541,8 @@ export const LawyerFinder = ({ category }: LawyerFinderProps) => {
       const detectedCity = detectCityFromPincode(inputLocation);
       if (detectedCity && cityCoordinates[detectedCity]) {
         const coords = cityCoordinates[detectedCity];
-        setGeoLocation(coords.lat, coords.lng);
-        setUserCity(detectedCity);
+        setGeoLocation(coords.lat, coords.lng); // This will trigger the useEffect for latitude/longitude
+        setUserCity(detectedCity); // Set userCity directly for immediate filter
         setLocationStatus(`Location set to: ${detectedCity} (Pincode: ${inputLocation})`);
         toast({
           title: "Location Set",
@@ -573,8 +567,8 @@ export const LawyerFinder = ({ category }: LawyerFinderProps) => {
     
     if (matchedCity && cityCoordinates[matchedCity]) {
       const coords = cityCoordinates[matchedCity];
-      setGeoLocation(coords.lat, coords.lng);
-      setUserCity(matchedCity);
+      setGeoLocation(coords.lat, coords.lng); // This will trigger the useEffect for latitude/longitude
+      setUserCity(matchedCity); // Set userCity directly for immediate filter
       setLocationStatus(`Location set to: ${matchedCity}`);
       toast({
         title: "Location Set",
@@ -592,8 +586,8 @@ export const LawyerFinder = ({ category }: LawyerFinderProps) => {
   const handleCitySelect = (selectedCity: string) => {
     if (cityCoordinates[selectedCity]) {
       const coords = cityCoordinates[selectedCity];
-      setGeoLocation(coords.lat, coords.lng);
-      setUserCity(selectedCity);
+      setGeoLocation(coords.lat, coords.lng); // This will trigger the useEffect for latitude/longitude
+      setUserCity(selectedCity); // Set userCity directly for immediate filter
       setLocationStatus(`Location set to: ${selectedCity}`);
       toast({
         title: "City Selected",
@@ -678,7 +672,10 @@ export const LawyerFinder = ({ category }: LawyerFinderProps) => {
                 <SelectContent>
                   {cities.map((city) => (
                     <SelectItem key={city} value={city}>
-                      {city}
+                      <div className="flex items-center">
+                        <MapPin className="h-4 w-4 mr-2" />
+                        {city}
+                      </div>
                     </SelectItem>
                   ))}
                 </SelectContent>
