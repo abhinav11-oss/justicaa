@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { LanguageSelector } from "@/components/LanguageSelector";
 import { Menu, Bell, Mail } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { ThemeToggle } from "@/components/ThemeToggle"; // Import ThemeToggle
 
 interface HeaderProps {
   isMobile: boolean;
@@ -76,6 +77,7 @@ export const DashboardHeader: React.FC<HeaderProps> = ({
       </div>
       <div className="flex items-center space-x-3">
         <LanguageSelector />
+        <ThemeToggle /> {/* Add ThemeToggle here */}
 
         {/* Notifications button without badge */}
         <Button
