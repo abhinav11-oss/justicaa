@@ -1,4 +1,3 @@
-
 import { useState, useRef, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
@@ -354,7 +353,7 @@ export const ChatInterface = ({ category }: ChatInterfaceProps) => {
                       </div>
                       <div className="bg-muted p-3 md:p-4 rounded-lg">
                         <div className="flex items-center space-x-2">
-                          <Loader2 className="h-3 w-3 md:h-4 md:w-4 animate-spin" />
+                          <Loader2 className="h-3 w-3 md:h-4 w-4 animate-spin" />
                           <span className="text-sm">{t('chat.thinking')}</span>
                         </div>
                       </div>

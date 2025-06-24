@@ -341,7 +341,7 @@ export function UserDashboard() {
       case "active":
         return "bg-green-500/10 text-green-400 border border-green-500/20";
       case "completed":
-        return "bg-blue-500/10 text-blue-400 border border-blue-500/20";
+        return "bg-secondary text-primary-foreground border border-border";
       case "pending":
         return "bg-yellow-500/10 text-yellow-400 border border-yellow-500/20";
       case "draft":
@@ -464,7 +464,7 @@ export function UserDashboard() {
     >
       {/* Welcome Section with Enhanced Gradients and Animations (simplified) */}
       <motion.div variants={itemVariants}>
-        <Card className="relative overflow-hidden border-primary/20">
+        <Card className="relative overflow-hidden border-border">
           {/* Multiple Background Layers */}
           <div className="absolute inset-0">
             <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-primary/10 to-primary/5"></div>
@@ -589,36 +589,36 @@ export function UserDashboard() {
             value: conversations.length,
             icon: MessageSquare,
             trend: "+12%",
-            color: "from-blue-500 to-blue-600",
-            bg: "bg-blue-500/10",
-            border: "border-blue-500/20",
+            color: "bg-secondary", // Changed from blue gradient
+            bg: "bg-secondary", // Changed from blue-500/10
+            border: "border-border", // Changed from blue-500/20
           },
           {
             title: "Archived Chats",
             value: archivedConversations.length,
             icon: Archive,
             trend: "+8%",
-            color: "from-purple-500 to-purple-600",
-            bg: "bg-purple-500/10",
-            border: "border-purple-500/20",
+            color: "bg-secondary", // Changed from purple gradient
+            bg: "bg-secondary", // Changed from purple-500/10
+            border: "border-border", // Changed from purple-500/20
           },
           {
             title: "Documents Generated",
             value: documents.length,
             icon: FileText,
             trend: "+25%",
-            color: "from-green-500 to-green-600",
-            bg: "bg-green-500/10",
-            border: "border-green-500/20",
+            color: "bg-secondary", // Changed from green gradient
+            bg: "bg-secondary", // Changed from green-500/10
+            border: "border-border", // Changed from green-500/20
           },
           {
             title: "Active Matters",
             value: matters.filter((m) => m.status === "active").length,
             icon: Briefcase,
             trend: "+5%",
-            color: "from-orange-500 to-orange-600",
-            bg: "bg-orange-500/10",
-            border: "border-orange-500/20",
+            color: "bg-secondary", // Changed from orange gradient
+            bg: "bg-secondary", // Changed from orange-500/10
+            border: "border-border", // Changed from orange-500/20
           },
         ].map((stat, index) => (
           <motion.div
@@ -684,7 +684,7 @@ export function UserDashboard() {
                     </div>
                   </div>
                   <motion.div
-                    className={`bg-gradient-to-br ${stat.color} p-3 rounded-2xl shadow-lg relative overflow-hidden`}
+                    className={`${stat.color} p-3 rounded-2xl shadow-lg relative overflow-hidden`}
                     whileHover={{ scale: 1.05 }} // Reduced scale, removed rotate
                     transition={{ duration: 0.2 }} // Reduced duration
                   >
@@ -1034,8 +1034,8 @@ export function UserDashboard() {
                             <div className="flex justify-between items-start">
                               <div className="flex-1">
                                 <div className="flex items-center gap-3 mb-3">
-                                  <div className="w-10 h-10 rounded-full bg-green-500/10 flex items-center justify-center">
-                                    <FileText className="h-5 w-5 text-green-500" />
+                                  <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center">
+                                    <FileText className="h-5 w-5 text-primary-foreground" />
                                   </div>
                                   <div>
                                     <h4 className="font-semibold text-foreground">
@@ -1129,8 +1129,8 @@ export function UserDashboard() {
                             <div className="flex justify-between items-start">
                               <div className="flex-1">
                                 <div className="flex items-center gap-3 mb-3">
-                                  <div className="w-10 h-10 rounded-full bg-orange-500/10 flex items-center justify-center">
-                                    <Briefcase className="h-5 w-5 text-orange-500" />
+                                  <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center">
+                                    <Briefcase className="h-5 w-5 text-primary-foreground" />
                                   </div>
                                   <div>
                                     <h4 className="font-semibold text-foreground">

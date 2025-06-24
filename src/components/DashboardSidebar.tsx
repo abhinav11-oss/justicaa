@@ -25,17 +25,6 @@ import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 
-const sidebarIcons = [
-  { id: "home", icon: Home, title: "Dashboard" },
-  { id: "chat", icon: MessageSquare, title: "AI Chat" },
-  { id: "lawyers", icon: Users, title: "Find Experts" },
-  { id: "generator", icon: FilePlus, title: "Generate" },
-  { id: "templates", icon: FileText, title: "Legal Forms" },
-  { id: "guides", icon: BookOpen, title: "Legal Info" },
-  { id: "research", icon: Search, title: "Case Law" },
-  { id: "settings", icon: Settings, title: "Account" },
-];
-
 interface SidebarProps {
   user: any;
   isTrialMode: boolean;

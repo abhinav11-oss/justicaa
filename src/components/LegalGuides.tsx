@@ -249,8 +249,8 @@ export const LegalGuides = () => {
         <Card className="bg-card border-border">
           <CardHeader>
             <div className="flex items-center space-x-3">
-              <div className="bg-blue-100 p-2 rounded-lg">
-                <selectedGuide.icon className="h-6 w-6 text-blue-600" />
+              <div className="bg-secondary p-2 rounded-lg">
+                <selectedGuide.icon className="h-6 w-6 text-primary-foreground" />
               </div>
               <div className="flex-1">
                 <CardTitle className="text-2xl">{selectedGuide.title}</CardTitle>
@@ -274,7 +274,7 @@ export const LegalGuides = () => {
             return (
               <Card 
                 key={step.id} 
-                className={`cursor-pointer transition-all ${isCompleted ? 'bg-green-500/10 border-green-500/20' : 'hover:shadow-md bg-card border-border'}`}
+                className={`cursor-pointer transition-all ${isCompleted ? 'bg-secondary border-border' : 'hover:shadow-md bg-card border-border'}`}
                 onClick={() => toggleStepCompletion(step.id)}
               >
                 <CardContent className="p-4">
@@ -318,8 +318,8 @@ export const LegalGuides = () => {
             <Card key={guide.id} className="hover:shadow-lg transition-all duration-300 hover:-translate-y-1 bg-card border-border">
               <CardHeader>
                 <div className="flex items-center space-x-3">
-                  <div className="bg-blue-100 p-2 rounded-lg">
-                    <guide.icon className="h-6 w-6 text-blue-600" />
+                  <div className="bg-secondary p-2 rounded-lg">
+                    <guide.icon className="h-6 w-6 text-primary-foreground" />
                   </div>
                   <div className="flex-1">
                     <CardTitle className="text-lg">{guide.title}</CardTitle>

@@ -358,7 +358,7 @@ export const AuthModal = ({ isOpen, onClose }: AuthModalProps) => {
                   <CardFooter className="flex flex-col space-y-2">
                     <Button
                       type="submit"
-                      className="w-full"
+                      className="w-full gradient-primary text-white border-0"
                       disabled={isLoading || isGoogleLoading}
                     >
                       {isLoading ? (
@@ -490,7 +490,7 @@ export const AuthModal = ({ isOpen, onClose }: AuthModalProps) => {
                   <CardFooter className="flex flex-col space-y-2">
                     <Button
                       type="submit"
-                      className="w-full"
+                      className="w-full gradient-primary text-white border-0"
                       disabled={isLoading || isGoogleLoading}
                     >
                       {isLoading ? (

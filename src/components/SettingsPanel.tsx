@@ -119,7 +119,7 @@ export const SettingsPanel = () => {
           <div className="flex items-center space-x-4">
             <Avatar className="h-16 w-16">
               <AvatarImage src={profile.avatar} />
-              <AvatarFallback className="text-lg">
+              <AvatarFallback className="bg-secondary text-primary-foreground text-lg">
                 {profile.name.charAt(0).toUpperCase() || "U"}
               </AvatarFallback>
             </Avatar>

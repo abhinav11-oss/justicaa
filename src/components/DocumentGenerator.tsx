@@ -164,7 +164,6 @@ const documentTemplates: DocumentTemplate[] = [
       { id: "location", label: "Work Location", type: "text", required: true }
     ]
   },
-  // Resignation Letter Template
   {
     id: "resignation-letter",
     name: "Resignation Letter",
@@ -690,18 +689,18 @@ Date: ${today}`;
                     <Card 
                       key={template.id} 
                       className={`cursor-pointer transition-all hover:shadow-md ${
-                        selectedTemplate?.id === template.id ? 'ring-2 ring-blue-500' : ''
+                        selectedTemplate?.id === template.id ? 'ring-2 ring-primary' : ''
                       }`}
                       onClick={() => setSelectedTemplate(template)}
                     >
                       <CardContent className="p-4">
                         <div className="flex items-start space-x-3">
-                          <div className="bg-blue-100 p-2 rounded-lg">
-                            <FileText className="h-5 w-5 text-blue-600" />
+                          <div className="bg-secondary p-2 rounded-lg">
+                            <FileText className="h-5 w-5 text-primary-foreground" />
                           </div>
                           <div className="flex-1">
                             <h4 className="font-semibold">{template.name}</h4>
-                            <p className="text-sm text-slate-600 mt-1">{template.description}</p>
+                            <p className="text-sm text-muted-foreground mt-1">{template.description}</p>
                             <div className="flex flex-wrap gap-1 mt-2">
                               {template.category.map((cat) => (
                                 <Badge key={cat} variant="outline" className="text-xs">
@@ -743,7 +742,7 @@ Date: ${today}`;
                     {selectedTemplate.fields.map((field) => (
                       <div key={field.id}>
                         <label className="block text-sm font-medium mb-1">
-                          {field.label} {field.required && <span className="text-red-500">*</span>}
+                          {field.label} {field.required && <span className="text-destructive">*</span>}
                         </label>
                         {field.type === 'textarea' ? (
                           <Textarea
