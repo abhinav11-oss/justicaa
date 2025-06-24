@@ -274,7 +274,7 @@ export const LegalGuides = () => {
             return (
               <Card 
                 key={step.id} 
-                className={`cursor-pointer transition-all ${isCompleted ? 'bg-secondary border-border' : 'hover:shadow-md bg-card border-border'}`} {/* Changed bg-green-500/10 border-green-500/20 to bg-secondary border-border */}
+                className={`cursor-pointer transition-all ${isCompleted ? 'bg-secondary border-border' : 'hover:shadow-md bg-card border-border'}`}
                 onClick={() => toggleStepCompletion(step.id)}
               >
                 <CardContent className="p-4">
