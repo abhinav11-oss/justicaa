@@ -11,6 +11,7 @@ import {
   CheckCircle,
   Sparkles,
 } from "lucide-react";
+import { BackgroundBeams } from "@/components/BackgroundBeams"; // Import the new component
 
 interface HeroProps {
   onCTAClick: () => void;
@@ -68,6 +69,9 @@ export const Hero = ({ onCTAClick, onTryForFree }: HeroProps) => {
         <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-primary/3 to-transparent"></div>
         <div className="absolute inset-0 bg-gradient-to-bl from-transparent via-background/90 to-background"></div>
       </div>
+
+      {/* Add BackgroundBeams here */}
+      <BackgroundBeams className="absolute inset-0 z-0" />
 
       {/* Animated Floating Elements */}
       <motion.div
