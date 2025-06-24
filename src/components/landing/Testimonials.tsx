@@ -80,23 +80,23 @@ export const Testimonials = () => {
         <div className="bg-gradient-to-r from-primary/10 to-primary/5 rounded-2xl p-8 mb-16">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6 text-center">
             <div>
-              <div className="text-3xl font-bold text-foreground mb-2">4.8/5</div> {/* Changed text-primary to text-foreground */}
+              <div className="text-3xl font-bold text-foreground mb-2">4.8/5</div>
               <div className="text-sm text-muted-foreground">
                 Average Rating
               </div>
             </div>
             <div>
-              <div className="text-3xl font-bold text-foreground mb-2"> {/* Changed text-primary to text-foreground */}
+              <div className="text-3xl font-bold text-foreground mb-2">
                 50,000+
               </div>
               <div className="text-sm text-muted-foreground">Happy Users</div>
             </div>
             <div>
-              <div className="text-3xl font-bold text-foreground mb-2">95%</div> {/* Changed text-primary to text-foreground */}
+              <div className="text-3xl font-bold text-foreground mb-2">95%</div>
               <div className="text-sm text-muted-foreground">Success Rate</div>
             </div>
             <div>
-              <div className="text-3xl font-bold text-foreground mb-2">24hrs</div> {/* Changed text-primary to text-foreground */}
+              <div className="text-3xl font-bold text-foreground mb-2">24hrs</div>
               <div className="text-sm text-muted-foreground">
                 Avg Response Time
               </div>
@@ -114,7 +114,7 @@ export const Testimonials = () => {
               <CardContent className="p-6">
                 {/* Quote Icon */}
                 <div className="bg-primary/10 w-10 h-10 rounded-lg flex items-center justify-center mb-4">
-                  <Quote className="h-5 w-5 text-primary-foreground" /> {/* Changed text-primary to text-primary-foreground */}
+                  <Quote className="h-5 w-5 text-primary-foreground" />
                 </div>
 
                 {/* Rating */}
@@ -130,7 +130,7 @@ export const Testimonials = () => {
                 {/* Case Badge */}
                 <Badge
                   variant="secondary"
-                  className="mb-4 bg-primary/10 text-primary-foreground text-xs" {/* Changed text-primary to text-primary-foreground */}
+                  className="mb-4 bg-primary/10 text-primary-foreground text-xs"
                 >
                   {testimonial.case}
                 </Badge>
