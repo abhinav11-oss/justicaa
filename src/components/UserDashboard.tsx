@@ -315,7 +315,7 @@ export function UserDashboard() {
       link.style.display = "none";
       window.document.body.appendChild(link);
       link.click();
-      window.document.body.removeChild(link);
+      document.body.removeChild(a);
       URL.revokeObjectURL(url);
 
       toast({
@@ -347,7 +347,7 @@ export function UserDashboard() {
       case "draft":
         return "bg-muted text-muted-foreground border border-border";
       case "archived":
-        return "bg-primary/10 text-primary border border-primary/20";
+        return "bg-primary/10 text-primary-foreground border border-primary/20"; // Changed text-primary to text-primary-foreground
       default:
         return "bg-muted text-muted-foreground border border-border";
     }
@@ -520,9 +520,9 @@ export function UserDashboard() {
                       ease: "linear",
                     }}
                   >
-                    <Sparkles className="h-5 w-5 text-primary" />
+                    <Sparkles className="h-5 w-5 text-primary-foreground" /> {/* Changed text-primary to text-primary-foreground */}
                   </motion.div>
-                  <span className="text-sm font-medium text-primary">
+                  <span className="text-sm font-medium text-primary-foreground"> {/* Changed text-primary to text-primary-foreground */}
                     Welcome back
                   </span>
                 </motion.div>
@@ -589,36 +589,36 @@ export function UserDashboard() {
             value: conversations.length,
             icon: MessageSquare,
             trend: "+12%",
-            color: "bg-secondary", // Changed from blue gradient
-            bg: "bg-secondary", // Changed from blue-500/10
-            border: "border-border", // Changed from blue-500/20
+            color: "bg-secondary", 
+            bg: "bg-secondary", 
+            border: "border-border", 
           },
           {
             title: "Archived Chats",
             value: archivedConversations.length,
             icon: Archive,
             trend: "+8%",
-            color: "bg-secondary", // Changed from purple gradient
-            bg: "bg-secondary", // Changed from purple-500/10
-            border: "border-border", // Changed from purple-500/20
+            color: "bg-secondary", 
+            bg: "bg-secondary", 
+            border: "border-border", 
           },
           {
             title: "Documents Generated",
             value: documents.length,
             icon: FileText,
             trend: "+25%",
-            color: "bg-secondary", // Changed from green gradient
-            bg: "bg-secondary", // Changed from green-500/10
-            border: "border-border", // Changed from green-500/20
+            color: "bg-secondary", 
+            bg: "bg-secondary", 
+            border: "border-border", 
           },
           {
             title: "Active Matters",
             value: matters.filter((m) => m.status === "active").length,
             icon: Briefcase,
             trend: "+5%",
-            color: "bg-secondary", // Changed from orange gradient
-            bg: "bg-secondary", // Changed from orange-500/10
-            border: "border-border", // Changed from orange-500/20
+            color: "bg-secondary", 
+            bg: "bg-secondary", 
+            border: "border-border", 
           },
         ].map((stat, index) => (
           <motion.div
@@ -688,7 +688,7 @@ export function UserDashboard() {
                     whileHover={{ scale: 1.05 }} // Reduced scale, removed rotate
                     transition={{ duration: 0.2 }} // Reduced duration
                   >
-                    <stat.icon className="h-6 w-6 text-white relative z-10" />
+                    <stat.icon className="h-6 w-6 text-primary-foreground relative z-10" /> {/* Changed text-white to text-primary-foreground */}
                     <motion.div
                       className="absolute inset-0 bg-white/20"
                       animate={{ rotate: 360 }}
@@ -740,28 +740,28 @@ export function UserDashboard() {
               <TabsList className="grid w-full grid-cols-4 bg-muted/50 backdrop-blur-sm">
                 <TabsTrigger
                   value="conversations"
-                  className="data-[state=active]:bg-primary data-[state=active]:text-white"
+                  className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground" {/* Changed text-white to text-primary-foreground */}
                 >
                   <MessageSquare className="h-4 w-4 mr-2" />
                   Conversations
                 </TabsTrigger>
                 <TabsTrigger
                   value="archived"
-                  className="data-[state=active]:bg-primary data-[state=active]:text-white"
+                  className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground" {/* Changed text-white to text-primary-foreground */}
                 >
                   <Archive className="h-4 w-4 mr-2" />
                   Archived
                 </TabsTrigger>
                 <TabsTrigger
                   value="documents"
-                  className="data-[state=active]:bg-primary data-[state=active]:text-white"
+                  className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground" {/* Changed text-white to text-primary-foreground */}
                 >
                   <FileText className="h-4 w-4 mr-2" />
                   Documents
                 </TabsTrigger>
                 <TabsTrigger
                   value="matters"
-                  className="data-[state=active]:bg-primary data-[state=active]:text-white"
+                  className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground" {/* Changed text-white to text-primary-foreground */}
                 >
                   <Calendar className="h-4 w-4 mr-2" />
                   Matters
@@ -780,7 +780,7 @@ export function UserDashboard() {
                 <div className="flex justify-between items-center">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-                      <MessageSquare className="h-5 w-5 text-primary" />
+                      <MessageSquare className="h-5 w-5 text-primary-foreground" /> {/* Changed text-primary to text-primary-foreground */}
                     </div>
                     <div>
                       <h3 className="text-xl font-semibold text-foreground">
@@ -847,10 +847,10 @@ export function UserDashboard() {
                               >
                                 <div className="flex items-center gap-3 mb-3">
                                   <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
-                                    <MessageSquare className="h-5 w-5 text-primary" />
+                                    <MessageSquare className="h-5 w-5 text-primary-foreground" /> {/* Changed text-primary to text-primary-foreground */}
                                   </div>
                                   <div>
-                                    <h4 className="font-semibold text-foreground group-hover:text-primary transition-colors">
+                                    <h4 className="font-semibold text-foreground group-hover:text-primary-foreground transition-colors"> {/* Changed group-hover:text-primary to group-hover:text-primary-foreground */}
                                       {conversation.title}
                                     </h4>
                                     <p className="text-sm text-muted-foreground capitalize">
@@ -890,7 +890,7 @@ export function UserDashboard() {
                 <div className="flex justify-between items-center">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-                      <Archive className="h-5 w-5 text-primary" />
+                      <Archive className="h-5 w-5 text-primary-foreground" /> {/* Changed text-primary to text-primary-foreground */}
                     </div>
                     <div>
                       <h3 className="text-xl font-semibold text-foreground">
@@ -980,7 +980,7 @@ export function UserDashboard() {
                 <div className="flex justify-between items-center">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-                      <FileText className="h-5 w-5 text-primary" />
+                      <FileText className="h-5 w-5 text-primary-foreground" /> {/* Changed text-primary to text-primary-foreground */}
                     </div>
                     <div>
                       <h3 className="text-xl font-semibold text-foreground">
@@ -1082,7 +1082,7 @@ export function UserDashboard() {
                 <div className="flex justify-between items-center">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-                      <Briefcase className="h-5 w-5 text-primary" />
+                      <Briefcase className="h-5 w-5 text-primary-foreground" /> {/* Changed text-primary to text-primary-foreground */}
                     </div>
                     <div>
                       <h3 className="text-xl font-semibold text-foreground">

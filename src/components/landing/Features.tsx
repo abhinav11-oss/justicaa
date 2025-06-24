@@ -234,7 +234,7 @@ export const Features = () => {
                   >
                     <Badge
                       variant="secondary"
-                      className="mb-3 bg-primary/10 text-primary text-sm w-fit"
+                      className="mb-3 bg-primary/10 text-primary-foreground text-sm w-fit" {/* Changed text-primary to text-primary-foreground */}
                     >
                       {feature.highlight}
                     </Badge>
@@ -351,7 +351,7 @@ export const Features = () => {
                     whileHover={{ scale: 1.05 }} // Reduced scale, removed rotate
                     transition={{ duration: 0.3 }} // Reduced duration
                   >
-                    <feature.icon className="h-6 w-6 text-primary" />
+                    <feature.icon className="h-6 w-6 text-primary-foreground" /> {/* Changed text-primary to text-primary-foreground */}
                   </motion.div>
                   <h4 className="font-semibold text-foreground mb-2 relative z-10">
                     {feature.title}

@@ -154,7 +154,7 @@ export const About = () => {
                     whileHover={{ scale: 1.1, rotate: 5 }}
                     transition={{ duration: 0.2 }}
                   >
-                    <stat.icon className="h-6 w-6 text-primary relative z-10" />
+                    <stat.icon className="h-6 w-6 text-primary-foreground relative z-10" /> {/* Changed text-primary to text-primary-foreground */}
                     <motion.div
                       className="absolute inset-0 bg-primary/20"
                       animate={{ opacity: [0.3, 0.6, 0.3] }} // Simplified animation

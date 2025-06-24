@@ -656,7 +656,7 @@ export const LawyerFinder = ({ category }: LawyerFinderProps) => {
         <CardContent className="space-y-4">
           {/* Location Status */}
           {locationStatus && (
-            <div className="text-sm bg-secondary text-primary-foreground p-3 rounded-lg">
+            <div className="text-sm bg-secondary text-primary-foreground p-3 rounded-lg"> {/* Changed text-blue-700 dark:text-blue-300 to text-primary-foreground */}
               {locationStatus}
             </div>
           )}
@@ -772,7 +772,7 @@ export const LawyerFinder = ({ category }: LawyerFinderProps) => {
                               <div className="flex items-center space-x-2">
                                 <h4 className="font-semibold text-lg">{lawyer.name}</h4>
                                 {lawyer.verified && (
-                                  <Badge variant="secondary" className="bg-secondary text-primary-foreground">
+                                  <Badge variant="secondary" className="bg-secondary text-primary-foreground"> {/* Changed bg-green-500/10 text-green-400 border border-green-500/20 to bg-secondary text-primary-foreground */}
                                     Verified
                                   </Badge>
                                 )}
@@ -820,7 +820,7 @@ export const LawyerFinder = ({ category }: LawyerFinderProps) => {
                               {lawyer.address}
                             </p>
                             {lawyer.distance !== undefined && (
-                              <p className="text-primary font-medium">
+                              <p className="text-primary-foreground font-medium"> {/* Changed text-blue-600 dark:text-blue-400 to text-primary-foreground */}
                                 {lawyer.distance} km away
                               </p>
                             )}

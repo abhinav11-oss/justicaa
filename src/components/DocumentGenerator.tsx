@@ -674,8 +674,8 @@ Date: ${today}`;
         {Object.keys(categoryMap).map((cat) => (
           <TabsContent key={cat} value={cat} className="space-y-6">
             <div className="text-center">
-              <h3 className="text-2xl font-bold text-slate-900 mb-2">Document Generator</h3>
-              <p className="text-slate-600">Generate professional legal documents for {cat.toLowerCase()}</p>
+              <h3 className="text-2xl font-bold text-foreground mb-2">Legal Document Templates</h3> {/* Changed text-slate-900 to text-foreground */}
+              <p className="text-muted-foreground">Generate professional legal documents for {cat.toLowerCase()}</p> {/* Changed text-slate-600 to text-muted-foreground */}
             </div>
 
             {/* Available Documents */}
@@ -695,8 +695,8 @@ Date: ${today}`;
                     >
                       <CardContent className="p-4">
                         <div className="flex items-start space-x-3">
-                          <div className="bg-secondary p-2 rounded-lg">
-                            <FileText className="h-5 w-5 text-primary-foreground" />
+                          <div className="bg-secondary p-2 rounded-lg"> {/* Changed bg-blue-100 to bg-secondary */}
+                            <FileText className="h-5 w-5 text-primary-foreground" /> {/* Changed text-blue-600 to text-primary-foreground */}
                           </div>
                           <div className="flex-1">
                             <h4 className="font-semibold">{template.name}</h4>
@@ -798,7 +798,7 @@ Date: ${today}`;
               <strong>Legal Disclaimer:</strong> These templates are for informational purposes only and may not be suitable for all situations. 
               Please consult with a qualified attorney before using any legal documents. Customize the templates according to your specific needs.
             </p>
-          </div>
+          </CardContent>
         </CardContent>
       </Card>
     </div>

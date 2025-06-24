@@ -73,7 +73,7 @@ const serviceDetails = {
     ],
     documents: [
       "Last Will and Testament",
-      ""Living Trust",
+      "Living Trust",
       "Power of Attorney",
       "Healthcare Directive",
       "Beneficiary Designations"
@@ -154,8 +154,8 @@ export function LegalServiceDetail({ service, onBack, onStartChat }: LegalServic
           Back
         </Button>
         <div className="flex items-center space-x-3">
-          <div className="bg-secondary p-2 rounded-lg">
-            <service.icon className="h-6 w-6 text-primary-foreground" />
+          <div className="bg-secondary p-2 rounded-lg"> {/* Changed bg-blue-100 to bg-secondary */}
+            <service.icon className="h-6 w-6 text-primary-foreground" /> {/* Changed text-blue-600 to text-primary-foreground */}
           </div>
           <div>
             <h2 className="text-2xl font-bold">{service.title}</h2>
@@ -235,7 +235,7 @@ export function LegalServiceDetail({ service, onBack, onStartChat }: LegalServic
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {details.guides.map((step, index) => (
               <div key={index} className="flex items-start space-x-3 p-4 border border-border rounded-lg">
-                <div className="bg-primary text-primary-foreground rounded-full w-6 h-6 flex items-center justify-center text-sm font-medium">
+                <div className="bg-primary text-primary-foreground rounded-full w-6 h-6 flex items-center justify-center text-sm font-medium"> {/* Changed bg-blue-600 text-white to bg-primary text-primary-foreground */}
                   {index + 1}
                 </div>
                 <p className="text-sm text-muted-foreground">{step}</p>

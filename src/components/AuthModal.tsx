@@ -247,7 +247,7 @@ export const AuthModal = ({ isOpen, onClose }: AuthModalProps) => {
       <DialogContent className="sm:max-w-md">
         <DialogHeader className="text-center">
           <div className="flex items-center justify-center mb-4">
-            <div className="bg-primary p-3 rounded-lg">
+            <div className="gradient-primary p-3 rounded-lg"> {/* Changed bg-primary to gradient-primary */}
               <Scale className="h-8 w-8 text-primary-foreground" />
             </div>
           </div>

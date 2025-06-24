@@ -402,12 +402,12 @@ export const ChatInterface = ({ category }: ChatInterfaceProps) => {
                 onListeningChange={setIsListening}
               />
               {isListening && (
-                <div className="flex items-center space-x-1 text-primary">
+                <div className="flex items-center space-x-1 text-muted-foreground"> {/* Changed text-primary to text-muted-foreground */}
                   <span className="text-sm">{t('chat.listening')}</span>
                 </div>
               )}
               {isSpeaking && (
-                <div className="flex items-center space-x-1 text-primary">
+                <div className="flex items-center space-x-1 text-muted-foreground"> {/* Changed text-primary to text-muted-foreground */}
                   <span className="text-sm">{t('chat.speaking')}</span>
                 </div>
               )}

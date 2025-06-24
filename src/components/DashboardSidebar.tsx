@@ -170,7 +170,7 @@ export const DashboardSidebar: React.FC<SidebarProps> = ({
                         ${
                           activeTab === item.id
                             ? "gradient-primary text-white shadow-lg"
-                            : "text-muted-foreground hover:bg-primary/10 hover:text-primary"
+                            : "text-muted-foreground hover:bg-primary/10 hover:text-primary-foreground" // Changed hover:text-primary to hover:text-primary-foreground
                         }
                       `}
                       aria-label={item.title}
@@ -215,7 +215,7 @@ export const DashboardSidebar: React.FC<SidebarProps> = ({
             <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}>
               <Avatar className="h-10 w-10 ring-2 ring-primary/20 ring-offset-2 ring-offset-background">
                 <AvatarImage src={user.user_metadata?.avatar_url} />
-                <AvatarFallback className="gradient-primary text-white font-semibold">
+                <AvatarFallback className="gradient-primary text-white font-semibold"> {/* Changed bg-primary to gradient-primary */}
                   {userInitial}
                 </AvatarFallback>
               </Avatar>
@@ -225,7 +225,7 @@ export const DashboardSidebar: React.FC<SidebarProps> = ({
               whileHover={{ scale: 1.1 }}
               className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center"
             >
-              <User className="h-5 w-5 text-primary" />
+              <User className="h-5 w-5 text-primary-foreground" /> {/* Changed text-primary to text-primary-foreground */}
             </motion.div>
           ) : null}
           {user && (
