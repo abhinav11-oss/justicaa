@@ -58,7 +58,7 @@ export const TracingBeam = ({
               borderColor: scrollYProgress.get() > 0 ? "white" : "#059669",
             }}
             className="h-2 w-2 rounded-full border border-neutral-300 bg-white" />
-        </motion.V
+        </motion.div>
         <svg
           viewBox={`0 0 20 ${svgHeight}`}
           width="20"
