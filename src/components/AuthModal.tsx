@@ -247,7 +247,7 @@ export const AuthModal = ({ isOpen, onClose }: AuthModalProps) => {
       <DialogContent className="sm:max-w-md">
         <DialogHeader className="text-center">
           <div className="flex items-center justify-center mb-4">
-            <div className="gradient-primary p-3 rounded-lg"> {/* Changed bg-primary to gradient-primary */}
+            <div className="bg-primary p-3 rounded-lg">
               <Scale className="h-8 w-8 text-primary-foreground" />
             </div>
           </div>
@@ -358,7 +358,7 @@ export const AuthModal = ({ isOpen, onClose }: AuthModalProps) => {
                   <CardFooter className="flex flex-col space-y-2">
                     <Button
                       type="submit"
-                      className="w-full gradient-primary text-white border-0"
+                      className="w-full"
                       disabled={isLoading || isGoogleLoading}
                     >
                       {isLoading ? (
@@ -490,7 +490,7 @@ export const AuthModal = ({ isOpen, onClose }: AuthModalProps) => {
                   <CardFooter className="flex flex-col space-y-2">
                     <Button
                       type="submit"
-                      className="w-full gradient-primary text-white border-0"
+                      className="w-full"
                       disabled={isLoading || isGoogleLoading}
                     >
                       {isLoading ? (

@@ -25,6 +25,17 @@ import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 
+const sidebarIcons = [
+  { id: "home", icon: Home, title: "Dashboard" },
+  { id: "chat", icon: MessageSquare, title: "AI Chat" },
+  { id: "lawyers", icon: Users, title: "Find Experts" },
+  { id: "generator", icon: FilePlus, title: "Generate" },
+  { id: "templates", icon: FileText, title: "Legal Forms" },
+  { id: "guides", icon: BookOpen, title: "Legal Info" },
+  { id: "research", icon: Search, title: "Case Law" },
+  { id: "settings", icon: Settings, title: "Account" },
+];
+
 interface SidebarProps {
   user: any;
   isTrialMode: boolean;
@@ -170,7 +181,7 @@ export const DashboardSidebar: React.FC<SidebarProps> = ({
                         ${
                           activeTab === item.id
                             ? "gradient-primary text-white shadow-lg"
-                            : "text-muted-foreground hover:bg-primary/10 hover:text-primary-foreground" // Changed hover:text-primary to hover:text-primary-foreground
+                            : "text-muted-foreground hover:bg-primary/10 hover:text-primary"
                         }
                       `}
                       aria-label={item.title}
@@ -215,7 +226,7 @@ export const DashboardSidebar: React.FC<SidebarProps> = ({
             <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}>
               <Avatar className="h-10 w-10 ring-2 ring-primary/20 ring-offset-2 ring-offset-background">
                 <AvatarImage src={user.user_metadata?.avatar_url} />
-                <AvatarFallback className="gradient-primary text-white font-semibold"> {/* Changed bg-primary to gradient-primary */}
+                <AvatarFallback className="gradient-primary text-white font-semibold">
                   {userInitial}
                 </AvatarFallback>
               </Avatar>
@@ -225,7 +236,7 @@ export const DashboardSidebar: React.FC<SidebarProps> = ({
               whileHover={{ scale: 1.1 }}
               className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center"
             >
-              <User className="h-5 w-5 text-primary-foreground" /> {/* Changed text-primary to text-primary-foreground */}
+              <User className="h-5 w-5 text-primary" />
             </motion.div>
           ) : null}
           {user && (

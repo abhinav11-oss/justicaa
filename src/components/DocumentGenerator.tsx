@@ -164,6 +164,7 @@ const documentTemplates: DocumentTemplate[] = [
       { id: "location", label: "Work Location", type: "text", required: true }
     ]
   },
+  // Resignation Letter Template
   {
     id: "resignation-letter",
     name: "Resignation Letter",
@@ -674,8 +675,8 @@ Date: ${today}`;
         {Object.keys(categoryMap).map((cat) => (
           <TabsContent key={cat} value={cat} className="space-y-6">
             <div className="text-center">
-              <h3 className="text-2xl font-bold text-foreground mb-2">Legal Document Templates</h3>
-              <p className="text-muted-foreground">Generate professional legal documents for {cat.toLowerCase()}</p>
+              <h3 className="text-2xl font-bold text-slate-900 mb-2">Document Generator</h3>
+              <p className="text-slate-600">Generate professional legal documents for {cat.toLowerCase()}</p>
             </div>
 
             {/* Available Documents */}
@@ -689,18 +690,18 @@ Date: ${today}`;
                     <Card 
                       key={template.id} 
                       className={`cursor-pointer transition-all hover:shadow-md ${
-                        selectedTemplate?.id === template.id ? 'ring-2 ring-primary' : ''
+                        selectedTemplate?.id === template.id ? 'ring-2 ring-blue-500' : ''
                       }`}
                       onClick={() => setSelectedTemplate(template)}
                     >
                       <CardContent className="p-4">
                         <div className="flex items-start space-x-3">
-                          <div className="bg-secondary p-2 rounded-lg">
-                            <FileText className="h-5 w-5 text-primary-foreground" />
+                          <div className="bg-blue-100 p-2 rounded-lg">
+                            <FileText className="h-5 w-5 text-blue-600" />
                           </div>
                           <div className="flex-1">
                             <h4 className="font-semibold">{template.name}</h4>
-                            <p className="text-sm text-muted-foreground mt-1">{template.description}</p>
+                            <p className="text-sm text-slate-600 mt-1">{template.description}</p>
                             <div className="flex flex-wrap gap-1 mt-2">
                               {template.category.map((cat) => (
                                 <Badge key={cat} variant="outline" className="text-xs">
@@ -742,7 +743,7 @@ Date: ${today}`;
                     {selectedTemplate.fields.map((field) => (
                       <div key={field.id}>
                         <label className="block text-sm font-medium mb-1">
-                          {field.label} {field.required && <span className="text-destructive">*</span>}
+                          {field.label} {field.required && <span className="text-red-500">*</span>}
                         </label>
                         {field.type === 'textarea' ? (
                           <Textarea
@@ -751,18 +752,7 @@ Date: ${today}`;
                             onChange={(e) => handleInputChange(field.id, e.target.value)}
                             className="min-h-20"
                           />
-                        ) : field.type === 'select' ? (
-                            <select
-                              className="w-full p-2 border border-input rounded-md bg-background text-foreground"
-                              value={formData[field.id] || ''}
-                              onChange={(e) => handleInputChange(field.id, e.target.value)}
-                            >
-                              <option value="">Select an option</option>
-                              {field.options?.map((option) => (
-                                <option key={option} value={option}>{option}</option>
-                              ))}
-                            </select>
-                          ) : (
+                        ) : (
                           <Input
                             type={field.type}
                             placeholder={field.placeholder}
@@ -803,10 +793,13 @@ Date: ${today}`;
       {/* Disclaimer */}
       <Card className="bg-amber-50 border-amber-200">
         <CardContent className="pt-6">
-          <p className="text-sm text-amber-800 dark:text-amber-200">
-            <strong>Legal Disclaimer:</strong> These templates are for informational purposes only and may not be suitable for all situations. 
-            Please consult with a qualified attorney before using any legal documents. Customize the templates according to your specific needs.
-          </p>
+          <div className="flex items-start space-x-2">
+            <AlertCircle className="h-5 w-5 text-amber-600 mt-0.5" />
+            <p className="text-sm text-amber-800">
+              <strong>Legal Disclaimer:</strong> These templates are for informational purposes only and may not be suitable for all situations. 
+              Please consult with a qualified attorney before using any legal documents. Customize the templates according to your specific needs.
+            </p>
+          </div>
         </CardContent>
       </Card>
     </div>

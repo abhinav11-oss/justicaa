@@ -646,7 +646,7 @@ export const LawyerFinder = ({ category }: LawyerFinderProps) => {
   return (
     <div className="space-y-6">
       {/* Location Controls */}
-      <Card className="bg-card border-border">
+      <Card>
         <CardHeader>
           <CardTitle className="flex items-center">
             <MapPin className="h-5 w-5 mr-2" />
@@ -656,7 +656,7 @@ export const LawyerFinder = ({ category }: LawyerFinderProps) => {
         <CardContent className="space-y-4">
           {/* Location Status */}
           {locationStatus && (
-            <div className="text-sm bg-secondary text-primary-foreground p-3 rounded-lg"> {/* Changed text-blue-700 dark:text-blue-300 to text-primary-foreground */}
+            <div className="text-sm bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 p-3 rounded-lg">
               {locationStatus}
             </div>
           )}
@@ -666,10 +666,10 @@ export const LawyerFinder = ({ category }: LawyerFinderProps) => {
             <div>
               <label className="text-sm font-medium mb-2 block">Select City</label>
               <Select value={userCity} onValueChange={handleCitySelect}>
-                <SelectTrigger className="bg-background text-foreground">
+                <SelectTrigger>
                   <SelectValue placeholder="Select your city" />
                 </SelectTrigger>
-                <SelectContent className="bg-card border-border">
+                <SelectContent>
                   {cities.map((city) => (
                     <SelectItem key={city} value={city}>
                       <div className="flex items-center">
@@ -730,10 +730,10 @@ export const LawyerFinder = ({ category }: LawyerFinderProps) => {
             <div className="flex items-center space-x-2">
               <Filter className="h-4 w-4" />
               <Select value={selectedSpecialization} onValueChange={setSelectedSpecialization}>
-                <SelectTrigger className="w-48 bg-background text-foreground">
+                <SelectTrigger className="w-48">
                   <SelectValue placeholder="Filter by specialization" />
                 </SelectTrigger>
-                <SelectContent className="bg-card border-border">
+                <SelectContent>
                   <SelectItem value="all">All Specializations</SelectItem>
                   {specializations.map((spec) => (
                     <SelectItem key={spec} value={spec}>
@@ -751,12 +751,12 @@ export const LawyerFinder = ({ category }: LawyerFinderProps) => {
               </h3>
               
               {filteredLawyers.length === 0 ? (
-                <Card className="bg-card border-border">
+                <Card>
                   <CardContent className="text-center py-8">
-                    <p className="text-muted-foreground">
+                    <p className="text-slate-600 dark:text-slate-400">
                       No lawyers found {userCity ? `in ${userCity}` : ''} for this category.
                     </p>
-                    <p className="text-sm text-muted-foreground mt-2">
+                    <p className="text-sm text-slate-500 dark:text-slate-500 mt-2">
                       Try selecting a different city or adjusting your filters.
                     </p>
                   </CardContent>
@@ -764,7 +764,7 @@ export const LawyerFinder = ({ category }: LawyerFinderProps) => {
               ) : (
                 <div className="grid gap-4 md:grid-cols-2">
                   {filteredLawyers.map((lawyer) => (
-                    <Card key={lawyer.id} className="hover:shadow-lg transition-shadow bg-card border-border">
+                    <Card key={lawyer.id} className="hover:shadow-lg transition-shadow">
                       <CardContent className="p-6">
                         <div className="space-y-3">
                           <div className="flex justify-between items-start">
@@ -772,12 +772,12 @@ export const LawyerFinder = ({ category }: LawyerFinderProps) => {
                               <div className="flex items-center space-x-2">
                                 <h4 className="font-semibold text-lg">{lawyer.name}</h4>
                                 {lawyer.verified && (
-                                  <Badge variant="secondary" className="bg-secondary text-primary-foreground"> {/* Changed bg-green-500/10 text-green-400 border border-green-500/20 to bg-secondary text-primary-foreground */}
+                                  <Badge variant="secondary" className="bg-green-100 text-green-800">
                                     Verified
                                   </Badge>
                                 )}
                               </div>
-                              <p className="text-muted-foreground text-sm">
+                              <p className="text-slate-600 dark:text-slate-400 text-sm">
                                 {lawyer.location}, {lawyer.city} - {lawyer.pincode}
                               </p>
                             </div>
@@ -795,7 +795,7 @@ export const LawyerFinder = ({ category }: LawyerFinderProps) => {
                             ))}
                           </div>
 
-                          <div className="text-muted-foreground text-sm space-y-1">
+                          <div className="text-sm text-slate-600 dark:text-slate-400 space-y-1">
                             <p>Experience: {lawyer.experience} years</p>
                             <div className="flex items-center justify-between">
                               <span className="flex items-center">
@@ -820,7 +820,7 @@ export const LawyerFinder = ({ category }: LawyerFinderProps) => {
                               {lawyer.address}
                             </p>
                             {lawyer.distance !== undefined && (
-                              <p className="text-primary-foreground font-medium"> {/* Changed text-blue-600 dark:text-blue-400 to text-primary-foreground */}
+                              <p className="text-blue-600 dark:text-blue-400 font-medium">
                                 {lawyer.distance} km away
                               </p>
                             )}
@@ -858,7 +858,7 @@ export const LawyerFinder = ({ category }: LawyerFinderProps) => {
 
       {/* Phone Modal */}
       <Dialog open={!!showPhoneModal} onOpenChange={() => setShowPhoneModal(null)}>
-        <DialogContent className="bg-card border-border">
+        <DialogContent>
           <DialogHeader>
             <DialogTitle>Contact Number</DialogTitle>
             <DialogDescription>

@@ -107,7 +107,7 @@ export const SettingsPanel = () => {
   return (
     <div className="space-y-6">
       {/* Profile Settings */}
-      <Card className="bg-card border-border">
+      <Card>
         <CardHeader>
           <CardTitle className="flex items-center">
             <User className="h-5 w-5 mr-2" />
@@ -119,7 +119,7 @@ export const SettingsPanel = () => {
           <div className="flex items-center space-x-4">
             <Avatar className="h-16 w-16">
               <AvatarImage src={profile.avatar} />
-              <AvatarFallback className="bg-secondary text-primary-foreground text-lg">
+              <AvatarFallback className="text-lg">
                 {profile.name.charAt(0).toUpperCase() || "U"}
               </AvatarFallback>
             </Avatar>
@@ -153,7 +153,7 @@ export const SettingsPanel = () => {
                 placeholder="Enter your email"
                 disabled
               />
-              <p className="text-xs text-muted-foreground mt-1">
+              <p className="text-xs text-slate-500 mt-1">
                 Email cannot be changed
               </p>
             </div>
@@ -176,10 +176,10 @@ export const SettingsPanel = () => {
                   handleProfileChange("location", value)
                 }
               >
-                <SelectTrigger className="bg-background text-foreground">
+                <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent className="bg-card border-border">
+                <SelectContent>
                   {cities.map((city) => (
                     <SelectItem key={city} value={city}>
                       <div className="flex items-center">
@@ -205,14 +205,14 @@ export const SettingsPanel = () => {
       </Card>
 
       {/* Account Settings */}
-      <Card className="bg-card border-border">
+      <Card>
         <CardHeader>
           <CardTitle>Account Settings</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div>
             <Label>Authentication Method</Label>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-slate-600 dark:text-slate-400">
               {user?.app_metadata?.provider === "google"
                 ? "Google Account"
                 : "Email & Password"}
@@ -223,7 +223,7 @@ export const SettingsPanel = () => {
 
           <div className="space-y-2">
             <Label>Data & Privacy</Label>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-slate-600 dark:text-slate-400">
               Your data is securely stored and never shared with third parties.
             </p>
           </div>

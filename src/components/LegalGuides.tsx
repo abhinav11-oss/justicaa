@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -246,10 +247,10 @@ export const LegalGuides = () => {
           <Badge variant="secondary">{selectedGuide.category}</Badge>
         </div>
 
-        <Card className="bg-card border-border">
+        <Card>
           <CardHeader>
             <div className="flex items-center space-x-3">
-              <div className="bg-secondary p-2 rounded-lg">
+              <div className="bg-blue-100 p-2 rounded-lg">
                 <selectedGuide.icon className="h-6 w-6 text-blue-600" />
               </div>
               <div className="flex-1">
@@ -259,7 +260,7 @@ export const LegalGuides = () => {
                 </CardDescription>
               </div>
             </div>
-            <div className="flex items-center space-x-4 text-sm text-muted-foreground mt-4">
+            <div className="flex items-center space-x-4 text-sm text-slate-600 mt-4">
               <span>Duration: {selectedGuide.duration}</span>
               <span>Difficulty: {selectedGuide.difficulty}</span>
               <span>Progress: {Math.round(progress)}%</span>
@@ -274,7 +275,7 @@ export const LegalGuides = () => {
             return (
               <Card 
                 key={step.id} 
-                className={`cursor-pointer transition-all ${isCompleted ? 'bg-secondary border-border' : 'hover:shadow-md bg-card border-border'}`}
+                className={`cursor-pointer transition-all ${isCompleted ? 'bg-green-50 border-green-200' : 'hover:shadow-md'}`}
                 onClick={() => toggleStepCompletion(step.id)}
               >
                 <CardContent className="p-4">
@@ -283,14 +284,14 @@ export const LegalGuides = () => {
                       {isCompleted ? (
                         <CheckCircle className="h-5 w-5 text-green-600" />
                       ) : (
-                        <Circle className="h-5 w-5 text-muted-foreground" />
+                        <Circle className="h-5 w-5 text-slate-400" />
                       )}
                     </div>
                     <div className="flex-1">
-                      <h3 className={`font-medium ${isCompleted ? 'text-green-800 dark:text-green-400' : 'text-foreground'}`}>
+                      <h3 className={`font-medium ${isCompleted ? 'text-green-800' : 'text-slate-900'}`}>
                         Step {index + 1}: {step.title}
                       </h3>
-                      <p className={`text-sm mt-1 ${isCompleted ? 'text-green-700 dark:text-green-300' : 'text-muted-foreground'}`}>
+                      <p className={`text-sm mt-1 ${isCompleted ? 'text-green-700' : 'text-slate-600'}`}>
                         {step.description}
                       </p>
                     </div>
@@ -307,18 +308,18 @@ export const LegalGuides = () => {
   return (
     <div className="space-y-6">
       <div className="text-center">
-        <h3 className="text-2xl font-bold text-foreground mb-2">Legal Process Guides</h3>
-        <p className="text-muted-foreground">Step-by-step guidance through common legal procedures</p>
+        <h3 className="text-2xl font-bold text-slate-900 mb-2">Legal Process Guides</h3>
+        <p className="text-slate-600">Step-by-step guidance through common legal procedures</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {guides.map((guide) => {
           const progress = getProgress(guide);
           return (
-            <Card key={guide.id} className="hover:shadow-lg transition-all duration-300 hover:-translate-y-1 bg-card border-border">
+            <Card key={guide.id} className="hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
               <CardHeader>
                 <div className="flex items-center space-x-3">
-                  <div className="bg-secondary p-2 rounded-lg">
+                  <div className="bg-blue-100 p-2 rounded-lg">
                     <guide.icon className="h-6 w-6 text-blue-600" />
                   </div>
                   <div className="flex-1">
@@ -336,14 +337,14 @@ export const LegalGuides = () => {
                 </CardDescription>
                 
                 <div className="space-y-2 mb-4">
-                  <div className="flex justify-between text-sm text-muted-foreground">
+                  <div className="flex justify-between text-sm text-slate-600">
                     <span>{guide.duration}</span>
                     <span>{guide.difficulty}</span>
                   </div>
                   {progress > 0 && (
                     <div>
                       <Progress value={progress} className="h-2" />
-                      <p className="text-xs text-muted-foreground mt-1">{Math.round(progress)}% completed</p>
+                      <p className="text-xs text-slate-500 mt-1">{Math.round(progress)}% completed</p>
                     </div>
                   )}
                 </div>

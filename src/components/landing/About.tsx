@@ -144,17 +144,17 @@ export const About = () => {
               viewport={{ once: true }}
               whileHover={{ scale: 1.03 }} // Reduced hover scale, removed rotateY
             >
-              <Card className="text-center bg-card/80 backdrop-blur-sm border border-border shadow-sm card-hover relative overflow-hidden group">
+              <Card className="text-center bg-background/80 backdrop-blur-sm border-0 shadow-sm card-hover relative overflow-hidden group">
                 {/* Animated Background (simplified) */}
                 <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-primary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
 
                 <CardContent className="pt-6 relative z-10">
                   <motion.div
                     className="bg-primary/10 w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3 relative overflow-hidden"
-                    whileHover={{ scale: 1.1, rotate: 5 }}
-                    transition={{ duration: 0.2 }}
+                    whileHover={{ scale: 1.1 }} // Reduced scale, removed rotate
+                    transition={{ duration: 0.3 }} // Reduced duration
                   >
-                    <stat.icon className="h-6 w-6 text-primary-foreground relative z-10" /> {/* Changed text-primary to text-primary-foreground */}
+                    <stat.icon className="h-6 w-6 text-primary relative z-10" />
                     <motion.div
                       className="absolute inset-0 bg-primary/20"
                       animate={{ opacity: [0.3, 0.6, 0.3] }} // Simplified animation
@@ -231,7 +231,7 @@ export const About = () => {
               </div>
             </div>
 
-            <Card className="bg-card border-border shadow-lg">
+            <Card className="bg-background border-0 shadow-lg">
               <CardHeader className="text-center">
                 <div className="gradient-primary w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-4">
                   <Scale className="h-10 w-10 text-white" />
@@ -279,7 +279,7 @@ export const About = () => {
               {values.map((value, index) => (
                 <Card
                   key={index}
-                  className="text-center bg-card border-border shadow-sm card-hover"
+                  className="text-center bg-background border-0 shadow-sm card-hover"
                 >
                   <CardContent className="pt-6">
                     <div className="gradient-primary w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4">

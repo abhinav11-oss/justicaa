@@ -234,7 +234,7 @@ export const Features = () => {
                   >
                     <Badge
                       variant="secondary"
-                      className="mb-3 bg-primary/10 text-primary-foreground text-sm w-fit"
+                      className="mb-3 bg-primary/10 text-primary text-sm w-fit"
                     >
                       {feature.highlight}
                     </Badge>
@@ -342,7 +342,7 @@ export const Features = () => {
                 viewport={{ once: true }}
                 whileHover={{ scale: 1.01, y: -3 }} // Reduced hover effect
               >
-                <div className="bg-card/80 backdrop-blur-sm rounded-xl p-6 card-hover border border-border/50 relative overflow-hidden">
+                <div className="bg-background/80 backdrop-blur-sm rounded-xl p-6 card-hover border border-border/50 relative overflow-hidden">
                   {/* Hover Gradient */}
                   <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
 
@@ -351,7 +351,7 @@ export const Features = () => {
                     whileHover={{ scale: 1.05 }} // Reduced scale, removed rotate
                     transition={{ duration: 0.3 }} // Reduced duration
                   >
-                    <feature.icon className="h-6 w-6 text-primary-foreground" />
+                    <feature.icon className="h-6 w-6 text-primary" />
                   </motion.div>
                   <h4 className="font-semibold text-foreground mb-2 relative z-10">
                     {feature.title}
