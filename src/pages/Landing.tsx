@@ -59,7 +59,7 @@ const Landing = () => {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Header onCTAClick={handleCTAClick} onTryForFree={handleTryForFree} />
-      <TracingBeam className="px-6"> {/* Wrap content with TracingBeam */}
+      <TracingBeam> {/* Removed className="px-6" */}
         <motion.div initial="initial" animate="animate" variants={stagger}>
           <motion.div variants={fadeInUp}>
             <Hero onCTAClick={handleCTAClick} onTryForFree={handleTryForFree} />
