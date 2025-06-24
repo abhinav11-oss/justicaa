@@ -45,7 +45,7 @@
   .dark {
     --background: 0 0% 0%; /* Pure black background */
     --foreground: 0 0% 98%;
-    --card: 240 20% 17%;
+    --card: 240 20% 8%; /* Changed from 17% to 8% for darker grey */
     --card-foreground: 0 0% 98%;
     --popover: 240 20% 17%;
     --popover-foreground: 0 0% 98%;
@@ -77,19 +77,6 @@
     --warning: 45 93% 47%;
     --blue-gradient-start: 217 91% 60%;
     --blue-gradient-end: 224 76% 48%;
-  }
-}
-
-@layer base {
-  * {
-    @apply border-border;
-  }
-  html {
-    @apply dark;
-  }
-  body {
-    @apply bg-background text-foreground;
-    font-family: "Inter", sans-serif;
   }
 }
 
