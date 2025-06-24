@@ -269,7 +269,7 @@ export const Hero = ({ onCTAClick, onTryForFree }: HeroProps) => {
             transition={{ duration: 0.8, delay: 0.5, type: "spring", bounce: 0.3 }}
           >
             <img
-              src="https://images.pexels.com/photos/8386440/pexels-photo-8386440.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+              src="https://assets.dyad.ai/a-dramatic-conceptual-illustration-depic_b8X5G5AnREiRj-v2pKW72Q_rW8OIG3CRcSxLzjbjHCfBA.jpeg"
               alt="AI Legal Assistant"
               className="rounded-3xl shadow-2xl object-cover w-full h-full max-w-md lg:max-w-none"
               style={{ aspectRatio: '3/4' }}
