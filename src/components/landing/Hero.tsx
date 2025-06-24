@@ -111,16 +111,16 @@ export const Hero = ({ onCTAClick, onTryForFree }: HeroProps) => {
       />
 
       <div className="container mx-auto px-4 py-12 md:py-20 relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-1 gap-12 items-center max-w-7xl mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center max-w-7xl mx-auto"> {/* Changed to lg:grid-cols-2 */}
           {/* Left Content */}
           <motion.div
             variants={containerVariants}
             initial="hidden"
             animate="visible"
-            className="space-y-8 lg:pr-8 text-center" /* Removed lg:text-left to keep it centered */
+            className="space-y-8 lg:pr-8 text-center lg:text-left" /* Re-added lg:text-left */
           >
             {/* Badge */}
-            <motion.div variants={itemVariants} className="flex justify-center"> {/* Removed lg:justify-start */}
+            <motion.div variants={itemVariants} className="flex justify-center lg:justify-start"> {/* Re-added lg:justify-start */}
               <Badge
                 variant="outline"
                 className="px-4 py-2 text-sm font-medium border-primary/20 bg-primary/5 backdrop-blur-sm"
@@ -173,7 +173,7 @@ export const Hero = ({ onCTAClick, onTryForFree }: HeroProps) => {
             </motion.div>
 
             {/* Features List */}
-            <motion.div variants={itemVariants} className="space-y-3 flex flex-col items-center"> {/* Removed lg:items-start */}
+            <motion.div variants={itemVariants} className="space-y-3 flex flex-col items-center lg:items-start"> {/* Re-added lg:items-start */}
               {[
                 "For consumers",
                 "For lawyers",
@@ -191,7 +191,7 @@ export const Hero = ({ onCTAClick, onTryForFree }: HeroProps) => {
             </motion.div>
 
             {/* CTA Button */}
-            <motion.div variants={itemVariants} className="flex justify-center"> {/* Removed lg:justify-start */}
+            <motion.div variants={itemVariants} className="flex justify-center lg:justify-start"> {/* Re-added lg:justify-start */}
               <motion.div
                 whileHover={{ scale: 1.03 }} // Slightly reduced hover scale
                 whileTap={{ scale: 0.97 }} // Slightly reduced tap scale
@@ -258,6 +258,32 @@ export const Hero = ({ onCTAClick, onTryForFree }: HeroProps) => {
                 </motion.div>
               ))}
             </motion.div>
+          </motion.div>
+
+          {/* Right Content - AI Lawyer Image */}
+          <motion.div
+            variants={itemVariants}
+            className="relative flex justify-center items-center h-96 lg:h-auto"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8, delay: 0.5, type: "spring", bounce: 0.3 }}
+          >
+            <img
+              src="https://images.pexels.com/photos/8386440/pexels-photo-8386440.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+              alt="AI Legal Assistant"
+              className="rounded-3xl shadow-2xl object-cover w-full h-full max-w-md lg:max-w-none"
+              style={{ aspectRatio: '3/4' }}
+            />
+            <motion.div
+              className="absolute inset-0 rounded-3xl bg-gradient-to-br from-primary/20 via-transparent to-transparent opacity-50"
+              animate={{ opacity: [0.5, 0.7, 0.5] }}
+              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+            />
+            <motion.div
+              className="absolute -bottom-4 -right-4 w-24 h-24 bg-primary/30 rounded-full blur-xl"
+              animate={{ scale: [1, 1.2, 1], rotate: [0, 30, 0] }}
+              transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+            />
           </motion.div>
         </div>
       </div>
