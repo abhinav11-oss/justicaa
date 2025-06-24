@@ -80,6 +80,10 @@
 }
 
 @layer components {
+  html {
+    @apply transition-colors duration-300; /* Added for smooth theme transitions */
+  }
+
   .animate-fade-in {
     animation: fadeIn 0.5s ease-in-out;
   }

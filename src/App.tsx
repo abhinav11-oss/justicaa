@@ -19,7 +19,7 @@ const App = () => (
     <ThemeProvider
       attribute="class"
       defaultTheme="dark"
-      disableTransitionOnChange
+      disableTransitionOnChange={false} // Changed to false to enable transitions
     >
       <TooltipProvider>
         <AuthProvider>
