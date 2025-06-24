@@ -1,4 +1,3 @@
-
 import { useState, useRef, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
@@ -14,6 +13,8 @@ import { useAuth } from "@/hooks/useAuth";
 import { QuickQuestions } from "@/components/QuickQuestions";
 import { VoiceChat, useSpeakText } from "@/components/VoiceChat";
 import { useIsMobile } from "@/hooks/use-mobile";
+import ReactMarkdown from 'react-markdown'; // Import ReactMarkdown
+import remarkGfm from 'remark-gfm'; // Import remarkGfm for GitHub Flavored Markdown
 
 interface Message {
   id: string;
@@ -308,7 +309,13 @@ export const ChatInterface = ({ category }: ChatInterfaceProps) => {
                         }`}
                       >
                         <div className="prose prose-sm max-w-none">
-                          <p className="whitespace-pre-wrap text-sm md:text-base">{message.content}</p>
+                          {message.role === "assistant" ? (
+                            <ReactMarkdown className="whitespace-pre-wrap text-sm md:text-base" remarkPlugins={[remarkGfm]}>
+                              {message.content}
+                            </ReactMarkdown>
+                          ) : (
+                            <p className="whitespace-pre-wrap text-sm md:text-base">{message.content}</p>
+                          )}
                         </div>
                         
                         <div className="flex items-center justify-between mt-2 pt-2 border-t border-current/10">
