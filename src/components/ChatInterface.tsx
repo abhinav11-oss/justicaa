@@ -1,4 +1,3 @@
-
 import { useState, useRef, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
@@ -367,7 +366,7 @@ export const ChatInterface = ({ category }: ChatInterfaceProps) => {
           </div>
 
           {/* Input Area */}
-          <div className="border-t p-3 md:p-4 flex-shrink-0">
+          <div className="p-3 md:p-4 flex-shrink-0">
             <div className="flex items-center space-x-2 mb-2">
               <div className="flex-1 flex space-x-2">
                 <Input

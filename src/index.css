@@ -43,7 +43,7 @@
   }
 
   .dark {
-    --background: 220 15% 3%; /* Very dark blue-gray, almost black */
+    --background: 0 0% 0%; /* Pure black for overall background */
     --foreground: 210 20% 95%; /* Off-white text */
     --card: 220 15% 8%; /* Dark gray for cards */
     --card-foreground: 210 20% 95%;
@@ -59,8 +59,8 @@
     --accent-foreground: 0 0% 100%;
     --destructive: 0 80% 60%; /* Red */
     --destructive-foreground: 0 0% 100%;
-    --border: 220 10% 18%; /* Subtle dark gray border */
-    --input: 220 10% 18%;
+    --border: 0 0% 0%; /* Make all default borders invisible */
+    --input: 220 10% 18%; /* Input background, not border */
     --ring: 280 80% 60%; /* Primary color for ring */
     --chart-1: 217 91% 60%;
     --chart-2: 142 71% 45%;
@@ -69,24 +69,13 @@
     --chart-5: 197 37% 24%;
 
     /* Custom color variables */
-    --surface: 220 15% 6%; /* Slightly lighter than background for surface elements */
+    --surface: 0 0% 0%; /* Pure black for surfaces */
     --sidebar: 0 0% 0%; /* Pure black for sidebar */
     --text-secondary: 215 14% 50%;
     --success: 142 70% 50%;
     --warning: 45 90% 55%;
     --blue-gradient-start: 280 80% 65%; /* Lighter purple for gradient start */
     --blue-gradient-end: 280 80% 55%; /* Darker purple for gradient end */
-  }
-
-  /* Dashboard specific overrides for a completely black background in dark mode */
-  .dark .dashboard-dark-override {
-    --background: 0 0% 0%; /* Pure black */
-    --surface: 0 0% 0%; /* Pure black */
-    --border: 0 0% 0%; /* Invisible borders */
-    --input: 0 0% 0%; /* Invisible input borders */
-    --sidebar: 0 0% 0%; /* Pure black for sidebar */
-    /* Do NOT override --card, --popover, --secondary, --muted here.
-       Let them inherit from the general .dark block to be dark gray. */
   }
 }
 

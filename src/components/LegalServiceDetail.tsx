@@ -214,7 +214,7 @@ export function LegalServiceDetail({ service, onBack, onStartChat }: LegalServic
             <CardContent>
               <div className="space-y-2">
                 {details.documents.map((doc, index) => (
-                  <div key={index} className="flex items-center justify-between p-2 border rounded">
+                  <div key={index} className="flex items-center justify-between p-2 rounded">
                     <span className="text-sm">{doc}</span>
                     <Badge variant="outline" className="text-xs">Template</Badge>
                   </div>
@@ -234,7 +234,7 @@ export function LegalServiceDetail({ service, onBack, onStartChat }: LegalServic
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {details.guides.map((step, index) => (
-              <div key={index} className="flex items-start space-x-3 p-4 border rounded-lg">
+              <div key={index} className="flex items-start space-x-3 p-4 rounded-lg">
                 <div className="bg-primary text-primary-foreground rounded-full w-6 h-6 flex items-center justify-center text-sm font-medium">
                   {index + 1}
                 </div>

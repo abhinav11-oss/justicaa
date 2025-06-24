@@ -240,7 +240,7 @@ export function LawyerResults({ onClose }: LawyerResultsProps) {
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
       <Card className="w-full max-w-4xl max-h-[90vh] overflow-hidden bg-white">
-        <CardHeader className="border-b">
+        <CardHeader className="">
           <div className="flex items-center justify-between">
             <div>
               <CardTitle className="flex items-center">
@@ -284,7 +284,7 @@ export function LawyerResults({ onClose }: LawyerResultsProps) {
           ) : (
             <div className="grid gap-4 md:grid-cols-2">
               {lawyers.map((lawyer) => (
-                <Card key={lawyer.id} className="hover:shadow-lg transition-shadow border-slate-200">
+                <Card key={lawyer.id} className="hover:shadow-lg transition-shadow">
                   <CardContent className="p-6">
                     <div className="space-y-3">
                       <div className="flex justify-between items-start">

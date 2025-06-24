@@ -236,7 +236,7 @@ export const KnowledgeBase = () => {
                   <CollapsibleContent>
                     <CardContent className="pt-0">
                       <p className="text-muted-foreground leading-relaxed">{faq.answer}</p>
-                      <div className="mt-4 p-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg">
+                      <div className="mt-4 p-3 bg-amber-50 dark:bg-amber-900/20 rounded-lg">
                         <p className="text-sm text-amber-800 dark:text-amber-200">
                           <strong>Disclaimer:</strong> This information is for general guidance only. 
                           Laws vary by jurisdiction. Consult with a qualified attorney for advice specific to your situation.
@@ -252,7 +252,7 @@ export const KnowledgeBase = () => {
       </div>
 
       {/* Contact CTA */}
-      <Card className="bg-primary/5 border-primary/20">
+      <Card className="bg-primary/5">
         <CardContent className="text-center py-6">
           <h4 className="text-lg font-medium text-primary mb-2">Need Specific Legal Advice?</h4>
           <p className="text-primary-foreground/80 mb-4">Our knowledge base provides general information. For personalized legal counsel, connect with a qualified attorney.</p>

@@ -462,7 +462,7 @@ export const LegalGuides = () => {
             return (
               <Card 
                 key={step.id} 
-                className={`cursor-pointer transition-all ${isCompleted ? 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800' : 'hover:shadow-md'}`}
+                className={`cursor-pointer transition-all ${isCompleted ? 'bg-green-50 dark:bg-green-900/20' : 'hover:shadow-md'}`}
                 onClick={() => toggleStepCompletion(step.id)}
               >
                 <CardContent className="p-4">

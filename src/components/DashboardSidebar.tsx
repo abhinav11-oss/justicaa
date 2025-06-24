@@ -156,7 +156,7 @@ export const DashboardSidebar: React.FC<SidebarProps> = ({
           onMouseLeave={() => setIsExpanded(false)}
           className={`
             relative flex flex-col items-center pt-4
-            bg-card/80 backdrop-blur-xl border-r border-border
+            bg-card/80 backdrop-blur-xl
             text-card-foreground h-screen overflow-hidden
           `}
         >
@@ -249,14 +249,14 @@ export const DashboardSidebar: React.FC<SidebarProps> = ({
           </nav>
           {/* User avatar or trial -- at bottom, just an icon */}
           <motion.div
-            className="p-4 border-t border-border/50 w-full flex flex-col items-center"
+            className="p-4 w-full flex flex-col items-center"
             initial={{ y: 50, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.5 }}
           >
             {user ? (
               <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}>
-                <Avatar className="h-10 w-10 ring-2 ring-primary/20 ring-offset-2 ring-offset-background">
+                <Avatar className="h-10 w-10">
                   <AvatarImage src={user.user_metadata?.avatar_url} />
                   <AvatarFallback className="gradient-primary text-white font-semibold">
                     {userInitial}
@@ -328,7 +328,7 @@ export const DashboardSidebar: React.FC<SidebarProps> = ({
               animate={{ x: 0 }}
               exit={{ x: "-100%" }}
               transition={{ duration: 0.3, ease: "easeInOut" }}
-              className="fixed inset-y-0 left-0 w-64 bg-card z-50 flex flex-col pt-4 border-r border-border shadow-lg"
+              className="fixed inset-y-0 left-0 w-64 bg-card z-50 flex flex-col pt-4 shadow-lg"
             >
               <div className="flex items-center justify-between px-4 mb-8 mt-2">
                 <div className="flex items-center">
@@ -371,9 +371,9 @@ export const DashboardSidebar: React.FC<SidebarProps> = ({
                   </motion.button>
                 ))}
               </nav>
-              <div className="p-4 border-t border-border/50 w-full flex flex-col items-center">
+              <div className="p-4 w-full flex flex-col items-center">
                 {user ? (
-                  <Avatar className="h-10 w-10 ring-2 ring-primary/20 ring-offset-2 ring-offset-background mb-4">
+                  <Avatar className="h-10 w-10 mb-4">
                     <AvatarImage src={user.user_metadata?.avatar_url} />
                     <AvatarFallback className="gradient-primary text-white font-semibold">
                       {userInitial}
@@ -401,4 +401,3 @@ export const DashboardSidebar: React.FC<SidebarProps> = ({
       )}
     </>
   );
-};

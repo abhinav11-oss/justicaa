@@ -231,10 +231,9 @@ export const DocumentTemplates = () => {
                 </div>
                 <div className="flex-1">
                   <CardTitle className="text-lg">{template.title}</CardTitle>
-                  <div className="flex space-x-2 mt-1">
-                    <Badge variant="outline">{template.category}</Badge>
-                    <Badge variant="secondary">{template.difficulty}</Badge>
-                  </div>
+                  <Badge variant="outline" className="mt-1">
+                    {template.category}
+                  </Badge>
                 </div>
               </div>
             </CardHeader>
@@ -328,7 +327,7 @@ export const DocumentTemplates = () => {
                         </div>
                       ))}
                       
-                      <div className="pt-4 border-t">
+                      <div className="pt-4">
                         <Button onClick={generateDocument} className="w-full">
                           <Download className="h-4 w-4 mr-2" />
                           Generate Document
@@ -344,7 +343,7 @@ export const DocumentTemplates = () => {
       </div>
 
       {/* Legal Notice */}
-      <Card className="bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800">
+      <Card className="bg-amber-50 dark:bg-amber-900/20">
         <CardContent className="py-4">
           <p className="text-sm text-amber-800 dark:text-amber-200">
             <strong>Important:</strong> These templates provide general forms and should be reviewed by a qualified attorney 

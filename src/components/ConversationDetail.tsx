@@ -222,7 +222,7 @@ export function ConversationDetail({ conversationId, onBack }: ConversationDetai
 
       {/* Continue Chat Button */}
       {conversation.status === 'active' && (
-        <Card className="bg-primary/5 border-primary/20">
+        <Card className="bg-primary/5">
           <CardContent className="pt-6 text-center">
             <p className="text-primary mb-4">Want to continue this conversation?</p>
             <Button className="bg-primary hover:bg-primary/90">

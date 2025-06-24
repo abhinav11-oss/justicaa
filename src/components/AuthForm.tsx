@@ -231,7 +231,7 @@ export const AuthForm = ({ onAuthSuccess, initialTab = "signin" }: AuthFormProps
   };
 
   return (
-    <Card className="border border-border">
+    <Card>
       <CardHeader className="text-center">
         <CardTitle className="text-2xl">
           {showForgotPassword ? "Reset Password" : (activeTab === "signup" ? "Create Account" : "Welcome Back")}

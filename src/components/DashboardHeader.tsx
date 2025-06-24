@@ -49,10 +49,7 @@ export const DashboardHeader: React.FC<HeaderProps> = ({
 
   return (
     <header
-      className={`px-6 py-4 border-b flex justify-between items-center bg-card text-card-foreground`}
-      style={{
-        borderColor: "hsl(var(--border))",
-      }}
+      className={`px-6 py-4 flex justify-between items-center bg-card text-card-foreground`}
     >
       <div className="flex items-center space-x-4">
         {isMobile && (

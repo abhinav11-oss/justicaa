@@ -309,7 +309,11 @@ export const DocumentGenerator = ({ category }: DocumentGeneratorProps) => {
     
     link.href = url;
     link.download = `Justicaa_${title.replace(/\s+/g, '_')}_${timestamp}.doc`;
+    
+    // Append to body, click, then remove
+    document.body.appendChild(link);
     link.click();
+    document.body.removeChild(link);
     
     URL.revokeObjectURL(url);
   };
@@ -791,7 +795,7 @@ Date: ${today}`;
       </Tabs>
 
       {/* Disclaimer */}
-      <Card className="bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800">
+      <Card className="bg-amber-50 dark:bg-amber-900/20">
         <CardContent className="pt-6">
           <div className="flex items-start space-x-2">
             <AlertCircle className="h-5 w-5 text-amber-600 dark:text-amber-200 mt-0.5" />

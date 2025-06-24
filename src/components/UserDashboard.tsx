@@ -339,32 +339,32 @@ export function UserDashboard() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "active":
-        return "bg-green-500/10 text-green-400 border border-green-500/20";
+        return "bg-green-500/10 text-green-400";
       case "completed":
-        return "bg-primary/10 text-primary border border-primary/20";
+        return "bg-primary/10 text-primary";
       case "pending":
-        return "bg-yellow-500/10 text-yellow-400 border border-yellow-500/20";
+        return "bg-yellow-500/10 text-yellow-400";
       case "draft":
-        return "bg-muted text-muted-foreground border border-border";
+        return "bg-muted text-muted-foreground";
       case "archived":
-        return "bg-primary/10 text-primary border border-primary/20";
+        return "bg-primary/10 text-primary";
       default:
-        return "bg-muted text-muted-foreground border border-border";
+        return "bg-muted text-muted-foreground";
     }
   };
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
       case "high":
-        return "bg-red-500/10 text-red-400 border border-red-500/20";
+        return "bg-red-500/10 text-red-400";
       case "medium":
-        return "bg-yellow-500/10 text-yellow-400 border border-yellow-500/20";
+        return "bg-yellow-500/10 text-yellow-400";
       case "low":
-        return "bg-green-500/10 text-green-400 border border-green-500/20";
+        return "bg-green-500/10 text-green-400";
       case "urgent":
-        return "bg-red-600/20 text-red-300 border border-red-600/30";
+        return "bg-red-600/20 text-red-300";
       default:
-        return "bg-muted text-muted-foreground border border-border";
+        return "bg-muted text-muted-foreground";
     }
   };
 
@@ -464,7 +464,7 @@ export function UserDashboard() {
     >
       {/* Welcome Section with Enhanced Gradients and Animations (simplified) */}
       <motion.div variants={itemVariants}>
-        <Card className="relative overflow-hidden border-primary/20">
+        <Card className="relative overflow-hidden">
           {/* Multiple Background Layers */}
           <div className="absolute inset-0">
             <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-primary/10 to-primary/5"></div>
@@ -634,7 +634,7 @@ export function UserDashboard() {
             }}
           >
             <Card
-              className={`${stat.bg} ${stat.border} border backdrop-blur-sm relative overflow-hidden group`}
+              className={`${stat.bg} backdrop-blur-sm relative overflow-hidden group`}
             >
               {/* Animated Background Gradient (simplified) */}
               <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-primary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
@@ -721,7 +721,7 @@ export function UserDashboard() {
 
       {/* Enhanced Main Content */}
       <motion.div variants={itemVariants}>
-        <Card className="bg-card/80 backdrop-blur-xl border-border shadow-2xl">
+        <Card className="bg-card/80 backdrop-blur-xl shadow-2xl">
           <CardHeader className="pb-6">
             <div className="flex items-center justify-between">
               <div>
@@ -836,7 +836,7 @@ export function UserDashboard() {
                         whileHover={{ scale: 1.005 }} // Reduced scale
                         className="group"
                       >
-                        <Card className="border-border hover:border-primary/30 transition-all duration-300 bg-card/50 backdrop-blur-sm">
+                        <Card className="hover:border-primary/30 transition-all duration-300 bg-card/50 backdrop-blur-sm">
                           <CardContent className="p-6">
                             <div className="flex justify-between items-start">
                               <div
@@ -925,7 +925,7 @@ export function UserDashboard() {
                         whileHover={{ scale: 1.005 }} // Reduced scale
                         className="group"
                       >
-                        <Card className="border-border hover:border-primary/30 transition-all duration-300 bg-card/50 backdrop-blur-sm">
+                        <Card className="hover:border-primary/30 transition-all duration-300 bg-card/50 backdrop-blur-sm">
                           <CardContent className="p-6">
                             <div className="flex justify-between items-start">
                               <div
@@ -1029,7 +1029,7 @@ export function UserDashboard() {
                         whileHover={{ scale: 1.005 }} // Reduced scale
                         className="group"
                       >
-                        <Card className="border-border hover:border-primary/30 transition-all duration-300 bg-card/50 backdrop-blur-sm">
+                        <Card className="hover:border-primary/30 transition-all duration-300 bg-card/50 backdrop-blur-sm">
                           <CardContent className="p-6">
                             <div className="flex justify-between items-start">
                               <div className="flex-1">
@@ -1063,7 +1063,7 @@ export function UserDashboard() {
                                   variant="outline"
                                   size="sm"
                                   onClick={() => downloadDocument(document)}
-                                  className="border-border text-foreground hover:bg-muted"
+                                  className="text-foreground hover:bg-muted"
                                 >
                                   <Download className="h-4 w-4 mr-2" />
                                   Download
@@ -1124,7 +1124,7 @@ export function UserDashboard() {
                         whileHover={{ scale: 1.005 }} // Reduced scale
                         className="group"
                       >
-                        <Card className="border-border hover:border-primary/30 transition-all duration-300 bg-card/50 backdrop-blur-sm">
+                        <Card className="hover:border-primary/30 transition-all duration-300 bg-card/50 backdrop-blur-sm">
                           <CardContent className="p-6">
                             <div className="flex justify-between items-start">
                               <div className="flex-1">
