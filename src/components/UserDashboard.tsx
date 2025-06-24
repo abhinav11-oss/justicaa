@@ -341,7 +341,7 @@ export function UserDashboard() {
       case "active":
         return "bg-green-500/10 text-green-400 border border-green-500/20";
       case "completed":
-        return "bg-blue-500/10 text-blue-400 border border-blue-500/20";
+        return "bg-primary/10 text-primary border border-primary/20";
       case "pending":
         return "bg-yellow-500/10 text-yellow-400 border border-yellow-500/20";
       case "draft":
@@ -589,9 +589,9 @@ export function UserDashboard() {
             value: conversations.length,
             icon: MessageSquare,
             trend: "+12%",
-            color: "from-blue-500 to-blue-600",
-            bg: "bg-blue-500/10",
-            border: "border-blue-500/20",
+            color: "from-primary to-primary/80",
+            bg: "bg-primary/10",
+            border: "border-primary/20",
           },
           {
             title: "Archived Chats",

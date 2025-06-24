@@ -249,8 +249,8 @@ export const LegalGuides = () => {
         <Card>
           <CardHeader>
             <div className="flex items-center space-x-3">
-              <div className="bg-blue-100 p-2 rounded-lg">
-                <selectedGuide.icon className="h-6 w-6 text-blue-600" />
+              <div className="bg-primary/10 p-2 rounded-lg">
+                <selectedGuide.icon className="h-6 w-6 text-primary" />
               </div>
               <div className="flex-1">
                 <CardTitle className="text-2xl">{selectedGuide.title}</CardTitle>
@@ -274,23 +274,23 @@ export const LegalGuides = () => {
             return (
               <Card 
                 key={step.id} 
-                className={`cursor-pointer transition-all ${isCompleted ? 'bg-green-50 border-green-200' : 'hover:shadow-md'}`}
+                className={`cursor-pointer transition-all ${isCompleted ? 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800' : 'hover:shadow-md'}`}
                 onClick={() => toggleStepCompletion(step.id)}
               >
                 <CardContent className="p-4">
                   <div className="flex items-start space-x-3">
                     <div className="mt-1">
                       {isCompleted ? (
-                        <CheckCircle className="h-5 w-5 text-green-600" />
+                        <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400" />
                       ) : (
                         <Circle className="h-5 w-5 text-muted-foreground" />
                       )}
                     </div>
                     <div className="flex-1">
-                      <h3 className={`font-medium ${isCompleted ? 'text-green-800' : 'text-foreground'}`}>
+                      <h3 className={`font-medium ${isCompleted ? 'text-green-800 dark:text-green-200' : 'text-foreground'}`}>
                         Step {index + 1}: {step.title}
                       </h3>
-                      <p className={`text-sm mt-1 ${isCompleted ? 'text-green-700' : 'text-muted-foreground'}`}>
+                      <p className={`text-sm mt-1 ${isCompleted ? 'text-green-700 dark:text-green-300' : 'text-muted-foreground'}`}>
                         {step.description}
                       </p>
                     </div>
@@ -318,8 +318,8 @@ export const LegalGuides = () => {
             <Card key={guide.id} className="hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
               <CardHeader>
                 <div className="flex items-center space-x-3">
-                  <div className="bg-blue-100 p-2 rounded-lg">
-                    <guide.icon className="h-6 w-6 text-blue-600" />
+                  <div className="bg-primary/10 p-2 rounded-lg">
+                    <guide.icon className="h-6 w-6 text-primary" />
                   </div>
                   <div className="flex-1">
                     <CardTitle className="text-lg">{guide.title}</CardTitle>

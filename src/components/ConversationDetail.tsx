@@ -114,7 +114,7 @@ export function ConversationDetail({ conversationId, onBack }: ConversationDetai
   if (loading) {
     return (
       <div className="flex items-center justify-center py-8">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
       </div>
     );
   }
@@ -122,7 +122,7 @@ export function ConversationDetail({ conversationId, onBack }: ConversationDetai
   if (!conversation) {
     return (
       <div className="text-center py-8">
-        <p className="text-slate-600">Conversation not found</p>
+        <p className="text-muted-foreground">Conversation not found</p>
         <Button onClick={onBack} className="mt-4">Go Back</Button>
       </div>
     );
@@ -146,7 +146,7 @@ export function ConversationDetail({ conversationId, onBack }: ConversationDetai
               <Badge variant={conversation.status === 'active' ? 'default' : 'secondary'}>
                 {conversation.status}
               </Badge>
-              <span className="text-sm text-slate-500">
+              <span className="text-sm text-muted-foreground">
                 {new Date(conversation.created_at).toLocaleDateString()}
               </span>
             </div>
@@ -177,7 +177,7 @@ export function ConversationDetail({ conversationId, onBack }: ConversationDetai
           <ScrollArea className="h-[500px] pr-4">
             <div className="space-y-4">
               {messages.length === 0 ? (
-                <p className="text-center text-slate-500 py-8">No messages in this conversation</p>
+                <p className="text-center text-muted-foreground py-8">No messages in this conversation</p>
               ) : (
                 messages.map((message) => (
                   <div
@@ -188,16 +188,16 @@ export function ConversationDetail({ conversationId, onBack }: ConversationDetai
                       message.sender === 'user' ? 'flex-row-reverse space-x-reverse' : ''
                     }`}>
                       <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                        message.sender === 'user' ? 'bg-blue-600' : 'bg-slate-600'
+                        message.sender === 'user' ? 'bg-primary' : 'bg-muted-foreground'
                       }`}>
                         {message.sender === 'user' ? (
-                          <User className="h-4 w-4 text-white" />
+                          <User className="h-4 w-4 text-primary-foreground" />
                         ) : (
-                          <Bot className="h-4 w-4 text-white" />
+                          <Bot className="h-4 w-4 text-primary-foreground" />
                         )}
                       </div>
                       <Card className={`${
-                        message.sender === 'user' ? 'bg-blue-600 text-white' : 'bg-white'
+                        message.sender === 'user' ? 'bg-primary text-primary-foreground' : 'bg-card'
                       }`}>
                         <CardContent className="p-3">
                           <p className="text-sm whitespace-pre-wrap">{message.content}</p>
@@ -222,10 +222,10 @@ export function ConversationDetail({ conversationId, onBack }: ConversationDetai
 
       {/* Continue Chat Button */}
       {conversation.status === 'active' && (
-        <Card className="bg-blue-50 border-blue-200">
+        <Card className="bg-primary/5 border-primary/20">
           <CardContent className="pt-6 text-center">
-            <p className="text-blue-800 mb-4">Want to continue this conversation?</p>
-            <Button className="bg-blue-600 hover:bg-blue-700">
+            <p className="text-primary mb-4">Want to continue this conversation?</p>
+            <Button className="bg-primary hover:bg-primary/90">
               <MessageSquare className="h-4 w-4 mr-2" />
               Continue Chat
             </Button>

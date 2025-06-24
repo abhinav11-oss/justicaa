@@ -210,11 +210,11 @@ export const KnowledgeBase = () => {
       </div>
 
       {/* Contact CTA */}
-      <Card className="bg-blue-50 border-blue-200">
+      <Card className="bg-primary/5 border-primary/20">
         <CardContent className="text-center py-6">
-          <h4 className="text-lg font-medium text-blue-900 mb-2">Need Specific Legal Advice?</h4>
-          <p className="text-blue-700 mb-4">Our knowledge base provides general information. For personalized legal counsel, connect with a qualified attorney.</p>
-          <Button className="bg-blue-600 hover:bg-blue-700">Find a Lawyer</Button>
+          <h4 className="text-lg font-medium text-primary mb-2">Need Specific Legal Advice?</h4>
+          <p className="text-primary-foreground/80 mb-4">Our knowledge base provides general information. For personalized legal counsel, connect with a qualified attorney.</p>
+          <Button className="bg-primary hover:bg-primary/90">Find a Lawyer</Button>
         </CardContent>
       </Card>
     </div>

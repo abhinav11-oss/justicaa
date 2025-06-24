@@ -226,8 +226,8 @@ export const DocumentTemplates = () => {
           <Card key={template.id} className="hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
             <CardHeader>
               <div className="flex items-center space-x-3">
-                <div className="bg-blue-100 p-2 rounded-lg">
-                  <template.icon className="h-6 w-6 text-blue-600" />
+                <div className="bg-primary/10 p-2 rounded-lg">
+                  <template.icon className="h-6 w-6 text-primary" />
                 </div>
                 <div className="flex-1">
                   <CardTitle className="text-lg">{template.title}</CardTitle>

@@ -656,7 +656,7 @@ export const LawyerFinder = ({ category }: LawyerFinderProps) => {
         <CardContent className="space-y-4">
           {/* Location Status */}
           {locationStatus && (
-            <div className="text-sm bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 p-3 rounded-lg">
+            <div className="text-sm bg-primary/5 dark:bg-primary/20 text-primary dark:text-primary-foreground p-3 rounded-lg">
               {locationStatus}
             </div>
           )}
@@ -820,7 +820,7 @@ export const LawyerFinder = ({ category }: LawyerFinderProps) => {
                               {lawyer.address}
                             </p>
                             {lawyer.distance !== undefined && (
-                              <p className="text-blue-600 dark:text-blue-400 font-medium">
+                              <p className="text-primary font-medium">
                                 {lawyer.distance} km away
                               </p>
                             )}

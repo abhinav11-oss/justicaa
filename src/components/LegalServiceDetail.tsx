@@ -154,12 +154,12 @@ export function LegalServiceDetail({ service, onBack, onStartChat }: LegalServic
           Back
         </Button>
         <div className="flex items-center space-x-3">
-          <div className="bg-blue-100 p-2 rounded-lg">
-            <service.icon className="h-6 w-6 text-blue-600" />
+          <div className="bg-primary/10 p-2 rounded-lg">
+            <service.icon className="h-6 w-6 text-primary" />
           </div>
           <div>
             <h2 className="text-2xl font-bold">{service.title}</h2>
-            <p className="text-slate-600">{service.description}</p>
+            <p className="text-muted-foreground">{service.description}</p>
           </div>
         </div>
       </div>
@@ -176,7 +176,7 @@ export function LegalServiceDetail({ service, onBack, onStartChat }: LegalServic
               {details.faqs.map((faq, index) => (
                 <AccordionItem key={index} value={`item-${index}`}>
                   <AccordionTrigger className="text-left">{faq.question}</AccordionTrigger>
-                  <AccordionContent className="text-slate-600">
+                  <AccordionContent className="text-muted-foreground">
                     {faq.answer}
                   </AccordionContent>
                 </AccordionItem>
@@ -235,10 +235,10 @@ export function LegalServiceDetail({ service, onBack, onStartChat }: LegalServic
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {details.guides.map((step, index) => (
               <div key={index} className="flex items-start space-x-3 p-4 border rounded-lg">
-                <div className="bg-blue-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-medium">
+                <div className="bg-primary text-primary-foreground rounded-full w-6 h-6 flex items-center justify-center text-sm font-medium">
                   {index + 1}
                 </div>
-                <p className="text-sm text-slate-700">{step}</p>
+                <p className="text-sm text-muted-foreground">{step}</p>
               </div>
             ))}
           </div>

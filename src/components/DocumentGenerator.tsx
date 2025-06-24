@@ -690,14 +690,14 @@ Date: ${today}`;
                     <Card 
                       key={template.id} 
                       className={`cursor-pointer transition-all hover:shadow-md ${
-                        selectedTemplate?.id === template.id ? 'ring-2 ring-blue-500' : ''
+                        selectedTemplate?.id === template.id ? 'ring-2 ring-primary' : ''
                       }`}
                       onClick={() => setSelectedTemplate(template)}
                     >
                       <CardContent className="p-4">
                         <div className="flex items-start space-x-3">
-                          <div className="bg-blue-100 p-2 rounded-lg">
-                            <FileText className="h-5 w-5 text-blue-600" />
+                          <div className="bg-primary/10 p-2 rounded-lg">
+                            <FileText className="h-5 w-5 text-primary" />
                           </div>
                           <div className="flex-1">
                             <h4 className="font-semibold">{template.name}</h4>
