@@ -223,7 +223,7 @@ export const DocumentTemplates = () => {
       {/* Templates Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredTemplates.map((template) => (
-          <Card key={template.id} className="hover:shadow-lg transition-all duration-300 hover:-translate-y-1"> {/* Removed border class */}
+          <Card key={template.id} className="hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
             <CardHeader>
               <div className="flex items-center space-x-3">
                 <div className="bg-primary/10 p-2 rounded-lg">
@@ -231,7 +231,7 @@ export const DocumentTemplates = () => {
                 </div>
                 <div className="flex-1">
                   <CardTitle className="text-lg">{template.title}</CardTitle>
-                  <Badge variant="outline" className="mt-1"> {/* Removed border class */}
+                  <Badge variant="outline" className="mt-1">
                     {template.category}
                   </Badge>
                 </div>
@@ -250,7 +250,7 @@ export const DocumentTemplates = () => {
               <div className="flex space-x-2">
                 <Dialog>
                   <DialogTrigger asChild>
-                    <Button variant="outline" size="sm" className="flex-1"> {/* Removed border class */}
+                    <Button variant="outline" size="sm" className="flex-1">
                       <Eye className="h-4 w-4 mr-2" />
                       Preview
                     </Button>
@@ -307,7 +307,7 @@ export const DocumentTemplates = () => {
                             />
                           ) : field.type === 'select' ? (
                             <select
-                              className="w-full p-2 border border-input rounded-md" {/* Removed border class */}
+                              className="w-full p-2 rounded-md"
                               value={formData[field.id] || ''}
                               onChange={(e) => handleFieldChange(field.id, e.target.value)}
                             >
@@ -343,7 +343,7 @@ export const DocumentTemplates = () => {
       </div>
 
       {/* Legal Notice */}
-      <Card className="bg-amber-50 dark:bg-amber-900/20"> {/* Removed border class */}
+      <Card className="bg-amber-50 dark:bg-amber-900/20">
         <CardContent className="py-4">
           <p className="text-sm text-amber-800 dark:text-amber-200">
             <strong>Important:</strong> These templates provide general forms and should be reviewed by a qualified attorney 

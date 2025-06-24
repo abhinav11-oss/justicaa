@@ -464,7 +464,7 @@ export function UserDashboard() {
     >
       {/* Welcome Section with Enhanced Gradients and Animations (simplified) */}
       <motion.div variants={itemVariants}>
-        <Card className="relative overflow-hidden"> {/* Removed border class */}
+        <Card className="relative overflow-hidden">
           {/* Multiple Background Layers */}
           <div className="absolute inset-0">
             <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-primary/10 to-primary/5"></div>
@@ -634,7 +634,7 @@ export function UserDashboard() {
             }}
           >
             <Card
-              className={`${stat.bg} backdrop-blur-sm relative overflow-hidden group`} {/* Removed border class */}
+              className={`${stat.bg} backdrop-blur-sm relative overflow-hidden group`}
             >
               {/* Animated Background Gradient (simplified) */}
               <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-primary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
@@ -721,7 +721,7 @@ export function UserDashboard() {
 
       {/* Enhanced Main Content */}
       <motion.div variants={itemVariants}>
-        <Card className="bg-card/80 backdrop-blur-xl shadow-2xl"> {/* Removed border class */}
+        <Card className="bg-card/80 backdrop-blur-xl shadow-2xl">
           <CardHeader className="pb-6">
             <div className="flex items-center justify-between">
               <div>
@@ -836,7 +836,7 @@ export function UserDashboard() {
                         whileHover={{ scale: 1.005 }} // Reduced scale
                         className="group"
                       >
-                        <Card className="hover:border-primary/30 transition-all duration-300 bg-card/50 backdrop-blur-sm"> {/* Removed border class */}
+                        <Card className="hover:border-primary/30 transition-all duration-300 bg-card/50 backdrop-blur-sm">
                           <CardContent className="p-6">
                             <div className="flex justify-between items-start">
                               <div
@@ -925,7 +925,7 @@ export function UserDashboard() {
                         whileHover={{ scale: 1.005 }} // Reduced scale
                         className="group"
                       >
-                        <Card className="hover:border-primary/30 transition-all duration-300 bg-card/50 backdrop-blur-sm"> {/* Removed border class */}
+                        <Card className="hover:border-primary/30 transition-all duration-300 bg-card/50 backdrop-blur-sm">
                           <CardContent className="p-6">
                             <div className="flex justify-between items-start">
                               <div
@@ -1029,7 +1029,7 @@ export function UserDashboard() {
                         whileHover={{ scale: 1.005 }} // Reduced scale
                         className="group"
                       >
-                        <Card className="hover:border-primary/30 transition-all duration-300 bg-card/50 backdrop-blur-sm"> {/* Removed border class */}
+                        <Card className="hover:border-primary/30 transition-all duration-300 bg-card/50 backdrop-blur-sm">
                           <CardContent className="p-6">
                             <div className="flex justify-between items-start">
                               <div className="flex-1">
@@ -1124,7 +1124,7 @@ export function UserDashboard() {
                         whileHover={{ scale: 1.005 }} // Reduced scale
                         className="group"
                       >
-                        <Card className="hover:border-primary/30 transition-all duration-300 bg-card/50 backdrop-blur-sm"> {/* Removed border class */}
+                        <Card className="hover:border-primary/30 transition-all duration-300 bg-card/50 backdrop-blur-sm">
                           <CardContent className="p-6">
                             <div className="flex justify-between items-start">
                               <div className="flex-1">

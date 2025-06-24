@@ -670,7 +670,7 @@ Date: ${today}`;
     <div className="space-y-6">
       {/* Category Tabs */}
       <Tabs value={selectedCategory} onValueChange={(value: string) => setSelectedCategory(value as keyof typeof categoryMap)}>
-        <TabsList className="grid w-full grid-cols-3"> {/* Removed border class */}
+        <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="Business Law">Business Law</TabsTrigger>
           <TabsTrigger value="Personal Legal">Personal Legal</TabsTrigger>
           <TabsTrigger value="Contract Review">Contract Review</TabsTrigger>
@@ -684,7 +684,7 @@ Date: ${today}`;
             </div>
 
             {/* Available Documents */}
-            <Card> {/* Removed border class */}
+            <Card>
               <CardHeader>
                 <CardTitle>Available Documents for {cat}</CardTitle>
               </CardHeader>
@@ -695,7 +695,7 @@ Date: ${today}`;
                       key={template.id} 
                       className={`cursor-pointer transition-all hover:shadow-md ${
                         selectedTemplate?.id === template.id ? 'ring-2 ring-primary' : ''
-                      }`} {/* Removed border class */}
+                      }`}
                       onClick={() => setSelectedTemplate(template)}
                     >
                       <CardContent className="p-4">
@@ -707,7 +707,7 @@ Date: ${today}`;
                             <h4 className="font-semibold">{template.name}</h4>
                             <p className="text-sm text-muted-foreground mt-1">{template.description}</p>
                             <div className="flex flex-wrap gap-1 mt-2">
-                              <Badge variant="outline" className="text-xs"> {/* Removed border class */}
+                              <Badge variant="outline" className="text-xs">
                                 {template.category}
                               </Badge>
                             </div>
@@ -722,14 +722,14 @@ Date: ${today}`;
 
             {/* Document Form */}
             {selectedTemplate && (
-              <Card> {/* Removed border class */}
+              <Card>
                 <CardHeader>
                   <CardTitle>Generate {selectedTemplate.name}</CardTitle>
                   <div className="flex items-center space-x-4">
                     <div>
                       <label className="text-sm font-medium">Format:</label>
                       <Select value={selectedFormat} onValueChange={(value: "pdf" | "docx") => setSelectedFormat(value)}>
-                        <SelectTrigger className="w-24"> {/* Removed border class */}
+                        <SelectTrigger className="w-24">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
@@ -793,7 +793,7 @@ Date: ${today}`;
       </Tabs>
 
       {/* Disclaimer */}
-      <Card className="bg-amber-50 dark:bg-amber-900/20"> {/* Removed border class */}
+      <Card className="bg-amber-50 dark:bg-amber-900/20">
         <CardContent className="pt-6">
           <div className="flex items-start space-x-2">
             <AlertCircle className="h-5 w-5 text-amber-600 dark:text-amber-200 mt-0.5" />

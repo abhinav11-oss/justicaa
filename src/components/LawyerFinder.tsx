@@ -646,7 +646,7 @@ export const LawyerFinder = ({ category }: LawyerFinderProps) => {
   return (
     <div className="space-y-6">
       {/* Location Controls */}
-      <Card> {/* Removed border class */}
+      <Card>
         <CardHeader>
           <CardTitle className="flex items-center">
             <MapPin className="h-5 w-5 mr-2" />
@@ -666,7 +666,7 @@ export const LawyerFinder = ({ category }: LawyerFinderProps) => {
             <div>
               <label className="text-sm font-medium mb-2 block">Select City</label>
               <Select value={userCity} onValueChange={handleCitySelect}>
-                <SelectTrigger> {/* Removed border class */}
+                <SelectTrigger>
                   <SelectValue placeholder="Select your city" />
                 </SelectTrigger>
                 <SelectContent>
@@ -718,7 +718,7 @@ export const LawyerFinder = ({ category }: LawyerFinderProps) => {
 
       {/* Category Tabs */}
       <Tabs value={selectedCategory} onValueChange={(value: string) => setSelectedCategory(value as keyof typeof categoryMap)}>
-        <TabsList className="grid w-full grid-cols-3"> {/* Removed border class */}
+        <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="Business Law">Business Law</TabsTrigger>
           <TabsTrigger value="Personal Legal">Personal Legal</TabsTrigger>
           <TabsTrigger value="Contract Review">Contract Review</TabsTrigger>
@@ -730,7 +730,7 @@ export const LawyerFinder = ({ category }: LawyerFinderProps) => {
             <div className="flex items-center space-x-2">
               <Filter className="h-4 w-4" />
               <Select value={selectedSpecialization} onValueChange={setSelectedSpecialization}>
-                <SelectTrigger className="w-48"> {/* Removed border class */}
+                <SelectTrigger className="w-48">
                   <SelectValue placeholder="Filter by specialization" />
                 </SelectTrigger>
                 <SelectContent>
@@ -751,7 +751,7 @@ export const LawyerFinder = ({ category }: LawyerFinderProps) => {
               </h3>
               
               {filteredLawyers.length === 0 ? (
-                <Card> {/* Removed border class */}
+                <Card>
                   <CardContent className="text-center py-8">
                     <p className="text-muted-foreground">
                       No lawyers found {userCity ? `in ${userCity}` : ''} for this category.
@@ -764,7 +764,7 @@ export const LawyerFinder = ({ category }: LawyerFinderProps) => {
               ) : (
                 <div className="grid gap-4 md:grid-cols-2">
                   {filteredLawyers.map((lawyer) => (
-                    <Card key={lawyer.id} className="hover:shadow-lg transition-shadow"> {/* Removed border class */}
+                    <Card key={lawyer.id} className="hover:shadow-lg transition-shadow">
                       <CardContent className="p-6">
                         <div className="space-y-3">
                           <div className="flex justify-between items-start">
@@ -886,7 +886,7 @@ export const LawyerFinder = ({ category }: LawyerFinderProps) => {
       </Dialog>
 
       {/* Disclaimer */}
-      <Card className="bg-amber-50 dark:bg-amber-900/20"> {/* Removed border class */}
+      <Card className="bg-amber-50 dark:bg-amber-900/20">
         <CardContent className="pt-6">
           <div className="flex items-start space-x-2">
             <AlertCircle className="h-5 w-5 text-amber-600 dark:text-amber-200 mt-0.5" />
