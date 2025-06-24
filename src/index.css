@@ -45,7 +45,7 @@
   .dark {
     --background: 0 0% 0%; /* Pure black background */
     --foreground: 0 0% 98%;
-    --card: 240 20% 8%; /* Changed from 17% to 8% for darker grey */
+    --card: 240 20% 17%; /* Reverted to original value */
     --card-foreground: 0 0% 98%;
     --popover: 240 20% 17%;
     --popover-foreground: 0 0% 98%;
