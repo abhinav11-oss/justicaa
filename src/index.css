@@ -82,14 +82,11 @@
   .dark .dashboard-dark-override {
     --background: 0 0% 0%; /* Pure black */
     --surface: 0 0% 0%; /* Pure black */
-    --card: 0 0% 0%; /* Pure black */
-    --popover: 0 0% 0%; /* Popovers also black */
-    --secondary: 0 0% 0%; /* Secondary elements like tabs, badges */
-    --muted: 0 0% 0%; /* Muted elements */
     --border: 0 0% 0%; /* Invisible borders */
-    --input: 0 0% 0%; /* Input background */
+    --input: 0 0% 0%; /* Invisible input borders */
     --sidebar: 0 0% 0%; /* Pure black for sidebar */
-    /* Keep primary, foreground, etc. as they are from the .dark block */
+    /* Do NOT override --card, --popover, --secondary, --muted here.
+       Let them inherit from the general .dark block to be dark gray. */
   }
 }
 
