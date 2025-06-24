@@ -43,40 +43,40 @@
   }
 
   .dark {
-    --background: 240 10% 8%; /* Very dark neutral gray background */
+    --background: 220 15% 8%; /* Deep blue-gray background */
     --foreground: 210 20% 98%; /* Light gray text */
-    --card: 240 10% 12%; /* Slightly lighter neutral gray card background */
+    --card: 220 15% 12%; /* Slightly lighter card background */
     --card-foreground: 210 20% 98%;
-    --popover: 240 10% 12%;
+    --popover: 220 15% 12%;
     --popover-foreground: 210 20% 98%;
-    --primary: 150 70% 40%; /* Deep forest green */
-    --primary-foreground: 150 10% 10%; /* Darker text for primary */
-    --secondary: 240 10% 20%; /* Muted neutral gray secondary */
+    --primary: 250 70% 55%; /* Brighter indigo/purple */
+    --primary-foreground: 250 10% 10%; /* Darker text for primary */
+    --secondary: 220 10% 20%; /* Muted blue-gray secondary */
     --secondary-foreground: 210 20% 98%;
-    --muted: 240 10% 20%; /* Muted neutral gray */
+    --muted: 220 10% 20%;
     --muted-foreground: 215 14% 60%; /* Medium gray for muted text */
-    --accent: 150 70% 50%; /* Brighter green accent */
-    --accent-foreground: 150 10% 10%;
+    --accent: 217 91% 70%; /* Brighter accent */
+    --accent-foreground: 217 10% 10%;
     --destructive: 0 80% 60%; /* Red */
     --destructive-foreground: 0 0% 100%;
-    --border: 240 10% 25%; /* Subtle neutral gray border */
-    --input: 240 10% 25%; /* Neutral gray input */
-    --ring: 150 70% 40%; /* Primary color (green) for ring */
-    --chart-1: 150 70% 40%; /* Green for chart */
+    --border: 220 10% 25%; /* Subtle border */
+    --input: 220 10% 25%;
+    --ring: 250 70% 55%; /* Primary color for ring */
+    --chart-1: 217 91% 60%;
     --chart-2: 142 71% 45%;
     --chart-3: 4 90% 58%;
     --chart-4: 45 93% 47%;
     --chart-5: 197 37% 24%;
 
     /* Custom color variables */
-    --surface: 240 10% 10%; /* Darker neutral gray surface elements */
-    --sidebar: 240 10% 10%; /* Darker neutral gray sidebar */
+    --surface: 220 15% 10%; /* Darker surface elements */
+    --sidebar: 220 15% 10%; /* Darker sidebar */
     --sidebar-foreground: 0 0% 100%;
     --text-secondary: 215 14% 60%;
     --success: 142 70% 50%;
     --warning: 45 90% 55%;
-    --blue-gradient-start: 150 70% 45%; /* Primary gradient start (green) */
-    --blue-gradient-end: 150 70% 30%; /* Primary gradient end (green) */
+    --blue-gradient-start: 250 70% 60%; /* Primary gradient start */
+    --blue-gradient-end: 250 70% 40%; /* Primary gradient end */
   }
 }
 
@@ -120,8 +120,8 @@
   .card-hover:hover {
     transform: translateY(-2px);
     box-shadow:
-      0 10px 25px -5px hsl(var(--primary) / 0.1), /* Use primary color for shadow */
-      0 4px 6px -2px hsl(var(--primary) / 0.05); /* Use primary color for shadow */
+      0 10px 25px -5px rgba(59, 130, 246, 0.1),
+      0 4px 6px -2px rgba(59, 130, 246, 0.05);
   }
 
   .dashboard-card {
@@ -164,7 +164,7 @@
 
   .btn-primary:hover {
     @apply shadow-lg;
-    box-shadow: 0 4px 14px 0 hsl(var(--primary) / 0.3); /* Use primary color for shadow */
+    box-shadow: 0 4px 14px 0 rgba(59, 130, 246, 0.3);
     transform: translateY(-1px);
   }
 
