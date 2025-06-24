@@ -269,18 +269,15 @@ export const Hero = ({ onCTAClick, onTryForFree }: HeroProps) => {
             transition={{ duration: 0.6, delay: 0.3 }} // Reduced duration
           >
             <div className="relative">
-              {/* Main Image */}
+              {/* Main Image Placeholder */}
               <motion.div
                 className="relative rounded-3xl overflow-hidden shadow-2xl"
                 whileHover={{ scale: 1.01 }} // Reduced scale
                 transition={{ duration: 0.2 }} // Reduced duration
               >
-                <div className="aspect-[4/5] relative">
-                  <img
-                    src="/justicaa.jpeg"
-                    alt="A digital illustration of a sleek, futuristic AI robot with glowing glasses and circuit patterns, standing next to a transparent screen displaying the 'Justicaa' logo and abstract legal data visualizations."
-                    className="w-full h-full object-cover"
-                  />
+                <div className="aspect-[4/5] relative bg-gradient-to-br from-primary/20 to-primary/50 flex items-center justify-center text-white text-xl font-bold">
+                  {/* Placeholder content */}
+                  <span className="text-center p-4">AI Legal Assistant</span>
                   {/* Enhanced Blue-themed Gradient Overlays */}
                   <div className="absolute inset-0 bg-gradient-to-tr from-primary/30 via-transparent to-primary/20"></div>
                   <div className="absolute inset-0 bg-gradient-to-br from-blue-600/20 via-background/10 to-background/30"></div>
