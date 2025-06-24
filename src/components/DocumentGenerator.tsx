@@ -674,8 +674,8 @@ Date: ${today}`;
         {Object.keys(categoryMap).map((cat) => (
           <TabsContent key={cat} value={cat} className="space-y-6">
             <div className="text-center">
-              <h3 className="text-2xl font-bold text-foreground mb-2">Legal Document Templates</h3> {/* Changed text-slate-900 to text-foreground */}
-              <p className="text-muted-foreground">Generate professional legal documents for {cat.toLowerCase()}</p> {/* Changed text-slate-600 to text-muted-foreground */}
+              <h3 className="text-2xl font-bold text-foreground mb-2">Legal Document Templates</h3>
+              <p className="text-muted-foreground">Generate professional legal documents for {cat.toLowerCase()}</p>
             </div>
 
             {/* Available Documents */}
@@ -695,8 +695,8 @@ Date: ${today}`;
                     >
                       <CardContent className="p-4">
                         <div className="flex items-start space-x-3">
-                          <div className="bg-secondary p-2 rounded-lg"> {/* Changed bg-blue-100 to bg-secondary */}
-                            <FileText className="h-5 w-5 text-primary-foreground" /> {/* Changed text-blue-600 to text-primary-foreground */}
+                          <div className="bg-secondary p-2 rounded-lg">
+                            <FileText className="h-5 w-5 text-primary-foreground" />
                           </div>
                           <div className="flex-1">
                             <h4 className="font-semibold">{template.name}</h4>
@@ -751,7 +751,18 @@ Date: ${today}`;
                             onChange={(e) => handleInputChange(field.id, e.target.value)}
                             className="min-h-20"
                           />
-                        ) : (
+                        ) : field.type === 'select' ? (
+                            <select
+                              className="w-full p-2 border border-input rounded-md bg-background text-foreground"
+                              value={formData[field.id] || ''}
+                              onChange={(e) => handleInputChange(field.id, e.target.value)}
+                            >
+                              <option value="">Select an option</option>
+                              {field.options?.map((option) => (
+                                <option key={option} value={option}>{option}</option>
+                              ))}
+                            </select>
+                          ) : (
                           <Input
                             type={field.type}
                             placeholder={field.placeholder}
@@ -792,13 +803,10 @@ Date: ${today}`;
       {/* Disclaimer */}
       <Card className="bg-amber-50 border-amber-200">
         <CardContent className="pt-6">
-          <div className="flex items-start space-x-2">
-            <AlertCircle className="h-5 w-5 text-amber-600 mt-0.5" />
-            <p className="text-sm text-amber-800">
-              <strong>Legal Disclaimer:</strong> These templates are for informational purposes only and may not be suitable for all situations. 
-              Please consult with a qualified attorney before using any legal documents. Customize the templates according to your specific needs.
-            </p>
-          </CardContent>
+          <p className="text-sm text-amber-800 dark:text-amber-200">
+            <strong>Legal Disclaimer:</strong> These templates are for informational purposes only and may not be suitable for all situations. 
+            Please consult with a qualified attorney before using any legal documents. Customize the templates according to your specific needs.
+          </p>
         </CardContent>
       </Card>
     </div>
