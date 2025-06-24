@@ -191,7 +191,7 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="min-h-screen flex relative w-full overflow-visible bg-surface">
+    <div className="min-h-screen flex relative w-full overflow-visible bg-surface dashboard-dark-override">
       <DashboardSidebar
         user={user}
         isTrialMode={isTrialMode}
