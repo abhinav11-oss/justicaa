@@ -11,19 +11,19 @@
     --card-foreground: 0 0% 18%;
     --popover: 0 0% 100%;
     --popover-foreground: 0 0% 18%;
-    --primary: 250 60% 40%; /* Changed from blue to indigo/purple */
+    --primary: 280 80% 60%; /* Changed to vibrant purple/magenta for light theme */
     --primary-foreground: 0 0% 100%;
     --secondary: 240 17% 97%;
     --secondary-foreground: 0 0% 18%;
     --muted: 240 17% 97%;
     --muted-foreground: 0 0% 48%;
-    --accent: 217 91% 60%;
+    --accent: 280 80% 60%; /* Changed to vibrant purple/magenta for light theme */
     --accent-foreground: 0 0% 100%;
     --destructive: 4 90% 58%;
     --destructive-foreground: 0 0% 100%;
     --border: 240 17% 94%;
     --input: 240 17% 94%;
-    --ring: 217 91% 60%;
+    --ring: 280 80% 60%; /* Changed to vibrant purple/magenta for light theme */
     --radius: 0.75rem;
     --chart-1: 217 91% 60%;
     --chart-2: 142 71% 45%;
@@ -38,8 +38,8 @@
     --text-secondary: 0 0% 48%;
     --success: 142 71% 45%;
     --warning: 45 93% 47%;
-    --blue-gradient-start: 250 60% 50%; /* Changed to new primary gradient start */
-    --blue-gradient-end: 250 60% 30%; /* Changed to new primary gradient end */
+    --blue-gradient-start: 280 80% 65%; /* Lighter purple for gradient start in light theme */
+    --blue-gradient-end: 280 80% 55%; /* Darker purple for gradient end in light theme */
   }
 
   .dark {
