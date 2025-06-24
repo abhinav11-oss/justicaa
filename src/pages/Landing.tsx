@@ -10,7 +10,7 @@ import { About } from "@/components/landing/About";
 import { Testimonials } from "@/components/landing/Testimonials";
 import { CTASection } from "@/components/landing/CTASection";
 import { Footer } from "@/components/landing/Footer";
-import { TracingBeam } from "@/components/TracingBeam"; // Import TracingBeam
+// import { TracingBeam } from "@/components/TracingBeam"; // Removed TracingBeam import
 
 const Landing = () => {
   const { user } = useAuth();
@@ -59,7 +59,7 @@ const Landing = () => {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Header onCTAClick={handleCTAClick} onTryForFree={handleTryForFree} />
-      <TracingBeam> {/* Removed className="px-6" */}
+      {/* <TracingBeam> Removed TracingBeam wrapper */}
         <motion.div initial="initial" animate="animate" variants={stagger}>
           <motion.div variants={fadeInUp}>
             <Hero onCTAClick={handleCTAClick} onTryForFree={handleTryForFree} />
@@ -83,7 +83,7 @@ const Landing = () => {
             <Footer />
           </motion.div>
         </motion.div>
-      </TracingBeam>
+      {/* </TracingBeam> */}
     </div>
   );
 };
