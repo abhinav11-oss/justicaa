@@ -237,7 +237,7 @@ export const DashboardSidebar: React.FC<SidebarProps> = ({
                       <TooltipContent
                         side="right"
                         align="center"
-                        className="z-[99999] px-3 py-2 text-sm rounded-xl bg-card border border-border shadow-lg text-card-foreground"
+                        className="z-[99999] px-3 py-2 text-sm rounded-xl bg-card" {/* Removed border class */}
                       >
                         {item.title}
                       </TooltipContent>
@@ -307,7 +307,7 @@ export const DashboardSidebar: React.FC<SidebarProps> = ({
                     <TooltipContent
                       side="right"
                       align="center"
-                      className="z-[99999] px-3 py-2 text-sm rounded-xl bg-card border border-border shadow-lg text-card-foreground"
+                      className="z-[99999] px-3 py-2 text-sm rounded-xl bg-card" {/* Removed border class */}
                     >
                       {t("dashboard.signOut", "Sign Out")}
                     </TooltipContent>

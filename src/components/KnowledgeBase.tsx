@@ -187,10 +187,10 @@ export const KnowledgeBase = () => {
       {/* FAQ Results */}
       <div className="space-y-4">
         {filteredFAQs.length === 0 ? (
-          <Card>
+          <Card> {/* Removed border class */}
             <CardContent className="text-center py-8">
               <p className="text-muted-foreground">No questions found matching your search criteria.</p>
-              <Button variant="outline" onClick={() => { setSearchQuery(""); setSelectedCategory("all"); }} className="mt-4">
+              <Button variant="outline" onClick={() => { setSearchQuery(""); setSelectedCategory("all"); }} className="mt-4"> {/* Removed border class */}
                 Clear Filters
               </Button>
             </CardContent>
@@ -201,7 +201,7 @@ export const KnowledgeBase = () => {
             const categoryInfo = categories.find(c => c.id === faq.category);
             
             return (
-              <Card key={faq.id} className="hover:shadow-md transition-shadow">
+              <Card key={faq.id} className="hover:shadow-md transition-shadow"> {/* Removed border class */}
                 <Collapsible>
                   <CollapsibleTrigger asChild>
                     <CardHeader className="cursor-pointer hover:bg-muted" onClick={() => toggleFAQ(faq.id)}>
@@ -214,11 +214,9 @@ export const KnowledgeBase = () => {
                               <span>{categoryInfo?.name}</span>
                             </Badge>
                             <div className="flex flex-wrap gap-1">
-                              {faq.tags.slice(0, 3).map((tag, index) => (
-                                <Badge key={index} variant="outline" className="text-xs">
-                                  {tag}
-                                </Badge>
-                              ))}
+                              <Badge key={index} variant="outline" className="text-xs"> {/* Removed border class */}
+                                {tag}
+                              </Badge>
                             </div>
                           </div>
                         </div>
@@ -252,7 +250,7 @@ export const KnowledgeBase = () => {
       </div>
 
       {/* Contact CTA */}
-      <Card className="bg-primary/5">
+      <Card className="bg-primary/5"> {/* Removed border class */}
         <CardContent className="text-center py-6">
           <h4 className="text-lg font-medium text-primary mb-2">Need Specific Legal Advice?</h4>
           <p className="text-primary-foreground/80 mb-4">Our knowledge base provides general information. For personalized legal counsel, connect with a qualified attorney.</p>

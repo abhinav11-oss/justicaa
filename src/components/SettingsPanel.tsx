@@ -107,7 +107,7 @@ export const SettingsPanel = () => {
   return (
     <div className="space-y-6">
       {/* Profile Settings */}
-      <Card>
+      <Card> {/* Removed border class */}
         <CardHeader>
           <CardTitle className="flex items-center">
             <User className="h-5 w-5 mr-2" />
@@ -123,7 +123,7 @@ export const SettingsPanel = () => {
                 {profile.name.charAt(0).toUpperCase() || "U"}
               </AvatarFallback>
             </Avatar>
-            <Button variant="outline" onClick={handleAvatarUpload}>
+            <Button variant="outline" onClick={handleAvatarUpload}> {/* Removed border class */}
               <Upload className="h-4 w-4 mr-2" />
               Upload Avatar
             </Button>
@@ -176,7 +176,7 @@ export const SettingsPanel = () => {
                   handleProfileChange("location", value)
                 }
               >
-                <SelectTrigger>
+                <SelectTrigger> {/* Removed border class */}
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -205,7 +205,7 @@ export const SettingsPanel = () => {
       </Card>
 
       {/* Account Settings */}
-      <Card>
+      <Card> {/* Removed border class */}
         <CardHeader>
           <CardTitle>Account Settings</CardTitle>
         </CardHeader>

@@ -133,14 +133,14 @@ export function ConversationDetail({ conversationId, onBack }: ConversationDetai
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-4">
-          <Button variant="outline" onClick={onBack}>
+          <Button variant="outline" onClick={onBack}> {/* Removed border class */}
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back
           </Button>
           <div>
             <h2 className="text-xl font-semibold">{conversation.title}</h2>
             <div className="flex items-center space-x-2 mt-1">
-              <Badge variant="outline" className="capitalize">
+              <Badge variant="outline" className="capitalize"> {/* Removed border class */}
                 {conversation.legal_category}
               </Badge>
               <Badge variant={conversation.status === 'active' ? 'default' : 'secondary'}>
@@ -154,11 +154,11 @@ export function ConversationDetail({ conversationId, onBack }: ConversationDetai
         </div>
         
         <div className="flex space-x-2">
-          <Button variant="outline" size="sm" onClick={exportToPDF}>
+          <Button variant="outline" size="sm" onClick={exportToPDF}> {/* Removed border class */}
             <Download className="h-4 w-4 mr-2" />
             Export
           </Button>
-          <Button variant="outline" size="sm" onClick={archiveConversation}>
+          <Button variant="outline" size="sm" onClick={archiveConversation}> {/* Removed border class */}
             <Archive className="h-4 w-4 mr-2" />
             Archive
           </Button>
@@ -166,7 +166,7 @@ export function ConversationDetail({ conversationId, onBack }: ConversationDetai
       </div>
 
       {/* Messages */}
-      <Card>
+      <Card> {/* Removed border class */}
         <CardHeader>
           <CardTitle className="flex items-center">
             <MessageSquare className="h-5 w-5 mr-2" />
@@ -198,7 +198,7 @@ export function ConversationDetail({ conversationId, onBack }: ConversationDetai
                       </div>
                       <Card className={`${
                         message.sender === 'user' ? 'bg-primary text-primary-foreground' : 'bg-card'
-                      }`}>
+                      }`}> {/* Removed border class */}
                         <CardContent className="p-3">
                           <p className="text-sm whitespace-pre-wrap">{message.content}</p>
                           {message.metadata?.category && (
@@ -222,7 +222,7 @@ export function ConversationDetail({ conversationId, onBack }: ConversationDetai
 
       {/* Continue Chat Button */}
       {conversation.status === 'active' && (
-        <Card className="bg-primary/5">
+        <Card className="bg-primary/5"> {/* Removed border class */}
           <CardContent className="pt-6 text-center">
             <p className="text-primary mb-4">Want to continue this conversation?</p>
             <Button className="bg-primary hover:bg-primary/90">

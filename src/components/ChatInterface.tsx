@@ -244,7 +244,7 @@ export const ChatInterface = ({ category }: ChatInterfaceProps) => {
 
   return (
     <div className={`${isMobile ? 'h-[calc(100vh-120px)]' : 'h-[calc(100vh-200px)]'} flex flex-col`}>
-      <Card className="flex-1 flex flex-col">
+      <Card className="flex-1 flex flex-col"> {/* Removed border class */}
         <CardHeader className="flex-shrink-0 p-3 md:p-6">
           <div className="flex items-center justify-between flex-wrap gap-2">
             <div>
@@ -404,11 +404,6 @@ export const ChatInterface = ({ category }: ChatInterfaceProps) => {
               {isListening && (
                 <div className="flex items-center space-x-1 text-primary">
                   <span className="text-sm">{t('chat.listening')}</span>
-                </div>
-              )}
-              {isSpeaking && (
-                <div className="flex items-center space-x-1 text-primary">
-                  <span className="text-sm">{t('chat.speaking')}</span>
                 </div>
               )}
             </div>

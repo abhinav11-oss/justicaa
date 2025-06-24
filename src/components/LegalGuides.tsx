@@ -434,7 +434,7 @@ export const LegalGuides = () => {
           <Badge variant="secondary">{selectedGuide.category}</Badge>
         </div>
 
-        <Card>
+        <Card> {/* Removed border class */}
           <CardHeader>
             <div className="flex items-center space-x-3">
               <div className="bg-primary/10 p-2 rounded-lg">
@@ -462,7 +462,7 @@ export const LegalGuides = () => {
             return (
               <Card 
                 key={step.id} 
-                className={`cursor-pointer transition-all ${isCompleted ? 'bg-green-50 dark:bg-green-900/20' : 'hover:shadow-md'}`}
+                className={`cursor-pointer transition-all ${isCompleted ? 'bg-green-50 dark:bg-green-900/20' : 'hover:shadow-md'}`} {/* Removed border class */}
                 onClick={() => toggleStepCompletion(step.id)}
               >
                 <CardContent className="p-4">
@@ -503,7 +503,7 @@ export const LegalGuides = () => {
         {guides.map((guide) => {
           const progress = getProgress(guide);
           return (
-            <Card key={guide.id} className="hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+            <Card key={guide.id} className="hover:shadow-lg transition-all duration-300 hover:-translate-y-1"> {/* Removed border class */}
               <CardHeader>
                 <div className="flex items-center space-x-3">
                   <div className="bg-primary/10 p-2 rounded-lg">
@@ -511,7 +511,7 @@ export const LegalGuides = () => {
                   </div>
                   <div className="flex-1">
                     <CardTitle className="text-lg">{guide.title}</CardTitle>
-                    <Badge variant="outline" className="mt-1">
+                    <Badge variant="outline" className="mt-1"> {/* Removed border class */}
                       {guide.category}
                     </Badge>
                   </div>

@@ -191,7 +191,7 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="min-h-screen flex relative w-full overflow-visible bg-surface dashboard-dark-override">
+    <div className="min-h-screen flex relative w-full overflow-visible bg-background"> {/* Changed bg-surface to bg-background */}
       <DashboardSidebar
         user={user}
         isTrialMode={isTrialMode}
@@ -265,7 +265,7 @@ const Dashboard = () => {
         )}
 
         {/* Content */}
-        <div className="flex flex-col z-0 relative overflow-visible flex-1 p-6 bg-surface text-foreground">
+        <div className="flex flex-col z-0 relative overflow-visible flex-1 p-6 bg-background text-foreground"> {/* Changed bg-surface to bg-background */}
           <DashboardMainContent
             activeTab={activeTab}
             isTrialMode={isTrialMode}
