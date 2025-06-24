@@ -3,6 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Star, Quote } from "lucide-react";
 import { cn } from "@/lib/utils"; // Import cn utility
+import { InfiniteMovingCards } from "@/components/InfiniteMovingCards"; // Import the new component
 
 export const Testimonials = () => {
   const [hoveredTestimonialIndex, setHoveredTestimonialIndex] = useState<number | null>(null);
@@ -64,6 +65,13 @@ export const Testimonials = () => {
     },
   ];
 
+  // Adapt testimonials for InfiniteMovingCards component
+  const infiniteMovingCardsItems = testimonials.map(t => ({
+    quote: `"${t.content}"`,
+    name: t.name,
+    title: `${t.role}, ${t.location}`
+  }));
+
   return (
     <section className="py-20 bg-muted/30">
       <div className="container mx-auto px-4">
@@ -108,62 +116,13 @@ export const Testimonials = () => {
           </div>
         </div>
 
-        {/* Testimonials Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {testimonials.map((testimonial, index) => (
-            <Card
-              key={index}
-              onMouseEnter={() => setHoveredTestimonialIndex(index)}
-              onMouseLeave={() => setHoveredTestimonialIndex(null)}
-              className={cn(
-                "card-hover bg-background border-0 shadow-sm group",
-                hoveredTestimonialIndex !== null && hoveredTestimonialIndex !== index && "blur-sm scale-[0.98]"
-              )}
-            >
-              <CardContent className="p-6">
-                {/* Quote Icon */}
-                <div className="bg-primary/10 w-10 h-10 rounded-lg flex items-center justify-center mb-4">
-                  <Quote className="h-5 w-5 text-primary" />
-                </div>
-
-                {/* Rating */}
-                <div className="flex items-center mb-4">
-                  {[...Array(testimonial.rating)].map((_, i) => (
-                    <Star
-                      key={i}
-                      className="h-4 w-4 fill-primary text-primary"
-                    />
-                  ))}
-                </div>
-
-                {/* Case Badge */}
-                <Badge
-                  variant="secondary"
-                  className="mb-4 bg-primary/10 text-primary text-xs"
-                >
-                  {testimonial.case}
-                </Badge>
-
-                {/* Content */}
-                <p className="text-muted-foreground mb-6 leading-relaxed text-sm">
-                  "{testimonial.content}"
-                </p>
-
-                {/* Author */}
-                <div className="border-t pt-4">
-                  <div className="font-semibold text-foreground">
-                    {testimonial.name}
-                  </div>
-                  <div className="text-sm text-muted-foreground">
-                    {testimonial.role}
-                  </div>
-                  <div className="text-xs text-muted-foreground">
-                    {testimonial.location}
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+        {/* Testimonials Grid - Now using InfiniteMovingCards */}
+        <div className="h-[20rem] relative flex flex-col items-center justify-center overflow-hidden rounded-md antialiased bg-background dark:bg-black dark:bg-grid-white/[0.05] relative overflow-hidden">
+          <InfiniteMovingCards
+            items={infiniteMovingCardsItems}
+            direction="right"
+            speed="slow"
+          />
         </div>
 
         {/* Call to Action */}
