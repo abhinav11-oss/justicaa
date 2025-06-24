@@ -249,8 +249,8 @@ export const LegalGuides = () => {
         <Card className="bg-card border-border">
           <CardHeader>
             <div className="flex items-center space-x-3">
-              <div className="bg-secondary p-2 rounded-lg"> {/* Changed bg-blue-100 to bg-secondary */}
-                <selectedGuide.icon className="h-6 w-6 text-primary-foreground" /> {/* Changed text-blue-600 to text-primary-foreground */}
+              <div className="bg-secondary p-2 rounded-lg">
+                <selectedGuide.icon className="h-6 w-6 text-primary-foreground" />
               </div>
               <div className="flex-1">
                 <CardTitle className="text-2xl">{selectedGuide.title}</CardTitle>
@@ -307,8 +307,8 @@ export const LegalGuides = () => {
   return (
     <div className="space-y-6">
       <div className="text-center">
-        <h3 className="text-2xl font-bold text-foreground mb-2">Legal Process Guides</h3> {/* Changed text-slate-900 to text-foreground */}
-        <p className="text-muted-foreground">Step-by-step guidance through common legal procedures</p> {/* Changed text-slate-600 to text-muted-foreground */}
+        <h3 className="text-2xl font-bold text-foreground mb-2">Legal Process Guides</h3>
+        <p className="text-muted-foreground">Step-by-step guidance through common legal procedures</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -318,8 +318,8 @@ export const LegalGuides = () => {
             <Card key={guide.id} className="hover:shadow-lg transition-all duration-300 hover:-translate-y-1 bg-card border-border">
               <CardHeader>
                 <div className="flex items-center space-x-3">
-                  <div className="bg-secondary p-2 rounded-lg"> {/* Changed bg-blue-100 to bg-secondary */}
-                    <guide.icon className="h-6 w-6 text-primary-foreground" /> {/* Changed text-blue-600 to text-primary-foreground */}
+                  <div className="bg-secondary p-2 rounded-lg">
+                    <guide.icon className="h-6 w-6 text-primary-foreground" />
                   </div>
                   <div className="flex-1">
                     <CardTitle className="text-lg">{guide.title}</CardTitle>
