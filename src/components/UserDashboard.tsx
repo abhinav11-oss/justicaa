@@ -49,6 +49,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { ConversationDetail } from "./ConversationDetail";
+import { ThreeDCardDemo } from "@/components/ThreeDCardDemo"; // Import the new component
 
 interface Conversation {
   id: string;
@@ -462,6 +463,11 @@ export function UserDashboard() {
       initial="hidden"
       animate="visible"
     >
+      {/* Add the 3D Card Demo here */}
+      <div className="flex justify-center py-8">
+        <ThreeDCardDemo />
+      </div>
+
       {/* Welcome Section with Enhanced Gradients and Animations (simplified) */}
       <motion.div variants={itemVariants}>
         <Card className="relative overflow-hidden border-primary/20">
