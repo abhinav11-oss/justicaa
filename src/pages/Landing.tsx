@@ -10,7 +10,6 @@ import { About } from "@/components/landing/About";
 import { Testimonials } from "@/components/landing/Testimonials";
 import { CTASection } from "@/components/landing/CTASection";
 import { Footer } from "@/components/landing/Footer";
-import { TracingBeam } from "@/components/TracingBeam"; // Import TracingBeam
 
 const Landing = () => {
   const { user } = useAuth();
@@ -59,31 +58,29 @@ const Landing = () => {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Header onCTAClick={handleCTAClick} onTryForFree={handleTryForFree} />
-      <TracingBeam className="px-6"> {/* Wrap content with TracingBeam */}
-        <motion.div initial="initial" animate="animate" variants={stagger}>
-          <motion.div variants={fadeInUp}>
-            <Hero onCTAClick={handleCTAClick} onTryForFree={handleTryForFree} />
-          </motion.div>
-          <motion.div variants={fadeInUp}>
-            <Features />
-          </motion.div>
-          <motion.div variants={fadeInUp}>
-            <Benefits />
-          </motion.div>
-          <motion.div variants={fadeInUp}>
-            <About />
-          </motion.div>
-          <motion.div variants={fadeInUp}>
-            <Testimonials />
-          </motion.div>
-          <motion.div variants={fadeInUp}>
-            <CTASection onTryForFree={handleTryForFree} />
-          </motion.div>
-          <motion.div variants={fadeInUp}>
-            <Footer />
-          </motion.div>
+      <motion.div initial="initial" animate="animate" variants={stagger}>
+        <motion.div variants={fadeInUp}>
+          <Hero onCTAClick={handleCTAClick} onTryForFree={handleTryForFree} />
         </motion.div>
-      </TracingBeam>
+        <motion.div variants={fadeInUp}>
+          <Features />
+        </motion.div>
+        <motion.div variants={fadeInUp}>
+          <Benefits />
+        </motion.div>
+        <motion.div variants={fadeInUp}>
+          <About />
+        </motion.div>
+        <motion.div variants={fadeInUp}>
+          <Testimonials />
+        </motion.div>
+        <motion.div variants={fadeInUp}>
+          <CTASection onTryForFree={handleTryForFree} />
+        </motion.div>
+        <motion.div variants={fadeInUp}>
+          <Footer />
+        </motion.div>
+      </motion.div>
     </div>
   );
 };
