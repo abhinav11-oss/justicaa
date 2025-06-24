@@ -50,7 +50,7 @@ export const Hero = ({ onCTAClick, onTryForFree }: HeroProps) => {
         ease: "easeInOut",
       },
     },
-  }; // Removed the trailing comma here
+  };
 
   return (
     <section className="hero-section relative overflow-hidden min-h-screen flex items-center">
@@ -269,7 +269,7 @@ export const Hero = ({ onCTAClick, onTryForFree }: HeroProps) => {
             transition={{ duration: 0.8, delay: 0.5, type: "spring", bounce: 0.3 }}
           >
             <img
-              src="/images/ai-legal-assistant.png"
+              src="/images/justicaa.jpeg"
               alt="AI Legal Assistant"
               className="rounded-3xl shadow-2xl object-cover w-full h-full max-w-md lg:max-w-none"
               style={{ aspectRatio: '3/4' }}
