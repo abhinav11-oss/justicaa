@@ -50,7 +50,7 @@ export const Hero = ({ onCTAClick, onTryForFree }: HeroProps) => {
         ease: "easeInOut",
       },
     },
-  },
+  }; // Removed the trailing comma here
 
   return (
     <section className="hero-section relative overflow-hidden min-h-screen flex items-center">
