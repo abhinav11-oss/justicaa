@@ -181,9 +181,9 @@ const documentTemplates: DocumentTemplate[] = [
 ];
 
 const categoryMap = {
-  "Business Law": ["Business Law"],
+  "Business Law": ["Business Law", "Contract Review"],
   "Personal Legal": ["Personal Legal"],
-  "Contract Review": ["Contract Review"]
+  "Contract Review": ["Contract Review", "Business Law", "Personal Legal"]
 };
 
 export const DocumentGenerator = ({ category }: DocumentGeneratorProps) => {
