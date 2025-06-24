@@ -277,8 +277,8 @@ export const Hero = ({ onCTAClick, onTryForFree }: HeroProps) => {
               >
                 <div className="aspect-[4/5] relative">
                   <img
-                    src="https://images.pexels.com/photos/8728289/pexels-photo-8728289.jpeg"
-                    alt="Futuristic AI lawyer assistant with advanced legal technology"
+                    src="/a-digital-illustration-of-a-sleek-futuri_00UakEhbTPGlGYz7t4-GDQ_WcAldbB5QW-IGR-RsBbJ2Q.jpeg"
+                    alt="A digital illustration of a sleek, futuristic AI robot with glowing glasses and circuit patterns, standing next to a transparent screen displaying the 'Justicaa' logo and abstract legal data visualizations."
                     className="w-full h-full object-cover"
                   />
                   {/* Enhanced Blue-themed Gradient Overlays */}
