@@ -18,17 +18,17 @@ export const About = () => {
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.1,
+        staggerChildren: 0.1, // Reduced stagger
       },
     },
   };
 
   const itemVariants = {
-    hidden: { opacity: 0, y: 30 },
+    hidden: { opacity: 0, y: 20 }, // Reduced y translation
     visible: {
       opacity: 1,
       y: 0,
-      transition: { duration: 0.6, ease: "easeOut" },
+      transition: { duration: 0.5, ease: "easeOut" }, // Reduced duration
     },
   };
 
@@ -72,27 +72,27 @@ export const About = () => {
 
   return (
     <section id="about" className="relative py-20 overflow-hidden">
-      {/* Background with Multiple Fade Gradients */}
+      {/* Background with Multiple Fade Gradients (simplified) */}
       <div className="absolute inset-0">
         <div className="absolute inset-0 bg-gradient-to-br from-muted/30 via-background to-muted/20"></div>
         <div className="absolute inset-0 bg-gradient-to-tl from-primary/5 via-transparent to-primary/10"></div>
-        <div className="absolute top-1/4 left-0 w-96 h-96 bg-gradient-to-r from-primary/8 to-transparent rounded-full blur-3xl"></div>
-        <div className="absolute bottom-1/4 right-0 w-80 h-80 bg-gradient-to-l from-primary/6 to-transparent rounded-full blur-2xl"></div>
-        <div className="absolute top-0 right-1/3 w-64 h-64 bg-gradient-to-br from-primary/4 to-transparent rounded-full blur-xl"></div>
+        <div className="absolute top-1/4 left-0 w-64 h-64 bg-gradient-to-r from-primary/8 to-transparent rounded-full blur-2xl"></div> {/* Reduced size and blur */}
+        <div className="absolute bottom-1/4 right-0 w-56 h-56 bg-gradient-to-l from-primary/6 to-transparent rounded-full blur-xl"></div> {/* Reduced size and blur */}
+        <div className="absolute top-0 right-1/3 w-48 h-48 bg-gradient-to-br from-primary/4 to-transparent rounded-full blur-lg"></div> {/* Reduced size and blur */}
       </div>
 
       <div className="container mx-auto px-4 relative z-10">
         <motion.div
           className="text-center mb-16"
-          initial={{ opacity: 0, y: 50 }}
+          initial={{ opacity: 0, y: 30 }} // Reduced y translation
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
+          transition={{ duration: 0.6 }} // Reduced duration
           viewport={{ once: true }}
         >
           <motion.div
-            initial={{ scale: 0, rotate: -180 }}
-            whileInView={{ scale: 1, rotate: 0 }}
-            transition={{ duration: 0.6, type: "spring", bounce: 0.4 }}
+            initial={{ scale: 0.8, opacity: 0 }} // Simplified animation
+            whileInView={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 0.5, type: "spring", bounce: 0.3 }} // Reduced duration, adjusted bounce
             viewport={{ once: true }}
           >
             <Badge
@@ -104,18 +104,18 @@ export const About = () => {
           </motion.div>
           <motion.h2
             className="text-4xl md:text-5xl font-bold text-foreground mb-4"
-            initial={{ rotateY: 90, opacity: 0 }}
-            whileInView={{ rotateY: 0, opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
+            initial={{ opacity: 0, y: 30 }} // Simplified animation
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
             viewport={{ once: true }}
           >
             Revolutionizing Legal Access in India
           </motion.h2>
           <motion.p
             className="text-xl text-muted-foreground max-w-3xl mx-auto"
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 20 }} // Reduced y translation
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
+            transition={{ duration: 0.5, delay: 0.4 }} // Reduced duration
             viewport={{ once: true }}
           >
             Bridging the gap between complex legal systems and everyday citizens
@@ -123,7 +123,7 @@ export const About = () => {
           </motion.p>
         </motion.div>
 
-        {/* Stats Section with Rolling Animation */}
+        {/* Stats Section with Rolling Animation (simplified) */}
         <motion.div
           className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-16"
           variants={containerVariants}
@@ -135,47 +135,45 @@ export const About = () => {
             <motion.div
               key={index}
               variants={itemVariants}
-              initial={{ rotateX: -90, opacity: 0 }}
-              whileInView={{ rotateX: 0, opacity: 1 }}
+              initial={{ opacity: 0, y: 20 }} // Simplified animation
+              whileInView={{ opacity: 1, y: 0 }}
               transition={{
-                duration: 0.6,
+                duration: 0.5, // Reduced duration
                 delay: index * 0.1,
-                type: "spring",
-                stiffness: 200,
               }}
               viewport={{ once: true }}
-              whileHover={{ scale: 1.05, rotateY: 10 }}
+              whileHover={{ scale: 1.03 }} // Reduced hover scale, removed rotateY
             >
               <Card className="text-center bg-background/80 backdrop-blur-sm border-0 shadow-sm card-hover relative overflow-hidden group">
-                {/* Animated Background */}
-                <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-primary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                {/* Animated Background (simplified) */}
+                <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-primary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
 
                 <CardContent className="pt-6 relative z-10">
                   <motion.div
                     className="bg-primary/10 w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3 relative overflow-hidden"
-                    whileHover={{ scale: 1.2, rotate: 360 }}
-                    transition={{ duration: 0.6 }}
+                    whileHover={{ scale: 1.1 }} // Reduced scale, removed rotate
+                    transition={{ duration: 0.3 }} // Reduced duration
                   >
                     <stat.icon className="h-6 w-6 text-primary relative z-10" />
                     <motion.div
                       className="absolute inset-0 bg-primary/20"
-                      animate={{ rotate: 360 }}
+                      animate={{ opacity: [0.3, 0.6, 0.3] }} // Simplified animation
                       transition={{
-                        duration: 4,
+                        duration: 2, // Reduced duration
                         repeat: Infinity,
-                        ease: "linear",
-                        delay: index * 0.5,
+                        ease: "easeInOut",
+                        delay: index * 0.3, // Reduced delay
                       }}
                     />
                   </motion.div>
                   <motion.div
                     className="text-3xl font-bold text-foreground mb-1"
-                    initial={{ scale: 0 }}
-                    whileInView={{ scale: 1 }}
+                    initial={{ scale: 0.8, opacity: 0 }} // Simplified animation
+                    whileInView={{ scale: 1, opacity: 1 }}
                     transition={{
-                      delay: 0.5 + index * 0.1,
+                      delay: 0.3 + index * 0.1, // Reduced delay
                       type: "spring",
-                      bounce: 0.5,
+                      bounce: 0.3, // Reduced bounce
                     }}
                     viewport={{ once: true }}
                   >
@@ -186,15 +184,15 @@ export const About = () => {
                   </div>
                 </CardContent>
 
-                {/* Shimmer Effect */}
+                {/* Shimmer Effect (simplified) */}
                 <motion.div
-                  className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/20 to-transparent"
-                  animate={{ x: [-100, 200] }}
+                  className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/10 to-transparent" // Reduced opacity
+                  animate={{ x: [-50, 150] }} // Reduced x range
                   transition={{
-                    duration: 3,
+                    duration: 2, // Reduced duration
                     repeat: Infinity,
                     ease: "easeInOut",
-                    delay: index * 0.7,
+                    delay: index * 0.5, // Reduced delay
                   }}
                 />
               </Card>

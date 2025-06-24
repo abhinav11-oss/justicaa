@@ -92,30 +92,30 @@ export function UserDashboard() {
   >(null);
   const [activeTab, setActiveTab] = useState("conversations");
 
-  // Animation variants
+  // Animation variants (simplified)
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.1,
+        staggerChildren: 0.08, // Reduced stagger
       },
     },
   };
 
   const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
+    hidden: { opacity: 0, y: 20 }, // Reduced y translation
     visible: {
       opacity: 1,
       y: 0,
-      transition: { duration: 0.5, ease: "easeOut" },
+      transition: { duration: 0.4, ease: "easeOut" }, // Reduced duration
     },
   };
 
   const cardHoverVariants = {
     hover: {
-      scale: 1.02,
-      transition: { duration: 0.2 },
+      scale: 1.01, // Reduced scale
+      transition: { duration: 0.15 }, // Reduced duration
     },
   };
 
@@ -462,7 +462,7 @@ export function UserDashboard() {
       initial="hidden"
       animate="visible"
     >
-      {/* Welcome Section with Enhanced Gradients and Animations */}
+      {/* Welcome Section with Enhanced Gradients and Animations (simplified) */}
       <motion.div variants={itemVariants}>
         <Card className="relative overflow-hidden border-primary/20">
           {/* Multiple Background Layers */}
@@ -476,30 +476,30 @@ export function UserDashboard() {
             />
           </div>
 
-          {/* Animated Gradient Orbs */}
+          {/* Animated Gradient Orbs (simplified) */}
           <motion.div
-            className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-primary/20 to-transparent rounded-full blur-3xl"
+            className="absolute top-0 right-0 w-48 h-48 bg-gradient-to-br from-primary/20 to-transparent rounded-full blur-2xl" // Reduced size and blur
             animate={{
-              scale: [1, 1.2, 1],
-              opacity: [0.3, 0.6, 0.3],
+              scale: [1, 1.1, 1], // Reduced scale
+              opacity: [0.2, 0.4, 0.2], // Reduced opacity range
             }}
             transition={{
-              duration: 4,
+              duration: 3, // Reduced duration
               repeat: Infinity,
               ease: "easeInOut",
             }}
           />
           <motion.div
-            className="absolute bottom-0 left-0 w-48 h-48 bg-gradient-to-tr from-primary/15 to-transparent rounded-full blur-2xl"
+            className="absolute bottom-0 left-0 w-32 h-32 bg-gradient-to-tr from-primary/15 to-transparent rounded-full blur-xl" // Reduced size and blur
             animate={{
-              scale: [1, 1.3, 1],
-              opacity: [0.2, 0.5, 0.2],
+              scale: [1, 1.2, 1], // Reduced scale
+              opacity: [0.1, 0.3, 0.1], // Reduced opacity range
             }}
             transition={{
-              duration: 5,
+              duration: 4, // Reduced duration
               repeat: Infinity,
               ease: "easeInOut",
-              delay: 1,
+              delay: 0.5, // Reduced delay
             }}
           />
 
@@ -508,14 +508,14 @@ export function UserDashboard() {
               <div className="space-y-4">
                 <motion.div
                   className="flex items-center gap-2"
-                  initial={{ x: -20, opacity: 0 }}
+                  initial={{ x: -10, opacity: 0 }} // Reduced x translation
                   animate={{ x: 0, opacity: 1 }}
-                  transition={{ delay: 0.2 }}
+                  transition={{ delay: 0.1 }} // Reduced delay
                 >
                   <motion.div
                     animate={{ rotate: 360 }}
                     transition={{
-                      duration: 3,
+                      duration: 2, // Reduced duration
                       repeat: Infinity,
                       ease: "linear",
                     }}
@@ -528,9 +528,9 @@ export function UserDashboard() {
                 </motion.div>
                 <motion.h1
                   className="text-3xl font-bold text-foreground"
-                  initial={{ y: 20, opacity: 0 }}
+                  initial={{ y: 10, opacity: 0 }} // Reduced y translation
                   animate={{ y: 0, opacity: 1 }}
-                  transition={{ delay: 0.3, type: "spring", bounce: 0.4 }}
+                  transition={{ delay: 0.2, type: "spring", bounce: 0.2 }} // Reduced delay, adjusted bounce
                 >
                   Hello,{" "}
                   {user?.user_metadata?.full_name ||
@@ -540,20 +540,20 @@ export function UserDashboard() {
                 </motion.h1>
                 <motion.p
                   className="text-muted-foreground text-lg"
-                  initial={{ y: 20, opacity: 0 }}
+                  initial={{ y: 10, opacity: 0 }} // Reduced y translation
                   animate={{ y: 0, opacity: 1 }}
-                  transition={{ delay: 0.4 }}
+                  transition={{ delay: 0.3 }} // Reduced delay
                 >
                   Ready to tackle your legal matters? Your AI assistant is here
                   to help.
                 </motion.p>
               </div>
               <motion.div
-                initial={{ scale: 0, rotate: -180 }}
+                initial={{ scale: 0.8, rotate: -90 }} // Reduced rotate
                 animate={{ scale: 1, rotate: 0 }}
-                transition={{ delay: 0.5, type: "spring", bounce: 0.3 }}
-                whileHover={{ scale: 1.05, y: -2 }}
-                whileTap={{ scale: 0.95 }}
+                transition={{ delay: 0.4, type: "spring", bounce: 0.2 }} // Reduced delay, adjusted bounce
+                whileHover={{ scale: 1.02, y: -1 }} // Reduced hover effect
+                whileTap={{ scale: 0.98 }} // Reduced tap effect
               >
                 <Button
                   onClick={createNewConversation}
@@ -561,9 +561,9 @@ export function UserDashboard() {
                 >
                   <motion.div
                     className="absolute inset-0 bg-white/20"
-                    animate={{ x: [-100, 100] }}
+                    animate={{ x: [-50, 50] }} // Reduced x range
                     transition={{
-                      duration: 2,
+                      duration: 1.5, // Reduced duration
                       repeat: Infinity,
                       ease: "easeInOut",
                     }}
@@ -578,7 +578,7 @@ export function UserDashboard() {
         </Card>
       </motion.div>
 
-      {/* Enhanced Stats Grid with Rolling Animations */}
+      {/* Enhanced Stats Grid with Rolling Animations (simplified) */}
       <motion.div
         variants={itemVariants}
         className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
@@ -623,62 +623,58 @@ export function UserDashboard() {
         ].map((stat, index) => (
           <motion.div
             key={index}
-            initial={{ rotateY: -90, opacity: 0 }}
-            animate={{ rotateY: 0, opacity: 1 }}
+            initial={{ opacity: 0, y: 20 }} // Simplified animation
+            animate={{ opacity: 1, y: 0 }}
             transition={{
-              duration: 0.6,
-              delay: 0.6 + index * 0.1,
-              type: "spring",
-              stiffness: 200,
+              duration: 0.5, // Reduced duration
+              delay: 0.3 + index * 0.08, // Reduced delay
             }}
             whileHover={{
-              scale: 1.05,
-              rotateY: 5,
-              transition: { duration: 0.2 },
+              scale: 1.02, // Reduced scale
             }}
           >
             <Card
               className={`${stat.bg} ${stat.border} border backdrop-blur-sm relative overflow-hidden group`}
             >
-              {/* Animated Background Gradient */}
-              <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-primary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+              {/* Animated Background Gradient (simplified) */}
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-primary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
 
               <CardContent className="p-6 relative z-10">
                 <div className="flex items-center justify-between">
                   <div>
                     <motion.p
                       className="text-sm font-medium text-muted-foreground"
-                      initial={{ opacity: 0, x: -10 }}
+                      initial={{ opacity: 0, x: -5 }} // Reduced x translation
                       animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: 0.8 + index * 0.1 }}
+                      transition={{ delay: 0.5 + index * 0.08 }} // Reduced delay
                     >
                       {stat.title}
                     </motion.p>
                     <div className="flex items-center gap-2 mt-2">
                       <motion.p
                         className="text-3xl font-bold text-foreground"
-                        initial={{ scale: 0 }}
-                        animate={{ scale: 1 }}
+                        initial={{ scale: 0.8, opacity: 0 }} // Simplified animation
+                        animate={{ scale: 1, opacity: 1 }}
                         transition={{
-                          delay: 0.9 + index * 0.1,
+                          delay: 0.6 + index * 0.08, // Reduced delay
                           type: "spring",
-                          bounce: 0.6,
+                          bounce: 0.3, // Reduced bounce
                         }}
                       >
                         {stat.value}
                       </motion.p>
                       <motion.div
                         className="flex items-center text-xs text-green-400"
-                        initial={{ opacity: 0, y: 10 }}
+                        initial={{ opacity: 0, y: 5 }} // Reduced y translation
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 1.0 + index * 0.1 }}
+                        transition={{ delay: 0.7 + index * 0.08 }} // Reduced delay
                       >
                         <motion.div
-                          animate={{ y: [0, -2, 0] }}
+                          animate={{ y: [0, -1, 0] }} // Reduced y range
                           transition={{
-                            duration: 2,
+                            duration: 1.5, // Reduced duration
                             repeat: Infinity,
-                            delay: index * 0.5,
+                            delay: index * 0.2, // Reduced delay
                           }}
                         >
                           <TrendingUp className="h-3 w-3 mr-1" />
@@ -689,33 +685,33 @@ export function UserDashboard() {
                   </div>
                   <motion.div
                     className={`bg-gradient-to-br ${stat.color} p-3 rounded-2xl shadow-lg relative overflow-hidden`}
-                    whileHover={{ rotate: 5, scale: 1.1 }}
-                    transition={{ duration: 0.2 }}
+                    whileHover={{ scale: 1.05 }} // Reduced scale, removed rotate
+                    transition={{ duration: 0.2 }} // Reduced duration
                   >
                     <stat.icon className="h-6 w-6 text-white relative z-10" />
                     <motion.div
                       className="absolute inset-0 bg-white/20"
                       animate={{ rotate: 360 }}
                       transition={{
-                        duration: 4,
+                        duration: 3, // Reduced duration
                         repeat: Infinity,
                         ease: "linear",
-                        delay: index * 0.5,
+                        delay: index * 0.3, // Reduced delay
                       }}
                     />
                   </motion.div>
                 </div>
               </CardContent>
 
-              {/* Shimmer Effect */}
+              {/* Shimmer Effect (simplified) */}
               <motion.div
-                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent"
-                animate={{ x: [-100, 300] }}
+                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent" // Reduced opacity
+                animate={{ x: [-50, 150] }} // Reduced x range
                 transition={{
-                  duration: 3,
+                  duration: 2, // Reduced duration
                   repeat: Infinity,
                   ease: "easeInOut",
-                  delay: index * 0.8,
+                  delay: index * 0.4, // Reduced delay
                 }}
               />
             </Card>
@@ -834,10 +830,10 @@ export function UserDashboard() {
                     {conversations.map((conversation, index) => (
                       <motion.div
                         key={conversation.id}
-                        initial={{ opacity: 0, y: 20 }}
+                        initial={{ opacity: 0, y: 10 }} // Reduced y translation
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: index * 0.1 }}
-                        whileHover={{ scale: 1.01 }}
+                        transition={{ delay: index * 0.05 }} // Reduced delay
+                        whileHover={{ scale: 1.005 }} // Reduced scale
                         className="group"
                       >
                         <Card className="border-border hover:border-primary/30 transition-all duration-300 bg-card/50 backdrop-blur-sm">
@@ -923,10 +919,10 @@ export function UserDashboard() {
                     {archivedConversations.map((conversation, index) => (
                       <motion.div
                         key={conversation.id}
-                        initial={{ opacity: 0, y: 20 }}
+                        initial={{ opacity: 0, y: 10 }} // Reduced y translation
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: index * 0.1 }}
-                        whileHover={{ scale: 1.01 }}
+                        transition={{ delay: index * 0.05 }} // Reduced delay
+                        whileHover={{ scale: 1.005 }} // Reduced scale
                         className="group"
                       >
                         <Card className="border-border hover:border-primary/30 transition-all duration-300 bg-card/50 backdrop-blur-sm">
@@ -1027,10 +1023,10 @@ export function UserDashboard() {
                     {documents.map((document, index) => (
                       <motion.div
                         key={document.id}
-                        initial={{ opacity: 0, y: 20 }}
+                        initial={{ opacity: 0, y: 10 }} // Reduced y translation
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: index * 0.1 }}
-                        whileHover={{ scale: 1.01 }}
+                        transition={{ delay: index * 0.05 }} // Reduced delay
+                        whileHover={{ scale: 1.005 }} // Reduced scale
                         className="group"
                       >
                         <Card className="border-border hover:border-primary/30 transition-all duration-300 bg-card/50 backdrop-blur-sm">
@@ -1122,10 +1118,10 @@ export function UserDashboard() {
                     {matters.map((matter, index) => (
                       <motion.div
                         key={matter.id}
-                        initial={{ opacity: 0, y: 20 }}
+                        initial={{ opacity: 0, y: 10 }} // Reduced y translation
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: index * 0.1 }}
-                        whileHover={{ scale: 1.01 }}
+                        transition={{ delay: index * 0.05 }} // Reduced delay
+                        whileHover={{ scale: 1.005 }} // Reduced scale
                         className="group"
                       >
                         <Card className="border-border hover:border-primary/30 transition-all duration-300 bg-card/50 backdrop-blur-sm">
