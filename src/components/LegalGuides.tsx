@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { ArrowRight, CheckCircle, Circle, Building, FileText, Home, Heart } from "lucide-react";
+import { ArrowRight, CheckCircle, Circle, Building, FileText, Home, Heart, Gavel, Scale, Users, BookOpen } from "lucide-react";
 
 interface GuideStep {
   id: number;
@@ -212,6 +212,194 @@ export const LegalGuides = () => {
           id: 6,
           title: "Eviction Protection",
           description: "Know the legal eviction process and your protections",
+          completed: false
+        }
+      ]
+    },
+    {
+      id: "fir-filing",
+      title: "How to File an FIR",
+      description: "Step-by-step guide to lodging a First Information Report in India",
+      category: "Criminal Law",
+      duration: "15-20 min",
+      difficulty: "Beginner",
+      icon: Gavel,
+      steps: [
+        {
+          id: 1,
+          title: "Identify the Police Station",
+          description: "Determine the police station with jurisdiction over the crime scene.",
+          completed: false
+        },
+        {
+          id: 2,
+          title: "Prepare Your Complaint",
+          description: "Write down all details: date, time, place, incident description, names of parties involved, and witnesses.",
+          completed: false
+        },
+        {
+          id: 3,
+          title: "Visit the Police Station",
+          description: "Go to the police station and meet the officer in charge or the Station House Officer (SHO).",
+          completed: false
+        },
+        {
+          id: 4,
+          title: "Lodge the FIR",
+          description: "Narrate the incident to the police officer. They will write it down or you can submit your written complaint.",
+          completed: false
+        },
+        {
+          id: 5,
+          title: "Get a Copy of FIR",
+          description: "Insist on getting a free copy of the registered FIR. It's your legal right under Section 154(2) CrPC.",
+          completed: false
+        },
+        {
+          id: 6,
+          title: "Follow Up",
+          description: "Keep track of the investigation progress. If police refuse to register FIR, you can approach higher authorities or a Magistrate.",
+          completed: false
+        }
+      ]
+    },
+    {
+      id: "consumer-complaint",
+      title: "Consumer Complaint Process",
+      description: "Guide to filing a complaint under the Consumer Protection Act, 2019",
+      category: "Consumer Law",
+      duration: "20-25 min",
+      difficulty: "Intermediate",
+      icon: Scale,
+      steps: [
+        {
+          id: 1,
+          title: "Send Legal Notice",
+          description: "Before filing, send a legal notice to the service provider/seller detailing the issue and relief sought.",
+          completed: false
+        },
+        {
+          id: 2,
+          title: "Identify Appropriate Forum",
+          description: "Determine if your complaint falls under District, State, or National Consumer Commission based on claim value.",
+          completed: false
+        },
+        {
+          id: 3,
+          title: "Draft the Complaint",
+          description: "Prepare a detailed complaint including facts, evidence, and the relief you are seeking.",
+          completed: false
+        },
+        {
+          id: 4,
+          title: "Attach Documents",
+          description: "Include all relevant documents like bills, warranty cards, communication, and legal notice copy.",
+          completed: false
+        },
+        {
+          id: 5,
+          title: "File the Complaint",
+          description: "File the complaint online (e-Daakhil portal) or offline with the respective Consumer Commission along with the prescribed fee.",
+          completed: false
+        },
+        {
+          id: 6,
+          title: "Attend Hearings",
+          description: "Attend all scheduled hearings and present your case. The commission will then pass an order.",
+          completed: false
+        }
+      ]
+    },
+    {
+      id: "divorce-process",
+      title: "Understanding Divorce in India",
+      description: "A guide to the legal procedures for divorce in India",
+      category: "Family Law",
+      duration: "30-40 min",
+      difficulty: "Advanced",
+      icon: Users,
+      steps: [
+        {
+          id: 1,
+          title: "Grounds for Divorce",
+          description: "Understand the legal grounds for divorce under Hindu Marriage Act, Special Marriage Act, etc. (e.g., cruelty, desertion, adultery).",
+          completed: false
+        },
+        {
+          id: 2,
+          title: "Mutual Consent vs. Contested",
+          description: "Decide if it's a mutual consent divorce (faster) or a contested divorce (longer, requires proving grounds).",
+          completed: false
+        },
+        {
+          id: 3,
+          title: "File Petition",
+          description: "File a divorce petition in the Family Court with jurisdiction. For mutual consent, both parties file jointly.",
+          completed: false
+        },
+        {
+          id: 4,
+          title: "Mediation/Counseling",
+          description: "Courts often mandate mediation or counseling sessions to explore reconciliation before proceeding.",
+          completed: false
+        },
+        {
+          id: 5,
+          title: "Evidence and Hearings",
+          description: "In contested cases, present evidence, cross-examine witnesses, and attend multiple hearings.",
+          completed: false
+        },
+        {
+          id: 6,
+          title: "Final Decree",
+          description: "Once satisfied, the court passes the divorce decree, legally dissolving the marriage.",
+          completed: false
+        }
+      ]
+    },
+    {
+      id: "rti-filing",
+      title: "Filing an RTI Application",
+      description: "A comprehensive guide to filing a Right to Information (RTI) application",
+      category: "Public Rights",
+      duration: "10-15 min",
+      difficulty: "Beginner",
+      icon: BookOpen,
+      steps: [
+        {
+          id: 1,
+          title: "Identify Public Authority",
+          description: "Determine which public authority holds the information you need (Central or State).",
+          completed: false
+        },
+        {
+          id: 2,
+          title: "Locate PIO/APIO",
+          description: "Find the Public Information Officer (PIO) or Assistant Public Information Officer (APIO) for that authority.",
+          completed: false
+        },
+        {
+          id: 3,
+          title: "Draft Your Application",
+          description: "Write a clear and concise application in English, Hindi, or the official language of the area, specifying the information required.",
+          completed: false
+        },
+        {
+          id: 4,
+          title: "Pay the Fee",
+          description: "Pay the prescribed fee (usually ₹10 for Central Govt.) via IPO, DD, or cash. BPL cardholders are exempt.",
+          completed: false
+        },
+        {
+          id: 5,
+          title: "Submit the Application",
+          description: "Submit the application online (rtionline.gov.in) or offline via post/in person.",
+          completed: false
+        },
+        {
+          id: 6,
+          title: "Await Response or Appeal",
+          description: "The PIO must respond within 30 days (48 hours for life/liberty matters). If no response or unsatisfactory, file a First Appeal.",
           completed: false
         }
       ]
