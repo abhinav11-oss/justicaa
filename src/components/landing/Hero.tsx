@@ -111,13 +111,13 @@ export const Hero = ({ onCTAClick, onTryForFree }: HeroProps) => {
       />
 
       <div className="container mx-auto px-4 py-12 md:py-20 relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-1 gap-12 items-center max-w-7xl mx-auto"> {/* Changed to lg:grid-cols-1 */}
+        <div className="grid grid-cols-1 lg:grid-cols-1 gap-12 items-center max-w-7xl mx-auto">
           {/* Left Content */}
           <motion.div
             variants={containerVariants}
             initial="hidden"
             animate="visible"
-            className="space-y-8 lg:pr-8 text-center" {/* Removed lg:text-left to keep it centered */}
+            className="space-y-8 lg:pr-8 text-center" /* Removed lg:text-left to keep it centered */
           >
             {/* Badge */}
             <motion.div variants={itemVariants} className="flex justify-center"> {/* Removed lg:justify-start */}
