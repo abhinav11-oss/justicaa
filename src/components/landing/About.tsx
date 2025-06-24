@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { motion } from "framer-motion";
@@ -11,8 +12,12 @@ import {
   Shield,
   Target,
 } from "lucide-react";
+import { cn } from "@/lib/utils"; // Import cn utility
 
 export const About = () => {
+  const [hoveredStatIndex, setHoveredStatIndex] = useState<number | null>(null);
+  const [hoveredValueIndex, setHoveredValueIndex] = useState<number | null>(null);
+
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -142,7 +147,12 @@ export const About = () => {
                 delay: index * 0.1,
               }}
               viewport={{ once: true }}
-              whileHover={{ scale: 1.03 }} // Reduced hover scale, removed rotateY
+              onMouseEnter={() => setHoveredStatIndex(index)}
+              onMouseLeave={() => setHoveredStatIndex(null)}
+              className={cn(
+                "group",
+                hoveredStatIndex !== null && hoveredStatIndex !== index && "blur-sm scale-[0.98]"
+              )}
             >
               <Card className="text-center bg-background/80 backdrop-blur-sm border-0 shadow-sm card-hover relative overflow-hidden group">
                 {/* Animated Background (simplified) */}
@@ -154,7 +164,7 @@ export const About = () => {
                     whileHover={{ scale: 1.1 }} // Reduced scale, removed rotate
                     transition={{ duration: 0.3 }} // Reduced duration
                   >
-                    <stat.icon className="h-6 w-6 text-primary relative z-10" />
+                    <stat.icon className="h-6 w-6 text-primary" />
                     <motion.div
                       className="absolute inset-0 bg-primary/20"
                       animate={{ opacity: [0.3, 0.6, 0.3] }} // Simplified animation
@@ -279,7 +289,12 @@ export const About = () => {
               {values.map((value, index) => (
                 <Card
                   key={index}
-                  className="text-center bg-background border-0 shadow-sm card-hover"
+                  className={cn(
+                    "text-center bg-background border-0 shadow-sm card-hover group",
+                    hoveredValueIndex !== null && hoveredValueIndex !== index && "blur-sm scale-[0.98]"
+                  )}
+                  onMouseEnter={() => setHoveredValueIndex(index)}
+                  onMouseLeave={() => setHoveredValueIndex(null)}
                 >
                   <CardContent className="pt-6">
                     <div className="gradient-primary w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4">

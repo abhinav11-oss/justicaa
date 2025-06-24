@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { motion } from "framer-motion";
@@ -11,8 +12,12 @@ import {
   Star,
   Users,
 } from "lucide-react";
+import { cn } from "@/lib/utils"; // Import cn utility
 
 export const Benefits = () => {
+  const [hoveredMainBenefitIndex, setHoveredMainBenefitIndex] = useState<number | null>(null);
+  const [hoveredAdditionalBenefitIndex, setHoveredAdditionalBenefitIndex] = useState<number | null>(null);
+
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -145,7 +150,16 @@ export const Benefits = () => {
           viewport={{ once: true }}
         >
           {mainBenefits.map((benefit, index) => (
-            <motion.div key={index} variants={itemVariants}>
+            <motion.div
+              key={index}
+              variants={itemVariants}
+              onMouseEnter={() => setHoveredMainBenefitIndex(index)}
+              onMouseLeave={() => setHoveredMainBenefitIndex(null)}
+              className={cn(
+                "group",
+                hoveredMainBenefitIndex !== null && hoveredMainBenefitIndex !== index && "blur-sm scale-[0.98]"
+              )}
+            >
               <Card className="card-hover border-2 hover:border-primary/20 bg-card/50 backdrop-blur-sm h-full">
                 <CardContent className="p-6">
                   <motion.div
@@ -228,7 +242,15 @@ export const Benefits = () => {
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {additionalBenefits.map((benefit, index) => (
-              <div key={index} className="text-center group">
+              <motion.div
+                key={index}
+                onMouseEnter={() => setHoveredAdditionalBenefitIndex(index)}
+                onMouseLeave={() => setHoveredAdditionalBenefitIndex(null)}
+                className={cn(
+                  "text-center group",
+                  hoveredAdditionalBenefitIndex !== null && hoveredAdditionalBenefitIndex !== index && "blur-sm scale-[0.98]"
+                )}
+              >
                 <div className="bg-primary/10 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
                   <benefit.icon className="h-8 w-8 text-primary" />
                 </div>
@@ -238,7 +260,7 @@ export const Benefits = () => {
                 <p className="text-sm text-muted-foreground leading-relaxed">
                   {benefit.description}
                 </p>
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>

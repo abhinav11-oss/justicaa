@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   Card,
   CardContent,
@@ -17,8 +18,12 @@ import {
   Gavel,
   Phone,
 } from "lucide-react";
+import { cn } from "@/lib/utils"; // Import cn utility
 
 export const Features = () => {
+  const [hoveredMainFeatureIndex, setHoveredMainFeatureIndex] = useState<number | null>(null);
+  const [hoveredAdditionalFeatureIndex, setHoveredAdditionalFeatureIndex] = useState<number | null>(null);
+
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -173,9 +178,12 @@ export const Features = () => {
                 delay: index * 0.1, // Reduced delay
               }}
               viewport={{ once: true }}
-              whileHover={{
-                scale: 1.02, // Reduced scale
-              }}
+              onMouseEnter={() => setHoveredMainFeatureIndex(index)}
+              onMouseLeave={() => setHoveredMainFeatureIndex(null)}
+              className={cn(
+                "group",
+                hoveredMainFeatureIndex !== null && hoveredMainFeatureIndex !== index && "blur-sm scale-[0.98]"
+              )}
             >
               <Card className="card-hover border-2 hover:border-primary/20 bg-card/50 backdrop-blur-sm h-full overflow-hidden relative group">
                 {/* Animated Background Gradient (simplified) */}
@@ -332,7 +340,10 @@ export const Features = () => {
               <motion.div
                 key={index}
                 variants={itemVariants}
-                className="group"
+                className={cn(
+                  "group",
+                  hoveredAdditionalFeatureIndex !== null && hoveredAdditionalFeatureIndex !== index && "blur-sm scale-[0.98]"
+                )}
                 initial={{ opacity: 0, y: 20 }} // Simplified animation
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{
@@ -340,7 +351,8 @@ export const Features = () => {
                   delay: index * 0.08, // Reduced delay
                 }}
                 viewport={{ once: true }}
-                whileHover={{ scale: 1.01, y: -3 }} // Reduced hover effect
+                onMouseEnter={() => setHoveredAdditionalFeatureIndex(index)}
+                onMouseLeave={() => setHoveredAdditionalFeatureIndex(null)}
               >
                 <div className="bg-background/80 backdrop-blur-sm rounded-xl p-6 card-hover border border-border/50 relative overflow-hidden">
                   {/* Hover Gradient */}

@@ -1,8 +1,12 @@
+import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Star, Quote } from "lucide-react";
+import { cn } from "@/lib/utils"; // Import cn utility
 
 export const Testimonials = () => {
+  const [hoveredTestimonialIndex, setHoveredTestimonialIndex] = useState<number | null>(null);
+
   const testimonials = [
     {
       name: "Rahul Sharma",
@@ -109,7 +113,12 @@ export const Testimonials = () => {
           {testimonials.map((testimonial, index) => (
             <Card
               key={index}
-              className="card-hover bg-background border-0 shadow-sm"
+              onMouseEnter={() => setHoveredTestimonialIndex(index)}
+              onMouseLeave={() => setHoveredTestimonialIndex(null)}
+              className={cn(
+                "card-hover bg-background border-0 shadow-sm group",
+                hoveredTestimonialIndex !== null && hoveredTestimonialIndex !== index && "blur-sm scale-[0.98]"
+              )}
             >
               <CardContent className="p-6">
                 {/* Quote Icon */}
