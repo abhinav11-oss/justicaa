@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -110,14 +109,14 @@ export const KnowledgeBase = () => {
   return (
     <div className="space-y-6">
       <div className="text-center">
-        <h3 className="text-2xl font-bold text-slate-900 mb-2">Legal Knowledge Base</h3>
-        <p className="text-slate-600">Find answers to frequently asked legal questions</p>
+        <h3 className="text-2xl font-bold text-foreground mb-2">Legal Knowledge Base</h3>
+        <p className="text-muted-foreground">Find answers to frequently asked legal questions</p>
       </div>
 
       {/* Search and Filter */}
       <div className="space-y-4">
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 h-4 w-4" />
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
           <Input
             placeholder="Search legal questions and topics..."
             value={searchQuery}
@@ -148,7 +147,7 @@ export const KnowledgeBase = () => {
         {filteredFAQs.length === 0 ? (
           <Card>
             <CardContent className="text-center py-8">
-              <p className="text-slate-600">No questions found matching your search criteria.</p>
+              <p className="text-muted-foreground">No questions found matching your search criteria.</p>
               <Button variant="outline" onClick={() => { setSearchQuery(""); setSelectedCategory("all"); }} className="mt-4">
                 Clear Filters
               </Button>
@@ -163,7 +162,7 @@ export const KnowledgeBase = () => {
               <Card key={faq.id} className="hover:shadow-md transition-shadow">
                 <Collapsible>
                   <CollapsibleTrigger asChild>
-                    <CardHeader className="cursor-pointer hover:bg-slate-50" onClick={() => toggleFAQ(faq.id)}>
+                    <CardHeader className="cursor-pointer hover:bg-muted" onClick={() => toggleFAQ(faq.id)}>
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
                           <CardTitle className="text-lg text-left">{faq.question}</CardTitle>
@@ -183,9 +182,9 @@ export const KnowledgeBase = () => {
                         </div>
                         <div className="ml-4">
                           {isOpen ? (
-                            <ChevronDown className="h-5 w-5 text-slate-400" />
+                            <ChevronDown className="h-5 w-5 text-muted-foreground" />
                           ) : (
-                            <ChevronRight className="h-5 w-5 text-slate-400" />
+                            <ChevronRight className="h-5 w-5 text-muted-foreground" />
                           )}
                         </div>
                       </div>
@@ -194,9 +193,9 @@ export const KnowledgeBase = () => {
                   
                   <CollapsibleContent>
                     <CardContent className="pt-0">
-                      <p className="text-slate-700 leading-relaxed">{faq.answer}</p>
-                      <div className="mt-4 p-3 bg-amber-50 border border-amber-200 rounded-lg">
-                        <p className="text-sm text-amber-800">
+                      <p className="text-muted-foreground leading-relaxed">{faq.answer}</p>
+                      <div className="mt-4 p-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg">
+                        <p className="text-sm text-amber-800 dark:text-amber-200">
                           <strong>Disclaimer:</strong> This information is for general guidance only. 
                           Laws vary by jurisdiction. Consult with a qualified attorney for advice specific to your situation.
                         </p>

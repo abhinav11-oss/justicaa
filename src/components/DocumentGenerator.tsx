@@ -675,8 +675,8 @@ Date: ${today}`;
         {Object.keys(categoryMap).map((cat) => (
           <TabsContent key={cat} value={cat} className="space-y-6">
             <div className="text-center">
-              <h3 className="text-2xl font-bold text-slate-900 mb-2">Document Generator</h3>
-              <p className="text-slate-600">Generate professional legal documents for {cat.toLowerCase()}</p>
+              <h3 className="text-2xl font-bold text-foreground mb-2">Document Generator</h3>
+              <p className="text-muted-foreground">Generate professional legal documents for {cat.toLowerCase()}</p>
             </div>
 
             {/* Available Documents */}
@@ -701,7 +701,7 @@ Date: ${today}`;
                           </div>
                           <div className="flex-1">
                             <h4 className="font-semibold">{template.name}</h4>
-                            <p className="text-sm text-slate-600 mt-1">{template.description}</p>
+                            <p className="text-sm text-muted-foreground mt-1">{template.description}</p>
                             <div className="flex flex-wrap gap-1 mt-2">
                               {template.category.map((cat) => (
                                 <Badge key={cat} variant="outline" className="text-xs">
@@ -791,11 +791,11 @@ Date: ${today}`;
       </Tabs>
 
       {/* Disclaimer */}
-      <Card className="bg-amber-50 border-amber-200">
+      <Card className="bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800">
         <CardContent className="pt-6">
           <div className="flex items-start space-x-2">
-            <AlertCircle className="h-5 w-5 text-amber-600 mt-0.5" />
-            <p className="text-sm text-amber-800">
+            <AlertCircle className="h-5 w-5 text-amber-600 dark:text-amber-200 mt-0.5" />
+            <p className="text-sm text-amber-800 dark:text-amber-200">
               <strong>Legal Disclaimer:</strong> These templates are for informational purposes only and may not be suitable for all situations. 
               Please consult with a qualified attorney before using any legal documents. Customize the templates according to your specific needs.
             </p>

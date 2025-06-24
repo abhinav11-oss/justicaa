@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -260,7 +259,7 @@ export const LegalGuides = () => {
                 </CardDescription>
               </div>
             </div>
-            <div className="flex items-center space-x-4 text-sm text-slate-600 mt-4">
+            <div className="flex items-center space-x-4 text-sm text-muted-foreground mt-4">
               <span>Duration: {selectedGuide.duration}</span>
               <span>Difficulty: {selectedGuide.difficulty}</span>
               <span>Progress: {Math.round(progress)}%</span>
@@ -284,14 +283,14 @@ export const LegalGuides = () => {
                       {isCompleted ? (
                         <CheckCircle className="h-5 w-5 text-green-600" />
                       ) : (
-                        <Circle className="h-5 w-5 text-slate-400" />
+                        <Circle className="h-5 w-5 text-muted-foreground" />
                       )}
                     </div>
                     <div className="flex-1">
-                      <h3 className={`font-medium ${isCompleted ? 'text-green-800' : 'text-slate-900'}`}>
+                      <h3 className={`font-medium ${isCompleted ? 'text-green-800' : 'text-foreground'}`}>
                         Step {index + 1}: {step.title}
                       </h3>
-                      <p className={`text-sm mt-1 ${isCompleted ? 'text-green-700' : 'text-slate-600'}`}>
+                      <p className={`text-sm mt-1 ${isCompleted ? 'text-green-700' : 'text-muted-foreground'}`}>
                         {step.description}
                       </p>
                     </div>
@@ -308,8 +307,8 @@ export const LegalGuides = () => {
   return (
     <div className="space-y-6">
       <div className="text-center">
-        <h3 className="text-2xl font-bold text-slate-900 mb-2">Legal Process Guides</h3>
-        <p className="text-slate-600">Step-by-step guidance through common legal procedures</p>
+        <h3 className="text-2xl font-bold text-foreground mb-2">Legal Process Guides</h3>
+        <p className="text-muted-foreground">Step-by-step guidance through common legal procedures</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -337,14 +336,14 @@ export const LegalGuides = () => {
                 </CardDescription>
                 
                 <div className="space-y-2 mb-4">
-                  <div className="flex justify-between text-sm text-slate-600">
+                  <div className="flex justify-between text-sm text-muted-foreground">
                     <span>{guide.duration}</span>
                     <span>{guide.difficulty}</span>
                   </div>
                   {progress > 0 && (
                     <div>
                       <Progress value={progress} className="h-2" />
-                      <p className="text-xs text-slate-500 mt-1">{Math.round(progress)}% completed</p>
+                      <p className="text-xs text-muted-foreground mt-1">{Math.round(progress)}% completed</p>
                     </div>
                   )}
                 </div>

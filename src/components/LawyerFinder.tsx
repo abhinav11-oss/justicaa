@@ -753,10 +753,10 @@ export const LawyerFinder = ({ category }: LawyerFinderProps) => {
               {filteredLawyers.length === 0 ? (
                 <Card>
                   <CardContent className="text-center py-8">
-                    <p className="text-slate-600 dark:text-slate-400">
+                    <p className="text-muted-foreground">
                       No lawyers found {userCity ? `in ${userCity}` : ''} for this category.
                     </p>
-                    <p className="text-sm text-slate-500 dark:text-slate-500 mt-2">
+                    <p className="text-sm text-muted-foreground mt-2">
                       Try selecting a different city or adjusting your filters.
                     </p>
                   </CardContent>
@@ -777,7 +777,7 @@ export const LawyerFinder = ({ category }: LawyerFinderProps) => {
                                   </Badge>
                                 )}
                               </div>
-                              <p className="text-slate-600 dark:text-slate-400 text-sm">
+                              <p className="text-muted-foreground text-sm">
                                 {lawyer.location}, {lawyer.city} - {lawyer.pincode}
                               </p>
                             </div>
@@ -795,7 +795,7 @@ export const LawyerFinder = ({ category }: LawyerFinderProps) => {
                             ))}
                           </div>
 
-                          <div className="text-sm text-slate-600 dark:text-slate-400 space-y-1">
+                          <div className="text-sm text-muted-foreground space-y-1">
                             <p>Experience: {lawyer.experience} years</p>
                             <div className="flex items-center justify-between">
                               <span className="flex items-center">
@@ -888,11 +888,14 @@ export const LawyerFinder = ({ category }: LawyerFinderProps) => {
       {/* Disclaimer */}
       <Card className="bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800">
         <CardContent className="pt-6">
-          <p className="text-sm text-amber-800 dark:text-amber-200">
-            <strong>Disclaimer:</strong> This directory is for informational purposes only. 
-            We do not endorse any specific lawyer or guarantee their services. 
-            Please verify credentials and consult multiple lawyers before making decisions.
-          </p>
+          <div className="flex items-start space-x-2">
+            <AlertCircle className="h-5 w-5 text-amber-600 dark:text-amber-200 mt-0.5" />
+            <p className="text-sm text-amber-800 dark:text-amber-200">
+              <strong>Disclaimer:</strong> This directory is for informational purposes only. 
+              We do not endorse any specific lawyer or guarantee their services. 
+              Please verify credentials and consult multiple lawyers before making decisions.
+            </p>
+          </div>
         </CardContent>
       </Card>
     </div>

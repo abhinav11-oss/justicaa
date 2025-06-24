@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -189,14 +188,14 @@ export const DocumentTemplates = () => {
   return (
     <div className="space-y-6">
       <div className="text-center">
-        <h3 className="text-2xl font-bold text-slate-900 mb-2">Legal Document Templates</h3>
-        <p className="text-slate-600">Ready-to-use legal forms and document templates</p>
+        <h3 className="text-2xl font-bold text-foreground mb-2">Legal Document Templates</h3>
+        <p className="text-muted-foreground">Ready-to-use legal forms and document templates</p>
       </div>
 
       {/* Search and Filter */}
       <div className="space-y-4">
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 h-4 w-4" />
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
           <Input
             placeholder="Search document templates..."
             value={searchQuery}
@@ -245,7 +244,7 @@ export const DocumentTemplates = () => {
                 {template.description}
               </CardDescription>
               
-              <div className="text-sm text-slate-600 mb-4">
+              <div className="text-sm text-muted-foreground mb-4">
                 <p>Estimated time: {template.estimatedTime}</p>
               </div>
               
@@ -266,12 +265,12 @@ export const DocumentTemplates = () => {
                     </DialogHeader>
                     <div className="mt-4">
                       <h4 className="font-medium mb-2">Document Preview:</h4>
-                      <div className="bg-slate-50 p-4 rounded-lg">
-                        <p className="text-sm text-slate-700">{template.preview}</p>
+                      <div className="bg-muted p-4 rounded-lg">
+                        <p className="text-sm text-foreground">{template.preview}</p>
                       </div>
                       <div className="mt-4">
                         <h4 className="font-medium mb-2">Required Information:</h4>
-                        <ul className="text-sm text-slate-600 space-y-1">
+                        <ul className="text-sm text-muted-foreground space-y-1">
                           {template.fields.map((field) => (
                             <li key={field.id}>• {field.label}</li>
                           ))}
@@ -345,9 +344,9 @@ export const DocumentTemplates = () => {
       </div>
 
       {/* Legal Notice */}
-      <Card className="bg-amber-50 border-amber-200">
+      <Card className="bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800">
         <CardContent className="py-4">
-          <p className="text-sm text-amber-800">
+          <p className="text-sm text-amber-800 dark:text-amber-200">
             <strong>Important:</strong> These templates provide general forms and should be reviewed by a qualified attorney 
             before use. Laws vary by jurisdiction and individual circumstances may require modifications.
           </p>
