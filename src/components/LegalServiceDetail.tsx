@@ -159,14 +159,14 @@ export function LegalServiceDetail({ service, onBack, onStartChat }: LegalServic
           </div>
           <div>
             <h2 className="text-2xl font-bold">{service.title}</h2>
-            <p className="text-slate-600">{service.description}</p>
+            <p className="text-muted-foreground">{service.description}</p>
           </div>
         </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* FAQs */}
-        <Card className="lg:col-span-2">
+        <Card className="lg:col-span-2 bg-card border-border">
           <CardHeader>
             <CardTitle>Frequently Asked Questions</CardTitle>
             <CardDescription>Common questions about {service.title.toLowerCase()}</CardDescription>
@@ -176,7 +176,7 @@ export function LegalServiceDetail({ service, onBack, onStartChat }: LegalServic
               {details.faqs.map((faq, index) => (
                 <AccordionItem key={index} value={`item-${index}`}>
                   <AccordionTrigger className="text-left">{faq.question}</AccordionTrigger>
-                  <AccordionContent className="text-slate-600">
+                  <AccordionContent className="text-muted-foreground">
                     {faq.answer}
                   </AccordionContent>
                 </AccordionItem>
@@ -187,7 +187,7 @@ export function LegalServiceDetail({ service, onBack, onStartChat }: LegalServic
 
         {/* Quick Actions */}
         <div className="space-y-4">
-          <Card>
+          <Card className="bg-card border-border">
             <CardHeader>
               <CardTitle className="text-lg">Get Help Now</CardTitle>
             </CardHeader>
@@ -207,14 +207,14 @@ export function LegalServiceDetail({ service, onBack, onStartChat }: LegalServic
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="bg-card border-border">
             <CardHeader>
               <CardTitle className="text-lg">Available Documents</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-2">
                 {details.documents.map((doc, index) => (
-                  <div key={index} className="flex items-center justify-between p-2 border rounded">
+                  <div key={index} className="flex items-center justify-between p-2 border border-border rounded">
                     <span className="text-sm">{doc}</span>
                     <Badge variant="outline" className="text-xs">Template</Badge>
                   </div>
@@ -226,7 +226,7 @@ export function LegalServiceDetail({ service, onBack, onStartChat }: LegalServic
       </div>
 
       {/* Step-by-step Guide */}
-      <Card>
+      <Card className="bg-card border-border">
         <CardHeader>
           <CardTitle>Step-by-Step Guide</CardTitle>
           <CardDescription>Follow these steps for {service.title.toLowerCase()}</CardDescription>
@@ -234,11 +234,11 @@ export function LegalServiceDetail({ service, onBack, onStartChat }: LegalServic
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {details.guides.map((step, index) => (
-              <div key={index} className="flex items-start space-x-3 p-4 border rounded-lg">
+              <div key={index} className="flex items-start space-x-3 p-4 border border-border rounded-lg">
                 <div className="bg-blue-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-medium">
                   {index + 1}
                 </div>
-                <p className="text-sm text-slate-700">{step}</p>
+                <p className="text-sm text-muted-foreground">{step}</p>
               </div>
             ))}
           </div>
@@ -246,9 +246,9 @@ export function LegalServiceDetail({ service, onBack, onStartChat }: LegalServic
       </Card>
 
       {/* Legal Notice */}
-      <Card className="bg-amber-50 border-amber-200">
+      <Card className="bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800">
         <CardContent className="pt-6">
-          <p className="text-sm text-amber-800">
+          <p className="text-sm text-amber-800 dark:text-amber-200">
             <strong>Important:</strong> This information is for general guidance only. 
             Laws vary by jurisdiction and individual circumstances may require modifications. 
             For specific legal advice, please consult with a qualified attorney.

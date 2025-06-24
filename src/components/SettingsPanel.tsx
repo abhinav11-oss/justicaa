@@ -107,7 +107,7 @@ export const SettingsPanel = () => {
   return (
     <div className="space-y-6">
       {/* Profile Settings */}
-      <Card>
+      <Card className="bg-card border-border">
         <CardHeader>
           <CardTitle className="flex items-center">
             <User className="h-5 w-5 mr-2" />
@@ -153,7 +153,7 @@ export const SettingsPanel = () => {
                 placeholder="Enter your email"
                 disabled
               />
-              <p className="text-xs text-slate-500 mt-1">
+              <p className="text-xs text-muted-foreground mt-1">
                 Email cannot be changed
               </p>
             </div>
@@ -176,10 +176,10 @@ export const SettingsPanel = () => {
                   handleProfileChange("location", value)
                 }
               >
-                <SelectTrigger>
+                <SelectTrigger className="bg-background text-foreground">
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="bg-card border-border">
                   {cities.map((city) => (
                     <SelectItem key={city} value={city}>
                       <div className="flex items-center">
@@ -205,14 +205,14 @@ export const SettingsPanel = () => {
       </Card>
 
       {/* Account Settings */}
-      <Card>
+      <Card className="bg-card border-border">
         <CardHeader>
           <CardTitle>Account Settings</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div>
             <Label>Authentication Method</Label>
-            <p className="text-sm text-slate-600 dark:text-slate-400">
+            <p className="text-sm text-muted-foreground">
               {user?.app_metadata?.provider === "google"
                 ? "Google Account"
                 : "Email & Password"}
@@ -223,7 +223,7 @@ export const SettingsPanel = () => {
 
           <div className="space-y-2">
             <Label>Data & Privacy</Label>
-            <p className="text-sm text-slate-600 dark:text-slate-400">
+            <p className="text-sm text-muted-foreground">
               Your data is securely stored and never shared with third parties.
             </p>
           </div>

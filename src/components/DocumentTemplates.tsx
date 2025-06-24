@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -224,7 +223,7 @@ export const DocumentTemplates = () => {
       {/* Templates Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredTemplates.map((template) => (
-          <Card key={template.id} className="hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+          <Card key={template.id} className="hover:shadow-lg transition-all duration-300 hover:-translate-y-1 bg-card border-border">
             <CardHeader>
               <div className="flex items-center space-x-3">
                 <div className="bg-blue-100 p-2 rounded-lg">
@@ -257,7 +256,7 @@ export const DocumentTemplates = () => {
                       Preview
                     </Button>
                   </DialogTrigger>
-                  <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+                  <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto bg-card border-border">
                     <DialogHeader>
                       <DialogTitle>{template.title}</DialogTitle>
                       <DialogDescription>
@@ -266,12 +265,12 @@ export const DocumentTemplates = () => {
                     </DialogHeader>
                     <div className="mt-4">
                       <h4 className="font-medium mb-2">Document Preview:</h4>
-                      <div className="bg-slate-50 p-4 rounded-lg">
-                        <p className="text-sm text-slate-700">{template.preview}</p>
+                      <div className="bg-muted p-4 rounded-lg">
+                        <p className="text-sm text-muted-foreground">{template.preview}</p>
                       </div>
                       <div className="mt-4">
                         <h4 className="font-medium mb-2">Required Information:</h4>
-                        <ul className="text-sm text-slate-600 space-y-1">
+                        <ul className="text-sm text-muted-foreground space-y-1">
                           {template.fields.map((field) => (
                             <li key={field.id}>• {field.label}</li>
                           ))}
@@ -288,7 +287,7 @@ export const DocumentTemplates = () => {
                       Use Template
                     </Button>
                   </DialogTrigger>
-                  <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+                  <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto bg-card border-border">
                     <DialogHeader>
                       <DialogTitle>Create {template.title}</DialogTitle>
                       <DialogDescription>
@@ -309,7 +308,7 @@ export const DocumentTemplates = () => {
                             />
                           ) : field.type === 'select' ? (
                             <select
-                              className="w-full p-2 border border-input rounded-md"
+                              className="w-full p-2 border border-input rounded-md bg-background text-foreground"
                               value={formData[field.id] || ''}
                               onChange={(e) => handleFieldChange(field.id, e.target.value)}
                             >
@@ -329,7 +328,7 @@ export const DocumentTemplates = () => {
                         </div>
                       ))}
                       
-                      <div className="pt-4 border-t">
+                      <div className="pt-4 border-t border-border">
                         <Button onClick={generateDocument} className="w-full">
                           <Download className="h-4 w-4 mr-2" />
                           Generate Document
@@ -345,9 +344,9 @@ export const DocumentTemplates = () => {
       </div>
 
       {/* Legal Notice */}
-      <Card className="bg-amber-50 border-amber-200">
+      <Card className="bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800">
         <CardContent className="py-4">
-          <p className="text-sm text-amber-800">
+          <p className="text-sm text-amber-800 dark:text-amber-200">
             <strong>Important:</strong> These templates provide general forms and should be reviewed by a qualified attorney 
             before use. Laws vary by jurisdiction and individual circumstances may require modifications.
           </p>

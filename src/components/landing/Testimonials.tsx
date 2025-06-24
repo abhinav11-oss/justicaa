@@ -109,7 +109,7 @@ export const Testimonials = () => {
           {testimonials.map((testimonial, index) => (
             <Card
               key={index}
-              className="card-hover bg-background border-0 shadow-sm"
+              className="card-hover bg-card border-border shadow-sm"
             >
               <CardContent className="p-6">
                 {/* Quote Icon */}
@@ -141,7 +141,7 @@ export const Testimonials = () => {
                 </p>
 
                 {/* Author */}
-                <div className="border-t pt-4">
+                <div className="border-t border-border pt-4">
                   <div className="font-semibold text-foreground">
                     {testimonial.name}
                   </div>

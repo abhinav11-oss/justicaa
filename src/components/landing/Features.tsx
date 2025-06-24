@@ -342,7 +342,7 @@ export const Features = () => {
                 viewport={{ once: true }}
                 whileHover={{ scale: 1.01, y: -3 }} // Reduced hover effect
               >
-                <div className="bg-background/80 backdrop-blur-sm rounded-xl p-6 card-hover border border-border/50 relative overflow-hidden">
+                <div className="bg-card/80 backdrop-blur-sm rounded-xl p-6 card-hover border border-border/50 relative overflow-hidden">
                   {/* Hover Gradient */}
                   <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
 
