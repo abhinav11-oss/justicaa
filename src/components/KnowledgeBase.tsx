@@ -84,6 +84,48 @@ export const KnowledgeBase = () => {
       answer: "A security deposit is held to cover potential damages or unpaid rent and must be returned (minus legitimate deductions) after you move out. Last month's rent is prepaid rent for your final month of tenancy. Security deposits often have legal limits (1-2 months' rent) and must be held in separate accounts in some states. They also have specific return timelines and itemization requirements for deductions.",
       category: "housing",
       tags: ["security deposit", "last month rent", "tenant", "rental agreement"]
+    },
+    {
+      id: "9",
+      question: "What is the Right to Information (RTI) Act in India?",
+      answer: "The Right to Information (RTI) Act, 2005, is a law enacted by the Parliament of India to provide for setting out the practical regime of right to information for citizens. It replaces the Freedom of Information Act, 2002. The Act covers the whole of India. It enables citizens to secure access to information under the control of public authorities, in order to promote transparency and accountability in the working of every public authority.",
+      category: "legal",
+      tags: ["RTI", "Right to Information", "Indian law", "transparency"]
+    },
+    {
+      id: "10",
+      question: "How do I file a First Information Report (FIR) in India?",
+      answer: "To file an FIR in India, you should visit the police station having jurisdiction over the area where the crime occurred. Inform the police officer about the cognizable offense. The officer will record your statement, which you should then read, verify, and sign. Insist on getting a free copy of the FIR, as it is your legal right under Section 154(2) of the CrPC. If the police refuse to register an FIR, you can send a written complaint to the Superintendent of Police or approach a Magistrate.",
+      category: "criminal",
+      tags: ["FIR", "police complaint", "criminal law", "CrPC"]
+    },
+    {
+      id: "11",
+      question: "What are my rights if I am arrested in India?",
+      answer: "If arrested in India, you have several fundamental rights, including: the right to know the grounds of arrest (Article 22 of the Constitution and Section 50 of CrPC), the right to inform a relative or friend about your arrest, the right to consult and be defended by a legal practitioner of your choice, and the right to be produced before a Magistrate within 24 hours of arrest (excluding journey time). You also have the right to a medical examination.",
+      category: "criminal",
+      tags: ["arrest", "rights", "police", "Indian law", "CrPC"]
+    },
+    {
+      id: "12",
+      question: "What is the Consumer Protection Act, 2019?",
+      answer: "The Consumer Protection Act, 2019, is an Indian law that protects the interests of consumers. It replaced the Consumer Protection Act, 1986. The Act defines consumer rights, establishes Consumer Disputes Redressal Commissions at District, State, and National levels, and introduces concepts like product liability and e-commerce regulations. It aims to provide timely and effective administration and settlement of consumer disputes.",
+      category: "consumer",
+      tags: ["consumer law", "consumer rights", "product liability", "India"]
+    },
+    {
+      id: "13",
+      question: "How can I resolve a property dispute in India?",
+      answer: "Property disputes in India can be complex. Common methods of resolution include: mutual settlement (negotiation), mediation/arbitration, or litigation in civil courts. For issues related to land records, you might approach the revenue authorities. Disputes with builders can often be taken to RERA (Real Estate Regulatory Authority) or consumer forums. It's highly advisable to consult a property lawyer for specific guidance.",
+      category: "housing",
+      tags: ["property law", "dispute resolution", "real estate", "RERA", "civil law"]
+    },
+    {
+      id: "14",
+      question: "What is a mutual consent divorce in India?",
+      answer: "A mutual consent divorce in India is a legal process where both husband and wife agree to dissolve their marriage. It is governed by Section 13B of the Hindu Marriage Act, 1955 (for Hindus) or Section 28 of the Special Marriage Act, 1954. It typically involves two motions filed in the Family Court, with a mandatory cooling-off period (usually 6 to 18 months) between them to allow for reconciliation. This process is generally faster and less contentious than a contested divorce.",
+      category: "family",
+      tags: ["divorce", "family law", "mutual consent", "Hindu Marriage Act"]
     }
   ];
 
