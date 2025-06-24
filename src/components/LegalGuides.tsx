@@ -250,7 +250,7 @@ export const LegalGuides = () => {
           <CardHeader>
             <div className="flex items-center space-x-3">
               <div className="bg-secondary p-2 rounded-lg">
-                <selectedGuide.icon className="h-6 w-6 text-primary-foreground" />
+                <selectedGuide.icon className="h-6 w-6 text-blue-600" />
               </div>
               <div className="flex-1">
                 <CardTitle className="text-2xl">{selectedGuide.title}</CardTitle>
@@ -319,7 +319,7 @@ export const LegalGuides = () => {
               <CardHeader>
                 <div className="flex items-center space-x-3">
                   <div className="bg-secondary p-2 rounded-lg">
-                    <guide.icon className="h-6 w-6 text-primary-foreground" />
+                    <guide.icon className="h-6 w-6 text-blue-600" />
                   </div>
                   <div className="flex-1">
                     <CardTitle className="text-lg">{guide.title}</CardTitle>
