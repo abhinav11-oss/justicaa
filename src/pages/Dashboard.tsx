@@ -54,21 +54,6 @@ const Dashboard = () => {
     }
   }, [sessionError, toast]);
 
-  const sidebarItems = [
-    ...(user ? [{ id: "home", title: t("dashboard.title") }] : []),
-    { id: "chat", title: t("dashboard.aiChat") },
-    ...(user
-      ? [
-          { id: "lawyers", title: t("dashboard.lawyers") },
-          { id: "generator", title: t("dashboard.documents") },
-          { id: "templates", title: t("dashboard.templates") },
-          { id: "guides", title: t("dashboard.guides") },
-          { id: "research", title: t("dashboard.research") },
-          { id: "settings", title: t("dashboard.settings") },
-        ]
-      : []),
-  ];
-
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
@@ -82,7 +67,7 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="min-h-screen flex bg-background">
+    <div className="min-h-screen flex bg-muted/40">
       <DashboardSidebar
         user={user}
         isTrialMode={isTrialMode}
@@ -96,13 +81,9 @@ const Dashboard = () => {
         <DashboardHeader
           isMobile={isMobile}
           onMenuClick={() => setSidebarOpen(true)}
-          activeTab={activeTab}
-          sidebarItems={sidebarItems}
-          isTrialMode={isTrialMode}
           user={user}
-          t={t}
         />
-        
+
         {isTrialMode && !user && (
           <div className="px-6 py-2 bg-primary/10 border-b border-primary/20">
             <div className="flex items-center justify-center space-x-2">
@@ -126,12 +107,14 @@ const Dashboard = () => {
           <div className="px-6 py-2 bg-destructive/10 border-b border-destructive/20">
             <div className="flex items-center justify-center space-x-2">
               <AlertTriangle className="h-4 w-4 text-destructive" />
-              <p className="text-sm text-center text-destructive">{sessionError}</p>
+              <p className="text-sm text-center text-destructive">
+                {sessionError}
+              </p>
             </div>
           </div>
         )}
 
-        <div className="flex-1 p-6 overflow-y-auto">
+        <div className="flex-1 p-4 sm:p-6 overflow-y-auto">
           <DashboardMainContent
             activeTab={activeTab}
             isTrialMode={isTrialMode}
