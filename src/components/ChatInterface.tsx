@@ -2,17 +2,16 @@ import { useState, useRef, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { Label } from "@/components/ui/label";
+import { Card, CardContent } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Send, Bot, User, Loader2, Copy, MessageSquare, Lock, Volume2 } from "lucide-react";
+import { Send, Bot, User, Loader2, Copy, Lock, Volume2, Paperclip, Sparkles } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { QuickQuestions } from "@/components/QuickQuestions";
-import { VoiceChat, useSpeakText } from "@/components/VoiceChat";
-import { useIsMobile } from "@/hooks/use-mobile";
+import { useSpeakText } from "@/components/VoiceChat";
+import { Switch } from "@/components/ui/switch";
 
 interface Message {
   id: string;
@@ -22,27 +21,24 @@ interface Message {
 }
 
 interface ChatInterfaceProps {
-  category?: string;
+  conversationId: string | null;
 }
 
-export const ChatInterface = ({ category }: ChatInterfaceProps) => {
+export const ChatInterface = ({ conversationId: propConversationId }: ChatInterfaceProps) => {
   const { t } = useTranslation();
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [conversationId, setConversationId] = useState<string | null>(null);
+  const [conversationId, setConversationId] = useState<string | null>(propConversationId);
   const [trialMessagesUsed, setTrialMessagesUsed] = useState(0);
   const [showAuthModal, setShowAuthModal] = useState(false);
-  const [isListening, setIsListening] = useState(false);
+  const [showPrompts, setShowPrompts] = useState(true);
   const { user } = useAuth();
   const { toast } = useToast();
   const { speakText, isSpeaking } = useSpeakText();
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const chatContainerRef = useRef<HTMLDivElement>(null);
-  const hasUserInteracted = messages.some(msg => msg.role === "user");
-  const isMobile = useIsMobile();
 
-  // Check if this is trial mode
   const isTrialMode = !user && (window.location.search.includes('trial=true') || localStorage.getItem('trialMode') === 'true');
   const TRIAL_MESSAGE_LIMIT = 3;
 
@@ -54,7 +50,6 @@ export const ChatInterface = ({ category }: ChatInterfaceProps) => {
     scrollToBottom();
   }, [messages]);
 
-  // Initialize trial mode and load trial messages count
   useEffect(() => {
     if (isTrialMode) {
       localStorage.setItem('trialMode', 'true');
@@ -63,35 +58,64 @@ export const ChatInterface = ({ category }: ChatInterfaceProps) => {
     }
   }, [isTrialMode]);
 
+  useEffect(() => {
+    if (propConversationId) {
+      setConversationId(propConversationId);
+      fetchMessages(propConversationId);
+      setShowPrompts(false);
+    } else {
+      setMessages([]);
+      setConversationId(null);
+      setShowPrompts(true);
+    }
+  }, [propConversationId]);
+
+  const fetchMessages = async (convId: string) => {
+    setIsLoading(true);
+    try {
+      const { data, error } = await supabase
+        .from("chat_messages")
+        .select("*")
+        .eq("conversation_id", convId)
+        .order("created_at", { ascending: true });
+
+      if (error) throw error;
+
+      const loadedMessages: Message[] = data.map(msg => ({
+        id: msg.id,
+        role: msg.sender === 'user' ? 'user' : 'assistant',
+        content: msg.content,
+        timestamp: new Date(msg.created_at),
+      }));
+      setMessages(loadedMessages);
+    } catch (error) {
+      toast({
+        title: "Error loading chat",
+        description: "Could not fetch previous messages.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const handleQuestionClick = (question: string) => {
     setInputValue(question);
     handleSendMessage(question);
   };
 
-  const handleVoiceTranscript = (transcript: string) => {
-    setInputValue(transcript);
-    handleSendMessage(transcript);
-  };
-
   const handleAuthAction = () => {
-    // Open auth in new tab
     const authWindow = window.open('/auth', '_blank', 'width=500,height=600,scrollbars=yes,resizable=yes');
-    
-    // Listen for auth success message
     const messageHandler = (event: MessageEvent) => {
       if (event.origin === window.location.origin && event.data.type === 'AUTH_SUCCESS') {
         authWindow?.close();
         setShowAuthModal(false);
-        // Clear trial mode and redirect to dashboard
         localStorage.removeItem('trialMode');
         localStorage.removeItem('trialMessagesUsed');
         window.location.href = '/dashboard';
       }
     };
-    
     window.addEventListener('message', messageHandler);
-    
-    // Cleanup listener if window is closed manually
     const checkClosed = setInterval(() => {
       if (authWindow?.closed) {
         window.removeEventListener('message', messageHandler);
@@ -104,7 +128,6 @@ export const ChatInterface = ({ category }: ChatInterfaceProps) => {
     const content = messageContent || inputValue.trim();
     if (!content) return;
 
-    // Check trial limit for non-authenticated users
     if (isTrialMode && trialMessagesUsed >= TRIAL_MESSAGE_LIMIT) {
       setShowAuthModal(true);
       return;
@@ -120,8 +143,8 @@ export const ChatInterface = ({ category }: ChatInterfaceProps) => {
     setMessages(prev => [...prev, userMessage]);
     setInputValue("");
     setIsLoading(true);
+    setShowPrompts(false);
 
-    // Update trial message count
     if (isTrialMode) {
       const newCount = trialMessagesUsed + 1;
       setTrialMessagesUsed(newCount);
@@ -129,32 +152,22 @@ export const ChatInterface = ({ category }: ChatInterfaceProps) => {
     }
 
     try {
-      // Create conversation if not exists and user is authenticated
-      if (!conversationId && user) {
+      let currentConvId = conversationId;
+
+      if (!currentConvId && user) {
         const { data: conversation, error: convError } = await supabase
           .from("chat_conversations")
-          .insert([
-            {
-              user_id: user.id,
-              title: content.slice(0, 50) + "...",
-              legal_category: category || "general",
-              status: "active"
-            }
-          ])
+          .insert([{ user_id: user.id, title: content.slice(0, 50) + "...", status: "active" }])
           .select()
           .single();
 
         if (convError) throw convError;
         setConversationId(conversation.id);
+        currentConvId = conversation.id;
       }
 
-      // Call the free Hugging Face AI function
       const { data, error } = await supabase.functions.invoke('ai-legal-chat-hf', {
-        body: {
-          message: content,
-          conversation_id: conversationId,
-          category: category || "general"
-        }
+        body: { message: content, conversation_id: currentConvId, category: "general" }
       });
 
       if (error) throw error;
@@ -162,51 +175,32 @@ export const ChatInterface = ({ category }: ChatInterfaceProps) => {
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
         role: "assistant",
-        content: data.response || "I apologize, but I couldn't process your request at the moment. Please try again or consider consulting with a qualified attorney for immediate assistance.",
+        content: data.response || "I apologize, but I couldn't process your request.",
         timestamp: new Date(),
       };
 
       setMessages(prev => [...prev, assistantMessage]);
 
-      // Save messages to database if user is logged in
-      if (user && conversationId) {
-        // Insert user message
-        await supabase.from("chat_messages").insert({
-          conversation_id: conversationId,
-          sender: "user",
-          content: content,
-          created_at: userMessage.timestamp.toISOString()
-        });
-
-        // Insert assistant message
-        await supabase.from("chat_messages").insert({
-          conversation_id: conversationId,
-          sender: "assistant",
-          content: assistantMessage.content,
-          created_at: assistantMessage.timestamp.toISOString()
-        });
+      if (user && currentConvId) {
+        await supabase.from("chat_messages").insert([
+          { conversation_id: currentConvId, sender: "user", content: content, created_at: userMessage.timestamp.toISOString() },
+          { conversation_id: currentConvId, sender: "assistant", content: assistantMessage.content, created_at: assistantMessage.timestamp.toISOString() }
+        ]);
       }
 
-      // Show auth modal if trial limit reached
       if (isTrialMode && trialMessagesUsed + 1 >= TRIAL_MESSAGE_LIMIT) {
         setTimeout(() => setShowAuthModal(true), 2000);
       }
 
     } catch (error) {
       console.error("Error sending message:", error);
-      toast({
-        title: t('common.error'),
-        description: "Failed to send message. Please try again.",
-        variant: "destructive"
-      });
-
+      toast({ title: t('common.error'), description: "Failed to send message.", variant: "destructive" });
       const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
         role: "assistant",
-        content: "I'm sorry, I'm having trouble connecting right now. As an alternative, consider reaching out to local legal aid organizations or consulting with an attorney for immediate assistance.",
+        content: "I'm sorry, I'm having trouble connecting right now.",
         timestamp: new Date(),
       };
-
       setMessages(prev => [...prev, errorMessage]);
     } finally {
       setIsLoading(false);
@@ -223,16 +217,9 @@ export const ChatInterface = ({ category }: ChatInterfaceProps) => {
   const copyToClipboard = async (text: string) => {
     try {
       await navigator.clipboard.writeText(text);
-      toast({
-        title: t('common.copied'),
-        description: "Message copied to clipboard"
-      });
+      toast({ title: t('common.copied'), description: "Message copied to clipboard" });
     } catch (error) {
-      toast({
-        title: t('common.error'),
-        description: "Failed to copy message",
-        variant: "destructive"
-      });
+      toast({ title: t('common.error'), description: "Failed to copy message", variant: "destructive" });
     }
   };
 
@@ -242,121 +229,56 @@ export const ChatInterface = ({ category }: ChatInterfaceProps) => {
 
   const isInputDisabled = isTrialMode && trialMessagesUsed >= TRIAL_MESSAGE_LIMIT;
 
-  return (
-    <div className={`${isMobile ? 'h-[calc(100vh-120px)]' : 'h-[calc(100vh-200px)]'} flex flex-col`}>
-      <Card className="flex-1 flex flex-col">
-        <CardHeader className="flex-shrink-0 p-3 md:p-6">
-          <div className="flex items-center justify-between flex-wrap gap-2">
-            <div>
-              <CardTitle className="flex items-center text-lg md:text-xl">
-                <MessageSquare className="h-4 w-4 md:h-5 md:w-5 mr-2" />
-                {t('chat.title')}
-              </CardTitle>
-              <p className="text-xs md:text-sm text-muted-foreground mt-1">
-                {t('chat.subtitle')}
-              </p>
-            </div>
-            <div className="flex gap-2">
-              {isTrialMode && (
-                <Badge variant="outline" className="text-xs">
-                  {t('chat.trialLimit', { 
-                    remaining: TRIAL_MESSAGE_LIMIT - trialMessagesUsed, 
-                    total: TRIAL_MESSAGE_LIMIT 
-                  })}
-                </Badge>
-              )}
-              {category && (
-                <Badge variant="outline" className="capitalize text-xs">
-                  {category}
-                </Badge>
-              )}
-            </div>
-          </div>
-        </CardHeader>
+  const WelcomeScreen = () => (
+    <div className="flex flex-col items-center justify-center h-full text-center p-8">
+      <div className="bg-card p-8 rounded-lg max-w-md shadow-lg">
+        <h2 className="text-2xl font-bold mb-2">
+          Hello, {user?.user_metadata?.full_name || "there"}! 👋
+        </h2>
+        <p className="text-muted-foreground">
+          Select a prompt, choose a past conversation, or write your own question below.
+        </p>
+      </div>
+    </div>
+  );
 
+  return (
+    <div className="h-full flex flex-col bg-background">
+      <Card className="flex-1 flex flex-col rounded-none border-0 h-full">
         <CardContent className="flex-1 flex flex-col p-0">
           <div className="flex-1 overflow-y-auto" ref={chatContainerRef}>
             <div className="px-3 md:px-6">
-              {!hasUserInteracted && (
+              {messages.length === 0 && !isLoading && !showPrompts && <WelcomeScreen />}
+              
+              {(showPrompts || (messages.length === 0 && !isLoading)) && (
                 <QuickQuestions 
                   onQuestionClick={handleQuestionClick}
-                  isVisible={!hasUserInteracted}
+                  isVisible={true}
                 />
               )}
               
               {messages.length > 0 && (
                 <div className="space-y-3 md:space-y-4 py-4">
                   {messages.map((message) => (
-                    <div
-                      key={message.id}
-                      className={`flex items-start space-x-2 md:space-x-3 ${
-                        message.role === "user" ? "justify-end" : "justify-start"
-                      }`}
-                    >
-                      {message.role === "assistant" && (
-                        <div className="bg-primary p-1.5 md:p-2 rounded-full flex-shrink-0">
-                          <Bot className="h-3 w-3 md:h-4 md:w-4 text-primary-foreground" />
-                        </div>
-                      )}
-                      
-                      <div
-                        className={`max-w-[85%] md:max-w-[80%] p-3 md:p-4 rounded-lg ${
-                          message.role === "user"
-                            ? "bg-primary text-primary-foreground"
-                            : "bg-muted"
-                        }`}
-                      >
-                        <div className="prose prose-sm max-w-none">
-                          <p className="whitespace-pre-wrap text-sm md:text-base">{message.content}</p>
-                        </div>
-                        
+                    <div key={message.id} className={`flex items-start space-x-2 md:space-x-3 ${message.role === "user" ? "justify-end" : "justify-start"}`}>
+                      {message.role === "assistant" && <div className="bg-primary p-1.5 md:p-2 rounded-full flex-shrink-0"><Bot className="h-3 w-3 md:h-4 md:w-4 text-primary-foreground" /></div>}
+                      <div className={`max-w-[85%] md:max-w-[80%] p-3 md:p-4 rounded-lg ${message.role === "user" ? "bg-primary text-primary-foreground" : "bg-muted"}`}>
+                        <div className="prose prose-sm max-w-none"><p className="whitespace-pre-wrap text-sm md:text-base">{message.content}</p></div>
                         <div className="flex items-center justify-between mt-2 pt-2 border-t border-current/10">
-                          <span className="text-xs opacity-70">
-                            {message.timestamp.toLocaleTimeString()}
-                          </span>
+                          <span className="text-xs opacity-70">{message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                           <div className="flex items-center space-x-1">
-                            {message.role === "assistant" && (
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => handleSpeakMessage(message.content)}
-                                className="h-5 w-5 md:h-6 md:w-6 p-0 opacity-70 hover:opacity-100"
-                                disabled={isSpeaking}
-                              >
-                                <Volume2 className="h-3 w-3" />
-                              </Button>
-                            )}
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => copyToClipboard(message.content)}
-                              className="h-5 w-5 md:h-6 md:w-6 p-0 opacity-70 hover:opacity-100"
-                            >
-                              <Copy className="h-3 w-3" />
-                            </Button>
+                            {message.role === "assistant" && <Button variant="ghost" size="sm" onClick={() => handleSpeakMessage(message.content)} className="h-5 w-5 md:h-6 md:w-6 p-0 opacity-70 hover:opacity-100" disabled={isSpeaking}><Volume2 className="h-3 w-3" /></Button>}
+                            <Button variant="ghost" size="sm" onClick={() => copyToClipboard(message.content)} className="h-5 w-5 md:h-6 md:w-6 p-0 opacity-70 hover:opacity-100"><Copy className="h-3 w-3" /></Button>
                           </div>
                         </div>
                       </div>
-
-                      {message.role === "user" && (
-                        <div className="bg-primary p-1.5 md:p-2 rounded-full flex-shrink-0">
-                          <User className="h-3 w-3 md:h-4 md:w-4 text-primary-foreground" />
-                        </div>
-                      )}
+                      {message.role === "user" && <div className="bg-primary p-1.5 md:p-2 rounded-full flex-shrink-0"><User className="h-3 w-3 md:h-4 md:w-4 text-primary-foreground" /></div>}
                     </div>
                   ))}
-                  
                   {isLoading && (
                     <div className="flex items-start space-x-2 md:space-x-3">
-                      <div className="bg-primary p-1.5 md:p-2 rounded-full">
-                        <Bot className="h-3 w-3 md:h-4 md:w-4 text-primary-foreground" />
-                      </div>
-                      <div className="bg-muted p-3 md:p-4 rounded-lg">
-                        <div className="flex items-center space-x-2">
-                          <Loader2 className="h-3 w-3 md:h-4 w-4 animate-spin" />
-                          <span className="text-sm">{t('chat.thinking')}</span>
-                        </div>
-                      </div>
+                      <div className="bg-primary p-1.5 md:p-2 rounded-full"><Bot className="h-3 w-3 md:h-4 md:w-4 text-primary-foreground" /></div>
+                      <div className="bg-muted p-3 md:p-4 rounded-lg"><div className="flex items-center space-x-2"><Loader2 className="h-3 w-3 md:h-4 w-4 animate-spin" /><span className="text-sm">{t('chat.thinking')}</span></div></div>
                     </div>
                   )}
                 </div>
@@ -365,69 +287,48 @@ export const ChatInterface = ({ category }: ChatInterfaceProps) => {
             </div>
           </div>
 
-          {/* Input Area */}
-          <div className="p-3 md:p-4 flex-shrink-0">
-            <div className="flex items-center space-x-2 mb-2">
-              <div className="flex-1 flex space-x-2">
-                <Input
-                  value={inputValue}
-                  onChange={(e) => setInputValue(e.target.value)}
-                  onKeyPress={handleKeyPress}
-                  placeholder={isInputDisabled ? t('auth.signInContinue') : t('chat.placeholder')}
-                  disabled={isLoading || isInputDisabled}
-                  className="flex-1 text-sm md:text-base"
-                />
-                <Button
-                  onClick={() => handleSendMessage()}
-                  disabled={isLoading || !inputValue.trim() || isInputDisabled}
-                  size="icon"
-                  className="flex-shrink-0"
-                >
-                  {isLoading ? (
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                  ) : isInputDisabled ? (
-                    <Lock className="h-4 w-4" />
-                  ) : (
-                    <Send className="h-4 w-4" />
-                  )}
+          <div className="p-3 md:p-4 flex-shrink-0 border-t bg-card">
+            <div className="relative">
+              <Button variant="ghost" size="icon" className="absolute left-1 top-1/2 -translate-y-1/2 h-8 w-8 text-muted-foreground"><Paperclip className="h-5 w-5" /></Button>
+              <Input
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                onKeyPress={handleKeyPress}
+                placeholder={isInputDisabled ? t('auth.signInContinue') : t('chat.placeholder')}
+                disabled={isLoading || isInputDisabled}
+                className="flex-1 text-sm md:text-base pl-10 pr-12"
+              />
+              <Button onClick={() => handleSendMessage()} disabled={isLoading || !inputValue.trim() || isInputDisabled} size="icon" className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8">
+                {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : isInputDisabled ? <Lock className="h-4 w-4" /> : <Send className="h-4 w-4" />}
+              </Button>
+            </div>
+            <div className="flex items-center justify-between mt-2">
+              <div className="flex items-center gap-4">
+                <div className="flex items-center gap-2">
+                  <Switch id="internet-mode" onCheckedChange={(checked) => toast({ title: `Internet access ${checked ? 'enabled' : 'disabled'}. This is a demo feature.`})} />
+                  <Label htmlFor="internet-mode" className="text-sm text-muted-foreground">Internet</Label>
+                </div>
+                <Button variant="outline" size="sm" onClick={() => setShowPrompts(!showPrompts)}>
+                  <Sparkles className="h-4 w-4 mr-2" />
+                  Prompts
                 </Button>
               </div>
+              <p className="text-xs text-muted-foreground text-center hidden md:block">
+                {t('chat.disclaimer')}
+              </p>
             </div>
-            
-            {/* Voice Chat Controls */}
-            <div className="flex items-center justify-between">
-              <VoiceChat
-                onTranscript={handleVoiceTranscript}
-                isListening={isListening}
-                onListeningChange={setIsListening}
-              />
-              {isListening && (
-                <div className="flex items-center space-x-1 text-primary">
-                  <span className="text-sm">{t('chat.listening')}</span>
-                </div>
-              )}
-            </div>
-            
-            <p className="text-xs text-muted-foreground mt-2 text-center">
-              {t('chat.disclaimer')}
-            </p>
           </div>
         </CardContent>
       </Card>
       
-      {/* Auth Dialog */}
       <Dialog open={showAuthModal} onOpenChange={setShowAuthModal}>
         <DialogContent className="sm:max-w-[425px] mx-4">
           <DialogHeader>
             <DialogTitle>{t('auth.signInContinue')}</DialogTitle>
-            <DialogDescription>
-              {t('auth.trialComplete')}
-            </DialogDescription>
+            <DialogDescription>{t('auth.trialComplete')}</DialogDescription>
           </DialogHeader>
           <div className="py-4 flex flex-col gap-3">
-            <p className="text-sm text-muted-foreground">
-              {t('auth.benefits')}
-            </p>
+            <p className="text-sm text-muted-foreground">{t('auth.benefits')}</p>
             <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1">
               <li>{t('auth.aiLegalChat')}</li>
               <li>{t('auth.documentGeneration')}</li>
@@ -437,9 +338,7 @@ export const ChatInterface = ({ category }: ChatInterfaceProps) => {
           </div>
           <div className="flex justify-end gap-3">
             <Button variant="outline" onClick={() => setShowAuthModal(false)}>{t('auth.cancel')}</Button>
-            <Button className="gradient-primary text-white border-0" onClick={handleAuthAction}>
-              {t('auth.signUp')}
-            </Button>
+            <Button className="gradient-primary text-white border-0" onClick={handleAuthAction}>{t('auth.signUp')}</Button>
           </div>
         </DialogContent>
       </Dialog>

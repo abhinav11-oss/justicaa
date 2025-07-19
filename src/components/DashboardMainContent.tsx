@@ -1,5 +1,4 @@
 import React from "react";
-import { ChatInterface } from "@/components/ChatInterface";
 import { LegalGuides } from "@/components/LegalGuides";
 import { KnowledgeBase } from "@/components/KnowledgeBase";
 import { DocumentTemplates } from "@/components/DocumentTemplates";
@@ -7,6 +6,7 @@ import { DocumentTools } from "@/components/DocumentTools";
 import { LawyerFinder } from "@/components/LawyerFinder";
 import { UserDashboard } from "@/components/UserDashboard";
 import { SettingsPanel } from "@/components/SettingsPanel";
+import { ChatView } from "@/components/ChatView";
 
 interface MainContentProps {
   activeTab: string;
@@ -22,13 +22,13 @@ export const DashboardMainContent: React.FC<MainContentProps> = ({
   t
 }) => {
   if (isTrialMode && !user) {
-    return <ChatInterface category="all" />;
+    return <ChatView />;
   }
   switch (activeTab) {
     case "home":
       return <UserDashboard />;
     case "chat":
-      return <ChatInterface category="all" />;
+      return <ChatView />;
     case "lawyers":
       return <LawyerFinder category="all" />;
     case "generator":
@@ -42,6 +42,6 @@ export const DashboardMainContent: React.FC<MainContentProps> = ({
     case "settings":
       return <SettingsPanel />;
     default:
-      return user ? <UserDashboard /> : <ChatInterface category="all" />;
+      return user ? <UserDashboard /> : <ChatView />;
   }
 };
