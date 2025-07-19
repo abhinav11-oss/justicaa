@@ -74,7 +74,7 @@ export const Features = () => {
               transition={{ duration: 0.5, delay: index * 0.1 }}
               viewport={{ once: true }}
             >
-              <Card className="h-full bg-card border hover:border-primary/50 transition-colors duration-300">
+              <Card className="h-full bg-card border card-glow">
                 <CardHeader>
                   <div className="bg-primary/10 w-12 h-12 rounded-lg flex items-center justify-center mb-4">
                     <feature.icon className="h-6 w-6 text-primary" />

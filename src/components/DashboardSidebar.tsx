@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import {
   Home,
   MessageSquare,
@@ -11,7 +11,6 @@ import {
   Settings,
   Scale,
   LogOut,
-  Menu,
   X,
 } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -78,7 +77,7 @@ export const DashboardSidebar: React.FC<SidebarProps> = ({
     <div className="flex flex-col h-full">
       <div className={cn("flex items-center mb-10 px-4", isExpanded || isMobile ? "justify-between" : "justify-center")}>
         <div className="flex items-center gap-2">
-          <div className="bg-primary p-2 rounded-md flex-shrink-0">
+          <div className="gradient-primary p-2 rounded-md flex-shrink-0">
             <Scale className="h-6 w-6 text-primary-foreground" />
           </div>
           {(isExpanded || isMobile) && <span className="font-bold text-lg">Justicaa</span>}
@@ -100,7 +99,11 @@ export const DashboardSidebar: React.FC<SidebarProps> = ({
                   setActiveTab(item.id);
                   if (isMobile) setSidebarOpen(false);
                 }}
-                className={cn("w-full h-12", isExpanded || isMobile ? "justify-start gap-3" : "justify-center")}
+                className={cn(
+                  "w-full h-12",
+                  isExpanded || isMobile ? "justify-start gap-3" : "justify-center",
+                  activeTab === item.id && "gradient-primary"
+                )}
               >
                 <item.icon className="h-5 w-5 flex-shrink-0" />
                 {(isExpanded || isMobile) && <span className="font-medium">{item.title}</span>}
@@ -131,6 +134,20 @@ export const DashboardSidebar: React.FC<SidebarProps> = ({
     </div>
   );
 
+  const renderSidebar = () => (
+    <aside
+      onMouseEnter={!isMobile ? () => setIsExpanded(true) : undefined}
+      onMouseLeave={!isMobile ? () => setIsExpanded(false) : undefined}
+      className={cn(
+        "flex-col py-4 bg-card border-r transition-[width] duration-300 ease-in-out",
+        isMobile ? "w-64" : (isExpanded ? "w-60" : "w-20"),
+        isMobile ? "fixed inset-y-0 left-0 z-50" : "hidden md:flex"
+      )}
+    >
+      <SidebarContent />
+    </aside>
+  );
+
   return (
     <>
       {/* Mobile Overlay & Sidebar */}
@@ -144,32 +161,20 @@ export const DashboardSidebar: React.FC<SidebarProps> = ({
               className="fixed inset-0 bg-black/60 z-40"
               onClick={() => setSidebarOpen(false)}
             />
-            <motion.aside
+            <motion.div
               initial={{ x: "-100%" }}
               animate={{ x: 0 }}
               exit={{ x: "-100%" }}
               transition={{ duration: 0.3, ease: "easeInOut" }}
-              className="fixed inset-y-0 left-0 w-64 bg-card z-50 flex flex-col py-4 border-r"
             >
-              <SidebarContent />
-            </motion.aside>
+              {renderSidebar()}
+            </motion.div>
           </>
         )}
       </AnimatePresence>
 
       {/* Desktop Sidebar */}
-      {!isMobile && (
-        <aside
-          onMouseEnter={() => setIsExpanded(true)}
-          onMouseLeave={() => setIsExpanded(false)}
-          className={cn(
-            "hidden md:flex flex-col py-4 bg-card border-r transition-[width] duration-300 ease-in-out",
-            isExpanded ? "w-60" : "w-20"
-          )}
-        >
-          <SidebarContent />
-        </aside>
-      )}
+      {!isMobile && renderSidebar()}
     </>
   );
 };

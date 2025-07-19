@@ -50,7 +50,7 @@ export const Testimonials = () => {
               transition={{ duration: 0.5, delay: index * 0.1 }}
               viewport={{ once: true }}
             >
-              <Card className="h-full bg-background border flex flex-col">
+              <Card className="h-full bg-background border flex flex-col card-glow">
                 <CardHeader>
                   <div className="flex items-center text-primary">
                     {[...Array(5)].map((_, i) => (

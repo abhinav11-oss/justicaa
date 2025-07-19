@@ -11,8 +11,8 @@
     --card-foreground: 240 10% 3.9%;
     --popover: 0 0% 100%;
     --popover-foreground: 240 10% 3.9%;
-    --primary: 35 80% 55%; /* Gold/Bronze */
-    --primary-foreground: 240 6% 10%;
+    --primary: 262 80% 58%;
+    --primary-foreground: 0 0% 100%;
     --secondary: 240 5% 96%;
     --secondary-foreground: 240 6% 10%;
     --muted: 240 5% 96%;
@@ -23,30 +23,30 @@
     --destructive-foreground: 0 0% 98%;
     --border: 240 6% 90%;
     --input: 240 6% 90%;
-    --ring: 35 80% 55%;
-    --radius: 0.5rem; /* Slightly sharper radius */
+    --ring: 262 80% 58%;
+    --radius: 0.75rem;
   }
 
   .dark {
-    --background: 0 0% 7%; /* Near black */
-    --foreground: 0 0% 98%; /* White */
-    --card: 0 0% 10%; /* Dark grey for cards */
+    --background: 240 6% 8%;
+    --foreground: 0 0% 98%;
+    --card: 240 6% 10%;
     --card-foreground: 0 0% 98%;
-    --popover: 0 0% 7%;
+    --popover: 240 6% 8%;
     --popover-foreground: 0 0% 98%;
-    --primary: 35 80% 55%; /* Gold/Bronze */
-    --primary-foreground: 0 0% 10%; /* Dark text on gold buttons */
-    --secondary: 0 0% 15%;
+    --primary: 262 80% 58%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 240 4% 16%;
     --secondary-foreground: 0 0% 98%;
-    --muted: 0 0% 15%;
-    --muted-foreground: 0 0% 65%;
-    --accent: 0 0% 15%;
+    --muted: 240 4% 16%;
+    --muted-foreground: 240 5% 65%;
+    --accent: 240 4% 16%;
     --accent-foreground: 0 0% 98%;
     --destructive: 0 63% 31%;
     --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 18%; /* Subtle border color */
-    --input: 0 0% 18%;
-    --ring: 35 80% 55%;
+    --border: 240 4% 16%;
+    --input: 240 4% 16%;
+    --ring: 262 80% 58%;
   }
 }
 
@@ -62,6 +62,12 @@
 
 @layer components {
   .gradient-primary {
-    background: hsl(var(--primary));
+    @apply bg-gradient-to-r from-primary to-violet-500;
+  }
+  .card-glow {
+    @apply transition-all duration-300;
+  }
+  .card-glow:hover {
+    @apply ring-2 ring-primary/50 shadow-2xl shadow-primary/10;
   }
 }
