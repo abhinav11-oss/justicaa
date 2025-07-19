@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
-import { ArrowRight, Shield, Clock, CheckCircle } from "lucide-react";
+import { ArrowRight, Shield, Clock, CheckCircle, Star } from "lucide-react";
 
 interface CTASectionProps {
   onTryForFree: () => void;
@@ -16,37 +16,36 @@ export const CTASection = ({ onTryForFree }: CTASectionProps) => {
   ];
 
   return (
-    <section className="gradient-primary py-20 relative overflow-hidden">
-      <div className="container mx-auto px-4 text-center relative z-10">
+    <section className="bg-primary py-20">
+      <div className="container mx-auto px-4 text-center">
         <div className="max-w-4xl mx-auto">
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
             Don't Let Legal Issues Overwhelm You
           </h2>
-          <p className="text-xl text-white/90 mb-8 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-xl text-white/90 mb-10 max-w-3xl mx-auto leading-relaxed">
             Get the legal help you need, when you need it. Join over 50,000
             Indians who trust Justicaa for their legal guidance. Start with a
             free consultation today.
           </p>
 
           {/* Benefits */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+          <div className="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-12 mb-12 text-white/90">
             {benefits.map((benefit, index) => (
               <div
                 key={index}
-                className="flex items-center justify-center text-white/90"
+                className="flex items-center"
               >
-                <benefit.icon className="h-5 w-5 mr-3 flex-shrink-0" />
+                <benefit.icon className="h-5 w-5 mr-2 flex-shrink-0" />
                 <span className="text-sm">{benefit.text}</span>
               </div>
             ))}
           </div>
 
           {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-6">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8">
             <Button
               size="lg"
-              variant="secondary"
-              className="text-lg px-8 py-4 bg-white text-primary hover:bg-white/90 rounded-xl w-full sm:w-auto"
+              className="text-lg px-8 py-3 bg-white text-primary hover:bg-white/90 rounded-lg w-full sm:w-auto shadow-lg"
               onClick={onTryForFree}
             >
               {user ? "Go to Dashboard" : "Start Free Consultation"}
@@ -54,29 +53,28 @@ export const CTASection = ({ onTryForFree }: CTASectionProps) => {
             </Button>
             <Button
               size="lg"
-              variant="outline"
-              className="text-lg px-8 py-4 text-white border-white/30 hover:bg-white/10 rounded-xl w-full sm:w-auto"
+              variant="secondary"
+              className="text-lg px-8 py-3 bg-gray-900 text-white hover:bg-gray-800 rounded-lg w-full sm:w-auto shadow-lg"
             >
               View Pricing
             </Button>
           </div>
 
           {/* Trust Indicators */}
-          <div className="text-white/80 text-sm">
-            <p className="mb-2">
+          <div className="text-white/80 text-sm space-y-2">
+            <p>
               Trusted by 50,000+ users • Available 24/7 • Free to start
             </p>
-            <p>⭐⭐⭐⭐⭐ 4.8/5 rating from verified users</p>
+            <div className="flex items-center justify-center space-x-1">
+              <div className="flex text-yellow-400">
+                {[...Array(5)].map((_, i) => (
+                  <Star key={i} className="h-4 w-4 fill-current" />
+                ))}
+              </div>
+              <p>4.8/5 rating from verified users</p>
+            </div>
           </div>
         </div>
-      </div>
-
-      {/* Background Pattern */}
-      <div className="absolute inset-0 opacity-10">
-        <div className="absolute top-10 left-10 w-20 h-20 border border-white/20 rounded-full"></div>
-        <div className="absolute top-40 right-20 w-16 h-16 border border-white/20 rounded-full"></div>
-        <div className="absolute bottom-20 left-1/4 w-12 h-12 border border-white/20 rounded-full"></div>
-        <div className="absolute bottom-40 right-1/3 w-24 h-24 border border-white/20 rounded-full"></div>
       </div>
     </section>
   );
