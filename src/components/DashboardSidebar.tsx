@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import {
   Home,
   MessageSquare,
@@ -34,7 +35,6 @@ interface SidebarProps {
   setActiveTab: (id: string) => void;
   sidebarOpen: boolean;
   setSidebarOpen: (open: boolean) => void;
-  t: any;
 }
 
 export const DashboardSidebar: React.FC<SidebarProps> = ({
@@ -44,8 +44,8 @@ export const DashboardSidebar: React.FC<SidebarProps> = ({
   setActiveTab,
   sidebarOpen,
   setSidebarOpen,
-  t,
 }) => {
+  const { t } = useTranslation();
   const isMobile = useIsMobile();
   const { signOut } = useAuth();
   const navigate = useNavigate();
@@ -60,32 +60,32 @@ export const DashboardSidebar: React.FC<SidebarProps> = ({
           {
             id: "lawyers",
             icon: Users,
-            title: t("dashboard.lawyers", "Find Experts"),
+            title: t("dashboard.lawyers"),
           },
           {
             id: "generator",
             icon: FilePlus,
-            title: t("dashboard.documents", "Generate"),
+            title: t("dashboard.documents"),
           },
           {
             id: "templates",
             icon: FileText,
-            title: t("dashboard.templates", "Legal Forms"),
+            title: t("dashboard.templates"),
           },
           {
             id: "guides",
             icon: BookOpen,
-            title: t("dashboard.guides", "Legal Info"),
+            title: t("dashboard.guides"),
           },
           {
             id: "research",
             icon: Search,
-            title: t("dashboard.research", "Case Law"),
+            title: t("dashboard.research"),
           },
           {
             id: "settings",
             icon: Settings,
-            title: t("dashboard.settings", "Account"),
+            title: t("dashboard.settings"),
           },
         ]
       : []),
@@ -96,10 +96,10 @@ export const DashboardSidebar: React.FC<SidebarProps> = ({
       await signOut();
       localStorage.clear();
       sessionStorage.clear();
-      toast({ title: "Signed Out" });
+      toast({ title: t('settings.signedOut') });
       navigate("/");
     } catch (error) {
-      toast({ title: "Logout Error", variant: "destructive" });
+      toast({ title: t('common.error'), variant: "destructive" });
     }
   };
 
@@ -172,12 +172,12 @@ export const DashboardSidebar: React.FC<SidebarProps> = ({
               >
                 <LogOut className="h-5 w-5 flex-shrink-0" />
                 {(isExpanded || isMobile) && (
-                  <span className="font-medium">Sign Out</span>
+                  <span className="font-medium">{t('settings.signOut')}</span>
                 )}
               </Button>
             </TooltipTrigger>
             {!(isExpanded || isMobile) && (
-              <TooltipContent side="right">Sign Out</TooltipContent>
+              <TooltipContent side="right">{t('settings.signOut')}</TooltipContent>
             )}
           </Tooltip>
         )}

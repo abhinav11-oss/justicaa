@@ -106,5 +106,112 @@
     "legalGuides": "Legal Guides",
     "lawyerFinder": "Lawyer Finder",
     "signUp": "Sign Up"
+  },
+  "lawyerFinder": {
+    "title": "Find Lawyers",
+    "selectCity": "Select a city",
+    "useLocation": "Use Current Location",
+    "gettingLocation": "Getting Location...",
+    "searchPlaceholder": "Or enter city/pincode",
+    "search": "Search",
+    "locationError": "Location access denied. Please enter your city or pincode.",
+    "filterSpecialization": "Filter by specialization",
+    "allSpecializations": "All Specializations",
+    "lawyersFound": "{{count}} Lawyers Found",
+    "noLawyersFound": "No lawyers found. Try a different location or filter.",
+    "experience": "Experience: {{years}} years",
+    "distanceAway": "{{distance}} km away",
+    "call": "Call",
+    "directions": "Directions",
+    "contactNumber": "Contact Number"
+  },
+  "legalGuides": {
+    "title": "Legal Process Guides",
+    "description": "Step-by-step guidance through common legal procedures",
+    "back": "← Back to Guides",
+    "duration": "Duration: {{duration}}",
+    "difficulty": "Difficulty: {{difficulty}}",
+    "progress": "Progress: {{progress}}%",
+    "continueGuide": "Continue Guide",
+    "startGuide": "Start Guide"
+  },
+  "knowledgeBase": {
+    "title": "Legal Knowledge Base",
+    "description": "Find answers to frequently asked legal questions",
+    "searchPlaceholder": "Search legal questions and topics...",
+    "allTopics": "All Topics",
+    "noResults": "No questions found matching your search criteria.",
+    "clearFilters": "Clear Filters",
+    "disclaimer": "Disclaimer: This information is for general guidance only. Laws vary by jurisdiction. Consult with a qualified attorney for advice specific to your situation.",
+    "ctaTitle": "Need Specific Legal Advice?",
+    "ctaDescription": "Our knowledge base provides general information. For personalized legal counsel, connect with a qualified attorney.",
+    "ctaButton": "Find a Lawyer"
+  },
+  "documentTemplates": {
+    "title": "Legal Document Templates",
+    "description": "Ready-to-use legal forms and document templates",
+    "searchPlaceholder": "Search document templates...",
+    "allTemplates": "All Templates",
+    "business": "Business",
+    "personal": "Personal",
+    "realEstate": "Real Estate",
+    "legalForms": "Legal Forms",
+    "estimatedTime": "Estimated time: {{time}}",
+    "preview": "Preview",
+    "useTemplate": "Use Template",
+    "docPreview": "Document Preview:",
+    "requiredInfo": "Required Information:",
+    "createTitle": "Create {{title}}",
+    "createDescription": "Fill out the form below to generate your legal document.",
+    "generate": "Generate Document",
+    "generatedToastTitle": "Document Generated!",
+    "generatedToastDesc": "Your legal document has been created and is ready for download.",
+    "importantNotice": "Important: These templates provide general forms and should be reviewed by a qualified attorney before use. Laws vary by jurisdiction and individual circumstances may require modifications."
+  },
+  "documentTools": {
+    "title": "Document Tools",
+    "description": "Your all-in-one solution for document analysis and creation.",
+    "back": "Back to Tools",
+    "summary": {
+      "title": "Agreement Summary",
+      "description": "Get a concise summary of your document.",
+      "uploadPlaceholder": "Click or drag file to upload",
+      "fileTypes": "PDF, DOC, DOCX, TXT",
+      "button": "Summarize Document",
+      "resultPlaceholder": "Summary will appear here...",
+      "toastTitle": "Summary Generated!"
+    },
+    "compare": {
+      "title": "Compare Agreements",
+      "description": "Find differences between two documents.",
+      "doc1": "Upload Document 1",
+      "doc2": "Upload Document 2",
+      "button": "Compare Documents",
+      "resultPlaceholder": "Comparison will appear here...",
+      "toastTitle": "Comparison Complete!"
+    },
+    "translate": {
+      "title": "Document Translation",
+      "description": "Translate documents to other languages.",
+      "upload": "Upload Document",
+      "selectLang": "Select language",
+      "button": "Translate",
+      "resultPlaceholder": "Translation will appear here...",
+      "toastTitle": "Translation Complete!"
+    },
+    "ocr": {
+      "title": "Image to Text (OCR)",
+      "description": "Extract text from images.",
+      "upload": "Upload Image",
+      "button": "Extract Text",
+      "resultPlaceholder": "Extracted text will appear here...",
+      "toastTitle": "Text Extracted!"
+    },
+    "create": {
+      "title": "Create an Agreement",
+      "description": "Generate documents from templates.",
+      "ctaDesc": "This tool helps you generate agreements. For a full list of templates, please visit the \"Legal Forms\" section.",
+      "ctaButton": "Go to Legal Forms"
+    }
   }
 }

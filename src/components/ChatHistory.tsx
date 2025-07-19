@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
@@ -20,6 +21,7 @@ interface ChatHistoryProps {
 }
 
 export const ChatHistory = ({ onSelectConversation, onNewConversation, activeConversationId }: ChatHistoryProps) => {
+  const { t } = useTranslation();
   const [history, setHistory] = useState<Conversation[]>([]);
   const [pinned, setPinned] = useState<Conversation[]>([]);
   const [loading, setLoading] = useState(true);
@@ -62,32 +64,32 @@ export const ChatHistory = ({ onSelectConversation, onNewConversation, activeCon
   return (
     <div className="bg-card h-full flex flex-col border-r">
       <div className="p-4 space-y-4 border-b">
-        <h2 className="text-xl font-bold">Chats</h2>
+        <h2 className="text-xl font-bold">{t('chat.history')}</h2>
         <Button className="w-full" onClick={onNewConversation}>
           <Plus className="h-4 w-4 mr-2" />
-          New Chat
+          {t('chat.newChat')}
         </Button>
       </div>
       <ScrollArea className="flex-1">
         <div className="p-4 space-y-4">
           <div>
             <h3 className="text-sm font-semibold text-muted-foreground mb-2 flex items-center">
-              <Pin className="h-4 w-4 mr-2" /> Pinned chats
+              <Pin className="h-4 w-4 mr-2" /> {t('chat.pinned')}
             </h3>
             {pinned.length === 0 ? (
-              <p className="text-sm text-muted-foreground px-2">No pinned chats yet :(</p>
+              <p className="text-sm text-muted-foreground px-2">{t('chat.noPinned')}</p>
             ) : (
               <></>
             )}
           </div>
           <div>
-            <h3 className="text-sm font-semibold text-muted-foreground mb-2">History</h3>
+            <h3 className="text-sm font-semibold text-muted-foreground mb-2">{t('chat.history')}</h3>
             {loading ? (
               <div className="flex justify-center items-center p-4">
                 <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
               </div>
             ) : history.length === 0 ? (
-              <p className="text-sm text-muted-foreground px-2">History is empty. Let's start your first chat!</p>
+              <p className="text-sm text-muted-foreground px-2">{t('chat.historyEmpty')}</p>
             ) : (
               <div className="space-y-1">
                 {history.map(conv => (
