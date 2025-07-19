@@ -6,7 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { MapPin, Phone, Navigation, Filter, Star, Copy, CheckCircle, AlertCircle } from "lucide-react";
+import { MapPin, Phone, Navigation, Filter, Star, Copy, CheckCircle, AlertCircle, Globe } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useGeolocation } from "@/hooks/useGeolocation";
 
@@ -359,8 +359,9 @@ const lawyersDatabase: Lawyer[] = [
 ];
 
 const categoryMap = {
+  "All": [],
   "Business Law": ["Business Law", "Corporate Law", "Tax Law", "Contract Law", "Intellectual Property"],
-  "Personal Legal": ["Family Law", "Personal Legal", "Consumer Law", "Employment Law"],
+  "Personal Legal": ["Family Law", "Personal Legal", "Consumer Law", "Employment Law", "Criminal Law", "Civil Law"],
   "Contract Review": ["Contract Law", "Business Law", "Employment Law", "Civil Law"]
 };
 
@@ -388,13 +389,12 @@ const pincodeToCity: { [key: string]: string } = {
 
 export const LawyerFinder = ({ category }: LawyerFinderProps) => {
   const [filteredLawyers, setFilteredLawyers] = useState<Lawyer[]>([]);
-  const [selectedCategory, setSelectedCategory] = useState<keyof typeof categoryMap>("Business Law");
+  const [selectedCategory, setSelectedCategory] = useState<keyof typeof categoryMap>("All");
   const [selectedSpecialization, setSelectedSpecialization] = useState<string>("all");
   const [userCity, setUserCity] = useState<string>("");
   const [manualLocation, setManualLocation] = useState("");
-  const [copiedPhone, setCopiedPhone] = useState<string | null>(null);
   const [showPhoneModal, setShowPhoneModal] = useState<string | null>(null);
-  const [searchMode, setSearchMode] = useState<'city' | 'location'>('city');
+  const [searchMode, setSearchMode] = useState<'city' | 'location' | null>(null);
   const { toast } = useToast();
   const { latitude, longitude, error, loading, getCurrentLocation, setManualLocation: setGeoLocation } = useGeolocation();
 
@@ -421,31 +421,34 @@ export const LawyerFinder = ({ category }: LawyerFinderProps) => {
   useEffect(() => {
     let tempLawyers = [...lawyersDatabase];
 
-    if (latitude && longitude) {
+    // 1. Location Filtering
+    if (searchMode === 'location' && latitude && longitude) {
       tempLawyers.forEach(lawyer => {
         lawyer.distance = calculateDistance(latitude, longitude, lawyer.latitude, lawyer.longitude);
       });
-    }
-
-    if (searchMode === 'location' && latitude && longitude) {
       tempLawyers = tempLawyers.filter(l => l.distance !== undefined && l.distance <= 50);
     } else if (searchMode === 'city' && userCity) {
       tempLawyers = tempLawyers.filter(l => l.city === userCity);
     }
 
-    const relevantSpecs = categoryMap[selectedCategory] || [];
-    if (relevantSpecs.length > 0) {
-      tempLawyers = tempLawyers.filter(lawyer => 
-        lawyer.specialization.some(spec => relevantSpecs.includes(spec))
-      );
+    // 2. Category Filtering
+    if (selectedCategory !== "All") {
+      const relevantSpecs = categoryMap[selectedCategory] || [];
+      if (relevantSpecs.length > 0) {
+        tempLawyers = tempLawyers.filter(lawyer => 
+          lawyer.specialization.some(spec => relevantSpecs.includes(spec))
+        );
+      }
     }
 
+    // 3. Specialization Filtering
     if (selectedSpecialization !== "all") {
       tempLawyers = tempLawyers.filter(lawyer => 
         lawyer.specialization.includes(selectedSpecialization)
       );
     }
 
+    // 4. Sorting
     tempLawyers.sort((a, b) => {
       if (a.distance !== undefined && b.distance !== undefined) {
         return a.distance - b.distance;
@@ -516,23 +519,18 @@ export const LawyerFinder = ({ category }: LawyerFinderProps) => {
     }
   };
 
-  const handleCopyPhone = async (phone: string) => {
-    try {
-      await navigator.clipboard.writeText(phone);
-      setCopiedPhone(phone);
-      setTimeout(() => setCopiedPhone(null), 2000);
-      toast({ title: "Phone Number Copied" });
-    } catch (error) {
-      toast({ title: "Copy Failed", variant: "destructive" });
-    }
-  };
-
   const handleDirections = (lawyer: Lawyer) => {
-    const destination = `${lawyer.latitude},${lawyer.longitude}`;
-    const directionsUrl = (latitude && longitude)
-      ? `https://www.google.com/maps/dir/?api=1&origin=${latitude},${longitude}&destination=${destination}`
-      : `https://www.google.com/maps/search/?api=1&query=${destination}`;
-    window.open(directionsUrl, '_blank');
+    const destinationQuery = encodeURIComponent(lawyer.address);
+    
+    if (latitude && longitude) {
+        const origin = `${latitude},${longitude}`;
+        const destination = `${lawyer.latitude},${lawyer.longitude}`;
+        const directionsUrl = `https://www.google.com/maps/dir/?api=1&origin=${origin}&destination=${destination}`;
+        window.open(directionsUrl, '_blank');
+    } else {
+        const searchUrl = `https://www.google.com/maps/search/?api=1&query=${destinationQuery}`;
+        window.open(searchUrl, '_blank');
+    }
   };
 
   return (
@@ -565,7 +563,8 @@ export const LawyerFinder = ({ category }: LawyerFinderProps) => {
       </Card>
 
       <Tabs value={selectedCategory} onValueChange={(v) => setSelectedCategory(v as keyof typeof categoryMap)}>
-        <TabsList className="grid w-full grid-cols-3">
+        <TabsList className="grid w-full grid-cols-4">
+          <TabsTrigger value="All">All</TabsTrigger>
           <TabsTrigger value="Business Law">Business</TabsTrigger>
           <TabsTrigger value="Personal Legal">Personal</TabsTrigger>
           <TabsTrigger value="Contract Review">Contracts</TabsTrigger>
@@ -583,7 +582,7 @@ export const LawyerFinder = ({ category }: LawyerFinderProps) => {
           </div>
           <div>
             <h3 className="text-lg font-semibold">{filteredLawyers.length} Lawyers Found</h3>
-            {filteredLawyers.length === 0 ? (
+            {filteredLawyers.length === 0 && searchMode ? (
               <Card><CardContent className="text-center py-8"><p>No lawyers found. Try a different location or filter.</p></CardContent></Card>
             ) : (
               <div className="grid gap-4 md:grid-cols-2 mt-4">
