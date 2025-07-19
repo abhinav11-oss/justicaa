@@ -1,5 +1,7 @@
 import { Badge } from "@/components/ui/badge";
-import { InfiniteMovingCards } from "@/components/InfiniteMovingCards";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Star, Quote } from "lucide-react";
+import { motion } from "framer-motion";
 
 export const Testimonials = () => {
   const testimonials = [
@@ -17,18 +19,6 @@ export const Testimonials = () => {
     },
     {
       quote:
-        "The platform helped me understand medical malpractice laws and how to protect my practice. The AI explanations were clear, and when I needed deeper consultation, they connected me with a specialist lawyer.",
-      name: "Dr. Amit Patel",
-      title: "Doctor, Ahmedabad",
-    },
-    {
-      quote:
-        "When my neighbor was causing property disputes, I didn't know my rights. Justicaa explained everything in simple Hindi and guided me through the legal process. Very helpful and easy to understand!",
-      name: "Sunita Devi",
-      title: "Homemaker, Jaipur",
-    },
-    {
-      quote:
         "Starting a business requires understanding so many laws. Justicaa became my legal advisor - from company registration to employment laws. The AI guidance was accurate and the lawyer referrals were excellent.",
       name: "Vikash Kumar",
       title: "Startup Founder, Delhi",
@@ -36,10 +26,10 @@ export const Testimonials = () => {
   ];
 
   return (
-    <section className="py-20 bg-card">
+    <section className="py-20 bg-card border-y">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
-          <Badge variant="outline" className="mb-4 px-4 py-2">
+          <Badge variant="outline" className="mb-4">
             What Our Clients Say
           </Badge>
           <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
@@ -51,12 +41,35 @@ export const Testimonials = () => {
           </p>
         </div>
 
-        <div className="relative flex flex-col items-center justify-center overflow-hidden">
-          <InfiniteMovingCards
-            items={testimonials}
-            direction="right"
-            speed="slow"
-          />
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {testimonials.map((testimonial, index) => (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: index * 0.1 }}
+              viewport={{ once: true }}
+            >
+              <Card className="h-full bg-background border flex flex-col">
+                <CardHeader>
+                  <div className="flex items-center text-primary">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} className="h-5 w-5 fill-current" />
+                    ))}
+                  </div>
+                </CardHeader>
+                <CardContent className="flex-grow flex flex-col justify-between">
+                  <blockquote className="text-lg text-foreground mb-4">
+                    "{testimonial.quote}"
+                  </blockquote>
+                  <div>
+                    <p className="font-semibold">{testimonial.name}</p>
+                    <p className="text-sm text-muted-foreground">{testimonial.title}</p>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+          ))}
         </div>
       </div>
     </section>

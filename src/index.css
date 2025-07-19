@@ -11,7 +11,7 @@
     --card-foreground: 240 10% 3.9%;
     --popover: 0 0% 100%;
     --popover-foreground: 240 10% 3.9%;
-    --primary: 38 92% 50%;
+    --primary: 35 80% 55%; /* Gold/Bronze */
     --primary-foreground: 240 6% 10%;
     --secondary: 240 5% 96%;
     --secondary-foreground: 240 6% 10%;
@@ -23,30 +23,30 @@
     --destructive-foreground: 0 0% 98%;
     --border: 240 6% 90%;
     --input: 240 6% 90%;
-    --ring: 38 92% 50%;
-    --radius: 0.75rem;
+    --ring: 35 80% 55%;
+    --radius: 0.5rem; /* Slightly sharper radius */
   }
 
   .dark {
-    --background: 240 10% 3.9%;
-    --foreground: 0 0% 98%;
-    --card: 240 4% 9%;
+    --background: 0 0% 7%; /* Near black */
+    --foreground: 0 0% 98%; /* White */
+    --card: 0 0% 10%; /* Dark grey for cards */
     --card-foreground: 0 0% 98%;
-    --popover: 240 10% 3.9%;
+    --popover: 0 0% 7%;
     --popover-foreground: 0 0% 98%;
-    --primary: 38 92% 50%;
-    --primary-foreground: 240 6% 10%;
-    --secondary: 240 4% 16%;
+    --primary: 35 80% 55%; /* Gold/Bronze */
+    --primary-foreground: 0 0% 10%; /* Dark text on gold buttons */
+    --secondary: 0 0% 15%;
     --secondary-foreground: 0 0% 98%;
-    --muted: 240 4% 16%;
-    --muted-foreground: 240 5% 65%;
-    --accent: 240 4% 16%;
+    --muted: 0 0% 15%;
+    --muted-foreground: 0 0% 65%;
+    --accent: 0 0% 15%;
     --accent-foreground: 0 0% 98%;
     --destructive: 0 63% 31%;
     --destructive-foreground: 0 0% 98%;
-    --border: 240 4% 16%;
-    --input: 240 4% 16%;
-    --ring: 38 92% 50%;
+    --border: 0 0% 18%; /* Subtle border color */
+    --input: 0 0% 18%;
+    --ring: 35 80% 55%;
   }
 }
 
@@ -56,6 +56,7 @@
   }
   body {
     @apply bg-background text-foreground;
+    font-family: 'Inter', sans-serif;
   }
 }
 

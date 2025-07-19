@@ -34,38 +34,24 @@ export const DashboardHeader: React.FC<HeaderProps> = ({
     });
   };
 
-  const userInitial = user?.email?.charAt(0).toUpperCase() || "U";
+  const userInitial = user?.user_metadata?.full_name?.charAt(0) || user?.email?.charAt(0).toUpperCase() || "U";
 
   return (
     <header className="px-6 py-3 flex justify-between items-center bg-card border-b">
       <div className="flex items-center space-x-4">
         {isMobile && (
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={onMenuClick}
-            aria-label="Menu"
-          >
+          <Button variant="ghost" size="icon" onClick={onMenuClick} aria-label="Menu">
             <Menu className="h-5 w-5" />
           </Button>
         )}
-        <div>
-          <h1 className="text-xl font-bold text-foreground">
-            {isTrialMode && !user
-              ? "Free Trial"
-              : sidebarItems.find((item) => item.id === activeTab)?.title || "Dashboard"}
-          </h1>
-        </div>
+        <h1 className="text-xl font-bold text-foreground">
+          {sidebarItems.find((item) => item.id === activeTab)?.title || "Dashboard"}
+        </h1>
       </div>
-      <div className="flex items-center space-x-4">
+      <div className="flex items-center space-x-2">
         <LanguageSelector />
         <ThemeToggle />
-        <Button
-          variant="ghost"
-          size="icon"
-          aria-label="Notifications"
-          onClick={handleNotificationClick}
-        >
+        <Button variant="ghost" size="icon" aria-label="Notifications" onClick={handleNotificationClick}>
           <Bell className="h-5 w-5" />
         </Button>
         {user && (

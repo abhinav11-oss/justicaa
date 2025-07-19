@@ -9,19 +9,13 @@ import {
   BookOpen,
   Search,
   Settings,
-  User,
   Scale,
   LogOut,
   Menu,
   X,
 } from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useIsMobile } from "@/hooks/use-mobile";
-import {
-  Tooltip,
-  TooltipTrigger,
-  TooltipContent,
-} from "@/components/ui/tooltip";
+import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
@@ -53,8 +47,6 @@ export const DashboardSidebar: React.FC<SidebarProps> = ({
   const { toast } = useToast();
   const [isExpanded, setIsExpanded] = useState(false);
 
-  const userInitial = user?.email?.charAt(0).toUpperCase() || "U";
-
   const sidebarItems = [
     ...(user ? [{ id: "home", icon: Home, title: t("dashboard.title") }] : []),
     { id: "chat", icon: MessageSquare, title: t("dashboard.aiChat") },
@@ -70,53 +62,36 @@ export const DashboardSidebar: React.FC<SidebarProps> = ({
       : []),
   ];
 
-  const iconsToShow = user ? sidebarItems : sidebarItems.filter((i) => ["chat"].includes(i.id));
-
   const handleSignOut = async () => {
     try {
       await signOut();
-      localStorage.removeItem("lastTab");
-      localStorage.removeItem("trialMode");
-      localStorage.removeItem("trialMessagesUsed");
-      toast({
-        title: "Signed Out",
-        description: "You have been successfully signed out.",
-      });
+      localStorage.clear();
+      sessionStorage.clear();
+      toast({ title: "Signed Out" });
       navigate("/");
     } catch (error) {
-      console.error("Logout error:", error);
-      toast({
-        title: "Logout Error",
-        description: "There was an issue signing out. Please try again.",
-        variant: "destructive",
-      });
+      toast({ title: "Logout Error", variant: "destructive" });
     }
   };
 
-  const sidebarContent = (
-    <>
-      <div className="flex items-center justify-between px-4 mb-8 mt-2">
-        <div className="flex items-center">
-          <div className="p-3 rounded-lg bg-primary">
+  const SidebarContent = () => (
+    <div className="flex flex-col h-full">
+      <div className={cn("flex items-center mb-10 px-4", isExpanded || isMobile ? "justify-between" : "justify-center")}>
+        <div className="flex items-center gap-2">
+          <div className="bg-primary p-2 rounded-md flex-shrink-0">
             <Scale className="h-6 w-6 text-primary-foreground" />
           </div>
-          {(isExpanded || isMobile) && (
-            <h1 className="text-xl font-bold text-foreground ml-3">Justicaa</h1>
-          )}
+          {(isExpanded || isMobile) && <span className="font-bold text-lg">Justicaa</span>}
         </div>
         {isMobile && (
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => setSidebarOpen(false)}
-            aria-label="Close Menu"
-          >
+          <Button variant="ghost" size="icon" onClick={() => setSidebarOpen(false)}>
             <X className="h-5 w-5" />
           </Button>
         )}
       </div>
-      <nav className="flex-1 flex flex-col space-y-2 w-full px-3">
-        {iconsToShow.map((item) => (
+
+      <nav className="flex-1 flex flex-col gap-2 px-2">
+        {sidebarItems.map((item) => (
           <Tooltip key={item.id} delayDuration={0}>
             <TooltipTrigger asChild>
               <Button
@@ -125,82 +100,76 @@ export const DashboardSidebar: React.FC<SidebarProps> = ({
                   setActiveTab(item.id);
                   if (isMobile) setSidebarOpen(false);
                 }}
-                className={cn(
-                  "w-full transition-all duration-200",
-                  isExpanded || isMobile ? "justify-start" : "justify-center",
-                  activeTab === item.id && "bg-primary text-primary-foreground"
-                )}
-                aria-label={item.title}
+                className={cn("w-full h-12", isExpanded || isMobile ? "justify-start gap-3" : "justify-center")}
               >
-                <item.icon className="h-5 w-5" />
-                {(isExpanded || isMobile) && (
-                  <span className="ml-3 text-sm font-medium">{item.title}</span>
-                )}
+                <item.icon className="h-5 w-5 flex-shrink-0" />
+                {(isExpanded || isMobile) && <span className="font-medium">{item.title}</span>}
               </Button>
             </TooltipTrigger>
-            {!isExpanded && !isMobile && (
-              <TooltipContent side="right" align="center">
-                {item.title}
-              </TooltipContent>
+            {!(isExpanded || isMobile) && (
+              <TooltipContent side="right">{item.title}</TooltipContent>
             )}
           </Tooltip>
         ))}
       </nav>
-      <div className="p-4 w-full">
+
+      <div className="mt-auto p-2">
         {user && (
-          <Button
-            variant="ghost"
-            onClick={handleSignOut}
-            className={cn(
-              "w-full text-muted-foreground hover:bg-destructive/10 hover:text-destructive",
-              isExpanded || isMobile ? "justify-start" : "justify-center"
+          <Tooltip delayDuration={0}>
+            <TooltipTrigger asChild>
+              <Button variant="ghost" onClick={handleSignOut} className={cn("w-full h-12 text-muted-foreground", isExpanded || isMobile ? "justify-start gap-3" : "justify-center")}>
+                <LogOut className="h-5 w-5 flex-shrink-0" />
+                {(isExpanded || isMobile) && <span className="font-medium">Sign Out</span>}
+              </Button>
+            </TooltipTrigger>
+            {!(isExpanded || isMobile) && (
+              <TooltipContent side="right">Sign Out</TooltipContent>
             )}
-          >
-            <LogOut className="h-5 w-5" />
-            {(isExpanded || isMobile) && (
-              <span className="ml-3 text-sm font-medium">Sign Out</span>
-            )}
-          </Button>
+          </Tooltip>
         )}
       </div>
-    </>
+    </div>
   );
 
   return (
     <>
-      {isMobile && sidebarOpen && (
-        <div
-          className="fixed inset-0 bg-black/60 z-40 md:hidden"
-          onClick={() => setSidebarOpen(false)}
-        />
-      )}
+      {/* Mobile Overlay & Sidebar */}
+      <AnimatePresence>
+        {isMobile && sidebarOpen && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-black/60 z-40"
+              onClick={() => setSidebarOpen(false)}
+            />
+            <motion.aside
+              initial={{ x: "-100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "-100%" }}
+              transition={{ duration: 0.3, ease: "easeInOut" }}
+              className="fixed inset-y-0 left-0 w-64 bg-card z-50 flex flex-col py-4 border-r"
+            >
+              <SidebarContent />
+            </motion.aside>
+          </>
+        )}
+      </AnimatePresence>
 
+      {/* Desktop Sidebar */}
       {!isMobile && (
         <aside
           onMouseEnter={() => setIsExpanded(true)}
           onMouseLeave={() => setIsExpanded(false)}
           className={cn(
-            "relative flex flex-col items-center py-4 bg-card border-r transition-[width] duration-300 ease-in-out",
+            "hidden md:flex flex-col py-4 bg-card border-r transition-[width] duration-300 ease-in-out",
             isExpanded ? "w-60" : "w-20"
           )}
         >
-          {sidebarContent}
+          <SidebarContent />
         </aside>
       )}
-
-      <AnimatePresence>
-        {isMobile && sidebarOpen && (
-          <motion.aside
-            initial={{ x: "-100%" }}
-            animate={{ x: 0 }}
-            exit={{ x: "-100%" }}
-            transition={{ duration: 0.3, ease: "easeInOut" }}
-            className="fixed inset-y-0 left-0 w-64 bg-card z-50 flex flex-col py-4 shadow-lg"
-          >
-            {sidebarContent}
-          </motion.aside>
-        )}
-      </AnimatePresence>
     </>
   );
 };
