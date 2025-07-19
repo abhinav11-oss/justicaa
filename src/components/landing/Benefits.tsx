@@ -12,12 +12,9 @@ import {
   Star,
   Users,
 } from "lucide-react";
-import { cn } from "@/lib/utils"; // Import cn utility
+import { cn } from "@/lib/utils";
 
 export const Benefits = () => {
-  const [hoveredMainBenefitIndex, setHoveredMainBenefitIndex] = useState<number | null>(null);
-  const [hoveredAdditionalBenefitIndex, setHoveredAdditionalBenefitIndex] = useState<number | null>(null);
-
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -129,7 +126,7 @@ export const Benefits = () => {
           transition={{ duration: 0.6 }}
           viewport={{ once: true }}
         >
-          <Badge variant="outline" className="mb-4 px-4 py-2">
+          <Badge variant="outline" className="mb-4 px-4 py-2 text-primary border-primary/30">
             Why Choose Justicaa
           </Badge>
           <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
@@ -143,27 +140,18 @@ export const Benefits = () => {
 
         {/* Main Benefits */}
         <motion.div
-          className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-16"
+          className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-20"
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
         >
           {mainBenefits.map((benefit, index) => (
-            <motion.div
-              key={index}
-              variants={itemVariants}
-              onMouseEnter={() => setHoveredMainBenefitIndex(index)}
-              onMouseLeave={() => setHoveredMainBenefitIndex(null)}
-              className={cn(
-                "group",
-                hoveredMainBenefitIndex !== null && hoveredMainBenefitIndex !== index && "blur-sm scale-[0.98]"
-              )}
-            >
-              <Card className="card-hover border-2 hover:border-primary/20 bg-card/50 backdrop-blur-sm h-full">
-                <CardContent className="p-6">
+            <motion.div key={index} variants={itemVariants}>
+              <Card className="card-hover border-2 border-transparent hover:border-primary/20 bg-card/50 backdrop-blur-sm h-full group">
+                <CardContent className="p-8">
                   <motion.div
-                    className="gradient-primary w-16 h-16 rounded-2xl flex items-center justify-center mb-4"
+                    className="gradient-primary w-16 h-16 rounded-2xl flex items-center justify-center mb-6"
                     whileHover={{ scale: 1.1, rotate: 5 }}
                     transition={{ duration: 0.2 }}
                   >
@@ -171,23 +159,23 @@ export const Benefits = () => {
                   </motion.div>
                   <Badge
                     variant="secondary"
-                    className="mb-3 bg-primary/10 text-primary"
+                    className="mb-4 bg-primary/10 text-primary"
                   >
                     {benefit.stat}
                   </Badge>
-                  <h3 className="text-xl font-semibold text-foreground mb-3">
+                  <h3 className="text-2xl font-semibold text-foreground mb-4">
                     {benefit.title}
                   </h3>
-                  <p className="text-muted-foreground mb-4 leading-relaxed">
+                  <p className="text-muted-foreground mb-6 leading-relaxed">
                     {benefit.description}
                   </p>
-                  <ul className="space-y-2">
+                  <ul className="space-y-3">
                     {benefit.details.map((detail, idx) => (
                       <li
                         key={idx}
-                        className="flex items-center text-sm text-muted-foreground"
+                        className="flex items-center text-muted-foreground"
                       >
-                        <CheckCircle className="w-4 h-4 text-primary mr-2 flex-shrink-0" />
+                        <CheckCircle className="w-4 h-4 text-primary mr-3 flex-shrink-0" />
                         {detail}
                       </li>
                     ))}
@@ -199,35 +187,30 @@ export const Benefits = () => {
         </motion.div>
 
         {/* Comparison Table */}
-        <div className="bg-muted/30 rounded-3xl p-8 mb-16">
-          <h3 className="text-2xl font-bold text-foreground text-center mb-8">
+        <div className="bg-muted/30 rounded-3xl p-8 md:p-12 mb-20">
+          <h3 className="text-3xl font-bold text-foreground text-center mb-10">
             Traditional Legal Services vs Justicaa
           </h3>
           <div className="max-w-4xl mx-auto">
-            <div className="grid grid-cols-1 gap-4">
+            <div className="space-y-1">
+              <div className="grid grid-cols-3 gap-4 font-semibold text-muted-foreground px-4 py-2">
+                <div>Aspect</div>
+                <div className="text-center">Traditional</div>
+                <div className="text-center">Justicaa</div>
+              </div>
               {comparisonData.map((item, index) => (
                 <div
                   key={index}
-                  className="bg-background rounded-xl p-4 grid grid-cols-1 md:grid-cols-3 gap-4 items-center"
+                  className="bg-background rounded-xl p-4 grid grid-cols-3 gap-4 items-center transition-all hover:bg-primary/5"
                 >
                   <div className="font-medium text-foreground">
                     {item.aspect}
                   </div>
-                  <div className="text-center">
-                    <div className="text-sm text-muted-foreground mb-1">
-                      Traditional
-                    </div>
-                    <div className="text-destructive font-medium">
-                      {item.traditional}
-                    </div>
+                  <div className="text-center text-destructive/80 font-medium">
+                    {item.traditional}
                   </div>
-                  <div className="text-center">
-                    <div className="text-sm text-muted-foreground mb-1">
-                      Justicaa
-                    </div>
-                    <div className="text-primary font-medium">
-                      {item.justicaa}
-                    </div>
+                  <div className="text-center text-primary font-bold">
+                    {item.justicaa}
                   </div>
                 </div>
               ))}
@@ -237,29 +220,29 @@ export const Benefits = () => {
 
         {/* Additional Benefits */}
         <div>
-          <h3 className="text-2xl font-bold text-foreground text-center mb-12">
-            Additional Benefits
+          <h3 className="text-3xl font-bold text-foreground text-center mb-12">
+            And Even More Benefits...
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {additionalBenefits.map((benefit, index) => (
               <motion.div
                 key={index}
-                onMouseEnter={() => setHoveredAdditionalBenefitIndex(index)}
-                onMouseLeave={() => setHoveredAdditionalBenefitIndex(null)}
-                className={cn(
-                  "text-center group",
-                  hoveredAdditionalBenefitIndex !== null && hoveredAdditionalBenefitIndex !== index && "blur-sm scale-[0.98]"
-                )}
+                variants={itemVariants}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, amount: 0.5 }}
               >
-                <div className="bg-primary/10 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
-                  <benefit.icon className="h-8 w-8 text-primary" />
-                </div>
-                <h4 className="font-semibold text-foreground mb-2">
-                  {benefit.title}
-                </h4>
-                <p className="text-sm text-muted-foreground leading-relaxed">
-                  {benefit.description}
-                </p>
+                <Card className="text-center p-6 bg-card border-transparent hover:shadow-lg transition-shadow h-full">
+                  <div className="bg-primary/10 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <benefit.icon className="h-8 w-8 text-primary" />
+                  </div>
+                  <h4 className="font-semibold text-foreground mb-2 text-lg">
+                    {benefit.title}
+                  </h4>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    {benefit.description}
+                  </p>
+                </Card>
               </motion.div>
             ))}
           </div>

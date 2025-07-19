@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { motion } from "framer-motion";
+import { motion, useInView, useAnimation } from "framer-motion";
 import {
   Scale,
   Users,
@@ -12,40 +12,72 @@ import {
   Shield,
   Target,
 } from "lucide-react";
-import { cn } from "@/lib/utils"; // Import cn utility
+import { cn } from "@/lib/utils";
+import React from "react";
+
+const AnimatedNumber = ({ value }: { value: number }) => {
+  const [displayValue, setDisplayValue] = useState(0);
+  const controls = useAnimation();
+  const ref = React.useRef(null);
+  const inView = useInView(ref, { once: true, margin: "-50px" });
+
+  useEffect(() => {
+    if (inView) {
+      controls.start({
+        opacity: 1,
+        y: 0,
+        transition: {
+          type: "spring",
+          stiffness: 100,
+          damping: 20,
+        },
+      });
+      const animation = motion.animate(0, value, {
+        duration: 2,
+        onUpdate: (latest) => {
+          setDisplayValue(Math.floor(latest));
+        },
+      });
+      return () => animation.stop();
+    }
+  }, [inView, value, controls]);
+
+  return (
+    <motion.span ref={ref} initial={{ opacity: 0, y: 20 }} animate={controls}>
+      {displayValue.toLocaleString()}+
+    </motion.span>
+  );
+};
 
 export const About = () => {
-  const [hoveredStatIndex, setHoveredStatIndex] = useState<number | null>(null);
-  const [hoveredValueIndex, setHoveredValueIndex] = useState<number | null>(null);
-
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.1, // Reduced stagger
+        staggerChildren: 0.1,
       },
     },
   };
 
   const itemVariants = {
-    hidden: { opacity: 0, y: 20 }, // Reduced y translation
+    hidden: { opacity: 0, y: 20 },
     visible: {
       opacity: 1,
       y: 0,
-      transition: { duration: 0.5, ease: "easeOut" }, // Reduced duration
+      transition: { duration: 0.5, ease: "easeOut" },
     },
   };
 
   const stats = [
     {
-      number: "50,000+",
+      number: 50000,
       label: "Legal Questions Answered",
       icon: MessageSquare,
     },
-    { number: "1,000+", label: "Legal Documents Generated", icon: BookOpen },
-    { number: "500+", label: "Verified Lawyers", icon: Users },
-    { number: "24/7", label: "Support Available", icon: Shield },
+    { number: 1000, label: "Legal Documents Generated", icon: BookOpen },
+    { number: 500, label: "Verified Lawyers", icon: Users },
+    { number: 24, label: "Support Available", text: "24/7", icon: Shield },
   ];
 
   const values = [
@@ -76,135 +108,52 @@ export const About = () => {
   ];
 
   return (
-    <section id="about" className="relative py-20 overflow-hidden">
-      {/* Background with Multiple Fade Gradients (simplified) */}
-      <div className="absolute inset-0">
-        <div className="absolute inset-0 bg-gradient-to-br from-muted/30 via-background to-muted/20"></div>
-        <div className="absolute inset-0 bg-gradient-to-tl from-primary/5 via-transparent to-primary/10"></div>
-        <div className="absolute top-1/4 left-0 w-64 h-64 bg-gradient-to-r from-primary/8 to-transparent rounded-full blur-2xl"></div> {/* Reduced size and blur */}
-        <div className="absolute bottom-1/4 right-0 w-56 h-56 bg-gradient-to-l from-primary/6 to-transparent rounded-full blur-xl"></div> {/* Reduced size and blur */}
-        <div className="absolute top-0 right-1/3 w-48 h-48 bg-gradient-to-br from-primary/4 to-transparent rounded-full blur-lg"></div> {/* Reduced size and blur */}
-      </div>
-
+    <section id="about" className="relative py-20 overflow-hidden bg-muted/20">
       <div className="container mx-auto px-4 relative z-10">
         <motion.div
           className="text-center mb-16"
-          initial={{ opacity: 0, y: 30 }} // Reduced y translation
+          initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }} // Reduced duration
+          transition={{ duration: 0.6 }}
           viewport={{ once: true }}
         >
-          <motion.div
-            initial={{ scale: 0.8, opacity: 0 }} // Simplified animation
-            whileInView={{ scale: 1, opacity: 1 }}
-            transition={{ duration: 0.5, type: "spring", bounce: 0.3 }} // Reduced duration, adjusted bounce
-            viewport={{ once: true }}
+          <Badge
+            variant="outline"
+            className="mb-4 px-4 py-2 bg-primary/5 border-primary/20 text-primary"
           >
-            <Badge
-              variant="outline"
-              className="mb-4 px-4 py-2 bg-primary/5 border-primary/20"
-            >
-              About Us
-            </Badge>
-          </motion.div>
-          <motion.h2
-            className="text-4xl md:text-5xl font-bold text-foreground mb-4"
-            initial={{ opacity: 0, y: 30 }} // Simplified animation
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            viewport={{ once: true }}
-          >
+            About Us
+          </Badge>
+          <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
             Revolutionizing Legal Access in India
-          </motion.h2>
-          <motion.p
-            className="text-xl text-muted-foreground max-w-3xl mx-auto"
-            initial={{ opacity: 0, y: 20 }} // Reduced y translation
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.4 }} // Reduced duration
-            viewport={{ once: true }}
-          >
+          </h2>
+          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
             Bridging the gap between complex legal systems and everyday citizens
             through innovative AI technology
-          </motion.p>
+          </p>
         </motion.div>
 
-        {/* Stats Section with Rolling Animation (simplified) */}
+        {/* Stats Section */}
         <motion.div
-          className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-16"
+          className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-20"
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
         >
           {stats.map((stat, index) => (
-            <motion.div
-              key={index}
-              variants={itemVariants}
-              initial={{ opacity: 0, y: 20 }} // Simplified animation
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{
-                duration: 0.5, // Reduced duration
-                delay: index * 0.1,
-              }}
-              viewport={{ once: true }}
-              onMouseEnter={() => setHoveredStatIndex(index)}
-              onMouseLeave={() => setHoveredStatIndex(null)}
-              className={cn(
-                "group",
-                hoveredStatIndex !== null && hoveredStatIndex !== index && "blur-sm scale-[0.98]"
-              )}
-            >
-              <Card className="text-center bg-background/80 backdrop-blur-sm border-0 shadow-sm card-hover relative overflow-hidden group">
-                {/* Animated Background (simplified) */}
-                <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-primary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-
-                <CardContent className="pt-6 relative z-10">
-                  <motion.div
-                    className="bg-primary/10 w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3 relative overflow-hidden"
-                    whileHover={{ scale: 1.1 }} // Reduced scale, removed rotate
-                    transition={{ duration: 0.3 }} // Reduced duration
-                  >
-                    <stat.icon className="h-6 w-6 text-primary" />
-                    <motion.div
-                      className="absolute inset-0 bg-primary/20"
-                      animate={{ opacity: [0.3, 0.6, 0.3] }} // Simplified animation
-                      transition={{
-                        duration: 2, // Reduced duration
-                        repeat: Infinity,
-                        ease: "easeInOut",
-                        delay: index * 0.3, // Reduced delay
-                      }}
-                    />
-                  </motion.div>
-                  <motion.div
-                    className="text-3xl font-bold text-foreground mb-1"
-                    initial={{ scale: 0.8, opacity: 0 }} // Simplified animation
-                    whileInView={{ scale: 1, opacity: 1 }}
-                    transition={{
-                      delay: 0.3 + index * 0.1, // Reduced delay
-                      type: "spring",
-                      bounce: 0.3, // Reduced bounce
-                    }}
-                    viewport={{ once: true }}
-                  >
-                    {stat.number}
-                  </motion.div>
+            <motion.div key={index} variants={itemVariants}>
+              <Card className="text-center bg-card border-transparent card-hover">
+                <CardContent className="p-6">
+                  <div className="bg-primary/10 w-14 h-14 rounded-xl flex items-center justify-center mx-auto mb-4">
+                    <stat.icon className="h-7 w-7 text-primary" />
+                  </div>
+                  <div className="text-4xl font-bold text-foreground mb-1">
+                    {stat.text ? stat.text : <AnimatedNumber value={stat.number} />}
+                  </div>
                   <div className="text-sm text-muted-foreground">
                     {stat.label}
                   </div>
                 </CardContent>
-
-                {/* Shimmer Effect (simplified) */}
-                <motion.div
-                  className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/10 to-transparent" // Reduced opacity
-                  animate={{ x: [-50, 150] }} // Reduced x range
-                  transition={{
-                    duration: 2, // Reduced duration
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                    delay: index * 0.5, // Reduced delay
-                  }}
-                />
               </Card>
             </motion.div>
           ))}
@@ -212,8 +161,13 @@ export const About = () => {
 
         {/* Main About Content */}
         <div className="max-w-6xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-16">
-            <div>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-20">
+            <motion.div
+              initial={{ opacity: 0, x: -50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.7, ease: "easeOut" }}
+              viewport={{ once: true }}
+            >
               <h3 className="text-3xl font-bold text-foreground mb-6">
                 Our Story
               </h3>
@@ -226,58 +180,42 @@ export const About = () => {
                   this reality.
                 </p>
                 <p className="text-lg leading-relaxed">
-                  By combining cutting-edge AI technology with deep knowledge of
+                  By combining cutting-edge AI with deep knowledge of
                   Indian laws, we've created a platform that makes legal
-                  assistance as simple as having a conversation. From rural
-                  farmers to urban entrepreneurs, everyone deserves access to
-                  justice.
-                </p>
-                <p className="text-lg leading-relaxed">
-                  Today, Justicaa serves thousands of users across India,
-                  providing instant legal guidance, document generation, and
-                  connections to qualified lawyers. We're not just building
-                  software – we're building a more just society.
+                  assistance as simple as having a conversation.
                 </p>
               </div>
-            </div>
+            </motion.div>
 
-            <Card className="bg-background border-0 shadow-lg">
-              <CardHeader className="text-center">
-                <div className="gradient-primary w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                  <Scale className="h-10 w-10 text-white" />
-                </div>
-                <CardTitle className="text-2xl mb-2">
-                  Team Ctrl+Alt+Elite
-                </CardTitle>
-                <Badge
-                  variant="secondary"
-                  className="bg-primary/10 text-primary"
-                >
-                  Innovation in Legal Tech
-                </Badge>
-              </CardHeader>
-              <CardContent className="text-center">
-                <p className="text-muted-foreground mb-6">
-                  A multidisciplinary team of software engineers, legal experts,
-                  and AI researchers dedicated to making legal help accessible
-                  to every Indian citizen.
-                </p>
-                <div className="grid grid-cols-2 gap-4 text-sm">
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-primary">5+</div>
-                    <div className="text-muted-foreground">
-                      Years Experience
-                    </div>
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.7, ease: "easeOut" }}
+              viewport={{ once: true }}
+            >
+              <Card className="bg-background/80 backdrop-blur-sm border-0 shadow-lg card-glow">
+                <CardHeader className="text-center">
+                  <div className="gradient-primary w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <Scale className="h-10 w-10 text-white" />
                   </div>
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-primary">100%</div>
-                    <div className="text-muted-foreground">
-                      Indian Laws Focus
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+                  <CardTitle className="text-2xl mb-2">
+                    Team Ctrl+Alt+Elite
+                  </CardTitle>
+                  <Badge
+                    variant="secondary"
+                    className="bg-primary/10 text-primary"
+                  >
+                    Innovation in Legal Tech
+                  </Badge>
+                </CardHeader>
+                <CardContent className="text-center">
+                  <p className="text-muted-foreground mb-6">
+                    A multidisciplinary team dedicated to making legal help accessible
+                    to every Indian citizen.
+                  </p>
+                </CardContent>
+              </Card>
+            </motion.div>
           </div>
 
           {/* Values Section */}
@@ -287,27 +225,25 @@ export const About = () => {
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {values.map((value, index) => (
-                <Card
+                <motion.div
                   key={index}
-                  className={cn(
-                    "text-center bg-background border-0 shadow-sm card-hover group",
-                    hoveredValueIndex !== null && hoveredValueIndex !== index && "blur-sm scale-[0.98]"
-                  )}
-                  onMouseEnter={() => setHoveredValueIndex(index)}
-                  onMouseLeave={() => setHoveredValueIndex(null)}
+                  variants={itemVariants}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true, amount: 0.5 }}
                 >
-                  <CardContent className="pt-6">
-                    <div className="gradient-primary w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                      <value.icon className="h-7 w-7 text-white" />
+                  <Card className="text-center bg-card border-transparent hover:shadow-lg transition-shadow h-full p-6">
+                    <div className="gradient-primary w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                      <value.icon className="h-8 w-8 text-white" />
                     </div>
-                    <h4 className="font-semibold text-foreground mb-3">
+                    <h4 className="font-semibold text-foreground mb-3 text-lg">
                       {value.title}
                     </h4>
                     <p className="text-sm text-muted-foreground leading-relaxed">
                       {value.description}
                     </p>
-                  </CardContent>
-                </Card>
+                  </Card>
+                </motion.div>
               ))}
             </div>
           </div>
