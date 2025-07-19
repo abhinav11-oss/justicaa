@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { motion, useInView, useAnimation } from "framer-motion";
+import { motion, useInView, useAnimation, animate } from "framer-motion";
 import {
   Scale,
   Users,
@@ -32,7 +32,7 @@ const AnimatedNumber = ({ value }: { value: number }) => {
           damping: 20,
         },
       });
-      const animation = motion.animate(0, value, {
+      const animation = animate(0, value, {
         duration: 2,
         onUpdate: (latest) => {
           setDisplayValue(Math.floor(latest));
