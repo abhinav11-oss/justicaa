@@ -53,6 +53,7 @@ import { useToast } from "@/hooks/use-toast";
 import { ConversationDetail } from "./ConversationDetail";
 import { WelcomeHeader } from "./dashboard/WelcomeHeader";
 import { StatsGrid } from "./dashboard/StatsGrid";
+import { TypewriterLoader } from "./loaders/TypewriterLoader";
 
 interface Conversation {
   id: string;
@@ -305,8 +306,9 @@ export function UserDashboard() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center py-12">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      <div className="flex flex-col items-center justify-center py-12 gap-8">
+        <TypewriterLoader />
+        <p className="text-muted-foreground">Loading your data...</p>
       </div>
     );
   }

@@ -9,6 +9,7 @@ import { AlertTriangle, MessageSquare } from "lucide-react";
 import { DashboardSidebar } from "@/components/DashboardSidebar";
 import { DashboardHeader } from "@/components/DashboardHeader";
 import { DashboardMainContent } from "@/components/DashboardMainContent";
+import { TypewriterLoader } from "@/components/loaders/TypewriterLoader";
 
 const Dashboard = () => {
   const { t } = useTranslation();
@@ -56,8 +57,9 @@ const Dashboard = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+      <div className="min-h-screen flex flex-col items-center justify-center bg-background gap-8">
+        <TypewriterLoader />
+        <p className="text-muted-foreground">Loading your dashboard...</p>
       </div>
     );
   }
