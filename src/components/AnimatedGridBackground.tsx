@@ -11,7 +11,7 @@ export const AnimatedGridBackground = ({
   return (
     <div
       className={cn(
-        "relative flex h-full w-full items-center justify-center bg-background",
+        "relative flex w-full items-center justify-center bg-background",
         className
       )}
     >
