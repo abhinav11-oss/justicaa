@@ -12,12 +12,12 @@ import { DocumentTranslation } from "./document-tools/DocumentTranslation";
 import { ImageToText } from "./document-tools/ImageToText";
 
 const features = [
-  { id: "summary", title: "Agreement Summary", icon: FileCheck, component: <AgreementSummary /> },
-  { id: "compare", title: "Compare Agreements", icon: GitCompareArrows, component: <CompareAgreements /> },
-  { id: "create-light", title: "Create from Template", icon: FilePlus, component: <CreateAgreementLight /> },
-  { id: "create-pro", title: "Create with AI", icon: Sparkles, component: <CreateAgreementPro /> },
-  { id: "translate", title: "Document Translation", icon: Languages, component: <DocumentTranslation /> },
-  { id: "image-to-text", title: "Image to Text (OCR)", icon: ScanText, component: <ImageToText /> },
+  { id: "summary", title: "Agreement Summary", icon: FileCheck, component: AgreementSummary },
+  { id: "compare", title: "Compare Agreements", icon: GitCompareArrows, component: CompareAgreements },
+  { id: "create-light", title: "Create from Template", icon: FilePlus, component: CreateAgreementLight },
+  { id: "create-pro", title: "Create with AI", icon: Sparkles, component: CreateAgreementPro },
+  { id: "translate", title: "Document Translation", icon: Languages, component: DocumentTranslation },
+  { id: "image-to-text", title: "Image to Text (OCR)", icon: ScanText, component: ImageToText },
 ];
 
 export const DocumentGenerator = ({ category }: { category?: string }) => {
@@ -26,13 +26,14 @@ export const DocumentGenerator = ({ category }: { category?: string }) => {
   const selectedFeature = features.find(f => f.id === activeFeature);
 
   if (selectedFeature) {
+    const FeatureComponent = selectedFeature.component;
     return (
       <div>
         <Button variant="outline" onClick={() => setActiveFeature(null)} className="mb-4">
           <ArrowLeft className="h-4 w-4 mr-2" />
           Back to All Tools
         </Button>
-        {selectedFeature.component}
+        <FeatureComponent />
       </div>
     );
   }
