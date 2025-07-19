@@ -1,9 +1,10 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { LanguageSelector } from "@/components/LanguageSelector";
-import { Menu, Bell, Mail } from "lucide-react";
+import { Menu, Bell } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { ThemeToggle } from "@/components/ThemeToggle"; // Import ThemeToggle
+import { ThemeToggle } from "@/components/ThemeToggle";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 interface HeaderProps {
   isMobile: boolean;
@@ -13,7 +14,6 @@ interface HeaderProps {
   isTrialMode: boolean;
   user: any;
   t: any;
-  sessionError?: string;
 }
 
 export const DashboardHeader: React.FC<HeaderProps> = ({
@@ -24,79 +24,58 @@ export const DashboardHeader: React.FC<HeaderProps> = ({
   isTrialMode,
   user,
   t,
-  sessionError,
 }) => {
   const { toast } = useToast();
 
-  // Helper handlers for notification/mail actions
   const handleNotificationClick = () => {
     toast({
-      title: t?.("dashboard.notifications") || "Notifications",
-      description:
-        t?.("dashboard.notificationsDescription") ||
-        "No new notifications at this time.",
-      duration: 4000,
+      title: "Notifications",
+      description: "No new notifications at this time.",
     });
   };
 
-  const handleMailClick = () => {
-    toast({
-      title: t?.("dashboard.mail") || "Inbox",
-      description: t?.("dashboard.mailDescription") || "No new mail.",
-      duration: 4000,
-    });
-  };
+  const userInitial = user?.email?.charAt(0).toUpperCase() || "U";
 
   return (
-    <header
-      className={`px-6 py-4 flex justify-between items-center bg-card text-card-foreground`}
-    >
+    <header className="px-6 py-3 flex justify-between items-center bg-card border-b">
       <div className="flex items-center space-x-4">
         {isMobile && (
           <Button
             variant="ghost"
             size="icon"
             onClick={onMenuClick}
-            className="md:hidden"
-            aria-label={t("dashboard.menu", "Menu")}
+            aria-label="Menu"
           >
             <Menu className="h-5 w-5" />
           </Button>
         )}
         <div>
-          <h1 className="text-2xl font-bold text-foreground">
+          <h1 className="text-xl font-bold text-foreground">
             {isTrialMode && !user
-              ? t("dashboard.freeTrial", "Free Trial - AI Chat")
-              : sidebarItems.find((item) => item.id === activeTab)?.title ||
-                t("dashboard.title")}
+              ? "Free Trial"
+              : sidebarItems.find((item) => item.id === activeTab)?.title || "Dashboard"}
           </h1>
         </div>
       </div>
-      <div className="flex items-center space-x-3">
+      <div className="flex items-center space-x-4">
         <LanguageSelector />
-        <ThemeToggle /> {/* Add ThemeToggle here */}
-
-        {/* Notifications button without badge */}
+        <ThemeToggle />
         <Button
           variant="ghost"
           size="icon"
-          className="relative"
-          aria-label={t("dashboard.notifications", "Notifications")}
+          aria-label="Notifications"
           onClick={handleNotificationClick}
         >
           <Bell className="h-5 w-5" />
         </Button>
-
-        {/* Mail button */}
-        <Button
-          variant="ghost"
-          size="icon"
-          aria-label={t("dashboard.mail", "Mail")}
-          className="text-primary"
-          onClick={handleMailClick}
-        >
-          <Mail className="h-5 w-5" />
-        </Button>
+        {user && (
+          <Avatar className="h-9 w-9">
+            <AvatarImage src={user.user_metadata?.avatar_url} />
+            <AvatarFallback className="bg-primary text-primary-foreground font-semibold">
+              {userInitial}
+            </AvatarFallback>
+          </Avatar>
+        )}
       </div>
     </header>
   );

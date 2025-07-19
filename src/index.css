@@ -6,208 +6,61 @@
 @layer base {
   :root {
     --background: 0 0% 100%;
-    --foreground: 0 0% 18%;
+    --foreground: 240 10% 3.9%;
     --card: 0 0% 100%;
-    --card-foreground: 0 0% 18%;
+    --card-foreground: 240 10% 3.9%;
     --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 18%;
-    --primary: 280 80% 60%; /* Changed to vibrant purple/magenta for light theme */
-    --primary-foreground: 0 0% 100%;
-    --secondary: 240 17% 97%;
-    --secondary-foreground: 0 0% 18%;
-    --muted: 240 17% 97%;
-    --muted-foreground: 0 0% 48%;
-    --accent: 280 80% 60%; /* Changed to vibrant purple/magenta for light theme */
-    --accent-foreground: 0 0% 100%;
-    --destructive: 4 90% 58%;
-    --destructive-foreground: 0 0% 100%;
-    --border: 240 17% 94%;
-    --input: 240 17% 94%;
-    --ring: 280 80% 60%; /* Changed to vibrant purple/magenta for light theme */
+    --popover-foreground: 240 10% 3.9%;
+    --primary: 38 92% 50%;
+    --primary-foreground: 240 6% 10%;
+    --secondary: 240 5% 96%;
+    --secondary-foreground: 240 6% 10%;
+    --muted: 240 5% 96%;
+    --muted-foreground: 240 4% 46%;
+    --accent: 240 5% 96%;
+    --accent-foreground: 240 6% 10%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 6% 90%;
+    --input: 240 6% 90%;
+    --ring: 38 92% 50%;
     --radius: 0.75rem;
-    --chart-1: 217 91% 60%;
-    --chart-2: 142 71% 45%;
-    --chart-3: 4 90% 58%;
-    --chart-4: 45 93% 47%;
-    --chart-5: 197 37% 24%;
-
-    /* Custom color variables */
-    --surface: 240 17% 97%;
-    --sidebar: 240 20% 17%;
-    --sidebar-foreground: 0 0% 100%;
-    --text-secondary: 0 0% 48%;
-    --success: 142 71% 45%;
-    --warning: 45 93% 47%;
-    --blue-gradient-start: 280 80% 65%; /* Lighter purple for gradient start in light theme */
-    --blue-gradient-end: 280 80% 55%; /* Darker purple for gradient end in light theme */
   }
 
   .dark {
-    --background: 0 0% 0%; /* Pure black for overall background */
-    --foreground: 210 20% 95%; /* Off-white text */
-    --card: 220 15% 8%; /* Dark gray for cards */
-    --card-foreground: 210 20% 95%;
-    --popover: 220 15% 8%;
-    --popover-foreground: 210 20% 95%;
-    --primary: 280 80% 60%; /* Vibrant purple/magenta */
-    --primary-foreground: 0 0% 100%; /* White text on primary */
-    --secondary: 220 10% 15%; /* Darker gray secondary */
-    --secondary-foreground: 210 20% 95%;
-    --muted: 220 10% 10%; /* Darker gray for muted elements */
-    --muted-foreground: 215 14% 50%; /* Medium gray for muted text */
-    --accent: 280 80% 60%; /* Same as primary for accent */
-    --accent-foreground: 0 0% 100%;
-    --destructive: 0 80% 60%; /* Red */
-    --destructive-foreground: 0 0% 100%;
-    --border: 0 0% 0%; /* Make all default borders invisible */
-    --input: 220 10% 18%; /* Input background, not border */
-    --ring: 280 80% 60%; /* Primary color for ring */
-    --chart-1: 217 91% 60%;
-    --chart-2: 142 71% 45%;
-    --chart-3: 4 90% 58%;
-    --chart-4: 45 93% 47%;
-    --chart-5: 197 37% 24%;
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 240 4% 9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 240 10% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 38 92% 50%;
+    --primary-foreground: 240 6% 10%;
+    --secondary: 240 4% 16%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 240 4% 16%;
+    --muted-foreground: 240 5% 65%;
+    --accent: 240 4% 16%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 63% 31%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 4% 16%;
+    --input: 240 4% 16%;
+    --ring: 38 92% 50%;
+  }
+}
 
-    /* Custom color variables */
-    --surface: 0 0% 0%; /* Pure black for surfaces */
-    --sidebar: 0 0% 0%; /* Pure black for sidebar */
-    --text-secondary: 215 14% 50%;
-    --success: 142 70% 50%;
-    --warning: 45 90% 55%;
-    --blue-gradient-start: 280 80% 65%; /* Lighter purple for gradient start */
-    --blue-gradient-end: 280 80% 55%; /* Darker purple for gradient end */
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
   }
 }
 
 @layer components {
-  html {
-    @apply transition-colors duration-300; /* Added for smooth theme transitions */
-  }
-
-  .animate-fade-in {
-    animation: fadeIn 0.5s ease-in-out;
-  }
-
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-      transform: translateY(10px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
   .gradient-primary {
-    background: linear-gradient(
-      135deg,
-      hsl(var(--blue-gradient-start)) 0%,
-      hsl(var(--blue-gradient-end)) 100%
-    );
-  }
-
-  .hero-section {
-    background: linear-gradient(
-      135deg,
-      hsl(var(--background)) 0%,
-      hsl(var(--surface)) 50%,
-      hsl(var(--background)) 100%
-    );
-  }
-
-  .card-hover {
-    transition: all 0.3s ease;
-  }
-
-  .card-hover:hover {
-    transform: translateY(-2px);
-    box-shadow:
-      0 10px 25px -5px rgba(59, 130, 246, 0.1),
-      0 4px 6px -2px rgba(59, 130, 246, 0.05);
-  }
-
-  .dashboard-card {
-    @apply bg-white rounded-2xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-all duration-200;
-    background: hsl(var(--card));
-    border-color: hsl(var(--border));
-  }
-
-  .sidebar-item {
-    @apply w-full p-3 rounded-xl transition-all duration-200 flex items-center space-x-3 text-left;
-  }
-
-  .sidebar-item.active {
-    @apply text-white shadow-sm;
-    background: linear-gradient(
-      135deg,
-      hsl(var(--blue-gradient-start)) 0%,
-      hsl(var(--blue-gradient-end)) 100%
-    );
-  }
-
-  .sidebar-item:not(.active) {
-    @apply text-gray-400 hover:bg-gray-800 hover:text-white;
-  }
-
-  .search-input {
-    @apply rounded-lg px-3 py-2 w-64 flex items-center;
-    background: hsl(var(--surface));
-    border: 1px solid hsl(var(--border));
-  }
-
-  .btn-primary {
-    @apply text-white font-medium px-6 py-2 rounded-lg transition-all duration-200;
-    background: linear-gradient(
-      135deg,
-      hsl(var(--blue-gradient-start)) 0%,
-      hsl(var(--blue-gradient-end)) 100%
-    );
-  }
-
-  .btn-primary:hover {
-    @apply shadow-lg;
-    box-shadow: 0 4px 14px 0 rgba(59, 130, 246, 0.3);
-    transform: translateY(-1px);
-  }
-
-  .btn-outline {
-    @apply font-medium px-6 py-2 rounded-lg border transition-all duration-200;
-    color: hsl(var(--primary));
-    border-color: hsl(var(--primary));
-    background: transparent;
-  }
-
-  .dark .btn-outline {
-    border-color: transparent; /* Make outline buttons borderless in dark mode */
-  }
-
-  .btn-outline:hover {
     background: hsl(var(--primary));
-    color: hsl(var(--primary-foreground));
-  }
-
-  .surface-panel {
-    background: hsl(var(--surface));
-    border: 1px solid hsl(var(--border));
-  }
-
-  .text-secondary {
-    color: hsl(var(--text-secondary));
-  }
-
-  .status-success {
-    color: hsl(var(--success));
-    background: hsl(var(--success) / 0.1);
-  }
-
-  .status-error {
-    color: hsl(var(--destructive));
-    background: hsl(var(--destructive) / 0.1);
-  }
-
-  .status-warning {
-    color: hsl(var(--warning));
-    background: hsl(var(--warning) / 0.1);
   }
 }
