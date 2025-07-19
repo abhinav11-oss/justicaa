@@ -12,21 +12,27 @@ interface MainContentProps {
   activeTab: string;
   isTrialMode: boolean;
   user: any;
+  onSelectConversation: (id: string | null) => void;
+  onNewConversation: () => void;
+  activeConversationId: string | null;
 }
 
 export const DashboardMainContent: React.FC<MainContentProps> = ({
   activeTab,
   isTrialMode,
   user,
+  onSelectConversation,
+  onNewConversation,
+  activeConversationId,
 }) => {
   if (isTrialMode && !user) {
-    return <ChatView />;
+    return <ChatView onSelectConversation={onSelectConversation} onNewConversation={onNewConversation} conversationId={activeConversationId} />;
   }
   switch (activeTab) {
     case "home":
-      return <UserDashboard />;
+      return <UserDashboard onSelectConversation={onSelectConversation} />;
     case "chat":
-      return <ChatView />;
+      return <ChatView onSelectConversation={onSelectConversation} onNewConversation={onNewConversation} conversationId={activeConversationId} />;
     case "lawyers":
       return <LawyerFinder category="all" />;
     case "generator":
@@ -40,6 +46,6 @@ export const DashboardMainContent: React.FC<MainContentProps> = ({
     case "settings":
       return <SettingsPanel />;
     default:
-      return user ? <UserDashboard /> : <ChatView />;
+      return user ? <UserDashboard onSelectConversation={onSelectConversation} /> : <ChatView onSelectConversation={onSelectConversation} onNewConversation={onNewConversation} conversationId={activeConversationId} />;
   }
 };

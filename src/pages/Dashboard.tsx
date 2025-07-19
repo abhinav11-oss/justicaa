@@ -21,11 +21,29 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const isMobile = useIsMobile();
+  const [activeConversationId, setActiveConversationId] = useState<string | null>(null);
 
   const isTrialMode =
     !user &&
     (window.location.search.includes("trial=true") ||
       localStorage.getItem("trialMode") === "true");
+
+  const selectTab = (tab: string) => {
+    setActiveTab(tab);
+    if (tab !== 'chat') {
+      setActiveConversationId(null);
+    }
+  };
+
+  const handleSelectConversation = (id: string | null) => {
+    setActiveConversationId(id);
+    setActiveTab("chat");
+  };
+
+  const handleNewConversation = () => {
+    setActiveConversationId(null);
+    setActiveTab("chat");
+  };
 
   useEffect(() => {
     if (isTrialMode) {
@@ -74,10 +92,9 @@ const Dashboard = () => {
         user={user}
         isTrialMode={isTrialMode}
         activeTab={activeTab}
-        setActiveTab={setActiveTab}
+        setActiveTab={selectTab}
         sidebarOpen={sidebarOpen}
         setSidebarOpen={setSidebarOpen}
-        t={t}
       />
       <main className="flex-1 flex flex-col">
         <DashboardHeader
@@ -121,7 +138,9 @@ const Dashboard = () => {
             activeTab={activeTab}
             isTrialMode={isTrialMode}
             user={user}
-            t={t}
+            onSelectConversation={handleSelectConversation}
+            onNewConversation={handleNewConversation}
+            activeConversationId={activeConversationId}
           />
         </div>
       </main>

@@ -6,33 +6,38 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { Button } from "./ui/button";
 import { PanelLeftOpen } from "lucide-react";
 
-export const ChatView = () => {
-  const [activeConversationId, setActiveConversationId] = useState<string | null>(null);
+interface ChatViewProps {
+  conversationId: string | null;
+  onSelectConversation: (id: string) => void;
+  onNewConversation: () => void;
+}
+
+export const ChatView = ({ conversationId, onSelectConversation, onNewConversation }: ChatViewProps) => {
   const [showHistory, setShowHistory] = useState(false);
   const { user } = useAuth();
   const isMobile = useIsMobile();
 
-  const handleSelectConversation = (id: string) => {
-    setActiveConversationId(id);
+  const handleSelect = (id: string) => {
+    onSelectConversation(id);
     if (isMobile) setShowHistory(false);
   };
 
-  const handleNewConversation = () => {
-    setActiveConversationId(null);
+  const handleNew = () => {
+    onNewConversation();
     if (isMobile) setShowHistory(false);
   };
 
   useEffect(() => {
     if (!user) {
-      setActiveConversationId(null);
+      onNewConversation();
     }
   }, [user]);
 
   const historyPanel = (
     <ChatHistory 
-      onSelectConversation={handleSelectConversation}
-      onNewConversation={handleNewConversation}
-      activeConversationId={activeConversationId}
+      onSelectConversation={handleSelect}
+      onNewConversation={handleNew}
+      activeConversationId={conversationId}
     />
   );
 
@@ -57,8 +62,8 @@ export const ChatView = () => {
             </Button>
             <div className="flex-1">
               <ChatInterface 
-                key={activeConversationId}
-                conversationId={activeConversationId}
+                key={conversationId}
+                conversationId={conversationId}
               />
             </div>
           </div>
@@ -70,8 +75,8 @@ export const ChatView = () => {
           </div>
           <div className="flex-1">
             <ChatInterface 
-              key={activeConversationId}
-              conversationId={activeConversationId}
+              key={conversationId}
+              conversationId={conversationId}
             />
           </div>
         </>

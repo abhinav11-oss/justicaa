@@ -38,13 +38,12 @@ import {
   Archive,
   Trash2,
   Download,
-  Eye,
+  MessageSquare,
   Briefcase,
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { ConversationDetail } from "./ConversationDetail";
 import { WelcomeHeader } from "./dashboard/WelcomeHeader";
 import { StatsGrid } from "./dashboard/StatsGrid";
 import { TypewriterLoader } from "./loaders/TypewriterLoader";
@@ -76,7 +75,11 @@ interface LegalMatter {
   created_at: string;
 }
 
-export function UserDashboard() {
+interface UserDashboardProps {
+  onSelectConversation: (id: string) => void;
+}
+
+export function UserDashboard({ onSelectConversation }: UserDashboardProps) {
   const { t } = useTranslation();
   const { user } = useAuth();
   const { toast } = useToast();
@@ -87,9 +90,6 @@ export function UserDashboard() {
   const [documents, setDocuments] = useState<LegalDocument[]>([]);
   const [matters, setMatters] = useState<LegalMatter[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedConversationId, setSelectedConversationId] = useState<
-    string | null
-  >(null);
   const [activeTab, setActiveTab] = useState("conversations");
 
   useEffect(() => {
@@ -142,37 +142,8 @@ export function UserDashboard() {
     }
   };
 
-  const createNewConversation = async () => {
-    try {
-      const { data, error } = await supabase
-        .from("chat_conversations")
-        .insert([
-          {
-            user_id: user?.id,
-            title: t('dashboard.newConversation'),
-            legal_category: "general",
-            status: "active",
-          },
-        ])
-        .select()
-        .single();
-
-      if (error) throw error;
-
-      toast({
-        title: t('dashboard.newConversation'),
-        description: t('dashboard.newConversationToast'),
-      });
-
-      fetchUserData();
-    } catch (error) {
-      console.error("Error creating conversation:", error);
-      toast({
-        title: t('common.error'),
-        description: "Failed to create new conversation.",
-        variant: "destructive",
-      });
-    }
+  const createNewConversation = () => {
+    onSelectConversation(''); // Empty string or null to signify new chat
   };
 
   const archiveConversation = async (conversationId: string) => {
@@ -239,10 +210,6 @@ export function UserDashboard() {
     // ... (implementation remains the same)
   };
 
-  const handleConversationClick = (conversationId: string) => {
-    setSelectedConversationId(conversationId);
-  };
-
   const getStatusColor = (status: string) => {
     switch (status) {
       case "active": return "bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300";
@@ -257,13 +224,13 @@ export function UserDashboard() {
   const ConversationActions = ({ conversation, isArchived = false }: { conversation: Conversation; isArchived?: boolean; }) => (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon" className="h-8 w-8 p-0">
+        <Button variant="ghost" size="icon" className="h-8 w-8 p-0" onClick={(e) => e.stopPropagation()}>
           <MoreVertical className="h-4 w-4" />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
-        <DropdownMenuItem onClick={() => handleConversationClick(conversation.id)}>
-          <Eye className="h-4 w-4 mr-2" /> {t('dashboard.viewDetails')}
+      <DropdownMenuContent align="end" onClick={(e) => e.stopPropagation()}>
+        <DropdownMenuItem onClick={() => onSelectConversation(conversation.id)}>
+          <MessageSquare className="h-4 w-4 mr-2" /> {t('dashboard.aiChat')}
         </DropdownMenuItem>
         {!isArchived ? (
           <DropdownMenuItem onClick={() => archiveConversation(conversation.id)}>
@@ -308,15 +275,6 @@ export function UserDashboard() {
     );
   }
 
-  if (selectedConversationId) {
-    return (
-      <ConversationDetail
-        conversationId={selectedConversationId}
-        onBack={() => setSelectedConversationId(null)}
-      />
-    );
-  }
-
   return (
     <div className="space-y-6">
       <WelcomeHeader
@@ -357,7 +315,7 @@ export function UserDashboard() {
                 </TableHeader>
                 <TableBody>
                   {conversations.map((c) => (
-                    <TableRow key={c.id}>
+                    <TableRow key={c.id} onClick={() => onSelectConversation(c.id)} className="cursor-pointer hover:bg-muted/50">
                       <TableCell className="font-medium">{c.title}</TableCell>
                       <TableCell><Badge variant="outline">{c.legal_category}</Badge></TableCell>
                       <TableCell>{new Date(c.created_at).toLocaleDateString()}</TableCell>
@@ -383,7 +341,7 @@ export function UserDashboard() {
                 </TableHeader>
                 <TableBody>
                   {archivedConversations.map((c) => (
-                    <TableRow key={c.id}>
+                    <TableRow key={c.id} onClick={() => onSelectConversation(c.id)} className="cursor-pointer hover:bg-muted/50">
                       <TableCell className="font-medium">{c.title}</TableCell>
                       <TableCell><Badge variant="outline">{c.legal_category}</Badge></TableCell>
                       <TableCell>{new Date(c.created_at).toLocaleDateString()}</TableCell>
