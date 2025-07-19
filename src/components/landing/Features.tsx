@@ -53,7 +53,7 @@ export const Features = () => {
     <section id="features" className="py-20 bg-background">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
-          <Badge variant="outline" className="mb-4 px-4 py-2 border-primary/30 bg-primary/10 text-primary">
+          <Badge variant="outline" className="mb-4 px-4 py-2">
             Our Features
           </Badge>
           <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
@@ -74,10 +74,10 @@ export const Features = () => {
               transition={{ duration: 0.5, delay: index * 0.1 }}
               viewport={{ once: true }}
             >
-              <Card className="h-full bg-card border hover:border-primary/50 transition-colors duration-300 card-glow">
+              <Card className="h-full bg-card border hover:border-white/20 transition-colors duration-300">
                 <CardHeader>
-                  <div className="bg-primary/10 w-12 h-12 rounded-lg flex items-center justify-center mb-4">
-                    <feature.icon className="h-6 w-6 text-primary" />
+                  <div className="bg-secondary w-12 h-12 rounded-lg flex items-center justify-center mb-4">
+                    <feature.icon className="h-6 w-6 text-foreground" />
                   </div>
                   <CardTitle>{feature.title}</CardTitle>
                 </CardHeader>
