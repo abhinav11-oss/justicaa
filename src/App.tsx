@@ -11,12 +11,12 @@ import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
 import "./i18n"; // Import i18n configuration
 import { MotionConfig } from "framer-motion";
-// import { useSmoothScroll } from "@/hooks/useSmoothScroll";
+import { useSmoothScroll } from "@/hooks/useSmoothScroll";
 
 const queryClient = new QueryClient();
 
 const App = () => {
-  // useSmoothScroll(); // Disabling for now to prevent crash
+  useSmoothScroll(); // This enables Lenis smooth scrolling across the app
 
   return (
     <QueryClientProvider client={queryClient}>
