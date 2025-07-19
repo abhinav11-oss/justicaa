@@ -3,19 +3,19 @@ import { initReactI18next } from 'react-i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 
 import en from './locales/en.json';
-import es from './locales/es.json';
-import fr from './locales/fr.json';
-import de from './locales/de.json';
-import zh from './locales/zh.json';
-import hi from './locales/hi.json'; // Import Hindi translations
+import hi from './locales/hi.json';
+import bn from './locales/bn.json';
+import ta from './locales/ta.json';
+import te from './locales/te.json';
+import mr from './locales/mr.json';
 
 const resources = {
   en: { translation: en },
-  es: { translation: es },
-  fr: { translation: fr },
-  de: { translation: de },
-  zh: { translation: zh },
-  hi: { translation: hi }, // Add Hindi to resources
+  hi: { translation: hi },
+  bn: { translation: bn },
+  ta: { translation: ta },
+  te: { translation: te },
+  mr: { translation: mr },
 };
 
 i18n

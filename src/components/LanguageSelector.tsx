@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
@@ -12,12 +11,12 @@ import { Globe, Check } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 const languages = [
-  { code: 'en', name: 'English', flag: '🇺🇸' },
+  { code: 'en', name: 'English', flag: '🇬🇧' },
   { code: 'hi', name: 'हिन्दी', flag: '🇮🇳' },
-  { code: 'es', name: 'Español', flag: '🇪🇸' },
-  { code: 'fr', name: 'Français', flag: '🇫🇷' },
-  { code: 'de', name: 'Deutsch', flag: '🇩🇪' },
-  { code: 'zh', name: '中文', flag: '🇨🇳' },
+  { code: 'bn', name: 'বাংলা', flag: '🇮🇳' },
+  { code: 'ta', name: 'தமிழ்', flag: '🇮🇳' },
+  { code: 'te', name: 'తెలుగు', flag: '🇮🇳' },
+  { code: 'mr', name: 'मराठी', flag: '🇮🇳' },
 ];
 
 export const LanguageSelector = () => {
@@ -33,11 +32,10 @@ export const LanguageSelector = () => {
       if (newLanguage) {
         setCurrentLanguage(newLanguage);
       }
-      // If Hindi and no translations, show toast
-      if (languageCode === 'hi') {
+      if (languageCode !== 'en' && languageCode !== 'hi') {
         toast({
-          title: "Hindi Enabled",
-          description: "App switched to Hindi. Some text may still appear in English until Hindi translations are completed.",
+          title: `${newLanguage?.name} Enabled`,
+          description: `App switched to ${newLanguage?.name}. Some text may still appear in English until translations are completed.`,
         });
       }
     });
@@ -58,7 +56,6 @@ export const LanguageSelector = () => {
             key={language.code}
             onClick={() => changeLanguage(language.code)}
             className="flex items-center justify-between cursor-pointer"
-            // Now all languages are selectable
           >
             <div className="flex items-center space-x-2">
               <span>{language.flag}</span>
