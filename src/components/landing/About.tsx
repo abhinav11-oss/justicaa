@@ -65,7 +65,7 @@ export const About = () => {
     visible: {
       opacity: 1,
       y: 0,
-      transition: { duration: 0.5, ease: "easeOut" },
+      transition: { duration: 0.5 },
     },
   };
 
@@ -165,7 +165,7 @@ export const About = () => {
             <motion.div
               initial={{ opacity: 0, x: -50 }}
               whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.7, ease: "easeOut" }}
+              transition={{ duration: 0.7 }}
               viewport={{ once: true }}
             >
               <h3 className="text-3xl font-bold text-foreground mb-6">
@@ -190,7 +190,7 @@ export const About = () => {
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               whileInView={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.7, ease: "easeOut" }}
+              transition={{ duration: 0.7 }}
               viewport={{ once: true }}
             >
               <Card className="bg-background/80 backdrop-blur-sm border-0 shadow-lg card-glow">

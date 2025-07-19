@@ -10,7 +10,7 @@ import htmlDocx from 'html-docx-js';
 
 export const CreateAgreementPro = () => {
   const [prompt, setPrompt] = useState("");
-  const [document, setDocument] = useState("");
+  const [generatedDocument, setGeneratedDocument] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
@@ -20,7 +20,7 @@ export const CreateAgreementPro = () => {
       return;
     }
     setIsLoading(true);
-    setDocument("");
+    setGeneratedDocument("");
     try {
       const fullPrompt = `Generate a professional legal document based on the following request. Ensure it is well-formatted and legally sound for Indian jurisdiction.
 Request: "${prompt}"`;
@@ -28,7 +28,7 @@ Request: "${prompt}"`;
         body: { message: fullPrompt }
       });
       if (error) throw error;
-      setDocument(data.response);
+      setGeneratedDocument(data.response);
     } catch (error) {
       console.error("Error generating document:", error);
       toast({ title: "Generation failed.", description: "Please try again.", variant: "destructive" });
@@ -39,13 +39,13 @@ Request: "${prompt}"`;
 
   const generatePDF = () => {
     const pdf = new jsPDF();
-    const lines = pdf.splitTextToSize(document, 180);
+    const lines = pdf.splitTextToSize(generatedDocument, 180);
     pdf.text(lines, 10, 10);
     pdf.save("Justicaa_AI_Document.pdf");
   };
 
   const downloadWordDocument = () => {
-    const content = `<!DOCTYPE html><html><head><title>Document</title></head><body>${document.replace(/\n/g, '<br>')}</body></html>`;
+    const content = `<!DOCTYPE html><html><head><title>Document</title></head><body>${generatedDocument.replace(/\n/g, '<br>')}</body></html>`;
     const blob = htmlDocx.asBlob(content);
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
@@ -76,7 +76,7 @@ Request: "${prompt}"`;
           {isLoading && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
           Generate Document
         </Button>
-        {document && (
+        {generatedDocument && (
           <Card className="bg-muted">
             <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle>Generated Document</CardTitle>
@@ -86,7 +86,7 @@ Request: "${prompt}"`;
               </div>
             </CardHeader>
             <CardContent>
-              <Textarea value={document} onChange={(e) => setDocument(e.target.value)} className="min-h-96 bg-background" />
+              <Textarea value={generatedDocument} onChange={(e) => setGeneratedDocument(e.target.value)} className="min-h-96 bg-background" />
             </CardContent>
           </Card>
         )}
