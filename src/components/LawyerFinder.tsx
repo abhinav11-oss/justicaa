@@ -364,7 +364,6 @@ const categoryMap = {
   "Contract Review": ["Contract Law", "Business Law", "Employment Law", "Civil Law"]
 };
 
-// Enhanced city coordinates with more accurate locations
 const cityCoordinates = {
   "Gwalior": { lat: 26.2183, lng: 78.1828 },
   "Delhi": { lat: 28.6139, lng: 77.2090 },
@@ -376,7 +375,6 @@ const cityCoordinates = {
   "Ujjain": { lat: 23.1765, lng: 75.7885 }
 };
 
-// Enhanced pincode to city mapping
 const pincodeToCity: { [key: string]: string } = {
   "474001": "Gwalior", "474006": "Gwalior", "474011": "Gwalior",
   "110001": "Delhi", "110005": "Delhi", "110024": "Delhi",
@@ -396,7 +394,7 @@ export const LawyerFinder = ({ category }: LawyerFinderProps) => {
   const [manualLocation, setManualLocation] = useState("");
   const [copiedPhone, setCopiedPhone] = useState<string | null>(null);
   const [showPhoneModal, setShowPhoneModal] = useState<string | null>(null);
-  const [locationStatus, setLocationStatus] = useState<string>("");
+  const [searchMode, setSearchMode] = useState<'city' | 'location'>('city');
   const { toast } = useToast();
   const { latitude, longitude, error, loading, getCurrentLocation, setManualLocation: setGeoLocation } = useGeolocation();
 
@@ -408,7 +406,6 @@ export const LawyerFinder = ({ category }: LawyerFinderProps) => {
 
   const cities = ["Gwalior", "Delhi", "Mumbai", "Bangalore", "Jhansi", "Bhopal", "Indore", "Ujjain"];
 
-  // Improved distance calculation using Haversine formula
   const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number): number => {
     const R = 6371; // Earth's radius in kilometers
     const dLat = (lat2 - lat1) * Math.PI / 180;
@@ -418,181 +415,91 @@ export const LawyerFinder = ({ category }: LawyerFinderProps) => {
       Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
       Math.sin(dLon/2) * Math.sin(dLon/2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-    return Math.round((R * c) * 10) / 10; // Round to 1 decimal place
+    return Math.round((R * c) * 10) / 10;
   };
 
-  // Enhanced city detection from coordinates
-  const detectCityFromCoordinates = (lat: number, lng: number): string => {
-    let closestCity = "Gwalior";
-    let minDistance = Infinity;
+  useEffect(() => {
+    let tempLawyers = [...lawyersDatabase];
 
-    Object.entries(cityCoordinates).forEach(([city, coords]) => {
-      const distance = calculateDistance(lat, lng, coords.lat, coords.lng);
-      if (distance < minDistance) {
-        minDistance = distance;
-        closestCity = city;
-      }
-    });
-
-    return closestCity;
-  };
-
-  // Enhanced pincode detection
-  const detectCityFromPincode = (pincode: string): string | null => {
-    // Remove any spaces and get first 6 digits
-    const cleanPincode = pincode.replace(/\s/g, '').substring(0, 6);
-    return pincodeToCity[cleanPincode] || null;
-  };
-
-  // Memoized filter function to ensure it only re-runs when dependencies change
-  const filterLawyers = useCallback(() => {
-    let currentLawyers = [...lawyersDatabase]; // Always start from the original database
-
-    // Apply distance calculation if location is available
-    if (latitude !== null && longitude !== null) {
-      currentLawyers = currentLawyers.map(lawyer => ({
-        ...lawyer,
-        distance: calculateDistance(latitude, longitude, lawyer.latitude, lawyer.longitude)
-      }));
-    }
-
-    // Filter by user's detected city or nearby locations
-    if (userCity) {
-      currentLawyers = currentLawyers.filter(lawyer => {
-        if (lawyer.city === userCity) return true;
-        // Include lawyers within 50km if distance is available
-        return lawyer.distance !== undefined && lawyer.distance <= 50;
+    if (latitude && longitude) {
+      tempLawyers.forEach(lawyer => {
+        lawyer.distance = calculateDistance(latitude, longitude, lawyer.latitude, lawyer.longitude);
       });
     }
 
-    // Filter by category
+    if (searchMode === 'location' && latitude && longitude) {
+      tempLawyers = tempLawyers.filter(l => l.distance !== undefined && l.distance <= 50);
+    } else if (searchMode === 'city' && userCity) {
+      tempLawyers = tempLawyers.filter(l => l.city === userCity);
+    }
+
     const relevantSpecs = categoryMap[selectedCategory] || [];
     if (relevantSpecs.length > 0) {
-      currentLawyers = currentLawyers.filter(lawyer => 
+      tempLawyers = tempLawyers.filter(lawyer => 
         lawyer.specialization.some(spec => relevantSpecs.includes(spec))
       );
     }
 
-    // Filter by specialization
     if (selectedSpecialization !== "all") {
-      currentLawyers = currentLawyers.filter(lawyer => 
+      tempLawyers = tempLawyers.filter(lawyer => 
         lawyer.specialization.includes(selectedSpecialization)
       );
     }
 
-    // Sort by distance if available, otherwise by rating
-    currentLawyers.sort((a, b) => {
+    tempLawyers.sort((a, b) => {
       if (a.distance !== undefined && b.distance !== undefined) {
         return a.distance - b.distance;
       }
       return b.rating - a.rating;
     });
 
-    setFilteredLawyers(currentLawyers);
-  }, [latitude, longitude, userCity, selectedCategory, selectedSpecialization]);
+    setFilteredLawyers(tempLawyers);
+  }, [latitude, longitude, userCity, selectedCategory, selectedSpecialization, searchMode]);
 
-  // Effect to run filterLawyers whenever its dependencies change
-  useEffect(() => {
-    filterLawyers();
-  }, [filterLawyers]);
-
-  // Effect to detect user's city from coordinates and set userCity
-  useEffect(() => {
-    if (latitude && longitude) {
-      const detectedCity = detectCityFromCoordinates(latitude, longitude);
-      setUserCity(detectedCity);
-      setLocationStatus(`Location detected: ${detectedCity}`);
-      toast({
-        title: "Location Detected",
-        description: `Found your location near ${detectedCity}`,
-      });
-    }
-  }, [latitude, longitude, toast]);
-
-  // Effect to handle initial category prop
   useEffect(() => {
     if (category && categoryMap[category as keyof typeof categoryMap]) {
       setSelectedCategory(category as keyof typeof categoryMap);
     }
   }, [category]);
 
-  // Effect to show error if geolocation fails
-  useEffect(() => {
-    if (error) {
-      setLocationStatus("Location access denied. Please select your city manually or enable location permissions.");
-    }
-  }, [error]);
+  const handleUseCurrentLocation = () => {
+    setUserCity("");
+    setSearchMode('location');
+    getCurrentLocation();
+    toast({ title: "Getting your location..." });
+  };
 
-  const handleLocationSubmit = () => {
-    if (!manualLocation.trim()) {
-      toast({
-        title: "Location Required",
-        description: "Please enter a city name or pincode",
-        variant: "destructive"
-      });
-      return;
-    }
-    
-    const inputLocation = manualLocation.trim();
-    
-    // Check if it's a pincode (6 digits)
-    const pincodeMatch = inputLocation.match(/^\d{6}$/);
-    if (pincodeMatch) {
-      const detectedCity = detectCityFromPincode(inputLocation);
-      if (detectedCity && cityCoordinates[detectedCity]) {
-        const coords = cityCoordinates[detectedCity];
-        setGeoLocation(coords.lat, coords.lng); // This will trigger the useEffect for latitude/longitude
-        setUserCity(detectedCity); // Set userCity directly for immediate filter
-        setLocationStatus(`Location set to: ${detectedCity} (Pincode: ${inputLocation})`);
-        toast({
-          title: "Location Set",
-          description: `Found ${detectedCity} for pincode ${inputLocation}`,
-        });
-        return;
-      } else {
-        toast({
-          title: "Pincode Not Found",
-          description: `Pincode ${inputLocation} not found in our database.`,
-          variant: "destructive"
-        });
-        return;
-      }
-    }
-    
-    // Check if it's a city name
-    const matchedCity = cities.find(city => 
-      city.toLowerCase().includes(inputLocation.toLowerCase()) ||
-      inputLocation.toLowerCase().includes(city.toLowerCase())
-    );
-    
-    if (matchedCity && cityCoordinates[matchedCity]) {
-      const coords = cityCoordinates[matchedCity];
-      setGeoLocation(coords.lat, coords.lng); // This will trigger the useEffect for latitude/longitude
-      setUserCity(matchedCity); // Set userCity directly for immediate filter
-      setLocationStatus(`Location set to: ${matchedCity}`);
-      toast({
-        title: "Location Set",
-        description: `Location set to ${matchedCity}`,
-      });
-    } else {
-      toast({
-        title: "Location Not Found",
-        description: `${inputLocation} not found. Please try a different city or pincode.`,
-        variant: "destructive"
-      });
+  const handleCitySelect = (city: string) => {
+    if (cityCoordinates[city as keyof typeof cityCoordinates]) {
+      const coords = cityCoordinates[city as keyof typeof cityCoordinates];
+      setGeoLocation(coords.lat, coords.lng);
+      setUserCity(city);
+      setSearchMode('city');
+      toast({ title: `Showing lawyers in ${city}` });
     }
   };
 
-  const handleCitySelect = (selectedCity: string) => {
-    if (cityCoordinates[selectedCity]) {
-      const coords = cityCoordinates[selectedCity];
-      setGeoLocation(coords.lat, coords.lng); // This will trigger the useEffect for latitude/longitude
-      setUserCity(selectedCity); // Set userCity directly for immediate filter
-      setLocationStatus(`Location set to: ${selectedCity}`);
-      toast({
-        title: "City Selected",
-        description: `Showing lawyers in ${selectedCity}`,
-      });
+  const handleLocationSubmit = () => {
+    const input = manualLocation.trim();
+    if (!input) {
+      toast({ title: "Location Required", variant: "destructive" });
+      return;
+    }
+
+    const pincodeMatch = input.match(/^\d{6}$/);
+    if (pincodeMatch) {
+      const city = pincodeToCity[input];
+      if (city) {
+        handleCitySelect(city);
+        return;
+      }
+    }
+
+    const matchedCity = cities.find(c => c.toLowerCase() === input.toLowerCase());
+    if (matchedCity) {
+      handleCitySelect(matchedCity);
+    } else {
+      toast({ title: "Location Not Found", description: "Please enter a valid city or 6-digit pincode.", variant: "destructive" });
     }
   };
 
@@ -601,14 +508,10 @@ export const LawyerFinder = ({ category }: LawyerFinderProps) => {
       setShowPhoneModal(`Number not available for ${lawyerName}`);
       return;
     }
-
-    // Check if device is mobile
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-    
     if (isMobile) {
       window.location.href = `tel:${phone}`;
     } else {
-      // Show modal with number for desktop users
       setShowPhoneModal(phone);
     }
   };
@@ -618,286 +521,108 @@ export const LawyerFinder = ({ category }: LawyerFinderProps) => {
       await navigator.clipboard.writeText(phone);
       setCopiedPhone(phone);
       setTimeout(() => setCopiedPhone(null), 2000);
-      toast({
-        title: "Phone Number Copied",
-        description: `${phone} copied to clipboard`
-      });
+      toast({ title: "Phone Number Copied" });
     } catch (error) {
-      toast({
-        title: "Copy Failed",
-        description: "Unable to copy phone number",
-        variant: "destructive"
-      });
+      toast({ title: "Copy Failed", variant: "destructive" });
     }
   };
 
   const handleDirections = (lawyer: Lawyer) => {
-    if (latitude && longitude && lawyer.address) {
-      // Use accurate coordinates for directions
-      const directionsUrl = `https://www.google.com/maps/dir/?api=1&origin=${latitude},${longitude}&destination=${encodeURIComponent(lawyer.address)}`;
-      window.open(directionsUrl, '_blank');
-    } else {
-      // Fallback to searching for the address
-      const fallbackUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(lawyer.address)}`;
-      window.open(fallbackUrl, '_blank');
-    }
+    const destination = `${lawyer.latitude},${lawyer.longitude}`;
+    const directionsUrl = (latitude && longitude)
+      ? `https://www.google.com/maps/dir/?api=1&origin=${latitude},${longitude}&destination=${destination}`
+      : `https://www.google.com/maps/search/?api=1&query=${destination}`;
+    window.open(directionsUrl, '_blank');
   };
 
   return (
     <div className="space-y-6">
-      {/* Location Controls */}
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center">
-            <MapPin className="h-5 w-5 mr-2" />
-            Find Lawyers in Your City
-          </CardTitle>
+          <CardTitle className="flex items-center"><MapPin className="h-5 w-5 mr-2" />Find Lawyers</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          {/* Location Status */}
-          {locationStatus && (
-            <div className="text-sm bg-primary/5 dark:bg-primary/20 text-primary dark:text-primary-foreground p-3 rounded-lg">
-              {locationStatus}
-            </div>
-          )}
-
-          {/* City Selection and Location Controls */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className="text-sm font-medium mb-2 block">Select City</label>
-              <Select value={userCity} onValueChange={handleCitySelect}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select your city" />
-                </SelectTrigger>
-                <SelectContent>
-                  {cities.map((city) => (
-                    <SelectItem key={city} value={city}>
-                      <div className="flex items-center">
-                        <MapPin className="h-4 w-4 mr-2" />
-                        {city}
-                      </div>
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            
-            <div>
-              <label className="text-sm font-medium mb-2 block">Use Current Location</label>
-              <Button 
-                onClick={getCurrentLocation}
-                disabled={loading}
-                className="w-full"
-                variant="outline"
-              >
-                {loading ? "Getting Location..." : "Use Current Location"}
-              </Button>
-            </div>
+            <Select onValueChange={handleCitySelect}>
+              <SelectTrigger><SelectValue placeholder="Select a city" /></SelectTrigger>
+              <SelectContent>{cities.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}</SelectContent>
+            </Select>
+            <Button onClick={handleUseCurrentLocation} disabled={loading} variant="outline">
+              {loading ? "Getting Location..." : "Use Current Location"}
+            </Button>
           </div>
-          
           <div className="flex gap-2">
             <Input
-              placeholder="Enter city name or 6-digit pincode"
+              placeholder="Or enter city/pincode"
               value={manualLocation}
               onChange={(e) => setManualLocation(e.target.value)}
               onKeyPress={(e) => e.key === 'Enter' && handleLocationSubmit()}
             />
-            <Button onClick={handleLocationSubmit} variant="outline">
-              Search
-            </Button>
+            <Button onClick={handleLocationSubmit}>Search</Button>
           </div>
-          
-          {error && (
-            <div className="text-sm text-amber-600 bg-amber-50 dark:bg-amber-900/20 p-3 rounded-lg flex items-center">
-              <AlertCircle className="h-4 w-4 mr-2" />
-              {error}
-            </div>
-          )}
+          {error && <div className="text-sm text-destructive flex items-center"><AlertCircle className="h-4 w-4 mr-2" />{error}</div>}
         </CardContent>
       </Card>
 
-      {/* Category Tabs */}
-      <Tabs value={selectedCategory} onValueChange={(value: string) => setSelectedCategory(value as keyof typeof categoryMap)}>
+      <Tabs value={selectedCategory} onValueChange={(v) => setSelectedCategory(v as keyof typeof categoryMap)}>
         <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="Business Law">Business Law</TabsTrigger>
-          <TabsTrigger value="Personal Legal">Personal Legal</TabsTrigger>
-          <TabsTrigger value="Contract Review">Contract Review</TabsTrigger>
+          <TabsTrigger value="Business Law">Business</TabsTrigger>
+          <TabsTrigger value="Personal Legal">Personal</TabsTrigger>
+          <TabsTrigger value="Contract Review">Contracts</TabsTrigger>
         </TabsList>
-
-        {Object.keys(categoryMap).map((cat) => (
-          <TabsContent key={cat} value={cat} className="space-y-4">
-            {/* Specialization Filter */}
-            <div className="flex items-center space-x-2">
-              <Filter className="h-4 w-4" />
-              <Select value={selectedSpecialization} onValueChange={setSelectedSpecialization}>
-                <SelectTrigger className="w-48">
-                  <SelectValue placeholder="Filter by specialization" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Specializations</SelectItem>
-                  {specializations.map((spec) => (
-                    <SelectItem key={spec} value={spec}>
-                      {spec}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            {/* Results */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold">
-                {filteredLawyers.length} Lawyers Found {userCity ? `in and around ${userCity}` : ''} for {cat}
-              </h3>
-              
-              {filteredLawyers.length === 0 ? (
-                <Card>
-                  <CardContent className="text-center py-8">
-                    <p className="text-muted-foreground">
-                      No lawyers found {userCity ? `in ${userCity}` : ''} for this category.
-                    </p>
-                    <p className="text-sm text-muted-foreground mt-2">
-                      Try selecting a different city or adjusting your filters.
-                    </p>
-                  </CardContent>
-                </Card>
-              ) : (
-                <div className="grid gap-4 md:grid-cols-2">
-                  {filteredLawyers.map((lawyer) => (
-                    <Card key={lawyer.id} className="hover:shadow-lg transition-shadow">
-                      <CardContent className="p-6">
-                        <div className="space-y-3">
-                          <div className="flex justify-between items-start">
-                            <div>
-                              <div className="flex items-center space-x-2">
-                                <h4 className="font-semibold text-lg">{lawyer.name}</h4>
-                                {lawyer.verified && (
-                                  <Badge variant="secondary" className="bg-green-100 text-green-800">
-                                    Verified
-                                  </Badge>
-                                )}
-                              </div>
-                              <p className="text-muted-foreground text-sm">
-                                {lawyer.location}, {lawyer.city} - {lawyer.pincode}
-                              </p>
-                            </div>
-                            <div className="flex items-center space-x-1">
-                              <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                              <span className="text-sm font-medium">{lawyer.rating}</span>
-                            </div>
-                          </div>
-
-                          <div className="flex flex-wrap gap-2">
-                            {lawyer.specialization.map((spec) => (
-                              <Badge key={spec} variant="outline" className="text-xs">
-                                {spec}
-                              </Badge>
-                            ))}
-                          </div>
-
-                          <div className="text-sm text-muted-foreground space-y-1">
-                            <p>Experience: {lawyer.experience} years</p>
-                            <div className="flex items-center justify-between">
-                              <span className="flex items-center">
-                                <Phone className="h-3 w-3 mr-1" />
-                                {lawyer.phone}
-                              </span>
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => handleCopyPhone(lawyer.phone)}
-                                className="h-6 px-2"
-                              >
-                                {copiedPhone === lawyer.phone ? (
-                                  <CheckCircle className="h-3 w-3 text-green-600" />
-                                ) : (
-                                  <Copy className="h-3 w-3" />
-                                )}
-                              </Button>
-                            </div>
-                            <p className="flex items-center">
-                              <MapPin className="h-3 w-3 mr-1" />
-                              {lawyer.address}
-                            </p>
-                            {lawyer.distance !== undefined && (
-                              <p className="text-primary font-medium">
-                                {lawyer.distance} km away
-                              </p>
-                            )}
-                          </div>
-
-                          <div className="flex space-x-2 pt-2">
-                            <Button 
-                              size="sm" 
-                              onClick={() => handleCall(lawyer.phone, lawyer.name)}
-                              className="flex-1"
-                            >
-                              <Phone className="h-4 w-4 mr-2" />
-                              Call
-                            </Button>
-                            <Button 
-                              size="sm" 
-                              variant="outline"
-                              onClick={() => handleDirections(lawyer)}
-                              className="flex-1"
-                            >
-                              <Navigation className="h-4 w-4 mr-2" />
-                              Directions
-                            </Button>
-                          </div>
+        <TabsContent value={selectedCategory} className="space-y-4 mt-4">
+          <div className="flex items-center space-x-2">
+            <Filter className="h-4 w-4" />
+            <Select value={selectedSpecialization} onValueChange={setSelectedSpecialization}>
+              <SelectTrigger className="w-48"><SelectValue placeholder="Filter by specialization" /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Specializations</SelectItem>
+                {specializations.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
+              </SelectContent>
+            </Select>
+          </div>
+          <div>
+            <h3 className="text-lg font-semibold">{filteredLawyers.length} Lawyers Found</h3>
+            {filteredLawyers.length === 0 ? (
+              <Card><CardContent className="text-center py-8"><p>No lawyers found. Try a different location or filter.</p></CardContent></Card>
+            ) : (
+              <div className="grid gap-4 md:grid-cols-2 mt-4">
+                {filteredLawyers.map((lawyer) => (
+                  <Card key={lawyer.id} className="hover:shadow-lg transition-shadow">
+                    <CardContent className="p-6 space-y-3">
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <h4 className="font-semibold text-lg">{lawyer.name}</h4>
+                          <p className="text-muted-foreground text-sm">{lawyer.location}, {lawyer.city}</p>
                         </div>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-              )}
-            </div>
-          </TabsContent>
-        ))}
+                        <div className="flex items-center space-x-1"><Star className="h-4 w-4 fill-yellow-400 text-yellow-400" /><span>{lawyer.rating}</span></div>
+                      </div>
+                      <div className="flex flex-wrap gap-2">
+                        {lawyer.specialization.map(s => <Badge key={s} variant="outline">{s}</Badge>)}
+                      </div>
+                      <div className="text-sm text-muted-foreground space-y-1">
+                        <p>Experience: {lawyer.experience} years</p>
+                        {lawyer.distance && <p className="text-primary font-medium">{lawyer.distance} km away</p>}
+                      </div>
+                      <div className="flex space-x-2 pt-2">
+                        <Button size="sm" onClick={() => handleCall(lawyer.phone, lawyer.name)} className="flex-1"><Phone className="h-4 w-4 mr-2" />Call</Button>
+                        <Button size="sm" variant="outline" onClick={() => handleDirections(lawyer)} className="flex-1"><Navigation className="h-4 w-4 mr-2" />Directions</Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            )}
+          </div>
+        </TabsContent>
       </Tabs>
 
-      {/* Phone Modal */}
       <Dialog open={!!showPhoneModal} onOpenChange={() => setShowPhoneModal(null)}>
         <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Contact Number</DialogTitle>
-            <DialogDescription>
-              {showPhoneModal?.startsWith('Number not available') ? (
-                showPhoneModal
-              ) : (
-                <>
-                  Call the lawyer at: <strong>{showPhoneModal}</strong>
-                </>
-              )}
-            </DialogDescription>
-          </DialogHeader>
-          {showPhoneModal && !showPhoneModal.startsWith('Number not available') && (
-            <div className="flex space-x-2">
-              <Button onClick={() => handleCopyPhone(showPhoneModal)} variant="outline" className="flex-1">
-                <Copy className="h-4 w-4 mr-2" />
-                Copy Number
-              </Button>
-              <Button onClick={() => setShowPhoneModal(null)} className="flex-1">
-                Close
-              </Button>
-            </div>
-          )}
+          <DialogHeader><DialogTitle>Contact Number</DialogTitle></DialogHeader>
+          <DialogDescription>{showPhoneModal}</DialogDescription>
         </DialogContent>
       </Dialog>
-
-      {/* Disclaimer */}
-      <Card className="bg-amber-50 dark:bg-amber-900/20">
-        <CardContent className="pt-6">
-          <div className="flex items-start space-x-2">
-            <AlertCircle className="h-5 w-5 text-amber-600 dark:text-amber-200 mt-0.5" />
-            <p className="text-sm text-amber-800 dark:text-amber-200">
-              <strong>Disclaimer:</strong> This directory is for informational purposes only. 
-              We do not endorse any specific lawyer or guarantee their services. 
-              Please verify credentials and consult multiple lawyers before making decisions.
-            </p>
-          </div>
-        </CardContent>
-      </Card>
     </div>
   );
 };
