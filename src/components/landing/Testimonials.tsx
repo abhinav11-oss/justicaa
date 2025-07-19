@@ -1,5 +1,4 @@
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Star, Quote } from "lucide-react";
 import { motion } from "framer-motion";
 
@@ -26,16 +25,16 @@ export const Testimonials = () => {
   ];
 
   return (
-    <section className="py-20 bg-card border-y">
-      <div className="container mx-auto px-4">
+    <section className="py-20 bg-gray-900 text-white">
+      <div className="container mx-auto px-4 testimonial-glass-container">
         <div className="text-center mb-16">
-          <Badge variant="outline" className="mb-4">
+          <Badge variant="outline" className="mb-4 border-gray-500 text-gray-300">
             What Our Clients Say
           </Badge>
-          <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
+          <h2 className="text-4xl md:text-5xl font-bold mb-4">
             Trusted by Professionals and Individuals
           </h2>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+          <p className="text-xl text-gray-300 max-w-3xl mx-auto">
             Real stories from people who found clarity and solutions with
             Justicaa.
           </p>
@@ -50,24 +49,23 @@ export const Testimonials = () => {
               transition={{ duration: 0.5, delay: index * 0.1 }}
               viewport={{ once: true }}
             >
-              <Card className="h-full bg-background border flex flex-col card-glow">
-                <CardHeader>
-                  <div className="flex items-center text-primary">
+              <div className="testimonial-glass-box h-full">
+                <span className="title">
+                  <Quote className="h-8 w-8 opacity-50" />
+                </span>
+                <div>
+                  <div className="flex items-center text-yellow-400 mb-4">
                     {[...Array(5)].map((_, i) => (
                       <Star key={i} className="h-5 w-5 fill-current" />
                     ))}
                   </div>
-                </CardHeader>
-                <CardContent className="flex-grow flex flex-col justify-between">
-                  <blockquote className="text-lg text-foreground mb-4">
-                    "{testimonial.quote}"
-                  </blockquote>
+                  <p className="mb-4 flex-grow">{testimonial.quote}</p>
                   <div>
-                    <p className="font-semibold">{testimonial.name}</p>
-                    <p className="text-sm text-muted-foreground">{testimonial.title}</p>
+                    <strong>{testimonial.name}</strong>
+                    <span>{testimonial.title}</span>
                   </div>
-                </CardContent>
-              </Card>
+                </div>
+              </div>
             </motion.div>
           ))}
         </div>
