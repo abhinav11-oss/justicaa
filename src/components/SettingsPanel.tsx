@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
 import {
   Select,
   SelectContent,
@@ -19,6 +19,7 @@ import { MapPin, User, Save, Upload, LogOut } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 export const SettingsPanel = () => {
+  const { t } = useTranslation();
   const { user, signOut } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -32,7 +33,6 @@ export const SettingsPanel = () => {
   const [unsavedChanges, setUnsavedChanges] = useState(false);
 
   useEffect(() => {
-    // Load user profile
     if (user) {
       setProfile((prev) => ({
         ...prev,
@@ -49,8 +49,8 @@ export const SettingsPanel = () => {
 
   const handleSaveProfile = () => {
     toast({
-      title: "Profile Saved",
-      description: "Your profile has been updated successfully",
+      title: t('settings.profileSaved'),
+      description: t('settings.profileUpdated'),
     });
     setUnsavedChanges(false);
   };
@@ -69,14 +69,14 @@ export const SettingsPanel = () => {
       localStorage.removeItem("trialMode");
       localStorage.removeItem("trialMessagesUsed");
       toast({
-        title: "Signed Out",
-        description: "You have been successfully signed out.",
+        title: t('settings.signedOut'),
+        description: t('settings.signedOutDesc'),
       });
       navigate("/");
     } catch (error) {
       console.error("Logout error:", error);
       toast({
-        title: "Logout Error",
+        title: t('common.error'),
         description: "There was an issue signing out. Please try again.",
         variant: "destructive",
       });
@@ -84,38 +84,21 @@ export const SettingsPanel = () => {
   };
 
   const cities = [
-    "Gwalior",
-    "Delhi",
-    "Mumbai",
-    "Kolkata",
-    "Chennai",
-    "Bangalore",
-    "Hyderabad",
-    "Pune",
-    "Ahmedabad",
-    "Surat",
-    "Jaipur",
-    "Lucknow",
-    "Kanpur",
-    "Nagpur",
-    "Indore",
-    "Bhopal",
-    "Visakhapatnam",
-    "Patna",
+    "Gwalior", "Delhi", "Mumbai", "Kolkata", "Chennai", "Bangalore",
+    "Hyderabad", "Pune", "Ahmedabad", "Surat", "Jaipur", "Lucknow",
+    "Kanpur", "Nagpur", "Indore", "Bhopal", "Visakhapatnam", "Patna",
   ];
 
   return (
     <div className="space-y-6">
-      {/* Profile Settings */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center">
             <User className="h-5 w-5 mr-2" />
-            Profile Settings
+            {t('settings.profile')}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          {/* Avatar Section */}
           <div className="flex items-center space-x-4">
             <Avatar className="h-16 w-16">
               <AvatarImage src={profile.avatar} />
@@ -125,16 +108,15 @@ export const SettingsPanel = () => {
             </Avatar>
             <Button variant="outline" onClick={handleAvatarUpload}>
               <Upload className="h-4 w-4 mr-2" />
-              Upload Avatar
+              {t('settings.avatar')}
             </Button>
           </div>
 
           <Separator />
 
-          {/* Profile Fields */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <Label htmlFor="name">Full Name</Label>
+              <Label htmlFor="name">{t('settings.fullName')}</Label>
               <Input
                 id="name"
                 value={profile.name}
@@ -144,7 +126,7 @@ export const SettingsPanel = () => {
             </div>
 
             <div>
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email">{t('settings.email')}</Label>
               <Input
                 id="email"
                 type="email"
@@ -154,12 +136,12 @@ export const SettingsPanel = () => {
                 disabled
               />
               <p className="text-xs text-slate-500 mt-1">
-                Email cannot be changed
+                {t('settings.emailCannotChange')}
               </p>
             </div>
 
             <div>
-              <Label htmlFor="phone">Phone Number</Label>
+              <Label htmlFor="phone">{t('settings.phone')}</Label>
               <Input
                 id="phone"
                 value={profile.phone}
@@ -169,7 +151,7 @@ export const SettingsPanel = () => {
             </div>
 
             <div>
-              <Label htmlFor="location">Location</Label>
+              <Label htmlFor="location">{t('settings.location')}</Label>
               <Select
                 value={profile.location}
                 onValueChange={(value) =>
@@ -197,38 +179,36 @@ export const SettingsPanel = () => {
             <div className="flex justify-end pt-4">
               <Button onClick={handleSaveProfile}>
                 <Save className="h-4 w-4 mr-2" />
-                Save Changes
+                {t('settings.save')}
               </Button>
             </div>
           )}
         </CardContent>
       </Card>
 
-      {/* Account Settings */}
       <Card>
         <CardHeader>
-          <CardTitle>Account Settings</CardTitle>
+          <CardTitle>{t('settings.account')}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div>
-            <Label>Authentication Method</Label>
+            <Label>{t('settings.authMethod')}</Label>
             <p className="text-sm text-slate-600 dark:text-slate-400">
               {user?.app_metadata?.provider === "google"
-                ? "Google Account"
-                : "Email & Password"}
+                ? t('settings.googleAccount')
+                : t('settings.emailPassword')}
             </p>
           </div>
 
           <Separator />
 
           <div className="space-y-2">
-            <Label>Data & Privacy</Label>
+            <Label>{t('settings.dataPrivacy')}</Label>
             <p className="text-sm text-slate-600 dark:text-slate-400">
-              Your data is securely stored and never shared with third parties.
+              {t('settings.dataPrivacyDesc')}
             </p>
           </div>
 
-          {/* Sign Out Button */}
           <div className="pt-4">
             <Button 
               variant="destructive" 
@@ -236,7 +216,7 @@ export const SettingsPanel = () => {
               className="w-full"
             >
               <LogOut className="h-4 w-4 mr-2" />
-              Sign Out
+              {t('settings.signOut')}
             </Button>
           </div>
         </CardContent>

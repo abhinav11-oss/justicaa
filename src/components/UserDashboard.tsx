@@ -1,10 +1,9 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
-  CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -24,7 +23,6 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import {
   Table,
@@ -35,18 +33,12 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import {
-  MessageSquare,
-  FileText,
-  Calendar,
-  Plus,
   MoreVertical,
   Archive,
   Trash2,
   Download,
   Eye,
   Briefcase,
-  Clock,
-  Sparkles,
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
@@ -84,6 +76,7 @@ interface LegalMatter {
 }
 
 export function UserDashboard() {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const { toast } = useToast();
   const [conversations, setConversations] = useState<Conversation[]>([]);
@@ -139,7 +132,7 @@ export function UserDashboard() {
     } catch (error) {
       console.error("Error fetching user data:", error);
       toast({
-        title: "Error",
+        title: t('common.error'),
         description: "Failed to load your data. Please try again.",
         variant: "destructive",
       });
@@ -155,7 +148,7 @@ export function UserDashboard() {
         .insert([
           {
             user_id: user?.id,
-            title: "New Legal Consultation",
+            title: t('dashboard.newConversation'),
             legal_category: "general",
             status: "active",
           },
@@ -166,15 +159,15 @@ export function UserDashboard() {
       if (error) throw error;
 
       toast({
-        title: "New Conversation",
-        description: "Started a new legal consultation.",
+        title: t('dashboard.newConversation'),
+        description: t('dashboard.newConversationToast'),
       });
 
       fetchUserData();
     } catch (error) {
       console.error("Error creating conversation:", error);
       toast({
-        title: "Error",
+        title: t('common.error'),
         description: "Failed to create new conversation.",
         variant: "destructive",
       });
@@ -188,13 +181,13 @@ export function UserDashboard() {
         .update({ status: "archived" })
         .eq("id", conversationId);
       toast({
-        title: "Conversation Archived",
-        description: "The conversation has been moved to archives.",
+        title: t('dashboard.archive'),
+        description: t('dashboard.archivedToast'),
       });
       fetchUserData();
     } catch (error) {
       toast({
-        title: "Error",
+        title: t('common.error'),
         description: "Failed to archive conversation.",
         variant: "destructive",
       });
@@ -208,13 +201,13 @@ export function UserDashboard() {
         .delete()
         .eq("id", conversationId);
       toast({
-        title: "Conversation Deleted",
-        description: "The conversation has been permanently deleted.",
+        title: t('dashboard.delete'),
+        description: t('dashboard.deletedToast'),
       });
       fetchUserData();
     } catch (error) {
       toast({
-        title: "Error",
+        title: t('common.error'),
         description: "Failed to delete conversation.",
         variant: "destructive",
       });
@@ -228,13 +221,13 @@ export function UserDashboard() {
         .update({ status: "active" })
         .eq("id", conversationId);
       toast({
-        title: "Conversation Restored",
-        description: "The conversation has been restored to active chats.",
+        title: t('dashboard.restore'),
+        description: t('dashboard.restoredToast'),
       });
       fetchUserData();
     } catch (error) {
       toast({
-        title: "Error",
+        title: t('common.error'),
         description: "Failed to restore conversation.",
         variant: "destructive",
       });
@@ -269,34 +262,34 @@ export function UserDashboard() {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <DropdownMenuItem onClick={() => handleConversationClick(conversation.id)}>
-          <Eye className="h-4 w-4 mr-2" /> View Details
+          <Eye className="h-4 w-4 mr-2" /> {t('dashboard.viewDetails')}
         </DropdownMenuItem>
         {!isArchived ? (
           <DropdownMenuItem onClick={() => archiveConversation(conversation.id)}>
-            <Archive className="h-4 w-4 mr-2" /> Archive
+            <Archive className="h-4 w-4 mr-2" /> {t('dashboard.archive')}
           </DropdownMenuItem>
         ) : (
           <DropdownMenuItem onClick={() => restoreConversation(conversation.id)}>
-            <Archive className="h-4 w-4 mr-2" /> Restore
+            <Archive className="h-4 w-4 mr-2" /> {t('dashboard.restore')}
           </DropdownMenuItem>
         )}
         <AlertDialog>
           <AlertDialogTrigger asChild>
             <DropdownMenuItem onSelect={(e) => e.preventDefault()} className="text-red-500">
-              <Trash2 className="h-4 w-4 mr-2" /> Delete
+              <Trash2 className="h-4 w-4 mr-2" /> {t('dashboard.delete')}
             </DropdownMenuItem>
           </AlertDialogTrigger>
           <AlertDialogContent>
             <AlertDialogHeader>
-              <AlertDialogTitle>Delete Conversation</AlertDialogTitle>
+              <AlertDialogTitle>{t('dashboard.delete')} {t('dashboard.conversations')}</AlertDialogTitle>
               <AlertDialogDescription>
-                Are you sure? This action cannot be undone.
+                {t('dashboard.areYouSure')} {t('dashboard.noUndo')}
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogCancel>{t('common.cancel')}</AlertDialogCancel>
               <AlertDialogAction onClick={() => deleteConversation(conversation.id)}>
-                Delete
+                {t('dashboard.delete')}
               </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
@@ -309,7 +302,7 @@ export function UserDashboard() {
     return (
       <div className="flex flex-col items-center justify-center py-12 gap-8">
         <TypewriterLoader />
-        <p className="text-muted-foreground">Loading your data...</p>
+        <p className="text-muted-foreground">{t('common.loading')}</p>
       </div>
     );
   }
@@ -341,10 +334,10 @@ export function UserDashboard() {
         <CardHeader>
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <TabsList className="grid w-full grid-cols-4">
-              <TabsTrigger value="conversations">Conversations</TabsTrigger>
-              <TabsTrigger value="archived">Archived</TabsTrigger>
-              <TabsTrigger value="documents">Documents</TabsTrigger>
-              <TabsTrigger value="matters">Matters</TabsTrigger>
+              <TabsTrigger value="conversations">{t('dashboard.conversations')}</TabsTrigger>
+              <TabsTrigger value="archived">{t('dashboard.archived')}</TabsTrigger>
+              <TabsTrigger value="documents">{t('dashboard.documentsTab')}</TabsTrigger>
+              <TabsTrigger value="matters">{t('dashboard.mattersTab')}</TabsTrigger>
             </TabsList>
           </Tabs>
         </CardHeader>
@@ -354,11 +347,11 @@ export function UserDashboard() {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Title</TableHead>
-                    <TableHead>Category</TableHead>
-                    <TableHead>Date</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
+                    <TableHead>{t('dashboard.table.title')}</TableHead>
+                    <TableHead>{t('dashboard.table.category')}</TableHead>
+                    <TableHead>{t('dashboard.table.date')}</TableHead>
+                    <TableHead>{t('dashboard.table.status')}</TableHead>
+                    <TableHead className="text-right">{t('dashboard.table.actions')}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -380,11 +373,11 @@ export function UserDashboard() {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Title</TableHead>
-                    <TableHead>Category</TableHead>
-                    <TableHead>Date</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
+                    <TableHead>{t('dashboard.table.title')}</TableHead>
+                    <TableHead>{t('dashboard.table.category')}</TableHead>
+                    <TableHead>{t('dashboard.table.date')}</TableHead>
+                    <TableHead>{t('dashboard.table.status')}</TableHead>
+                    <TableHead className="text-right">{t('dashboard.table.actions')}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -406,11 +399,11 @@ export function UserDashboard() {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Title</TableHead>
-                    <TableHead>Type</TableHead>
-                    <TableHead>Date</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
+                    <TableHead>{t('dashboard.table.title')}</TableHead>
+                    <TableHead>{t('dashboard.table.type')}</TableHead>
+                    <TableHead>{t('dashboard.table.date')}</TableHead>
+                    <TableHead>{t('dashboard.table.status')}</TableHead>
+                    <TableHead className="text-right">{t('dashboard.table.actions')}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -433,7 +426,7 @@ export function UserDashboard() {
             <TabsContent value="matters">
               <div className="text-center py-12 text-muted-foreground">
                 <Briefcase className="h-12 w-12 mx-auto mb-4" />
-                <p>Legal matters tracking is coming soon.</p>
+                <p>{t('dashboard.mattersComingSoon')}</p>
               </div>
             </TabsContent>
           </Tabs>

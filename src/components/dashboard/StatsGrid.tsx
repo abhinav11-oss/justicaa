@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   MessageSquare,
@@ -16,25 +17,28 @@ interface StatCardProps {
   color: string;
 }
 
-const StatCard = ({ title, value, icon: Icon, trend, color }: StatCardProps) => (
-  <Card className="hover:shadow-md transition-shadow">
-    <CardContent className="p-4">
-      <div className="flex items-center justify-between">
-        <div className="space-y-1">
-          <p className="text-sm font-medium text-muted-foreground">{title}</p>
-          <p className="text-2xl font-bold">{value}</p>
-          <div className="flex items-center text-xs text-green-500">
-            <TrendingUp className="h-3 w-3 mr-1" />
-            {trend} vs last month
+const StatCard = ({ title, value, icon: Icon, trend, color }: StatCardProps) => {
+  const { t } = useTranslation();
+  return (
+    <Card className="hover:shadow-md transition-shadow">
+      <CardContent className="p-4">
+        <div className="flex items-center justify-between">
+          <div className="space-y-1">
+            <p className="text-sm font-medium text-muted-foreground">{title}</p>
+            <p className="text-2xl font-bold">{value}</p>
+            <div className="flex items-center text-xs text-green-500">
+              <TrendingUp className="h-3 w-3 mr-1" />
+              {trend} {t('dashboard.vsLastMonth')}
+            </div>
+          </div>
+          <div className={`p-3 rounded-lg ${color}`}>
+            <Icon className="h-6 w-6 text-white" />
           </div>
         </div>
-        <div className={`p-3 rounded-lg ${color}`}>
-          <Icon className="h-6 w-6 text-white" />
-        </div>
-      </div>
-    </CardContent>
-  </Card>
-);
+      </CardContent>
+    </Card>
+  );
+};
 
 interface StatsGridProps {
   conversationsCount: number;
@@ -49,30 +53,31 @@ export const StatsGrid = ({
   documentsCount,
   mattersCount,
 }: StatsGridProps) => {
+  const { t } = useTranslation();
   const stats = [
     {
-      title: "Active Conversations",
+      title: t('dashboard.activeConversations'),
       value: conversationsCount,
       icon: MessageSquare,
       trend: "+12%",
       color: "bg-primary",
     },
     {
-      title: "Archived Chats",
+      title: t('dashboard.archivedChats'),
       value: archivedCount,
       icon: Archive,
       trend: "+8%",
       color: "bg-purple-500",
     },
     {
-      title: "Documents Generated",
+      title: t('dashboard.documentsGenerated'),
       value: documentsCount,
       icon: FileText,
       trend: "+25%",
       color: "bg-green-500",
     },
     {
-      title: "Active Matters",
+      title: t('dashboard.activeMatters'),
       value: mattersCount,
       icon: Briefcase,
       trend: "+5%",

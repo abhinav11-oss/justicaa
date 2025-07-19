@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Sparkles, Zap, ArrowUpRight } from "lucide-react";
@@ -9,6 +10,8 @@ interface WelcomeHeaderProps {
 }
 
 export const WelcomeHeader = ({ name, onNewConversation }: WelcomeHeaderProps) => {
+  const { t } = useTranslation();
+
   return (
     <motion.div
       initial={{ opacity: 0, y: -20 }}
@@ -22,15 +25,14 @@ export const WelcomeHeader = ({ name, onNewConversation }: WelcomeHeaderProps) =
               <div className="flex items-center gap-2">
                 <Sparkles className="h-5 w-5 text-primary" />
                 <span className="text-sm font-medium text-primary">
-                  Welcome back
+                  {t('dashboard.welcomeBack')}
                 </span>
               </div>
               <h1 className="text-2xl md:text-3xl font-bold text-foreground">
-                Hello, {name}! 👋
+                {t('dashboard.hello', { name })}
               </h1>
               <p className="text-muted-foreground max-w-md">
-                Ready to tackle your legal matters? Your AI assistant is here
-                to help.
+                {t('dashboard.greeting')}
               </p>
             </div>
             <Button
@@ -39,7 +41,7 @@ export const WelcomeHeader = ({ name, onNewConversation }: WelcomeHeaderProps) =
               size="lg"
             >
               <Zap className="h-5 w-5 mr-2" />
-              Start New Consultation
+              {t('dashboard.newConsultation')}
               <ArrowUpRight className="h-4 w-4 ml-2" />
             </Button>
           </div>

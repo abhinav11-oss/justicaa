@@ -5,12 +5,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Send, Bot, User, Loader2, Copy, Lock, Volume2, Paperclip, Sparkles } from "lucide-react";
+import { Send, Bot, User, Loader2, Copy, Lock, Volume2, Paperclip, Sparkles, Mic } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { QuickQuestions } from "@/components/QuickQuestions";
-import { useSpeakText } from "@/components/VoiceChat";
+import { VoiceChat, useSpeakText } from "@/components/VoiceChat";
 import { Switch } from "@/components/ui/switch";
 
 interface Message {
@@ -33,6 +33,7 @@ export const ChatInterface = ({ conversationId: propConversationId }: ChatInterf
   const [trialMessagesUsed, setTrialMessagesUsed] = useState(0);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [showPrompts, setShowPrompts] = useState(true);
+  const [isListening, setIsListening] = useState(false);
   const { user } = useAuth();
   const { toast } = useToast();
   const { speakText, isSpeaking } = useSpeakText();
@@ -90,7 +91,7 @@ export const ChatInterface = ({ conversationId: propConversationId }: ChatInterf
       setMessages(loadedMessages);
     } catch (error) {
       toast({
-        title: "Error loading chat",
+        title: t('common.error'),
         description: "Could not fetch previous messages.",
         variant: "destructive",
       });
@@ -102,6 +103,11 @@ export const ChatInterface = ({ conversationId: propConversationId }: ChatInterf
   const handleQuestionClick = (question: string) => {
     setInputValue(question);
     handleSendMessage(question);
+  };
+
+  const handleTranscript = (transcript: string) => {
+    setInputValue(transcript);
+    handleSendMessage(transcript);
   };
 
   const handleAuthAction = () => {
@@ -233,10 +239,10 @@ export const ChatInterface = ({ conversationId: propConversationId }: ChatInterf
     <div className="flex flex-col items-center justify-center h-full text-center p-8">
       <div className="bg-card p-8 rounded-lg max-w-md shadow-lg">
         <h2 className="text-2xl font-bold mb-2">
-          Hello, {user?.user_metadata?.full_name || "there"}! 👋
+          {t('chat.helloUser', { name: user?.user_metadata?.full_name || "there" })}
         </h2>
         <p className="text-muted-foreground">
-          Select a prompt, choose a past conversation, or write your own question below.
+          {t('chat.welcome')}
         </p>
       </div>
     </div>
@@ -304,6 +310,11 @@ export const ChatInterface = ({ conversationId: propConversationId }: ChatInterf
             </div>
             <div className="flex items-center justify-between mt-2">
               <div className="flex items-center gap-4">
+                <VoiceChat
+                  onTranscript={handleTranscript}
+                  isListening={isListening}
+                  onListeningChange={setIsListening}
+                />
                 <div className="flex items-center gap-2">
                   <Switch id="internet-mode" onCheckedChange={(checked) => toast({ title: `Internet access ${checked ? 'enabled' : 'disabled'}. This is a demo feature.`})} />
                   <Label htmlFor="internet-mode" className="text-sm text-muted-foreground">Internet</Label>
@@ -337,7 +348,7 @@ export const ChatInterface = ({ conversationId: propConversationId }: ChatInterf
             </ul>
           </div>
           <div className="flex justify-end gap-3">
-            <Button variant="outline" onClick={() => setShowAuthModal(false)}>{t('auth.cancel')}</Button>
+            <Button variant="outline" onClick={() => setShowAuthModal(false)}>{t('common.cancel')}</Button>
             <Button className="gradient-primary text-white border-0" onClick={handleAuthAction}>{t('auth.signUp')}</Button>
           </div>
         </DialogContent>
