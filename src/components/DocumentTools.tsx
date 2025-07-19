@@ -7,23 +7,8 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { FileCheck, GitCompareArrows, FilePlus, Languages, FileImage, ArrowLeft, Upload, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
-import { supabase } from "@/integrations/supabase/client";
 
 type Tool = 'summary' | 'compare' | 'create' | 'translate' | 'ocr';
-
-// Helper function to read file as base64
-const readFileAsBase64 = (file: File): Promise<{ content: string, mimeType: string }> => {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => {
-      const result = reader.result as string;
-      const content = result.split(',')[1];
-      resolve({ content, mimeType: file.type });
-    };
-    reader.onerror = reject;
-    reader.readAsDataURL(file);
-  });
-};
 
 const ToolButton = ({ icon: Icon, title, description, pro, onClick }: { icon: React.ElementType, title: string, description: string, pro?: boolean, onClick: () => void }) => (
   <Card className="cursor-pointer hover:shadow-lg hover:border-primary/20 transition-all duration-300" onClick={onClick}>
@@ -71,31 +56,18 @@ const AgreementSummaryTool = ({ onBack }: { onBack: () => void }) => {
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
 
-  const handleSummarize = async () => {
+  const handleSummarize = () => {
     if (!file) {
       toast({ title: "No file selected", variant: "destructive" });
       return;
     }
     setLoading(true);
     setSummary("");
-    try {
-      const { content, mimeType } = await readFileAsBase64(file);
-      const { data, error } = await supabase.functions.invoke('document-processor', {
-        body: {
-          tool: 'summary',
-          file1: { content, mimeType, name: file.name },
-        }
-      });
-
-      if (error) throw error;
-      setSummary(data.result);
-      toast({ title: "Summary Generated!" });
-    } catch (err: any) {
-      console.error(err);
-      toast({ title: "Error summarizing document", description: err.message, variant: "destructive" });
-    } finally {
+    setTimeout(() => {
+      setSummary("This is a placeholder summary of your document. Key points include the parties involved, the main obligations, and the term of the agreement. The AI has identified several important clauses regarding confidentiality and liability.");
       setLoading(false);
-    }
+      toast({ title: "Summary Generated!" });
+    }, 2000);
   };
 
   return (
@@ -123,33 +95,18 @@ const CompareAgreementsTool = ({ onBack }: { onBack: () => void }) => {
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
 
-  const handleCompare = async () => {
+  const handleCompare = () => {
     if (!file1 || !file2) {
       toast({ title: "Please select two files", variant: "destructive" });
       return;
     }
     setLoading(true);
     setComparison("");
-    try {
-      const fileData1 = await readFileAsBase64(file1);
-      const fileData2 = await readFileAsBase64(file2);
-      const { data, error } = await supabase.functions.invoke('document-processor', {
-        body: {
-          tool: 'compare',
-          file1: { content: fileData1.content, mimeType: fileData1.mimeType, name: file1.name },
-          file2: { content: fileData2.content, mimeType: fileData2.mimeType, name: file2.name },
-        }
-      });
-
-      if (error) throw error;
-      setComparison(data.result);
-      toast({ title: "Comparison Complete!" });
-    } catch (err: any) {
-      console.error(err);
-      toast({ title: "Error comparing documents", description: err.message, variant: "destructive" });
-    } finally {
+    setTimeout(() => {
+      setComparison("Placeholder comparison result:\n- Clause 3.1 (Payment Terms): Differs in payment schedule.\n- Clause 5 (Term): Document 1 has a 2-year term, Document 2 has a 3-year term.\n- Added Clause 8.4 (Data Privacy) in Document 2.");
       setLoading(false);
-    }
+      toast({ title: "Comparison Complete!" });
+    }, 2000);
   };
 
   return (
@@ -180,32 +137,18 @@ const DocumentTranslationTool = ({ onBack }: { onBack: () => void }) => {
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
 
-  const handleTranslate = async () => {
+  const handleTranslate = () => {
     if (!file) {
       toast({ title: "No file selected", variant: "destructive" });
       return;
     }
     setLoading(true);
     setTranslation("");
-    try {
-      const { content, mimeType } = await readFileAsBase64(file);
-      const { data, error } = await supabase.functions.invoke('document-processor', {
-        body: {
-          tool: 'translate',
-          file1: { content, mimeType, name: file.name },
-          language: language,
-        }
-      });
-
-      if (error) throw error;
-      setTranslation(data.result);
-      toast({ title: "Translation Complete!" });
-    } catch (err: any) {
-      console.error(err);
-      toast({ title: "Error translating document", description: err.message, variant: "destructive" });
-    } finally {
+    setTimeout(() => {
+      setTranslation("यह आपके दस्तावेज़ का एक प्लेसहोल्डर अनुवाद है। (This is a placeholder translation of your document.)");
       setLoading(false);
-    }
+      toast({ title: "Translation Complete!" });
+    }, 2000);
   };
 
   return (
@@ -240,31 +183,18 @@ const ImageToTextTool = ({ onBack }: { onBack: () => void }) => {
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
 
-  const handleExtract = async () => {
+  const handleExtract = () => {
     if (!file) {
       toast({ title: "No image selected", variant: "destructive" });
       return;
     }
     setLoading(true);
     setText("");
-    try {
-      const { content, mimeType } = await readFileAsBase64(file);
-      const { data, error } = await supabase.functions.invoke('document-processor', {
-        body: {
-          tool: 'ocr',
-          file1: { content, mimeType, name: file.name },
-        }
-      });
-
-      if (error) throw error;
-      setText(data.result);
-      toast({ title: "Text Extracted!" });
-    } catch (err: any) {
-      console.error(err);
-      toast({ title: "Error extracting text", description: err.message, variant: "destructive" });
-    } finally {
+    setTimeout(() => {
+      setText("This is placeholder text extracted from your image. The OCR process has identified key headings and paragraphs.");
       setLoading(false);
-    }
+      toast({ title: "Text Extracted!" });
+    }, 2000);
   };
 
   return (
