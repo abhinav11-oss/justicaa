@@ -1,10 +1,9 @@
-
 import React from "react";
 import { ChatInterface } from "@/components/ChatInterface";
 import { LegalGuides } from "@/components/LegalGuides";
 import { KnowledgeBase } from "@/components/KnowledgeBase";
 import { DocumentTemplates } from "@/components/DocumentTemplates";
-import { DocumentGenerator } from "@/components/DocumentGenerator";
+import { DocumentTools } from "@/components/DocumentTools";
 import { LawyerFinder } from "@/components/LawyerFinder";
 import { UserDashboard } from "@/components/UserDashboard";
 import { SettingsPanel } from "@/components/SettingsPanel";
@@ -33,7 +32,7 @@ export const DashboardMainContent: React.FC<MainContentProps> = ({
     case "lawyers":
       return <LawyerFinder category="all" />;
     case "generator":
-      return <DocumentGenerator category="all" />;
+      return <DocumentTools category="all" />;
     case "templates":
       return <DocumentTemplates />;
     case "guides":
