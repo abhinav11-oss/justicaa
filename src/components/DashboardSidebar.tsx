@@ -77,8 +77,8 @@ export const DashboardSidebar: React.FC<SidebarProps> = ({
     <div className="flex flex-col h-full">
       <div className={cn("flex items-center mb-10 px-4", isExpanded || isMobile ? "justify-between" : "justify-center")}>
         <div className="flex items-center gap-2">
-          <div className="bg-primary text-primary-foreground p-2 rounded-md flex-shrink-0">
-            <Scale className="h-6 w-6" />
+          <div className="gradient-primary p-2 rounded-md flex-shrink-0">
+            <Scale className="h-6 w-6 text-primary-foreground" />
           </div>
           {(isExpanded || isMobile) && <span className="font-bold text-lg">Justicaa</span>}
         </div>
@@ -101,7 +101,8 @@ export const DashboardSidebar: React.FC<SidebarProps> = ({
                 }}
                 className={cn(
                   "w-full h-12",
-                  isExpanded || isMobile ? "justify-start gap-3" : "justify-center"
+                  isExpanded || isMobile ? "justify-start gap-3" : "justify-center",
+                  activeTab === item.id && "gradient-primary"
                 )}
               >
                 <item.icon className="h-5 w-5 flex-shrink-0" />
