@@ -39,6 +39,7 @@ import {
   Eye,
   TrendingUp,
   Clock,
+  Users,
   Briefcase,
   ArrowUpRight,
   Sparkles,
@@ -91,22 +92,30 @@ export function UserDashboard() {
   >(null);
   const [activeTab, setActiveTab] = useState("conversations");
 
+  // Animation variants (simplified)
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.08,
+        staggerChildren: 0.08, // Reduced stagger
       },
     },
   };
 
   const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
+    hidden: { opacity: 0, y: 20 }, // Reduced y translation
     visible: {
       opacity: 1,
       y: 0,
-      transition: { duration: 0.4, ease: "easeOut" },
+      transition: { duration: 0.4, ease: "easeOut" }, // Reduced duration
+    },
+  };
+
+  const cardHoverVariants = {
+    hover: {
+      scale: 1.01, // Reduced scale
+      transition: { duration: 0.15 }, // Reduced duration
     },
   };
 
@@ -118,6 +127,7 @@ export function UserDashboard() {
 
   const fetchUserData = async () => {
     try {
+      // Fetch active conversations
       const { data: conversationsData } = await supabase
         .from("chat_conversations")
         .select("*")
@@ -125,6 +135,7 @@ export function UserDashboard() {
         .order("created_at", { ascending: false })
         .limit(10);
 
+      // Fetch archived conversations
       const { data: archivedData } = await supabase
         .from("chat_conversations")
         .select("*")
@@ -132,12 +143,14 @@ export function UserDashboard() {
         .order("created_at", { ascending: false })
         .limit(10);
 
+      // Fetch documents
       const { data: documentsData } = await supabase
         .from("legal_documents")
         .select("*")
         .order("created_at", { ascending: false })
         .limit(10);
 
+      // Fetch legal matters
       const { data: mattersData } = await supabase
         .from("legal_matters")
         .select("*")
@@ -277,6 +290,7 @@ export function UserDashboard() {
       if (typeof doc.content === "string") {
         content = doc.content;
       } else if (typeof doc.content === "object" && doc.content !== null) {
+        // Check if it's HTML content
         if (doc.content.html) {
           content = doc.content.html;
           fileName = `${doc.title.replace(/[^a-z0-9]/gi, "_").toLowerCase()}.html`;
@@ -292,6 +306,7 @@ export function UserDashboard() {
         mimeType = "text/plain";
       }
 
+      // Create and download the file
       const blob = new Blob([content], { type: mimeType });
       const url = URL.createObjectURL(blob);
       const link = window.document.createElement("a");
@@ -428,6 +443,7 @@ export function UserDashboard() {
     );
   }
 
+  // Show conversation detail if selected
   if (selectedConversationId) {
     return (
       <div className="space-y-6">
@@ -446,34 +462,115 @@ export function UserDashboard() {
       initial="hidden"
       animate="visible"
     >
+      {/* Welcome Section with Enhanced Gradients and Animations (simplified) */}
       <motion.div variants={itemVariants}>
-        <Card className="relative overflow-hidden bg-card">
+        <Card className="relative overflow-hidden">
+          {/* Multiple Background Layers */}
+          <div className="absolute inset-0">
+            <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-primary/10 to-primary/5"></div>
+            <div className="absolute inset-0 bg-gradient-to-tl from-transparent via-primary/3 to-transparent"></div>
+            <img
+              src="https://images.pexels.com/photos/6077797/pexels-photo-6077797.jpeg"
+              alt="Professional legal workspace"
+              className="w-full h-full object-cover opacity-5"
+            />
+          </div>
+
+          {/* Animated Gradient Orbs (simplified) */}
+          <motion.div
+            className="absolute top-0 right-0 w-48 h-48 bg-gradient-to-br from-primary/20 to-transparent rounded-full blur-2xl" // Reduced size and blur
+            animate={{
+              scale: [1, 1.1, 1], // Reduced scale
+              opacity: [0.2, 0.4, 0.2], // Reduced opacity range
+            }}
+            transition={{
+              duration: 3, // Reduced duration
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+          />
+          <motion.div
+            className="absolute bottom-0 left-0 w-32 h-32 bg-gradient-to-tr from-primary/15 to-transparent rounded-full blur-xl" // Reduced size and blur
+            animate={{
+              scale: [1, 1.2, 1], // Reduced scale
+              opacity: [0.1, 0.3, 0.1], // Reduced opacity range
+            }}
+            transition={{
+              duration: 4, // Reduced duration
+              repeat: Infinity,
+              ease: "easeInOut",
+              delay: 0.5, // Reduced delay
+            }}
+          />
+
           <CardContent className="relative p-8 z-10">
             <div className="flex items-center justify-between">
               <div className="space-y-4">
-                <h1 className="text-3xl font-bold text-foreground">
+                <motion.div
+                  className="flex items-center gap-2"
+                  initial={{ x: -10, opacity: 0 }} // Reduced x translation
+                  animate={{ x: 0, opacity: 1 }}
+                  transition={{ delay: 0.1 }} // Reduced delay
+                >
+                  <motion.div
+                    animate={{ rotate: 360 }}
+                    transition={{
+                      duration: 2, // Reduced duration
+                      repeat: Infinity,
+                      ease: "linear",
+                    }}
+                  >
+                    <Sparkles className="h-5 w-5 text-primary" />
+                  </motion.div>
+                  <span className="text-sm font-medium text-primary">
+                    Welcome back
+                  </span>
+                </motion.div>
+                <motion.h1
+                  className="text-3xl font-bold text-foreground"
+                  initial={{ y: 10, opacity: 0 }} // Reduced y translation
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ delay: 0.2, type: "spring", bounce: 0.2 }} // Reduced delay, adjusted bounce
+                >
                   Hello,{" "}
                   {user?.user_metadata?.full_name ||
                     user?.email?.split("@")[0] ||
                     "User"}
                   ! 👋
-                </h1>
-                <p className="text-muted-foreground text-lg">
+                </motion.h1>
+                <motion.p
+                  className="text-muted-foreground text-lg"
+                  initial={{ y: 10, opacity: 0 }} // Reduced y translation
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ delay: 0.3 }} // Reduced delay
+                >
                   Ready to tackle your legal matters? Your AI assistant is here
                   to help.
-                </p>
+                </motion.p>
               </div>
               <motion.div
-                whileHover={{ scale: 1.02, y: -1 }}
-                whileTap={{ scale: 0.98 }}
+                initial={{ scale: 0.8, rotate: -90 }} // Reduced rotate
+                animate={{ scale: 1, rotate: 0 }}
+                transition={{ delay: 0.4, type: "spring", bounce: 0.2 }} // Reduced delay, adjusted bounce
+                whileHover={{ scale: 1.02, y: -1 }} // Reduced hover effect
+                whileTap={{ scale: 0.98 }} // Reduced tap effect
               >
                 <Button
                   onClick={createNewConversation}
-                  className="gradient-primary text-white shadow-lg px-6 py-3"
+                  className="gradient-primary text-white border-0 shadow-lg px-6 py-3 relative overflow-hidden"
                 >
-                  <Zap className="h-5 w-5 mr-2" />
-                  Start New Consultation
-                  <ArrowUpRight className="h-4 w-4 ml-2" />
+                  <motion.div
+                    className="absolute inset-0 bg-white/20"
+                    animate={{ x: [-50, 50] }} // Reduced x range
+                    transition={{
+                      duration: 1.5, // Reduced duration
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    }}
+                  />
+                  <Zap className="h-5 w-5 mr-2 relative z-10" />
+                  <span className="relative z-10">Start New Consultation</span>
+                  <ArrowUpRight className="h-4 w-4 ml-2 relative z-10" />
                 </Button>
               </motion.div>
             </div>
@@ -481,6 +578,7 @@ export function UserDashboard() {
         </Card>
       </motion.div>
 
+      {/* Enhanced Stats Grid with Rolling Animations (simplified) */}
       <motion.div
         variants={itemVariants}
         className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
@@ -491,79 +589,180 @@ export function UserDashboard() {
             value: conversations.length,
             icon: MessageSquare,
             trend: "+12%",
+            color: "from-primary to-primary/80",
+            bg: "bg-primary/10",
+            border: "border-primary/20",
           },
           {
             title: "Archived Chats",
             value: archivedConversations.length,
             icon: Archive,
             trend: "+8%",
+            color: "from-purple-500 to-purple-600",
+            bg: "bg-purple-500/10",
+            border: "border-purple-500/20",
           },
           {
             title: "Documents Generated",
             value: documents.length,
             icon: FileText,
             trend: "+25%",
+            color: "from-green-500 to-green-600",
+            bg: "bg-green-500/10",
+            border: "border-green-500/20",
           },
           {
             title: "Active Matters",
             value: matters.filter((m) => m.status === "active").length,
             icon: Briefcase,
             trend: "+5%",
+            color: "from-orange-500 to-orange-600",
+            bg: "bg-orange-500/10",
+            border: "border-orange-500/20",
           },
         ].map((stat, index) => (
           <motion.div
             key={index}
-            whileHover={{ scale: 1.02 }}
+            initial={{ opacity: 0, y: 20 }} // Simplified animation
+            animate={{ opacity: 1, y: 0 }}
+            transition={{
+              duration: 0.5, // Reduced duration
+              delay: 0.3 + index * 0.08, // Reduced delay
+            }}
+            whileHover={{
+              scale: 1.02, // Reduced scale
+            }}
           >
-            <Card className="bg-card relative overflow-hidden group card-glow">
+            <Card
+              className={`${stat.bg} backdrop-blur-sm relative overflow-hidden group`}
+            >
+              {/* Animated Background Gradient (simplified) */}
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-primary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+
               <CardContent className="p-6 relative z-10">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-muted-foreground">
+                    <motion.p
+                      className="text-sm font-medium text-muted-foreground"
+                      initial={{ opacity: 0, x: -5 }} // Reduced x translation
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.5 + index * 0.08 }} // Reduced delay
+                    >
                       {stat.title}
-                    </p>
+                    </motion.p>
                     <div className="flex items-center gap-2 mt-2">
-                      <p className="text-3xl font-bold text-foreground">
+                      <motion.p
+                        className="text-3xl font-bold text-foreground"
+                        initial={{ scale: 0.8, opacity: 0 }} // Simplified animation
+                        animate={{ scale: 1, opacity: 1 }}
+                        transition={{
+                          delay: 0.6 + index * 0.08, // Reduced delay
+                          type: "spring",
+                          bounce: 0.3, // Reduced bounce
+                        }}
+                      >
                         {stat.value}
-                      </p>
-                      <div className="flex items-center text-xs text-green-400">
-                        <TrendingUp className="h-3 w-3 mr-1" />
+                      </motion.p>
+                      <motion.div
+                        className="flex items-center text-xs text-green-400"
+                        initial={{ opacity: 0, y: 5 }} // Reduced y translation
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.7 + index * 0.08 }} // Reduced delay
+                      >
+                        <motion.div
+                          animate={{ y: [0, -1, 0] }} // Reduced y range
+                          transition={{
+                            duration: 1.5, // Reduced duration
+                            repeat: Infinity,
+                            delay: index * 0.2, // Reduced delay
+                          }}
+                        >
+                          <TrendingUp className="h-3 w-3 mr-1" />
+                        </motion.div>
                         {stat.trend}
-                      </div>
+                      </motion.div>
                     </div>
                   </div>
-                  <div className="bg-primary/10 p-3 rounded-lg">
-                    <stat.icon className="h-6 w-6 text-primary" />
-                  </div>
+                  <motion.div
+                    className={`bg-gradient-to-br ${stat.color} p-3 rounded-2xl shadow-lg relative overflow-hidden`}
+                    whileHover={{ scale: 1.05 }} // Reduced scale, removed rotate
+                    transition={{ duration: 0.2 }} // Reduced duration
+                  >
+                    <stat.icon className="h-6 w-6 text-white relative z-10" />
+                    <motion.div
+                      className="absolute inset-0 bg-white/20"
+                      animate={{ rotate: 360 }}
+                      transition={{
+                        duration: 3, // Reduced duration
+                        repeat: Infinity,
+                        ease: "linear",
+                        delay: index * 0.3, // Reduced delay
+                      }}
+                    />
+                  </motion.div>
                 </div>
               </CardContent>
+
+              {/* Shimmer Effect (simplified) */}
+              <motion.div
+                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent" // Reduced opacity
+                animate={{ x: [-50, 150] }} // Reduced x range
+                transition={{
+                  duration: 2, // Reduced duration
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                  delay: index * 0.4, // Reduced delay
+                }}
+              />
             </Card>
           </motion.div>
         ))}
       </motion.div>
 
+      {/* Enhanced Main Content */}
       <motion.div variants={itemVariants}>
-        <Card className="bg-card">
-          <CardHeader>
+        <Card className="bg-card/80 backdrop-blur-xl shadow-2xl">
+          <CardHeader className="pb-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle className="text-2xl">Your Legal Workspace</CardTitle>
+                <CardDescription className="text-muted-foreground">
+                  Manage conversations, documents, and legal matters in one
+                  place
+                </CardDescription>
+              </div>
+            </div>
             <Tabs
               value={activeTab}
               onValueChange={setActiveTab}
               className="w-full"
             >
-              <TabsList className="grid w-full grid-cols-4 bg-muted/50">
-                <TabsTrigger value="conversations">
+              <TabsList className="grid w-full grid-cols-4 bg-muted/50 backdrop-blur-sm">
+                <TabsTrigger
+                  value="conversations"
+                  className="data-[state=active]:bg-primary data-[state=active]:text-white"
+                >
                   <MessageSquare className="h-4 w-4 mr-2" />
                   Conversations
                 </TabsTrigger>
-                <TabsTrigger value="archived">
+                <TabsTrigger
+                  value="archived"
+                  className="data-[state=active]:bg-primary data-[state=active]:text-white"
+                >
                   <Archive className="h-4 w-4 mr-2" />
                   Archived
                 </TabsTrigger>
-                <TabsTrigger value="documents">
+                <TabsTrigger
+                  value="documents"
+                  className="data-[state=active]:bg-primary data-[state=active]:text-white"
+                >
                   <FileText className="h-4 w-4 mr-2" />
                   Documents
                 </TabsTrigger>
-                <TabsTrigger value="matters">
+                <TabsTrigger
+                  value="matters"
+                  className="data-[state=active]:bg-primary data-[state=active]:text-white"
+                >
                   <Calendar className="h-4 w-4 mr-2" />
                   Matters
                 </TabsTrigger>
@@ -577,9 +776,39 @@ export function UserDashboard() {
               onValueChange={setActiveTab}
               className="w-full"
             >
-              <TabsContent value="conversations" className="space-y-4">
+              <TabsContent value="conversations" className="space-y-6">
+                <div className="flex justify-between items-center">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                      <MessageSquare className="h-5 w-5 text-primary" />
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-semibold text-foreground">
+                        Recent Conversations
+                      </h3>
+                      <p className="text-sm text-muted-foreground">
+                        Your latest legal consultations
+                      </p>
+                    </div>
+                  </div>
+                  <Button
+                    onClick={createNewConversation}
+                    className="gradient-primary text-white border-0 shadow-md"
+                  >
+                    <Plus className="h-4 w-4 mr-2" />
+                    New Chat
+                  </Button>
+                </div>
+
                 {conversations.length === 0 ? (
                   <div className="text-center py-12">
+                    <div className="relative w-48 h-32 mx-auto mb-6 opacity-20">
+                      <img
+                        src="https://images.pexels.com/photos/416405/pexels-photo-416405.jpeg"
+                        alt="Team collaboration"
+                        className="w-full h-full object-cover rounded-xl"
+                      />
+                    </div>
                     <MessageSquare className="h-12 w-12 mx-auto mb-4 text-muted-foreground/50" />
                     <h4 className="text-lg font-medium text-foreground mb-2">
                       No conversations yet
@@ -590,7 +819,7 @@ export function UserDashboard() {
                     </p>
                     <Button
                       onClick={createNewConversation}
-                      className="gradient-primary text-white"
+                      className="gradient-primary text-white border-0"
                     >
                       <Sparkles className="h-4 w-4 mr-2" />
                       Start Your First Consultation
@@ -598,44 +827,82 @@ export function UserDashboard() {
                   </div>
                 ) : (
                   <div className="grid gap-4">
-                    {conversations.map((conversation) => (
-                      <Card key={conversation.id} className="hover:border-primary/30 transition-colors duration-300">
-                        <CardContent className="p-4">
-                          <div className="flex justify-between items-center">
-                            <div
-                              className="flex-1 cursor-pointer"
-                              onClick={() =>
-                                handleConversationClick(conversation.id)
-                              }
-                            >
-                              <h4 className="font-semibold text-foreground">
-                                {conversation.title}
-                              </h4>
-                              <p className="text-sm text-muted-foreground capitalize">
-                                {conversation.legal_category}
-                              </p>
-                            </div>
-                            <div className="flex items-center space-x-3">
-                              <Badge
-                                className={getStatusColor(
-                                  conversation.status,
-                                )}
+                    {conversations.map((conversation, index) => (
+                      <motion.div
+                        key={conversation.id}
+                        initial={{ opacity: 0, y: 10 }} // Reduced y translation
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: index * 0.05 }} // Reduced delay
+                        whileHover={{ scale: 1.005 }} // Reduced scale
+                        className="group"
+                      >
+                        <Card className="hover:border-primary/30 transition-all duration-300 bg-card/50 backdrop-blur-sm">
+                          <CardContent className="p-6">
+                            <div className="flex justify-between items-start">
+                              <div
+                                className="flex-1 cursor-pointer"
+                                onClick={() =>
+                                  handleConversationClick(conversation.id)
+                                }
                               >
-                                {conversation.status}
-                              </Badge>
-                              <ConversationActions
-                                conversation={conversation}
-                              />
+                                <div className="flex items-center gap-3 mb-3">
+                                  <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+                                    <MessageSquare className="h-5 w-5 text-primary" />
+                                  </div>
+                                  <div>
+                                    <h4 className="font-semibold text-foreground group-hover:text-primary transition-colors">
+                                      {conversation.title}
+                                    </h4>
+                                    <p className="text-sm text-muted-foreground capitalize">
+                                      {conversation.legal_category}
+                                    </p>
+                                  </div>
+                                </div>
+                                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                                  <Clock className="h-3 w-3" />
+                                  {new Date(
+                                    conversation.created_at,
+                                  ).toLocaleDateString()}
+                                </div>
+                              </div>
+                              <div className="flex items-center space-x-3">
+                                <Badge
+                                  className={getStatusColor(
+                                    conversation.status,
+                                  )}
+                                >
+                                  {conversation.status}
+                                </Badge>
+                                <ConversationActions
+                                  conversation={conversation}
+                                />
+                              </div>
                             </div>
-                          </div>
-                        </CardContent>
-                      </Card>
+                          </CardContent>
+                        </Card>
+                      </motion.div>
                     ))}
                   </div>
                 )}
               </TabsContent>
 
-              <TabsContent value="archived" className="space-y-4">
+              <TabsContent value="archived" className="space-y-6">
+                <div className="flex justify-between items-center">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                      <Archive className="h-5 w-5 text-primary" />
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-semibold text-foreground">
+                        Archived Conversations
+                      </h3>
+                      <p className="text-sm text-muted-foreground">
+                        Previously completed consultations
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
                 {archivedConversations.length === 0 ? (
                   <div className="text-center py-12">
                     <Archive className="h-12 w-12 mx-auto mb-4 text-muted-foreground/50" />
@@ -649,47 +916,96 @@ export function UserDashboard() {
                   </div>
                 ) : (
                   <div className="grid gap-4">
-                    {archivedConversations.map((conversation) => (
-                      <Card key={conversation.id} className="hover:border-primary/30 transition-colors duration-300">
-                        <CardContent className="p-4">
-                          <div className="flex justify-between items-center">
-                            <div
-                              className="flex-1 cursor-pointer"
-                              onClick={() =>
-                                handleConversationClick(conversation.id)
-                              }
-                            >
-                              <h4 className="font-semibold text-foreground">
-                                {conversation.title}
-                              </h4>
-                              <p className="text-sm text-muted-foreground capitalize">
-                                {conversation.legal_category}
-                              </p>
-                            </div>
-                            <div className="flex items-center space-x-3">
-                              <Badge
-                                className={getStatusColor(
-                                  conversation.status,
-                                )}
+                    {archivedConversations.map((conversation, index) => (
+                      <motion.div
+                        key={conversation.id}
+                        initial={{ opacity: 0, y: 10 }} // Reduced y translation
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: index * 0.05 }} // Reduced delay
+                        whileHover={{ scale: 1.005 }} // Reduced scale
+                        className="group"
+                      >
+                        <Card className="hover:border-primary/30 transition-all duration-300 bg-card/50 backdrop-blur-sm">
+                          <CardContent className="p-6">
+                            <div className="flex justify-between items-start">
+                              <div
+                                className="flex-1 cursor-pointer"
+                                onClick={() =>
+                                  handleConversationClick(conversation.id)
+                                }
                               >
-                                {conversation.status}
-                              </Badge>
-                              <ConversationActions
-                                conversation={conversation}
-                                isArchived={true}
-                              />
+                                <div className="flex items-center gap-3 mb-3">
+                                  <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
+                                    <Archive className="h-5 w-5 text-muted-foreground" />
+                                  </div>
+                                  <div>
+                                    <h4 className="font-semibold text-foreground">
+                                      {conversation.title}
+                                    </h4>
+                                    <p className="text-sm text-muted-foreground capitalize">
+                                      {conversation.legal_category}
+                                    </p>
+                                  </div>
+                                </div>
+                                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                                  <Clock className="h-3 w-3" />
+                                  {new Date(
+                                    conversation.created_at,
+                                  ).toLocaleDateString()}
+                                </div>
+                              </div>
+                              <div className="flex items-center space-x-3">
+                                <Badge
+                                  className={getStatusColor(
+                                    conversation.status,
+                                  )}
+                                >
+                                  {conversation.status}
+                                </Badge>
+                                <ConversationActions
+                                  conversation={conversation}
+                                  isArchived={true}
+                                />
+                              </div>
                             </div>
-                          </div>
-                        </CardContent>
-                      </Card>
+                          </CardContent>
+                        </Card>
+                      </motion.div>
                     ))}
                   </div>
                 )}
               </TabsContent>
 
-              <TabsContent value="documents" className="space-y-4">
+              <TabsContent value="documents" className="space-y-6">
+                <div className="flex justify-between items-center">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                      <FileText className="h-5 w-5 text-primary" />
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-semibold text-foreground">
+                        Legal Documents
+                      </h3>
+                      <p className="text-sm text-muted-foreground">
+                        Generated contracts and legal papers
+                      </p>
+                    </div>
+                  </div>
+                  <Button className="gradient-primary text-white border-0 shadow-md">
+                    <Plus className="h-4 w-4 mr-2" />
+                    New Document
+                  </Button>
+                </div>
+
                 {documents.length === 0 ? (
                   <div className="text-center py-12">
+                    <div className="relative w-48 h-32 mx-auto mb-6 opacity-20">
+                      <img
+                        src="https://images.pexels.com/photos/3760067/pexels-photo-3760067.jpeg"
+                        alt="Contract signing"
+                        className="w-full h-full object-cover rounded-xl"
+                      />
+                    </div>
                     <FileText className="h-12 w-12 mx-auto mb-4 text-muted-foreground/50" />
                     <h4 className="text-lg font-medium text-foreground mb-2">
                       No documents yet
@@ -697,49 +1013,92 @@ export function UserDashboard() {
                     <p className="text-muted-foreground mb-4">
                       Create professional legal documents with AI assistance
                     </p>
-                    <Button className="gradient-primary text-white">
+                    <Button className="gradient-primary text-white border-0">
                       <Sparkles className="h-4 w-4 mr-2" />
                       Generate Your First Document
                     </Button>
                   </div>
                 ) : (
                   <div className="grid gap-4">
-                    {documents.map((document) => (
-                      <Card key={document.id} className="hover:border-primary/30 transition-colors duration-300">
-                        <CardContent className="p-4">
-                          <div className="flex justify-between items-center">
-                            <div className="flex-1">
-                              <h4 className="font-semibold text-foreground">
-                                {document.title}
-                              </h4>
-                              <p className="text-sm text-muted-foreground capitalize">
-                                {document.document_type}
-                              </p>
+                    {documents.map((document, index) => (
+                      <motion.div
+                        key={document.id}
+                        initial={{ opacity: 0, y: 10 }} // Reduced y translation
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: index * 0.05 }} // Reduced delay
+                        whileHover={{ scale: 1.005 }} // Reduced scale
+                        className="group"
+                      >
+                        <Card className="hover:border-primary/30 transition-all duration-300 bg-card/50 backdrop-blur-sm">
+                          <CardContent className="p-6">
+                            <div className="flex justify-between items-start">
+                              <div className="flex-1">
+                                <div className="flex items-center gap-3 mb-3">
+                                  <div className="w-10 h-10 rounded-full bg-green-500/10 flex items-center justify-center">
+                                    <FileText className="h-5 w-5 text-green-500" />
+                                  </div>
+                                  <div>
+                                    <h4 className="font-semibold text-foreground">
+                                      {document.title}
+                                    </h4>
+                                    <p className="text-sm text-muted-foreground capitalize">
+                                      {document.document_type}
+                                    </p>
+                                  </div>
+                                </div>
+                                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                                  <Clock className="h-3 w-3" />
+                                  {new Date(
+                                    document.created_at,
+                                  ).toLocaleDateString()}
+                                </div>
+                              </div>
+                              <div className="flex items-center space-x-3">
+                                <Badge
+                                  className={getStatusColor(document.status)}
+                                >
+                                  {document.status}
+                                </Badge>
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => downloadDocument(document)}
+                                  className="text-foreground hover:bg-muted"
+                                >
+                                  <Download className="h-4 w-4 mr-2" />
+                                  Download
+                                </Button>
+                              </div>
                             </div>
-                            <div className="flex items-center space-x-3">
-                              <Badge
-                                className={getStatusColor(document.status)}
-                              >
-                                {document.status}
-                              </Badge>
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => downloadDocument(document)}
-                              >
-                                <Download className="h-4 w-4 mr-2" />
-                                Download
-                              </Button>
-                            </div>
-                          </div>
-                        </CardContent>
-                      </Card>
+                          </CardContent>
+                        </Card>
+                      </motion.div>
                     ))}
                   </div>
                 )}
               </TabsContent>
 
-              <TabsContent value="matters" className="space-y-4">
+              <TabsContent value="matters" className="space-y-6">
+                <div className="flex justify-between items-center">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                      <Briefcase className="h-5 w-5 text-primary" />
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-semibold text-foreground">
+                        Legal Matters
+                      </h3>
+                      <p className="text-sm text-muted-foreground">
+                        Track your ongoing legal cases
+                      </p>
+                    </div>
+                  </div>
+                  <Button className="gradient-primary text-white border-0 shadow-md">
+                    <Plus className="h-4 w-4 mr-2" />
+                    New Matter
+                  </Button>
+                </div>
+
                 {matters.length === 0 ? (
                   <div className="text-center py-12">
                     <Briefcase className="h-12 w-12 mx-auto mb-4 text-muted-foreground/50" />
@@ -749,40 +1108,74 @@ export function UserDashboard() {
                     <p className="text-muted-foreground mb-4">
                       Add your first case to start tracking legal matters
                     </p>
-                    <Button className="gradient-primary text-white">
+                    <Button className="gradient-primary text-white border-0">
                       <Plus className="h-4 w-4 mr-2" />
                       Add Your First Case
                     </Button>
                   </div>
                 ) : (
                   <div className="grid gap-4">
-                    {matters.map((matter) => (
-                      <Card key={matter.id} className="hover:border-primary/30 transition-colors duration-300">
-                        <CardContent className="p-4">
-                          <div className="flex justify-between items-center">
-                            <div className="flex-1">
-                              <h4 className="font-semibold text-foreground">
-                                {matter.title}
-                              </h4>
-                              <p className="text-sm text-muted-foreground capitalize">
-                                {matter.matter_type}
-                              </p>
+                    {matters.map((matter, index) => (
+                      <motion.div
+                        key={matter.id}
+                        initial={{ opacity: 0, y: 10 }} // Reduced y translation
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: index * 0.05 }} // Reduced delay
+                        whileHover={{ scale: 1.005 }} // Reduced scale
+                        className="group"
+                      >
+                        <Card className="hover:border-primary/30 transition-all duration-300 bg-card/50 backdrop-blur-sm">
+                          <CardContent className="p-6">
+                            <div className="flex justify-between items-start">
+                              <div className="flex-1">
+                                <div className="flex items-center gap-3 mb-3">
+                                  <div className="w-10 h-10 rounded-full bg-orange-500/10 flex items-center justify-center">
+                                    <Briefcase className="h-5 w-5 text-orange-500" />
+                                  </div>
+                                  <div>
+                                    <h4 className="font-semibold text-foreground">
+                                      {matter.title}
+                                    </h4>
+                                    <p className="text-sm text-muted-foreground capitalize">
+                                      {matter.matter_type}
+                                    </p>
+                                  </div>
+                                </div>
+                                <div className="space-y-1">
+                                  {matter.deadline_date && (
+                                    <div className="flex items-center gap-2 text-xs text-destructive">
+                                      <Calendar className="h-3 w-3" />
+                                      Deadline:{" "}
+                                      {new Date(
+                                        matter.deadline_date,
+                                      ).toLocaleDateString()}
+                                    </div>
+                                  )}
+                                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                                    <Clock className="h-3 w-3" />
+                                    Created:{" "}
+                                    {new Date(
+                                      matter.created_at,
+                                    ).toLocaleDateString()}
+                                  </div>
+                                </div>
+                              </div>
+                              <div className="flex flex-col space-y-2">
+                                <Badge
+                                  className={getStatusColor(matter.status)}
+                                >
+                                  {matter.status}
+                                </Badge>
+                                <Badge
+                                  className={getPriorityColor(matter.priority)}
+                                >
+                                  {matter.priority}
+                                </Badge>
+                              </div>
                             </div>
-                            <div className="flex items-center space-x-3">
-                              <Badge
-                                className={getStatusColor(matter.status)}
-                              >
-                                {matter.status}
-                              </Badge>
-                              <Badge
-                                className={getPriorityColor(matter.priority)}
-                              >
-                                {matter.priority}
-                              </Badge>
-                            </div>
-                          </div>
-                        </CardContent>
-                      </Card>
+                          </CardContent>
+                        </Card>
+                      </motion.div>
                     ))}
                   </div>
                 )}
