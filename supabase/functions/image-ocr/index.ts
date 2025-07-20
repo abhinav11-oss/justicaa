@@ -33,15 +33,27 @@ serve(async (req) => {
       }),
     });
 
-    if (!res.ok) throw new Error(await res.text());
+    if (!res.ok) {
+      const errorBody = await res.text();
+      console.error("Gemini API Error:", errorBody);
+      throw new Error(`AI service failed with status ${res.status}`);
+    }
+    
     const data = await res.json();
+
+    if (!data.candidates || data.candidates.length === 0) {
+      console.warn("Gemini response blocked or empty:", JSON.stringify(data));
+      throw new Error("The AI's safety filters blocked the request or returned no content.");
+    }
+
     const text = data.candidates[0]?.content?.parts[0]?.text || "Could not extract text from image.";
 
     return new Response(JSON.stringify({ text }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   } catch (error) {
-    return new Response(JSON.stringify({ error: error.message }), {
+    console.error("OCR Error:", error.message);
+    return new Response(JSON.stringify({ error: `An error occurred: ${error.message}` }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
