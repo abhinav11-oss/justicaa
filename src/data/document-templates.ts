@@ -22,18 +22,69 @@ export interface DocumentTemplate {
 }
 
 const generateHtmlWrapper = (title: string, content: string) => `
-  <div style="font-family: Arial, sans-serif; line-height: 1.6; padding: 2rem;">
-    <h1 style="text-align: center; border-bottom: 1px solid #ccc; padding-bottom: 1rem; margin-bottom: 2rem;">${title}</h1>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>${title}</title>
+<style>
+  body {
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 12pt;
+    line-height: 1.6;
+  }
+  .document-container {
+    max-width: 6.5in;
+    margin: 0 auto;
+    padding: 1in;
+  }
+  h1 {
+    font-size: 16pt;
+    font-weight: bold;
+    text-align: center;
+    text-transform: uppercase;
+    margin-bottom: 24pt;
+    border-bottom: 2px solid #000;
+    padding-bottom: 8pt;
+  }
+  h2 {
+    font-size: 13pt;
+    font-weight: bold;
+    margin-top: 20pt;
+    margin-bottom: 10pt;
+    text-decoration: underline;
+  }
+  p {
+    margin-bottom: 12pt;
+    text-align: justify;
+  }
+  strong {
+    font-weight: bold;
+  }
+  ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  li {
+    margin-bottom: 8pt;
+  }
+</style>
+</head>
+<body>
+  <div class="document-container">
+    <h1>${title}</h1>
     ${content}
   </div>
+</body>
+</html>
 `;
 
 const generateGenericContent = (title: string, data: Record<string, string>) => {
   let content = `<p>This document, titled <strong>${title}</strong>, was generated on ${new Date().toLocaleDateString()}.</p>`;
-  content += '<h2>Details:</h2><ul style="list-style-type: none; padding: 0;">';
+  content += '<h2>Details:</h2><ul>';
   for (const key in data) {
     const label = key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-    content += `<li style="margin-bottom: 0.5rem;"><strong>${label}:</strong> ${data[key]}</li>`;
+    content += `<li><strong>${label}:</strong> ${data[key]}</li>`;
   }
   content += '</ul>';
   return generateHtmlWrapper(title, content);
@@ -65,11 +116,14 @@ export const templates: DocumentTemplate[] = [
           <p>The non-disclosure provisions of this Agreement shall remain in effect for a period of <strong>${data.duration || '[Duration]'}</strong>.</p>
           <h2>4. Governing Law</h2>
           <p>This Agreement shall be governed by and construed in accordance with the laws of the State of <strong>${data.governing_law || '[State]'}</strong>.</p>
-          <br/><br/>
-          <table style="width: 100%; margin-top: 50px; border: none;">
+          <table style="width: 100%; margin-top: 50px; border: none; border-collapse: collapse;">
             <tr>
-              <td style="width: 50%;"><p style="border-top: 1px solid #000; padding-top: 5px;"><strong>Disclosing Party:</strong> ${data.disclosing_party || ''}</p></td>
-              <td style="width: 50%;"><p style="border-top: 1px solid #000; padding-top: 5px;"><strong>Receiving Party:</strong> ${data.receiving_party || ''}</p></td>
+              <td style="width: 50%; vertical-align: bottom; padding-right: 20px;">
+                <p style="border-top: 1px solid #000; padding-top: 5px; margin-top: 40px;"><strong>Disclosing Party:</strong> ${data.disclosing_party || ''}</p>
+              </td>
+              <td style="width: 50%; vertical-align: bottom; padding-left: 20px;">
+                <p style="border-top: 1px solid #000; padding-top: 5px; margin-top: 40px;"><strong>Receiving Party:</strong> ${data.receiving_party || ''}</p>
+              </td>
             </tr>
           </table>
       `)
@@ -99,11 +153,14 @@ export const templates: DocumentTemplate[] = [
         <p>The Client will pay a fee of <strong>${data.payment_amount || '[Payment Amount]'}</strong>. Payment will be made according to the following schedule: <strong>${data.payment_schedule || '[Payment Schedule]'}</strong>.</p>
         <h2>3. Term</h2>
         <p>This Agreement will begin on <strong>${data.start_date || '[Start Date]'}</strong> and is expected to be completed by <strong>${data.completion_date || '[Completion Date]'}</strong>.</p>
-        <br/><br/>
-        <table style="width: 100%; margin-top: 50px; border: none;">
+        <table style="width: 100%; margin-top: 50px; border: none; border-collapse: collapse;">
             <tr>
-              <td style="width: 50%;"><p style="border-top: 1px solid #000; padding-top: 5px;"><strong>Service Provider:</strong> ${data.service_provider || ''}</p></td>
-              <td style="width: 50%;"><p style="border-top: 1px solid #000; padding-top: 5px;"><strong>Client:</strong> ${data.client_name || ''}</p></td>
+              <td style="width: 50%; vertical-align: bottom; padding-right: 20px;">
+                <p style="border-top: 1px solid #000; padding-top: 5px; margin-top: 40px;"><strong>Service Provider:</strong> ${data.service_provider || ''}</p>
+              </td>
+              <td style="width: 50%; vertical-align: bottom; padding-left: 20px;">
+                <p style="border-top: 1px solid #000; padding-top: 5px; margin-top: 40px;"><strong>Client:</strong> ${data.client_name || ''}</p>
+              </td>
             </tr>
           </table>
       `)
