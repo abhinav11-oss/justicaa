@@ -14,19 +14,54 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { downloadAsPdf, downloadAsWord } from "@/lib/download";
+import * as pdfjsLib from 'pdfjs-dist';
+import mammoth from 'mammoth';
+
+// Set worker source for pdf.js from a CDN
+pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
 
 type Tool = 'summary' | 'compare' | 'create' | 'translate' | 'ocr';
 
 const readFileAsText = (file: File): Promise<string> => {
-  return new Promise((resolve, reject) => {
-    if (file.type !== 'text/plain') {
-      reject(new Error('Only .txt files are supported for this tool.'));
-      return;
+  return new Promise(async (resolve, reject) => {
+    if (file.type === 'application/pdf') {
+      try {
+        const reader = new FileReader();
+        reader.onload = async (event) => {
+          if (!event.target?.result) return reject('Failed to read file');
+          const pdf = await pdfjsLib.getDocument({ data: event.target.result as ArrayBuffer }).promise;
+          let text = '';
+          for (let i = 1; i <= pdf.numPages; i++) {
+            const page = await pdf.getPage(i);
+            const content = await page.getTextContent();
+            text += content.items.map(item => ('str' in item ? item.str : '')).join(' ') + '\n';
+          }
+          resolve(text);
+        };
+        reader.readAsArrayBuffer(file);
+      } catch (error) {
+        reject(error);
+      }
+    } else if (file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
+      try {
+        const reader = new FileReader();
+        reader.onload = async (event) => {
+          if (!event.target?.result) return reject('Failed to read file');
+          const result = await mammoth.extractRawText({ arrayBuffer: event.target.result as ArrayBuffer });
+          resolve(result.value);
+        };
+        reader.readAsArrayBuffer(file);
+      } catch (error) {
+        reject(error);
+      }
+    } else if (file.type === 'text/plain') {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = (error) => reject(error);
+      reader.readAsText(file);
+    } else {
+      reject(new Error('Unsupported file type. Please upload a .txt, .pdf, or .docx file.'));
     }
-    const reader = new FileReader();
-    reader.onload = () => resolve(reader.result as string);
-    reader.onerror = (error) => reject(error);
-    reader.readAsText(file);
   });
 };
 
@@ -114,10 +149,10 @@ const AgreementSummaryTool = ({ onBack }: { onBack: () => void }) => {
   return (
     <ToolWrapper title="Agreement Summary" onBack={onBack}>
       <div className="space-y-4">
-        <FileUploader onFileSelect={setFile} acceptedTypes=".txt">
+        <FileUploader onFileSelect={setFile} acceptedTypes=".txt,.pdf,.docx">
           <Upload className="h-8 w-8 mx-auto text-muted-foreground mb-2" />
           <p className="font-semibold">{file ? file.name : "Click or drag file to upload"}</p>
-          <p className="text-sm text-muted-foreground">.txt files only</p>
+          <p className="text-sm text-muted-foreground">.txt, .pdf, or .docx files</p>
         </FileUploader>
         <Button onClick={handleSummarize} disabled={!file || loading} className="w-full">
           {loading && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
@@ -163,13 +198,13 @@ const CompareAgreementsTool = ({ onBack }: { onBack: () => void }) => {
     <ToolWrapper title="Compare Agreements" onBack={onBack}>
       <div className="space-y-4">
         <div className="grid grid-cols-2 gap-4">
-          <FileUploader onFileSelect={setFile1} acceptedTypes=".txt">
+          <FileUploader onFileSelect={setFile1} acceptedTypes=".txt,.pdf,.docx">
             <p className="font-semibold">{file1 ? file1.name : "Upload Document 1"}</p>
-            <p className="text-xs text-muted-foreground">.txt only</p>
+            <p className="text-xs text-muted-foreground">.txt, .pdf, .docx</p>
           </FileUploader>
-          <FileUploader onFileSelect={setFile2} acceptedTypes=".txt">
+          <FileUploader onFileSelect={setFile2} acceptedTypes=".txt,.pdf,.docx">
             <p className="font-semibold">{file2 ? file2.name : "Upload Document 2"}</p>
-            <p className="text-xs text-muted-foreground">.txt only</p>
+            <p className="text-xs text-muted-foreground">.txt, .pdf, .docx</p>
           </FileUploader>
         </div>
         <Button onClick={handleCompare} disabled={!file1 || !file2 || loading} className="w-full">
@@ -214,9 +249,9 @@ const DocumentTranslationTool = ({ onBack }: { onBack: () => void }) => {
   return (
     <ToolWrapper title="Document Translation" onBack={onBack}>
       <div className="space-y-4">
-        <FileUploader onFileSelect={setFile} acceptedTypes=".txt">
+        <FileUploader onFileSelect={setFile} acceptedTypes=".txt,.pdf,.docx">
           <p className="font-semibold">{file ? file.name : "Upload Document"}</p>
-          <p className="text-sm text-muted-foreground">.txt files only</p>
+          <p className="text-sm text-muted-foreground">.txt, .pdf, or .docx files</p>
         </FileUploader>
         <Select value={language} onValueChange={setLanguage}>
           <SelectTrigger><SelectValue placeholder="Select language" /></SelectTrigger>
