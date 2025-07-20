@@ -21,11 +21,22 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const isMobile = useIsMobile();
+  const [activeConversationId, setActiveConversationId] = useState<string | null>(null);
 
   const isTrialMode =
     !user &&
     (window.location.search.includes("trial=true") ||
       localStorage.getItem("trialMode") === "true");
+
+  const handleSelectConversation = (id: string | null) => {
+    setActiveConversationId(id);
+    setActiveTab("chat");
+  };
+
+  const handleNewConversation = () => {
+    setActiveConversationId(null);
+    setActiveTab("chat");
+  };
 
   useEffect(() => {
     if (isTrialMode) {
@@ -120,6 +131,9 @@ const Dashboard = () => {
             activeTab={activeTab}
             isTrialMode={isTrialMode}
             user={user}
+            onSelectConversation={handleSelectConversation}
+            onNewConversation={handleNewConversation}
+            activeConversationId={activeConversationId}
           />
         </div>
       </main>

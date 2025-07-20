@@ -6,7 +6,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { motion } from "framer-motion";
+import { motion, type Variants } from "framer-motion";
 import { MessageSquare, FileText, Users, Shield, Search, BookOpen } from "lucide-react";
 
 export const Features = () => {
@@ -16,40 +16,46 @@ export const Features = () => {
       title: "AI Legal Consultation",
       description:
         "Get instant, accurate legal advice through intelligent conversations based on Indian laws.",
+      image: "https://source.unsplash.com/random/400x300?ai,robot"
     },
     {
       icon: FileText,
       title: "Document Generation",
       description:
         "Create professional legal documents instantly with our AI-powered templates.",
+      image: "https://source.unsplash.com/random/400x300?document,paper"
     },
     {
       icon: Users,
       title: "Lawyer Network",
       description:
         "Connect with verified legal professionals across India based on your specific needs.",
+      image: "https://source.unsplash.com/random/400x300?people,network"
     },
     {
       icon: Shield,
       title: "Case Law Research",
       description:
         "Access comprehensive legal research with relevant case studies and precedents.",
+      image: "https://source.unsplash.com/random/400x300?law,book"
     },
     {
       icon: Search,
       title: "Legal Compliance Check",
       description:
         "Ensure your business or personal affairs comply with current Indian regulations.",
+      image: "https://source.unsplash.com/random/400x300?compliance,shield"
     },
     {
       icon: BookOpen,
       title: "Legal Education Hub",
       description:
         "Learn about your rights and legal procedures through our comprehensive guides.",
+      image: "https://source.unsplash.com/random/400x300?education,library"
     },
   ];
 
-  const containerVariants = {
+  const containerVariants: Variants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
@@ -59,7 +65,7 @@ export const Features = () => {
     },
   };
 
-  const itemVariants = {
+  const itemVariants: Variants = {
     hidden: { opacity: 0, y: 50 },
     visible: {
       opacity: 1,
@@ -99,7 +105,10 @@ export const Features = () => {
         >
           {features.map((feature, index) => (
             <motion.div key={index} variants={itemVariants}>
-              <Card className="h-full bg-card border-transparent hover:border-primary/20 transition-colors duration-300 group card-hover">
+              <Card className="h-full bg-card border-transparent hover:border-primary/20 transition-colors duration-300 group card-hover overflow-hidden">
+                <div className="overflow-hidden h-48">
+                  <img src={feature.image} alt={feature.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+                </div>
                 <CardHeader>
                   <motion.div
                     className="bg-primary/10 w-14 h-14 rounded-xl flex items-center justify-center mb-4 group-hover:bg-primary group-hover:text-primary-foreground transition-colors duration-300"
