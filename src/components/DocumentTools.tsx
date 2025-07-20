@@ -4,11 +4,16 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { FileCheck, GitCompareArrows, FilePlus, Languages, FileImage, ArrowLeft, Upload, Loader2 } from "lucide-react";
+import { FileCheck, GitCompareArrows, FilePlus, Languages, FileImage, ArrowLeft, Upload, Loader2, Download } from "lucide-react";
 import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import { templates, DocumentTemplate } from "@/data/document-templates";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { downloadAsPdf, downloadAsWord } from "@/lib/download";
 
 type Tool = 'summary' | 'compare' | 'create' | 'translate' | 'ocr';
 
@@ -278,17 +283,123 @@ const ImageToTextTool = ({ onBack }: { onBack: () => void }) => {
 };
 
 const CreateAgreementTool = ({ onBack }: { onBack: () => void }) => {
+  const [selectedTemplate, setSelectedTemplate] = useState<DocumentTemplate | null>(null);
+  const [formData, setFormData] = useState<Record<string, string>>({});
   const { toast } = useToast();
 
-  const handleGenerate = () => {
-    toast({ title: "Coming Soon!", description: "Document creation from templates is available in the 'Legal Forms' tab." });
+  const handleFieldChange = (fieldId: string, value: string) => {
+    setFormData(prev => ({ ...prev, [fieldId]: value }));
   };
+
+  const handleDownload = (format: 'pdf' | 'word') => {
+    if (!selectedTemplate) return;
+
+    for (const field of selectedTemplate.fields) {
+      if (field.required && !formData[field.id]) {
+        toast({
+          title: "Missing Information",
+          description: `Please fill out the "${field.label}" field.`,
+          variant: "destructive",
+        });
+        return;
+      }
+    }
+
+    const htmlContent = selectedTemplate.generateContent(formData);
+    const filename = selectedTemplate.title;
+
+    try {
+      if (format === 'pdf') {
+        downloadAsPdf(htmlContent, filename);
+        toast({ title: "Downloading PDF...", description: `Your document "${filename}" is being prepared.` });
+      } else {
+        downloadAsWord(htmlContent, filename);
+        toast({ title: "Downloading Word Document...", description: `Your document "${filename}" is being prepared.` });
+      }
+    } catch (error: any) {
+      toast({ title: "Download Error", description: error.message, variant: "destructive" });
+    }
+  };
+
+  if (selectedTemplate) {
+    return (
+      <ToolWrapper title={`Create: ${selectedTemplate.title}`} onBack={() => {
+        setSelectedTemplate(null);
+        setFormData({});
+      }}>
+        <CardDescription>{selectedTemplate.description}</CardDescription>
+        <div className="space-y-4 mt-6">
+          {selectedTemplate.fields.map((field) => (
+            <div key={field.id}>
+              <Label htmlFor={field.id} className="text-sm font-medium">
+                {field.label} {field.required && <span className="text-red-500">*</span>}
+              </Label>
+              {field.type === 'textarea' ? (
+                <Textarea
+                  id={field.id}
+                  placeholder={field.placeholder}
+                  value={formData[field.id] || ''}
+                  onChange={(e) => handleFieldChange(field.id, e.target.value)}
+                  className="mt-1"
+                />
+              ) : field.type === 'select' ? (
+                <Select
+                  value={formData[field.id] || ''}
+                  onValueChange={(value) => handleFieldChange(field.id, value)}
+                >
+                  <SelectTrigger className="mt-1">
+                    <SelectValue placeholder={field.placeholder || "Select an option"} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {field.options?.map((option) => (
+                      <SelectItem key={option} value={option}>{option}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              ) : (
+                <Input
+                  id={field.id}
+                  type={field.type}
+                  placeholder={field.placeholder}
+                  value={formData[field.id] || ''}
+                  onChange={(e) => handleFieldChange(field.id, e.target.value)}
+                  className="mt-1"
+                />
+              )}
+            </div>
+          ))}
+          <div className="flex flex-col sm:flex-row gap-4 pt-4">
+            <Button onClick={() => handleDownload('pdf')} className="flex-1">
+              <Download className="h-4 w-4 mr-2" /> Download as PDF
+            </Button>
+            <Button onClick={() => handleDownload('word')} variant="outline" className="flex-1">
+              <Download className="h-4 w-4 mr-2" /> Download as Word
+            </Button>
+          </div>
+        </div>
+      </ToolWrapper>
+    );
+  }
 
   return (
     <ToolWrapper title="Create an Agreement" onBack={onBack}>
-      <div className="text-center p-8">
-        <p className="text-muted-foreground mb-4">This tool helps you generate agreements. For a full list of templates, please visit the "Legal Forms" section.</p>
-        <Button onClick={handleGenerate}>Go to Legal Forms</Button>
+      <CardDescription>Select a template to start creating your legal document.</CardDescription>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+        {templates.map(template => (
+          <Card key={template.id} className="cursor-pointer hover:shadow-lg hover:border-primary/20 transition-all duration-300" onClick={() => setSelectedTemplate(template)}>
+            <CardHeader>
+              <div className="flex items-center space-x-3">
+                <div className="bg-primary/10 p-2 rounded-lg">
+                  <template.icon className="h-6 w-6 text-primary" />
+                </div>
+                <CardTitle className="text-lg">{template.title}</CardTitle>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-muted-foreground">{template.description}</p>
+            </CardContent>
+          </Card>
+        ))}
       </div>
     </ToolWrapper>
   );
