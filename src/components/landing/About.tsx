@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { motion, useInView, useAnimation, animate, type Variants } from "framer-motion";
+import { motion, useInView, useAnimation, animate } from "framer-motion";
 import {
   Scale,
   Users,
@@ -50,7 +50,7 @@ const AnimatedNumber = ({ value }: { value: number }) => {
 };
 
 export const About = () => {
-  const containerVariants: Variants = {
+  const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
@@ -60,7 +60,7 @@ export const About = () => {
     },
   };
 
-  const itemVariants: Variants = {
+  const itemVariants = {
     hidden: { opacity: 0, y: 20 },
     visible: {
       opacity: 1,

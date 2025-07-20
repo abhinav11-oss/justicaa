@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { motion, type Variants } from "framer-motion";
+import { motion } from "framer-motion";
 import {
   Clock,
   Shield,
@@ -15,7 +15,7 @@ import {
 import { cn } from "@/lib/utils";
 
 export const Benefits = () => {
-  const containerVariants: Variants = {
+  const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
@@ -25,7 +25,7 @@ export const Benefits = () => {
     },
   };
 
-  const itemVariants: Variants = {
+  const itemVariants = {
     hidden: { opacity: 0, y: 50 },
     visible: {
       opacity: 1,
