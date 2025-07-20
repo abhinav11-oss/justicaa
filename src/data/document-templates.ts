@@ -79,15 +79,108 @@ const generateHtmlWrapper = (title: string, content: string) => `
 </html>
 `;
 
-const generateGenericContent = (title: string, data: Record<string, string>) => {
-  let content = `<p>This document, titled <strong>${title}</strong>, was generated on ${new Date().toLocaleDateString()}.</p>`;
-  content += '<h2>Details:</h2><ul>';
-  for (const key in data) {
-    const label = key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-    content += `<li><strong>${label}:</strong> ${data[key]}</li>`;
-  }
-  content += '</ul>';
-  return generateHtmlWrapper(title, content);
+const generateRentalApplicationContent = (data: Record<string, string>) => {
+  return generateHtmlWrapper("Rental Application Form", `
+    <h2>Applicant Information</h2>
+    <p><strong>Full Name:</strong> ${data.applicant_name || '____________________'}</p>
+    <p><strong>Current Address:</strong> ${data.current_address || '____________________'}</p>
+    
+    <h2>Employment Information</h2>
+    <p><strong>Current Employer:</strong> ${data.employer || '____________________'}</p>
+    <p><strong>Employment Duration:</strong> ${data.employment_duration || '____________________'}</p>
+    <p><strong>Gross Monthly Income:</strong> ${data.monthly_income ? '₹' + data.monthly_income : '____________________'}</p>
+    
+    <h2>References</h2>
+    <p>${data.references || '____________________'}</p>
+    
+    <h2>Declaration</h2>
+    <p>I hereby certify that the information provided in this application is true and correct to the best of my knowledge. I authorize the landlord or their agent to verify the information provided, including contacting my employer and references, and to obtain a copy of my credit report.</p>
+    
+    <table style="width: 100%; margin-top: 50px; border: none; border-collapse: collapse;">
+      <tr>
+        <td style="width: 50%; vertical-align: bottom; padding-right: 20px;">
+          <p style="border-top: 1px solid #000; padding-top: 5px; margin-top: 40px;"><strong>Applicant Signature</strong></p>
+        </td>
+        <td style="width: 50%; vertical-align: bottom; padding-left: 20px;">
+          <p style="border-top: 1px solid #000; padding-top: 5px; margin-top: 40px;"><strong>Date</strong></p>
+        </td>
+      </tr>
+    </table>
+  `);
+};
+
+const generateComplaintLetterContent = (data: Record<string, string>) => {
+    return generateHtmlWrapper("Consumer Complaint Letter", `
+        <p>
+            <strong>From:</strong><br>
+            ${data.complainant_name || '[Your Name]'}<br>
+            [Your Address]<br>
+            [Your City, State, Pincode]<br>
+            [Your Email]<br>
+            [Your Phone Number]
+        </p>
+        <p><strong>Date:</strong> ${new Date().toLocaleDateString()}</p>
+        <p>
+            <strong>To:</strong><br>
+            Customer Service Department<br>
+            <strong>${data.company_name || '[Company Name]'}</strong><br>
+            [Company Address]<br>
+            [Company City, State, Pincode]
+        </p>
+        <p><strong>Subject: Formal Complaint Regarding Product/Service</strong></p>
+        <p>Dear Sir/Madam,</p>
+        <p>I am writing to file a formal complaint regarding a recent experience with your company. The details of my complaint are as follows:</p>
+        <p><em>${data.complaint_details || '[Detailed description of the complaint, including dates, product/service details, and what went wrong.]'}</em></p>
+        <p>I have attempted to resolve this issue by [mention any previous attempts, e.g., calling customer service]. To resolve this problem, I would appreciate it if you could [state your desired resolution, e.g., provide a full refund, replace the product].</p>
+        <p>I look forward to your prompt response and a resolution to this matter within 15 business days. If I do not hear from you, I will have no choice but to escalate this matter to the appropriate consumer protection agency.</p>
+        <p>Sincerely,</p>
+        <br><br>
+        <p>_________________________</p>
+        <p><strong>${data.complainant_name || '[Your Name]'}</strong></p>
+    `);
+};
+
+const generateEmploymentOfferContent = (data: Record<string, string>) => {
+    return generateHtmlWrapper("Employment Offer Letter", `
+        <p><strong>${data.company_name || '[Company Name]'}</strong><br>[Company Address]</p>
+        <p><strong>Date:</strong> ${new Date().toLocaleDateString()}</p>
+        <p>
+            <strong>${data.candidate_name || '[Candidate Name]'}</strong><br>
+            [Candidate Address]
+        </p>
+        <p><strong>Subject: Offer of Employment</strong></p>
+        <p>Dear ${data.candidate_name || '[Candidate Name]'},</p>
+        <p>On behalf of <strong>${data.company_name || '[Company Name]'}</strong>, I am pleased to offer you the position of <strong>${data.position_title || '[Position Title]'}</strong>. We were very impressed with your qualifications and believe you will be a valuable asset to our team.</p>
+        
+        <h2>Terms of Employment</h2>
+        <p><strong>Position:</strong> ${data.position_title || '[Position Title]'}</p>
+        <p><strong>Start Date:</strong> ${data.start_date || '[Start Date]'}</p>
+        <p><strong>Reporting Manager:</strong> ${data.reporting_manager || '[Reporting Manager]'}</p>
+        <p><strong>Salary:</strong> Your starting salary will be <strong>₹${data.salary || '[Salary]'}</strong> per annum, payable in monthly installments.</p>
+        <p><strong>Benefits:</strong> You will be eligible for our standard benefits package, which includes: ${data.benefits || '[Benefits Package]'}.</p>
+        
+        <p>This offer is contingent upon the successful completion of a background check.</p>
+        <p>We are excited about the prospect of you joining our team. Please indicate your acceptance of this offer by signing and returning a copy of this letter by [Offer Expiry Date].</p>
+        <p>Sincerely,</p>
+        <br><br>
+        <p>_________________________</p>
+        <p>[Hiring Manager Name]<br>[Hiring Manager Title]<br><strong>${data.company_name || '[Company Name]'}</strong></p>
+        
+        <hr style="margin-top: 40px; margin-bottom: 40px;">
+        
+        <h2>Acceptance of Offer</h2>
+        <p>I, <strong>${data.candidate_name || '[Candidate Name]'}</strong>, accept the offer of employment from <strong>${data.company_name || '[Company Name]'}</strong> on the terms and conditions outlined in this letter.</p>
+        <table style="width: 100%; margin-top: 50px; border: none; border-collapse: collapse;">
+            <tr>
+                <td style="width: 50%; vertical-align: bottom; padding-right: 20px;">
+                    <p style="border-top: 1px solid #000; padding-top: 5px; margin-top: 40px;"><strong>Signature</strong></p>
+                </td>
+                <td style="width: 50%; vertical-align: bottom; padding-left: 20px;">
+                    <p style="border-top: 1px solid #000; padding-top: 5px; margin-top: 40px;"><strong>Date</strong></p>
+                </td>
+            </tr>
+        </table>
+    `);
 };
 
 export const templates: DocumentTemplate[] = [
@@ -181,7 +274,7 @@ export const templates: DocumentTemplate[] = [
         { id: "employment_duration", label: "Employment Duration", type: "text", required: true, placeholder: "How long at current job" },
         { id: "references", label: "References", type: "textarea", required: true, placeholder: "Previous landlord or personal references" }
       ],
-      generateContent: (data) => generateGenericContent("Rental Application Form", data)
+      generateContent: generateRentalApplicationContent
     },
     {
       id: "complaint-letter",
@@ -196,7 +289,7 @@ export const templates: DocumentTemplate[] = [
         { id: "company_name", label: "Company Name", type: "text", required: true },
         { id: "complaint_details", label: "Complaint Details", type: "textarea", required: true },
       ],
-      generateContent: (data) => generateGenericContent("Consumer Complaint Letter", data)
+      generateContent: generateComplaintLetterContent
     },
     {
       id: "employment-contract",
@@ -215,6 +308,6 @@ export const templates: DocumentTemplate[] = [
         { id: "benefits", label: "Benefits Package", type: "textarea", required: true, placeholder: "Health insurance, PTO, etc." },
         { id: "reporting_manager", label: "Reporting Manager", type: "text", required: true, placeholder: "Direct supervisor's name" }
       ],
-      generateContent: (data) => generateGenericContent("Employment Offer Letter", data)
+      generateContent: generateEmploymentOfferContent
     }
 ];
