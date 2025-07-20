@@ -49,7 +49,7 @@ import { StatsGrid } from "./dashboard/StatsGrid";
 import { TypewriterLoader } from "./loaders/TypewriterLoader";
 import { templates } from "@/data/document-templates";
 import html2pdf from "html2pdf.js";
-import htmlDocx from "html-docx-js";
+import * as htmlDocx from "html-docx-js";
 
 interface Conversation {
   id: string;
