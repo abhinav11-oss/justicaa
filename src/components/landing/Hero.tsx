@@ -3,7 +3,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { AnimatedGridBackground } from "@/components/AnimatedGridBackground";
-import heroImage from "@/assets/hero-image.png";
+import heroImage from "../../assets/hero-image.png";
 
 interface HeroProps {
   onCTAClick: () => void;
