@@ -63,11 +63,11 @@ export const ChatInterface = ({ conversationId: propConversationId, onSelectConv
   }, [isTrialMode]);
 
   useEffect(() => {
-    if (propConversationId) {
+    if (propConversationId && !isLoading) {
       setConversationId(propConversationId);
       fetchMessages(propConversationId);
       setShowPrompts(false);
-    } else {
+    } else if (!propConversationId) {
       setMessages([]);
       setConversationId(null);
       setShowPrompts(true);
