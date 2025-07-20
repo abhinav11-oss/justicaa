@@ -47,6 +47,8 @@ import { useToast } from "@/hooks/use-toast";
 import { WelcomeHeader } from "./dashboard/WelcomeHeader";
 import { StatsGrid } from "./dashboard/StatsGrid";
 import { TypewriterLoader } from "./loaders/TypewriterLoader";
+import { templates } from "@/data/document-templates";
+import html2pdf from "html2pdf.js";
 
 interface Conversation {
   id: string;
@@ -207,7 +209,44 @@ export function UserDashboard({ onSelectConversation }: UserDashboardProps) {
   };
 
   const downloadDocument = (doc: LegalDocument) => {
-    // ... (implementation remains the same)
+    const template = templates.find(t => t.id === doc.document_type);
+
+    let htmlContent: string;
+
+    if (template && typeof doc.content === 'object' && doc.content !== null) {
+      htmlContent = template.generateContent(doc.content as Record<string, string>);
+    } else {
+      // Fallback if template not found or content is not an object
+      htmlContent = `
+        <div style="font-family: Arial, sans-serif; line-height: 1.6; padding: 2rem;">
+          <h1 style="text-align: center;">${doc.title}</h1>
+          <p><strong>Document Type:</strong> ${doc.document_type}</p>
+          <p><strong>Status:</strong> ${doc.status}</p>
+          <p><strong>Created Date:</strong> ${new Date(doc.created_at).toLocaleDateString()}</p>
+          <br/>
+          <h2>Document Data:</h2>
+          <pre style="white-space: pre-wrap; word-wrap: break-word; background-color: #f4f4f4; padding: 1rem; border-radius: 5px;">${JSON.stringify(doc.content, null, 2)}</pre>
+        </div>
+      `;
+    }
+
+    const element = document.createElement('div');
+    element.innerHTML = htmlContent;
+
+    const opt = {
+      margin:       [0.5, 0.5, 0.5, 0.5],
+      filename:     `${doc.title.replace(/ /g, '_')}.pdf`,
+      image:        { type: 'jpeg', quality: 0.98 },
+      html2canvas:  { scale: 2, useCORS: true },
+      jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
+    };
+
+    html2pdf().from(element).set(opt).save();
+
+    toast({
+      title: "Downloading Document",
+      description: `Your document "${doc.title}" is being prepared.`,
+    });
   };
 
   const getStatusColor = (status: string) => {
