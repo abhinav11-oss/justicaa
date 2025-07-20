@@ -12,6 +12,8 @@ import { useAuth } from "@/hooks/useAuth";
 import { QuickQuestions } from "@/components/QuickQuestions";
 import { VoiceChat, useSpeakText } from "@/components/VoiceChat";
 import { Switch } from "@/components/ui/switch";
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 interface Message {
   id: string;
@@ -269,7 +271,15 @@ export const ChatInterface = ({ conversationId: propConversationId }: ChatInterf
                     <div key={message.id} className={`flex items-start space-x-2 md:space-x-3 ${message.role === "user" ? "justify-end" : "justify-start"}`}>
                       {message.role === "assistant" && <div className="bg-primary p-1.5 md:p-2 rounded-full flex-shrink-0"><Bot className="h-3 w-3 md:h-4 md:w-4 text-primary-foreground" /></div>}
                       <div className={`max-w-[85%] md:max-w-[80%] p-3 md:p-4 rounded-lg ${message.role === "user" ? "bg-primary text-primary-foreground" : "bg-muted"}`}>
-                        <div className="prose prose-sm max-w-none"><p className="whitespace-pre-wrap text-sm md:text-base">{message.content}</p></div>
+                        <ReactMarkdown
+                          className="prose prose-sm dark:prose-invert max-w-none"
+                          remarkPlugins={[remarkGfm]}
+                          components={{
+                            p: ({node, ...props}) => <p className="mb-2 last:mb-0" {...props} />,
+                          }}
+                        >
+                          {message.content}
+                        </ReactMarkdown>
                         <div className="flex items-center justify-between mt-2 pt-2 border-t border-current/10">
                           <span className="text-xs opacity-70">{message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                           <div className="flex items-center space-x-1">
