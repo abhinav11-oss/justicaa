@@ -30,94 +30,94 @@ export const LegalGuides = () => {
   const guides: LegalGuide[] = [
     {
       id: "business-formation",
-      title: "Starting a Business",
-      description: "Complete guide to forming your business entity",
+      title: "Starting a Business in India",
+      description: "A complete guide to registering your business entity in India.",
       category: "Business Law",
-      duration: "30-45 min",
+      duration: "45-60 min",
       difficulty: "Intermediate",
       icon: Building,
       steps: [
         {
           id: 1,
           title: "Choose Business Structure",
-          description: "Decide between LLC, Corporation, Partnership, or Sole Proprietorship",
+          description: "Decide on the right structure: Private Limited Company (for investment), LLP (for partners), One Person Company (for solo founders), Partnership, or Sole Proprietorship (simplest).",
           completed: false
         },
         {
           id: 2,
-          title: "Check Name Availability",
-          description: "Ensure your business name is available in your state",
+          title: "Obtain DIN and DSC",
+          description: "Apply for a Director Identification Number (DIN) for all directors and a Digital Signature Certificate (DSC) for signing electronic forms on the MCA portal.",
           completed: false
         },
         {
           id: 3,
-          title: "Register Business Name",
-          description: "File necessary paperwork with state authorities",
+          title: "Reserve Company Name",
+          description: "Use the SPICe+ (Part A) form on the Ministry of Corporate Affairs (MCA) portal to check for and reserve your proposed company name.",
           completed: false
         },
         {
           id: 4,
-          title: "Get EIN from IRS",
-          description: "Obtain Federal Tax ID number for your business",
+          title: "Draft MoA and AoA",
+          description: "Draft the Memorandum of Association (MoA), which defines your company's objectives, and the Articles of Association (AoA), which outlines its internal rules.",
           completed: false
         },
         {
           id: 5,
-          title: "Open Business Bank Account",
-          description: "Separate business and personal finances",
+          title: "File for Incorporation",
+          description: "File the SPICe+ (Part B) form along with the MoA and AoA. This single form handles incorporation, DIN allotment, and applications for PAN and TAN.",
           completed: false
         },
         {
           id: 6,
-          title: "Get Required Licenses",
-          description: "Obtain necessary business licenses and permits",
+          title: "Open Corporate Bank Account",
+          description: "Once incorporated, open a current account in the company's name and deposit the initial share capital as declared in the MoA.",
           completed: false
         }
       ]
     },
     {
       id: "will-estate",
-      title: "Creating a Will",
-      description: "Essential guide to estate planning and will creation",
+      title: "Creating a Will in India",
+      description: "Essential guide to drafting and executing a legally valid will.",
       category: "Estate Planning",
-      duration: "20-30 min",
+      duration: "30-40 min",
       difficulty: "Beginner",
       icon: Heart,
       steps: [
         {
           id: 1,
-          title: "Inventory Your Assets",
-          description: "List all property, accounts, and valuable possessions",
+          title: "List Your Assets & Liabilities",
+          description: "Create a comprehensive list of all your assets (property, bank accounts, investments) and any outstanding liabilities to ensure a clear distribution.",
           completed: false
         },
         {
           id: 2,
-          title: "Choose Beneficiaries",
-          description: "Decide who will inherit your assets",
+          title: "Choose Beneficiaries & Executor",
+          description: "Clearly identify who will inherit your assets (beneficiaries). Appoint a trustworthy person or institution as the Executor to carry out the will's instructions.",
           completed: false
         },
         {
           id: 3,
-          title: "Select an Executor",
-          description: "Choose someone to carry out your will's instructions",
+          title: "Draft the Will",
+          description: "Write the will in clear, unambiguous language. While no specific form is required, it must clearly state your intentions for asset distribution. Mention full names and details.",
           completed: false
         },
         {
           id: 4,
-          title: "Consider Guardianship",
-          description: "Name guardians for minor children if applicable",
+          title: "Sign in Presence of Two Witnesses",
+          description: "You (the testator) must sign the will in the presence of at least two witnesses, who must see you sign or acknowledge your signature.",
           completed: false
         },
         {
           id: 5,
-          title: "Draft the Will",
-          description: "Write or use a template to create your will",
+          title: "Witnesses Must Attest",
+          description: "The two witnesses must sign the will in your presence and in the presence of each other. Beneficiaries should not be witnesses to avoid conflicts of interest.",
           completed: false
         },
         {
           id: 6,
-          title: "Sign and Witness",
-          description: "Properly execute the will with required witnesses",
+          title: "Register the Will (Optional)",
+          description: "While not mandatory, registering your will at the Sub-Registrar's office adds a layer of authenticity and makes it harder to challenge in court.",
           completed: false
         }
       ]
@@ -125,7 +125,7 @@ export const LegalGuides = () => {
     {
       id: "contract-basics",
       title: "Contract Review Checklist",
-      description: "How to review and understand legal contracts",
+      description: "How to review and understand legal contracts before you sign.",
       category: "Contract Law",
       duration: "15-20 min",
       difficulty: "Beginner",
@@ -134,45 +134,45 @@ export const LegalGuides = () => {
         {
           id: 1,
           title: "Identify the Parties",
-          description: "Verify all parties are correctly named and identified",
+          description: "Ensure all parties involved are correctly and fully identified with their legal names and addresses. Ambiguity here can make the contract unenforceable.",
           completed: false
         },
         {
           id: 2,
-          title: "Review Terms and Conditions",
-          description: "Understand all obligations and requirements",
+          title: "Define Scope of Work/Obligations",
+          description: "The contract must clearly state what each party is required to do, including deliverables, timelines, and quality standards. Vague terms can lead to disputes.",
           completed: false
         },
         {
           id: 3,
           title: "Check Payment Terms",
-          description: "Review payment amounts, schedules, and methods",
+          description: "Verify the exact payment amount, currency, schedule (e.g., upfront, milestones), method of payment, and any penalties for late payments.",
           completed: false
         },
         {
           id: 4,
-          title: "Examine Termination Clauses",
-          description: "Understand how and when the contract can end",
+          title: "Examine Term and Termination",
+          description: "Understand the contract's duration (term) and the specific conditions under which either party can legally terminate the agreement before its completion.",
           completed: false
         },
         {
           id: 5,
-          title: "Look for Dispute Resolution",
-          description: "Check how conflicts will be resolved",
+          title: "Review Confidentiality & IP",
+          description: "Look for clauses on how confidential information should be handled and who owns any intellectual property (IP) created during the contract period.",
           completed: false
         },
         {
           id: 6,
-          title: "Verify Signatures Required",
-          description: "Ensure proper execution requirements are met",
+          title: "Find the Dispute Resolution Clause",
+          description: "Check how disagreements will be handled. This clause specifies the governing law, jurisdiction (which city's courts), and method (e.g., arbitration, mediation, litigation).",
           completed: false
         }
       ]
     },
     {
       id: "tenant-rights",
-      title: "Understanding Tenant Rights",
-      description: "Know your rights and responsibilities as a tenant",
+      title: "Understanding Tenant Rights in India",
+      description: "Know your rights and responsibilities as a tenant under Indian law.",
       category: "Housing Law",
       duration: "25-35 min",
       difficulty: "Beginner",
@@ -180,46 +180,46 @@ export const LegalGuides = () => {
       steps: [
         {
           id: 1,
-          title: "Review Your Lease",
-          description: "Understand all terms and conditions in your rental agreement",
+          title: "Insist on a Written Agreement",
+          description: "Always have a written rental agreement. If the tenancy is for more than 11 months, the agreement must be registered with the Sub-Registrar's office to be legally valid.",
           completed: false
         },
         {
           id: 2,
-          title: "Know Habitability Standards",
-          description: "Learn what constitutes livable conditions",
+          title: "Right to Fair Rent",
+          description: "Landlords cannot charge an exorbitant amount of rent. The rent should be as per the agreement, and any increase must be as per the terms mentioned or state laws.",
           completed: false
         },
         {
           id: 3,
-          title: "Understand Privacy Rights",
-          description: "Know when and how landlords can enter your unit",
+          title: "Protection from Unfair Eviction",
+          description: "A landlord cannot evict you without a valid reason (e.g., non-payment of rent, property damage) and must serve a proper legal notice as required by state-specific rent control acts.",
           completed: false
         },
         {
           id: 4,
-          title: "Security Deposit Rules",
-          description: "Learn about deposit protection and return requirements",
+          title: "Right to Essential Services",
+          description: "The landlord cannot cut off or withhold essential services like water, electricity, or sanitation as a way to recover rent dues or force you to vacate.",
           completed: false
         },
         {
           id: 5,
-          title: "Repair and Maintenance",
-          description: "Understand responsibilities for property maintenance",
+          title: "Security Deposit Rules",
+          description: "The security deposit is typically limited to 2-3 months' rent. The landlord is obligated to return this amount after deducting for any damages upon vacation of the property.",
           completed: false
         },
         {
           id: 6,
-          title: "Eviction Protection",
-          description: "Know the legal eviction process and your protections",
+          title: "Right to Privacy",
+          description: "The landlord cannot enter your rented premises without prior notice, except in cases of emergency. The notice period is usually specified in the rental agreement.",
           completed: false
         }
       ]
     },
     {
       id: "fir-filing",
-      title: "How to File an FIR",
-      description: "Step-by-step guide to lodging a First Information Report in India",
+      title: "How to File an FIR in India",
+      description: "Step-by-step guide to lodging a First Information Report.",
       category: "Criminal Law",
       duration: "15-20 min",
       difficulty: "Beginner",
@@ -227,46 +227,46 @@ export const LegalGuides = () => {
       steps: [
         {
           id: 1,
-          title: "Identify the Police Station",
-          description: "Determine the police station with jurisdiction over the crime scene.",
+          title: "Identify Police Station Jurisdiction",
+          description: "An FIR should be filed at the police station in the area where the offense was committed. In case of uncertainty, police are obligated to register a 'Zero FIR' and transfer it.",
           completed: false
         },
         {
           id: 2,
           title: "Prepare Your Complaint",
-          description: "Write down all details: date, time, place, incident description, names of parties involved, and witnesses.",
+          description: "You can give information orally or in writing. If oral, the police officer must write it down. It's helpful to pre-write the details: date, time, place, incident description, and names.",
           completed: false
         },
         {
           id: 3,
-          title: "Visit the Police Station",
-          description: "Go to the police station and meet the officer in charge or the Station House Officer (SHO).",
+          title: "Lodge the FIR",
+          description: "Narrate the incident to the officer in charge. The information recorded is read over to you. Once you confirm it's correct, you must sign the FIR.",
           completed: false
         },
         {
           id: 4,
-          title: "Lodge the FIR",
-          description: "Narrate the incident to the police officer. They will write it down or you can submit your written complaint.",
+          title: "Receive a Free Copy of FIR",
+          description: "It is your legal right under Section 154(2) of the CrPC to receive a copy of the FIR free of cost. This copy is crucial proof that the complaint has been registered.",
           completed: false
         },
         {
           id: 5,
-          title: "Get a Copy of FIR",
-          description: "Insist on getting a free copy of the registered FIR. It's your legal right under Section 154(2) CrPC.",
+          title: "If Police Refuse to File FIR",
+          description: "You can send your complaint in writing by registered post to the Superintendent of Police (SP). If that fails, you can file a complaint before the concerned Magistrate under Section 156(3) of CrPC.",
           completed: false
         },
         {
           id: 6,
-          title: "Follow Up",
-          description: "Keep track of the investigation progress. If police refuse to register FIR, you can approach higher authorities or a Magistrate.",
+          title: "Understand Cognizable Offenses",
+          description: "An FIR can only be filed for cognizable offenses, which are serious crimes where police can arrest without a warrant (e.g., theft, assault, murder). For non-cognizable offenses, a complaint is filed with the Magistrate.",
           completed: false
         }
       ]
     },
     {
       id: "consumer-complaint",
-      title: "Consumer Complaint Process",
-      description: "Guide to filing a complaint under the Consumer Protection Act, 2019",
+      title: "Consumer Complaint Process in India",
+      description: "Guide to filing a complaint under the Consumer Protection Act, 2019.",
       category: "Consumer Law",
       duration: "20-25 min",
       difficulty: "Intermediate",
@@ -275,37 +275,37 @@ export const LegalGuides = () => {
         {
           id: 1,
           title: "Send Legal Notice",
-          description: "Before filing, send a legal notice to the service provider/seller detailing the issue and relief sought.",
+          description: "Before filing a formal complaint, send a detailed legal notice to the service provider or seller, stating the grievance and the relief sought. This often resolves the issue.",
           completed: false
         },
         {
           id: 2,
           title: "Identify Appropriate Forum",
-          description: "Determine if your complaint falls under District, State, or National Consumer Commission based on claim value.",
+          description: "File in the District Commission for claims up to ₹50 Lakhs, State Commission for claims between ₹50 Lakhs and ₹2 Crores, and National Commission for claims above ₹2 Crores.",
           completed: false
         },
         {
           id: 3,
           title: "Draft the Complaint",
-          description: "Prepare a detailed complaint including facts, evidence, and the relief you are seeking.",
+          description: "Prepare a complaint detailing the facts, the defect or deficiency in service, and the relief you are seeking. It does not require a lawyer, but clarity is key.",
           completed: false
         },
         {
           id: 4,
-          title: "Attach Documents",
-          description: "Include all relevant documents like bills, warranty cards, communication, and legal notice copy.",
+          title: "Attach Supporting Documents",
+          description: "Include copies of all relevant documents: bills, receipts, warranty cards, photos, and a copy of the legal notice sent.",
           completed: false
         },
         {
           id: 5,
           title: "File the Complaint",
-          description: "File the complaint online (e-Daakhil portal) or offline with the respective Consumer Commission along with the prescribed fee.",
+          description: "File the complaint online via the e-Daakhil portal (edaakhil.nic.in) or offline at the respective commission. A nominal fee is required based on the claim value.",
           completed: false
         },
         {
           id: 6,
           title: "Attend Hearings",
-          description: "Attend all scheduled hearings and present your case. The commission will then pass an order.",
+          description: "Both parties will be notified of hearings. You can represent yourself or hire a lawyer. The commission will hear both sides and pass a final order.",
           completed: false
         }
       ]
@@ -313,7 +313,7 @@ export const LegalGuides = () => {
     {
       id: "divorce-process",
       title: "Understanding Divorce in India",
-      description: "A guide to the legal procedures for divorce in India",
+      description: "A guide to the legal procedures for divorce in India.",
       category: "Family Law",
       duration: "30-40 min",
       difficulty: "Advanced",
@@ -321,38 +321,38 @@ export const LegalGuides = () => {
       steps: [
         {
           id: 1,
-          title: "Grounds for Divorce",
-          description: "Understand the legal grounds for divorce under Hindu Marriage Act, Special Marriage Act, etc. (e.g., cruelty, desertion, adultery).",
+          title: "Mutual Consent vs. Contested Divorce",
+          description: "Decide the type. Mutual consent (Sec 13B, Hindu Marriage Act) is faster, requiring both parties to agree. A contested divorce is filed by one spouse on grounds like cruelty, adultery, or desertion.",
           completed: false
         },
         {
           id: 2,
-          title: "Mutual Consent vs. Contested",
-          description: "Decide if it's a mutual consent divorce (faster) or a contested divorce (longer, requires proving grounds).",
+          title: "Filing the Divorce Petition",
+          description: "The petition is filed in the Family Court with appropriate jurisdiction. For mutual consent, a joint petition is filed. For contested, one spouse files against the other.",
           completed: false
         },
         {
           id: 3,
-          title: "File Petition",
-          description: "File a divorce petition in the Family Court with jurisdiction. For mutual consent, both parties file jointly.",
+          title: "Court Proceedings & Summons",
+          description: "The court examines the petition and, if admitted, sends a summons to the other party. In contested cases, the other party files a reply.",
           completed: false
         },
         {
           id: 4,
           title: "Mediation/Counseling",
-          description: "Courts often mandate mediation or counseling sessions to explore reconciliation before proceeding.",
+          description: "The court often refers the couple for mediation or counseling to explore possibilities of reconciliation. This step is mandatory in many jurisdictions.",
           completed: false
         },
         {
           id: 5,
-          title: "Evidence and Hearings",
-          description: "In contested cases, present evidence, cross-examine witnesses, and attend multiple hearings.",
+          title: "Interim Orders & Evidence",
+          description: "During the process, either party can file for temporary maintenance and child custody (interim orders). In contested cases, both sides present evidence and cross-examine witnesses.",
           completed: false
         },
         {
           id: 6,
-          title: "Final Decree",
-          description: "Once satisfied, the court passes the divorce decree, legally dissolving the marriage.",
+          title: "Final Arguments & Decree",
+          description: "After evidence, final arguments are made. If the court is satisfied, it passes the divorce decree, legally dissolving the marriage. For mutual consent, this happens after a 6-18 month cooling-off period.",
           completed: false
         }
       ]
@@ -360,7 +360,7 @@ export const LegalGuides = () => {
     {
       id: "rti-filing",
       title: "Filing an RTI Application",
-      description: "A comprehensive guide to filing a Right to Information (RTI) application",
+      description: "A comprehensive guide to using the Right to Information Act.",
       category: "Public Rights",
       duration: "10-15 min",
       difficulty: "Beginner",
@@ -368,38 +368,38 @@ export const LegalGuides = () => {
       steps: [
         {
           id: 1,
-          title: "Identify Public Authority",
-          description: "Determine which public authority holds the information you need (Central or State).",
+          title: "Identify the Public Authority",
+          description: "Determine which government department, ministry, or public sector undertaking holds the information you need. This could be Central, State, or local.",
           completed: false
         },
         {
           id: 2,
-          title: "Locate PIO/APIO",
-          description: "Find the Public Information Officer (PIO) or Assistant Public Information Officer (APIO) for that authority.",
+          title: "Draft Your Application",
+          description: "Write a clear and specific application. Ask direct questions. You do not need to give a reason for seeking information. Include your name and contact address.",
           completed: false
         },
         {
           id: 3,
-          title: "Draft Your Application",
-          description: "Write a clear and concise application in English, Hindi, or the official language of the area, specifying the information required.",
+          title: "Address it to the PIO",
+          description: "Address the application to the Public Information Officer (PIO) of the concerned department. If you don't know the PIO's name, just use the designation.",
           completed: false
         },
         {
           id: 4,
           title: "Pay the Fee",
-          description: "Pay the prescribed fee (usually ₹10 for Central Govt.) via IPO, DD, or cash. BPL cardholders are exempt.",
+          description: "Pay the prescribed fee (usually ₹10 for Central Govt.) via IPO, DD, or cash. BPL cardholders are exempt from paying the fee upon providing proof.",
           completed: false
         },
         {
           id: 5,
-          title: "Submit the Application",
-          description: "Submit the application online (rtionline.gov.in) or offline via post/in person.",
+          title: "Submit and Get Acknowledgment",
+          description: "Submit the application online (rtionline.gov.in for central departments) or offline via post/in person. Always get a dated acknowledgment.",
           completed: false
         },
         {
           id: 6,
-          title: "Await Response or Appeal",
-          description: "The PIO must respond within 30 days (48 hours for life/liberty matters). If no response or unsatisfactory, file a First Appeal.",
+          title: "Timeline and First Appeal",
+          description: "The PIO must respond within 30 days. If you don't receive a response or are unsatisfied, you can file a First Appeal with the First Appellate Authority within 30 days of the PIO's response deadline.",
           completed: false
         }
       ]
