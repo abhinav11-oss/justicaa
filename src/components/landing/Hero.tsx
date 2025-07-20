@@ -3,7 +3,6 @@ import { useAuth } from "@/hooks/useAuth";
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { AnimatedGridBackground } from "@/components/AnimatedGridBackground";
-import heroImage from "../../assets/hero-image.png";
 
 interface HeroProps {
   onCTAClick: () => void;
@@ -51,7 +50,7 @@ export const Hero = ({ onCTAClick, onTryForFree }: HeroProps) => {
               className="relative"
             >
               <img 
-                src={heroImage} 
+                src="/hero-image.png" 
                 alt="Justicaa Dashboard on Laptop and Mobile" 
                 className="w-full h-auto rounded-lg"
               />
