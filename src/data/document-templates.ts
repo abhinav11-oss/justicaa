@@ -28,31 +28,47 @@ const generateHtmlWrapper = (title: string, content: string) => `
 <meta charset="UTF-8">
 <title>${title}</title>
 <style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Lora:wght@400;700&display=swap');
   body {
-    font-family: 'Times New Roman', Times, serif;
+    font-family: 'Lora', 'Times New Roman', serif;
     font-size: 12pt;
     line-height: 1.6;
+    color: #333333;
   }
   .document-container {
     max-width: 6.5in;
     margin: 0 auto;
-    padding: 1in;
+    padding: 0.5in 1in;
   }
-  h1 {
+  .header {
+    text-align: center;
+    margin-bottom: 30pt;
+    border-bottom: 1px solid #cccccc;
+    padding-bottom: 15pt;
+  }
+  .header h1 {
+    font-family: 'Inter', sans-serif;
+    font-size: 24pt;
+    font-weight: bold;
+    color: #262626;
+    margin: 0;
+  }
+  .document-title {
     font-size: 16pt;
     font-weight: bold;
     text-align: center;
     text-transform: uppercase;
     margin-bottom: 24pt;
-    border-bottom: 2px solid #000;
-    padding-bottom: 8pt;
   }
   h2 {
-    font-size: 13pt;
+    font-family: 'Inter', sans-serif;
+    font-size: 14pt;
     font-weight: bold;
     margin-top: 20pt;
     margin-bottom: 10pt;
-    text-decoration: underline;
+    border-bottom: 1px solid #eeeeee;
+    padding-bottom: 4pt;
+    color: #333333;
   }
   p {
     margin-bottom: 12pt;
@@ -62,25 +78,112 @@ const generateHtmlWrapper = (title: string, content: string) => `
     font-weight: bold;
   }
   ul {
-    list-style-type: none;
-    padding: 0;
+    list-style-type: disc;
+    padding-left: 20pt;
   }
   li {
     margin-bottom: 8pt;
+  }
+  .signature-section {
+    width: 100%;
+    margin-top: 50pt;
+    border: none;
+    border-collapse: collapse;
+  }
+  .signature-block {
+    width: 50%;
+    vertical-align: bottom;
+  }
+  .signature-line {
+    border-top: 1px solid #000000;
+    padding-top: 5px;
+    margin-top: 40px;
+  }
+  .footer {
+    text-align: center;
+    font-size: 9pt;
+    color: #888888;
+    margin-top: 50pt;
+    border-top: 1px solid #cccccc;
+    padding-top: 10pt;
   }
 </style>
 </head>
 <body>
   <div class="document-container">
-    <h1>${title}</h1>
+    <div class="header">
+      <h1>Justicaa</h1>
+    </div>
+    <h2 class="document-title">${title}</h2>
     ${content}
+    <div class="footer">
+      This document was generated using Justicaa. It is intended for informational purposes and does not constitute legal advice. Please consult a qualified attorney for your specific needs.
+    </div>
   </div>
 </body>
 </html>
 `;
 
-const generateRentalApplicationContent = (data: Record<string, string>) => {
-  return generateHtmlWrapper("Rental Application Form", `
+const generateNDAContent = (data: Record<string, string>) => `
+    <p>This Non-Disclosure Agreement (the "Agreement") is entered into as of <strong>${new Date().toLocaleDateString()}</strong> by and between:</p>
+    <p><strong>Disclosing Party:</strong> ${data.disclosing_party || '____________________'}</p>
+    <p><strong>Receiving Party:</strong> ${data.receiving_party || '____________________'}</p>
+    
+    <h2>1. Purpose of Disclosure</h2>
+    <p>The parties intend to engage in discussions concerning: <strong>${data.purpose || '____________________'}</strong>. In connection with these discussions, the Disclosing Party may disclose certain confidential information to the Receiving Party.</p>
+    
+    <h2>2. Definition of Confidential Information</h2>
+    <p>For purposes of this Agreement, "Confidential Information" shall include all information or material that has or could have commercial value or other utility in the business in which Disclosing Party is engaged. This includes, but is not limited to, business plans, customer lists, financial information, and technical data.</p>
+    
+    <h2>3. Term of Agreement</h2>
+    <p>The non-disclosure provisions of this Agreement shall remain in effect for a period of <strong>${data.duration || '____________________'}</strong> from the date of this Agreement.</p>
+    
+    <h2>4. Governing Law</h2>
+    <p>This Agreement shall be governed by and construed in accordance with the laws of the State of <strong>${data.governing_law || '____________________'}</strong>.</p>
+    
+    <table class="signature-section">
+      <tr>
+        <td class="signature-block" style="padding-right: 20px;">
+          <p class="signature-line"><strong>Disclosing Party Signature</strong></p>
+          <p>Name: ${data.disclosing_party || ''}</p>
+        </td>
+        <td class="signature-block" style="padding-left: 20px;">
+          <p class="signature-line"><strong>Receiving Party Signature</strong></p>
+          <p>Name: ${data.receiving_party || ''}</p>
+        </td>
+      </tr>
+    </table>
+`;
+
+const generateServiceAgreementContent = (data: Record<string, string>) => `
+    <p>This Service Agreement ("Agreement") is made effective as of <strong>${data.start_date || new Date().toLocaleDateString()}</strong> by and between:</p>
+    <p><strong>Service Provider:</strong> ${data.service_provider || '____________________'}</p>
+    <p><strong>Client:</strong> ${data.client_name || '____________________'}</p>
+
+    <h2>1. Description of Services</h2>
+    <p>The Service Provider will provide the following services to the Client: ${data.services_description || '____________________'}.</p>
+    
+    <h2>2. Payment for Services</h2>
+    <p>The Client will pay a fee of <strong>${data.payment_amount || '____________________'}</strong> for the services. Payment will be made according to the following schedule: <strong>${data.payment_schedule || '____________________'}</strong>.</p>
+    
+    <h2>3. Term of Agreement</h2>
+    <p>This Agreement will begin on <strong>${data.start_date || '____________________'}</strong> and is expected to be completed by <strong>${data.completion_date || '____________________'}</strong>.</p>
+    
+    <table class="signature-section">
+      <tr>
+        <td class="signature-block" style="padding-right: 20px;">
+          <p class="signature-line"><strong>Service Provider Signature</strong></p>
+          <p>Name: ${data.service_provider || ''}</p>
+        </td>
+        <td class="signature-block" style="padding-left: 20px;">
+          <p class="signature-line"><strong>Client Signature</strong></p>
+          <p>Name: ${data.client_name || ''}</p>
+        </td>
+      </tr>
+    </table>
+`;
+
+const generateRentalApplicationContent = (data: Record<string, string>) => `
     <h2>Applicant Information</h2>
     <p><strong>Full Name:</strong> ${data.applicant_name || '____________________'}</p>
     <p><strong>Current Address:</strong> ${data.current_address || '____________________'}</p>
@@ -96,92 +199,81 @@ const generateRentalApplicationContent = (data: Record<string, string>) => {
     <h2>Declaration</h2>
     <p>I hereby certify that the information provided in this application is true and correct to the best of my knowledge. I authorize the landlord or their agent to verify the information provided, including contacting my employer and references, and to obtain a copy of my credit report.</p>
     
-    <table style="width: 100%; margin-top: 50px; border: none; border-collapse: collapse;">
+    <table class="signature-section">
       <tr>
-        <td style="width: 50%; vertical-align: bottom; padding-right: 20px;">
-          <p style="border-top: 1px solid #000; padding-top: 5px; margin-top: 40px;"><strong>Applicant Signature</strong></p>
+        <td class="signature-block" style="padding-right: 20px;">
+          <p class="signature-line"><strong>Applicant Signature</strong></p>
         </td>
-        <td style="width: 50%; vertical-align: bottom; padding-left: 20px;">
-          <p style="border-top: 1px solid #000; padding-top: 5px; margin-top: 40px;"><strong>Date</strong></p>
+        <td class="signature-block" style="padding-left: 20px;">
+          <p class="signature-line"><strong>Date</strong></p>
         </td>
       </tr>
     </table>
-  `);
-};
+`;
 
-const generateComplaintLetterContent = (data: Record<string, string>) => {
-    return generateHtmlWrapper("Consumer Complaint Letter", `
-        <p>
-            <strong>From:</strong><br>
-            ${data.complainant_name || '[Your Name]'}<br>
-            [Your Address]<br>
-            [Your City, State, Pincode]<br>
-            [Your Email]<br>
-            [Your Phone Number]
-        </p>
-        <p><strong>Date:</strong> ${new Date().toLocaleDateString()}</p>
-        <p>
-            <strong>To:</strong><br>
-            Customer Service Department<br>
-            <strong>${data.company_name || '[Company Name]'}</strong><br>
-            [Company Address]<br>
-            [Company City, State, Pincode]
-        </p>
-        <p><strong>Subject: Formal Complaint Regarding Product/Service</strong></p>
-        <p>Dear Sir/Madam,</p>
-        <p>I am writing to file a formal complaint regarding a recent experience with your company. The details of my complaint are as follows:</p>
-        <p><em>${data.complaint_details || '[Detailed description of the complaint, including dates, product/service details, and what went wrong.]'}</em></p>
-        <p>I have attempted to resolve this issue by [mention any previous attempts, e.g., calling customer service]. To resolve this problem, I would appreciate it if you could [state your desired resolution, e.g., provide a full refund, replace the product].</p>
-        <p>I look forward to your prompt response and a resolution to this matter within 15 business days. If I do not hear from you, I will have no choice but to escalate this matter to the appropriate consumer protection agency.</p>
-        <p>Sincerely,</p>
-        <br><br>
-        <p>_________________________</p>
-        <p><strong>${data.complainant_name || '[Your Name]'}</strong></p>
-    `);
-};
+const generateComplaintLetterContent = (data: Record<string, string>) => `
+    <p>
+        <strong>From:</strong><br>
+        ${data.complainant_name || '[Your Name]'}<br>
+        [Your Address]<br>
+        [Your City, State, Pincode]<br>
+        [Your Email]<br>
+        [Your Phone Number]
+    </p>
+    <p><strong>Date:</strong> ${new Date().toLocaleDateString()}</p>
+    <p>
+        <strong>To:</strong><br>
+        Customer Service Department<br>
+        <strong>${data.company_name || '[Company Name]'}</strong><br>
+        [Company Address]<br>
+        [Company City, State, Pincode]
+    </p>
+    <p><strong>Subject: Formal Complaint Regarding Product/Service</strong></p>
+    <p>Dear Sir/Madam,</p>
+    <p>I am writing to file a formal complaint regarding a recent experience with your company. The details of my complaint are as follows:</p>
+    <p><em>${data.complaint_details || '[Detailed description of the complaint, including dates, product/service details, and what went wrong.]'}</em></p>
+    <p>I have attempted to resolve this issue by [mention any previous attempts, e.g., calling customer service]. To resolve this problem, I would appreciate it if you could [state your desired resolution, e.g., provide a full refund, replace the product].</p>
+    <p>I look forward to your prompt response and a resolution to this matter within 15 business days. If I do not hear from you, I will have no choice but to escalate this matter to the appropriate consumer protection agency.</p>
+    <p>Sincerely,</p>
+    <br><br>
+    <p class="signature-line" style="width: 50%;"><strong>${data.complainant_name || '[Your Name]'}</strong></p>
+`;
 
-const generateEmploymentOfferContent = (data: Record<string, string>) => {
-    return generateHtmlWrapper("Employment Offer Letter", `
-        <p><strong>${data.company_name || '[Company Name]'}</strong><br>[Company Address]</p>
-        <p><strong>Date:</strong> ${new Date().toLocaleDateString()}</p>
-        <p>
-            <strong>${data.candidate_name || '[Candidate Name]'}</strong><br>
-            [Candidate Address]
-        </p>
-        <p><strong>Subject: Offer of Employment</strong></p>
-        <p>Dear ${data.candidate_name || '[Candidate Name]'},</p>
-        <p>On behalf of <strong>${data.company_name || '[Company Name]'}</strong>, I am pleased to offer you the position of <strong>${data.position_title || '[Position Title]'}</strong>. We were very impressed with your qualifications and believe you will be a valuable asset to our team.</p>
-        
-        <h2>Terms of Employment</h2>
-        <p><strong>Position:</strong> ${data.position_title || '[Position Title]'}</p>
-        <p><strong>Start Date:</strong> ${data.start_date || '[Start Date]'}</p>
-        <p><strong>Reporting Manager:</strong> ${data.reporting_manager || '[Reporting Manager]'}</p>
-        <p><strong>Salary:</strong> Your starting salary will be <strong>₹${data.salary || '[Salary]'}</strong> per annum, payable in monthly installments.</p>
-        <p><strong>Benefits:</strong> You will be eligible for our standard benefits package, which includes: ${data.benefits || '[Benefits Package]'}.</p>
-        
-        <p>This offer is contingent upon the successful completion of a background check.</p>
-        <p>We are excited about the prospect of you joining our team. Please indicate your acceptance of this offer by signing and returning a copy of this letter by [Offer Expiry Date].</p>
-        <p>Sincerely,</p>
-        <br><br>
-        <p>_________________________</p>
-        <p>[Hiring Manager Name]<br>[Hiring Manager Title]<br><strong>${data.company_name || '[Company Name]'}</strong></p>
-        
-        <hr style="margin-top: 40px; margin-bottom: 40px;">
-        
-        <h2>Acceptance of Offer</h2>
-        <p>I, <strong>${data.candidate_name || '[Candidate Name]'}</strong>, accept the offer of employment from <strong>${data.company_name || '[Company Name]'}</strong> on the terms and conditions outlined in this letter.</p>
-        <table style="width: 100%; margin-top: 50px; border: none; border-collapse: collapse;">
-            <tr>
-                <td style="width: 50%; vertical-align: bottom; padding-right: 20px;">
-                    <p style="border-top: 1px solid #000; padding-top: 5px; margin-top: 40px;"><strong>Signature</strong></p>
-                </td>
-                <td style="width: 50%; vertical-align: bottom; padding-left: 20px;">
-                    <p style="border-top: 1px solid #000; padding-top: 5px; margin-top: 40px;"><strong>Date</strong></p>
-                </td>
-            </tr>
-        </table>
-    `);
-};
+const generateEmploymentOfferContent = (data: Record<string, string>) => `
+    <p><strong>${data.company_name || '[Company Name]'}</strong><br>[Company Address]</p>
+    <p><strong>Date:</strong> ${new Date().toLocaleDateString()}</p>
+    <p>
+        <strong>${data.candidate_name || '[Candidate Name]'}</strong><br>
+        [Candidate Address]
+    </p>
+    <p><strong>Subject: Offer of Employment</strong></p>
+    <p>Dear ${data.candidate_name || '[Candidate Name]'},</p>
+    <p>On behalf of <strong>${data.company_name || '[Company Name]'}</strong>, I am pleased to offer you the position of <strong>${data.position_title || '[Position Title]'}</strong>. We were very impressed with your qualifications and believe you will be a valuable asset to our team.</p>
+    
+    <h2>Terms of Employment</h2>
+    <p><strong>Position:</strong> ${data.position_title || '[Position Title]'}</p>
+    <p><strong>Start Date:</strong> ${data.start_date || '[Start Date]'}</p>
+    <p><strong>Reporting Manager:</strong> ${data.reporting_manager || '[Reporting Manager]'}</p>
+    <p><strong>Salary:</strong> Your starting salary will be <strong>₹${data.salary || '[Salary]'}</strong> per annum, payable in monthly installments.</p>
+    <p><strong>Benefits:</strong> You will be eligible for our standard benefits package, which includes: ${data.benefits || '[Benefits Package]'}.</p>
+    
+    <p>This offer is contingent upon the successful completion of a background check.</p>
+    <p>We are excited about the prospect of you joining our team. Please indicate your acceptance of this offer by signing and returning a copy of this letter by [Offer Expiry Date].</p>
+    <p>Sincerely,</p>
+    <br><br>
+    <p class="signature-line" style="width: 50%;">[Hiring Manager Name]<br>[Hiring Manager Title]<br><strong>${data.company_name || '[Company Name]'}</strong></p>
+    
+    <hr style="margin-top: 40px; margin-bottom: 40px;">
+    
+    <h2>Acceptance of Offer</h2>
+    <p>I, <strong>${data.candidate_name || '[Candidate Name]'}</strong>, accept the offer of employment from <strong>${data.company_name || '[Company Name]'}</strong> on the terms and conditions outlined in this letter.</p>
+    <table class="signature-section">
+        <tr>
+            <td class="signature-block" style="padding-right: 20px;"><p class="signature-line"><strong>Signature</strong></p></td>
+            <td class="signature-block" style="padding-left: 20px;"><p class="signature-line"><strong>Date</strong></p></td>
+        </tr>
+    </table>
+`;
 
 export const templates: DocumentTemplate[] = [
     {
@@ -199,27 +291,7 @@ export const templates: DocumentTemplate[] = [
         { id: "duration", label: "Agreement Duration", type: "select", required: true, options: ["1 Year", "2 Years", "3 Years", "5 Years", "Indefinite"] },
         { id: "governing_law", label: "Governing Law (State)", type: "text", required: true, placeholder: "e.g., California" }
       ],
-      generateContent: (data) => generateHtmlWrapper("Non-Disclosure Agreement (NDA)", `
-          <p>This Non-Disclosure Agreement (the "Agreement") is entered into as of ${new Date().toLocaleDateString()} between <strong>${data.disclosing_party || '[Disclosing Party Name]'}</strong> ("Disclosing Party") and <strong>${data.receiving_party || '[Receiving Party Name]'}</strong> ("Receiving Party").</p>
-          <h2>1. Purpose</h2>
-          <p>The parties intend to engage in discussions concerning the following purpose: ${data.purpose || '[Purpose of Disclosure]'}. In connection with these discussions, the Disclosing Party may disclose certain confidential information to the Receiving Party.</p>
-          <h2>2. Confidential Information</h2>
-          <p>For purposes of this Agreement, "Confidential Information" shall include all information or material that has or could have commercial value or other utility in the business in which Disclosing Party is engaged.</p>
-          <h2>3. Term</h2>
-          <p>The non-disclosure provisions of this Agreement shall remain in effect for a period of <strong>${data.duration || '[Duration]'}</strong>.</p>
-          <h2>4. Governing Law</h2>
-          <p>This Agreement shall be governed by and construed in accordance with the laws of the State of <strong>${data.governing_law || '[State]'}</strong>.</p>
-          <table style="width: 100%; margin-top: 50px; border: none; border-collapse: collapse;">
-            <tr>
-              <td style="width: 50%; vertical-align: bottom; padding-right: 20px;">
-                <p style="border-top: 1px solid #000; padding-top: 5px; margin-top: 40px;"><strong>Disclosing Party:</strong> ${data.disclosing_party || ''}</p>
-              </td>
-              <td style="width: 50%; vertical-align: bottom; padding-left: 20px;">
-                <p style="border-top: 1px solid #000; padding-top: 5px; margin-top: 40px;"><strong>Receiving Party:</strong> ${data.receiving_party || ''}</p>
-              </td>
-            </tr>
-          </table>
-      `)
+      generateContent: (data) => generateHtmlWrapper("Non-Disclosure Agreement (NDA)", generateNDAContent(data))
     },
     {
       id: "service-agreement",
@@ -238,25 +310,7 @@ export const templates: DocumentTemplate[] = [
         { id: "start_date", label: "Start Date", type: "date", required: true },
         { id: "completion_date", label: "Expected Completion", type: "date", required: true }
       ],
-      generateContent: (data) => generateHtmlWrapper("Service Agreement", `
-        <p>This Service Agreement is made effective as of ${new Date().toLocaleDateString()} by and between <strong>${data.service_provider || '[Service Provider]'}</strong> and <strong>${data.client_name || '[Client Name]'}</strong>.</p>
-        <h2>1. Description of Services</h2>
-        <p>The Service Provider will provide the following services: ${data.services_description || '[Services Description]'}.</p>
-        <h2>2. Payment</h2>
-        <p>The Client will pay a fee of <strong>${data.payment_amount || '[Payment Amount]'}</strong>. Payment will be made according to the following schedule: <strong>${data.payment_schedule || '[Payment Schedule]'}</strong>.</p>
-        <h2>3. Term</h2>
-        <p>This Agreement will begin on <strong>${data.start_date || '[Start Date]'}</strong> and is expected to be completed by <strong>${data.completion_date || '[Completion Date]'}</strong>.</p>
-        <table style="width: 100%; margin-top: 50px; border: none; border-collapse: collapse;">
-            <tr>
-              <td style="width: 50%; vertical-align: bottom; padding-right: 20px;">
-                <p style="border-top: 1px solid #000; padding-top: 5px; margin-top: 40px;"><strong>Service Provider:</strong> ${data.service_provider || ''}</p>
-              </td>
-              <td style="width: 50%; vertical-align: bottom; padding-left: 20px;">
-                <p style="border-top: 1px solid #000; padding-top: 5px; margin-top: 40px;"><strong>Client:</strong> ${data.client_name || ''}</p>
-              </td>
-            </tr>
-          </table>
-      `)
+      generateContent: (data) => generateHtmlWrapper("Service Agreement", generateServiceAgreementContent(data))
     },
     {
       id: "rent-agreement",
@@ -274,7 +328,7 @@ export const templates: DocumentTemplate[] = [
         { id: "employment_duration", label: "Employment Duration", type: "text", required: true, placeholder: "How long at current job" },
         { id: "references", label: "References", type: "textarea", required: true, placeholder: "Previous landlord or personal references" }
       ],
-      generateContent: generateRentalApplicationContent
+      generateContent: (data) => generateHtmlWrapper("Rental Application Form", generateRentalApplicationContent(data))
     },
     {
       id: "complaint-letter",
@@ -289,7 +343,7 @@ export const templates: DocumentTemplate[] = [
         { id: "company_name", label: "Company Name", type: "text", required: true },
         { id: "complaint_details", label: "Complaint Details", type: "textarea", required: true },
       ],
-      generateContent: generateComplaintLetterContent
+      generateContent: (data) => generateHtmlWrapper("Consumer Complaint Letter", generateComplaintLetterContent(data))
     },
     {
       id: "employment-contract",
@@ -308,6 +362,6 @@ export const templates: DocumentTemplate[] = [
         { id: "benefits", label: "Benefits Package", type: "textarea", required: true, placeholder: "Health insurance, PTO, etc." },
         { id: "reporting_manager", label: "Reporting Manager", type: "text", required: true, placeholder: "Direct supervisor's name" }
       ],
-      generateContent: generateEmploymentOfferContent
+      generateContent: (data) => generateHtmlWrapper("Employment Offer Letter", generateEmploymentOfferContent(data))
     }
 ];
