@@ -34,7 +34,7 @@ export const ChatHistory = ({ onSelectConversation, onNewConversation, activeCon
     } else {
       setLoading(false);
     }
-  }, [user]);
+  }, [user, activeConversationId]);
 
   const fetchHistory = async () => {
     setLoading(true);

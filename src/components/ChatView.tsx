@@ -62,7 +62,6 @@ export const ChatView = ({ conversationId, onSelectConversation, onNewConversati
             </Button>
             <div className="flex-1">
               <ChatInterface 
-                key={conversationId}
                 conversationId={conversationId}
                 onSelectConversation={onSelectConversation}
               />
@@ -76,7 +75,6 @@ export const ChatView = ({ conversationId, onSelectConversation, onNewConversati
           </div>
           <div className="flex-1">
             <ChatInterface 
-              key={conversationId}
               conversationId={conversationId}
               onSelectConversation={onSelectConversation}
             />
