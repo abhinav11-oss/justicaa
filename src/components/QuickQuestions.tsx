@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { MessageSquare, FileText, Users, Scale } from "lucide-react";
+import { MessageSquare, FileText, Users, Scale, Home, BookOpen, Building } from "lucide-react";
 
 interface QuickQuestionsProps {
   onQuestionClick: (question: string) => void;
@@ -22,8 +22,8 @@ const quickQuestions = [
     category: "Rights"
   },
   {
-    icon: FileText,
-    question: "How to register a property in Gwalior?",
+    icon: Home,
+    question: "How do I register a property?",
     category: "Property Law"
   },
   {
@@ -35,6 +35,16 @@ const quickQuestions = [
     icon: Scale,
     question: "How to file a consumer complaint?",
     category: "Consumer Law"
+  },
+  {
+    icon: BookOpen,
+    question: "How do I file an RTI application?",
+    category: "Public Rights"
+  },
+  {
+    icon: Building,
+    question: "What are the steps to start a company?",
+    category: "Business Law"
   }
 ];
 
