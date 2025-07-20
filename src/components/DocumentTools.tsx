@@ -1,14 +1,42 @@
 import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { FileCheck, GitCompareArrows, FilePlus, Languages, FileImage, ArrowLeft, Upload, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
+import { supabase } from "@/integrations/supabase/client";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 type Tool = 'summary' | 'compare' | 'create' | 'translate' | 'ocr';
+
+const readFileAsText = (file: File): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    if (file.type !== 'text/plain') {
+      reject(new Error('Only .txt files are supported for this tool.'));
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = (error) => reject(error);
+    reader.readAsText(file);
+  });
+};
+
+const readFileAsBase64 = (file: File): Promise<{ data: string, mimeType: string }> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const result = reader.result as string;
+      const base64Data = result.split(',')[1];
+      resolve({ data: base64Data, mimeType: file.type });
+    };
+    reader.onerror = (error) => reject(error);
+    reader.readAsDataURL(file);
+  });
+};
 
 const ToolButton = ({ icon: Icon, title, description, pro, onClick }: { icon: React.ElementType, title: string, description: string, pro?: boolean, onClick: () => void }) => (
   <Card className="cursor-pointer hover:shadow-lg hover:border-primary/20 transition-all duration-300" onClick={onClick}>
@@ -56,33 +84,41 @@ const AgreementSummaryTool = ({ onBack }: { onBack: () => void }) => {
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
 
-  const handleSummarize = () => {
+  const handleSummarize = async () => {
     if (!file) {
       toast({ title: "No file selected", variant: "destructive" });
       return;
     }
     setLoading(true);
     setSummary("");
-    setTimeout(() => {
-      setSummary("This is a placeholder summary of your document. Key points include the parties involved, the main obligations, and the term of the agreement. The AI has identified several important clauses regarding confidentiality and liability.");
-      setLoading(false);
+    try {
+      const text = await readFileAsText(file);
+      const { data, error } = await supabase.functions.invoke('document-summarizer', {
+        body: { text },
+      });
+      if (error) throw error;
+      setSummary(data.summary);
       toast({ title: "Summary Generated!" });
-    }, 2000);
+    } catch (error: any) {
+      toast({ title: "Error", description: error.message, variant: "destructive" });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <ToolWrapper title="Agreement Summary" onBack={onBack}>
       <div className="space-y-4">
-        <FileUploader onFileSelect={setFile} acceptedTypes=".pdf,.doc,.docx,.txt">
+        <FileUploader onFileSelect={setFile} acceptedTypes=".txt">
           <Upload className="h-8 w-8 mx-auto text-muted-foreground mb-2" />
           <p className="font-semibold">{file ? file.name : "Click or drag file to upload"}</p>
-          <p className="text-sm text-muted-foreground">PDF, DOC, DOCX, TXT</p>
+          <p className="text-sm text-muted-foreground">.txt files only</p>
         </FileUploader>
         <Button onClick={handleSummarize} disabled={!file || loading} className="w-full">
           {loading && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
           Summarize Document
         </Button>
-        {summary && <Textarea value={summary} readOnly rows={10} placeholder="Summary will appear here..." />}
+        {summary && <Card className="p-4 prose dark:prose-invert max-w-full"><ReactMarkdown remarkPlugins={[remarkGfm]}>{summary}</ReactMarkdown></Card>}
       </div>
     </ToolWrapper>
   );
@@ -95,36 +131,47 @@ const CompareAgreementsTool = ({ onBack }: { onBack: () => void }) => {
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
 
-  const handleCompare = () => {
+  const handleCompare = async () => {
     if (!file1 || !file2) {
       toast({ title: "Please select two files", variant: "destructive" });
       return;
     }
     setLoading(true);
     setComparison("");
-    setTimeout(() => {
-      setComparison("Placeholder comparison result:\n- Clause 3.1 (Payment Terms): Differs in payment schedule.\n- Clause 5 (Term): Document 1 has a 2-year term, Document 2 has a 3-year term.\n- Added Clause 8.4 (Data Privacy) in Document 2.");
-      setLoading(false);
+    try {
+      const text1 = await readFileAsText(file1);
+      const text2 = await readFileAsText(file2);
+      const { data, error } = await supabase.functions.invoke('document-comparer', {
+        body: { text1, text2 },
+      });
+      if (error) throw error;
+      setComparison(data.comparison);
       toast({ title: "Comparison Complete!" });
-    }, 2000);
+    } catch (error: any) {
+      toast({ title: "Error", description: error.message, variant: "destructive" });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <ToolWrapper title="Compare Agreements" onBack={onBack}>
       <div className="space-y-4">
         <div className="grid grid-cols-2 gap-4">
-          <FileUploader onFileSelect={setFile1} acceptedTypes=".pdf,.doc,.docx,.txt">
+          <FileUploader onFileSelect={setFile1} acceptedTypes=".txt">
             <p className="font-semibold">{file1 ? file1.name : "Upload Document 1"}</p>
+            <p className="text-xs text-muted-foreground">.txt only</p>
           </FileUploader>
-          <FileUploader onFileSelect={setFile2} acceptedTypes=".pdf,.doc,.docx,.txt">
+          <FileUploader onFileSelect={setFile2} acceptedTypes=".txt">
             <p className="font-semibold">{file2 ? file2.name : "Upload Document 2"}</p>
+            <p className="text-xs text-muted-foreground">.txt only</p>
           </FileUploader>
         </div>
         <Button onClick={handleCompare} disabled={!file1 || !file2 || loading} className="w-full">
           {loading && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
           Compare Documents
         </Button>
-        {comparison && <Textarea value={comparison} readOnly rows={10} placeholder="Comparison will appear here..." />}
+        {comparison && <Card className="p-4 prose dark:prose-invert max-w-full"><ReactMarkdown remarkPlugins={[remarkGfm]}>{comparison}</ReactMarkdown></Card>}
       </div>
     </ToolWrapper>
   );
@@ -137,25 +184,34 @@ const DocumentTranslationTool = ({ onBack }: { onBack: () => void }) => {
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
 
-  const handleTranslate = () => {
+  const handleTranslate = async () => {
     if (!file) {
       toast({ title: "No file selected", variant: "destructive" });
       return;
     }
     setLoading(true);
     setTranslation("");
-    setTimeout(() => {
-      setTranslation("यह आपके दस्तावेज़ का एक प्लेसहोल्डर अनुवाद है। (This is a placeholder translation of your document.)");
-      setLoading(false);
+    try {
+      const text = await readFileAsText(file);
+      const { data, error } = await supabase.functions.invoke('document-translator', {
+        body: { text, language },
+      });
+      if (error) throw error;
+      setTranslation(data.translation);
       toast({ title: "Translation Complete!" });
-    }, 2000);
+    } catch (error: any) {
+      toast({ title: "Error", description: error.message, variant: "destructive" });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <ToolWrapper title="Document Translation" onBack={onBack}>
       <div className="space-y-4">
-        <FileUploader onFileSelect={setFile} acceptedTypes=".pdf,.doc,.docx,.txt">
+        <FileUploader onFileSelect={setFile} acceptedTypes=".txt">
           <p className="font-semibold">{file ? file.name : "Upload Document"}</p>
+          <p className="text-sm text-muted-foreground">.txt files only</p>
         </FileUploader>
         <Select value={language} onValueChange={setLanguage}>
           <SelectTrigger><SelectValue placeholder="Select language" /></SelectTrigger>
@@ -171,7 +227,7 @@ const DocumentTranslationTool = ({ onBack }: { onBack: () => void }) => {
           {loading && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
           Translate
         </Button>
-        {translation && <Textarea value={translation} readOnly rows={10} placeholder="Translation will appear here..." />}
+        {translation && <Card className="p-4 prose dark:prose-invert max-w-full"><ReactMarkdown remarkPlugins={[remarkGfm]}>{translation}</ReactMarkdown></Card>}
       </div>
     </ToolWrapper>
   );
@@ -183,18 +239,26 @@ const ImageToTextTool = ({ onBack }: { onBack: () => void }) => {
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
 
-  const handleExtract = () => {
+  const handleExtract = async () => {
     if (!file) {
       toast({ title: "No image selected", variant: "destructive" });
       return;
     }
     setLoading(true);
     setText("");
-    setTimeout(() => {
-      setText("This is placeholder text extracted from your image. The OCR process has identified key headings and paragraphs.");
-      setLoading(false);
+    try {
+      const { data: base64, mimeType } = await readFileAsBase64(file);
+      const { data, error } = await supabase.functions.invoke('image-ocr', {
+        body: { image: base64, mimeType },
+      });
+      if (error) throw error;
+      setText(data.text);
       toast({ title: "Text Extracted!" });
-    }, 2000);
+    } catch (error: any) {
+      toast({ title: "Error", description: error.message, variant: "destructive" });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -207,7 +271,7 @@ const ImageToTextTool = ({ onBack }: { onBack: () => void }) => {
           {loading && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
           Extract Text
         </Button>
-        {text && <Textarea value={text} readOnly rows={10} placeholder="Extracted text will appear here..." />}
+        {text && <Card className="p-4 prose dark:prose-invert max-w-full"><ReactMarkdown remarkPlugins={[remarkGfm]}>{text}</ReactMarkdown></Card>}
       </div>
     </ToolWrapper>
   );
