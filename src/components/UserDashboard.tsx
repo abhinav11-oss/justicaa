@@ -49,7 +49,6 @@ import { StatsGrid } from "./dashboard/StatsGrid";
 import { TypewriterLoader } from "./loaders/TypewriterLoader";
 import { templates } from "@/data/document-templates";
 import html2pdf from "html2pdf.js";
-import * as htmlDocx from "html-docx-js";
 
 interface Conversation {
   id: string;
@@ -252,6 +251,17 @@ export function UserDashboard({ onSelectConversation }: UserDashboardProps) {
     const htmlContent = getHtmlContent(doc);
     
     try {
+      const htmlDocx = (window as any).htmlDocx;
+      if (!htmlDocx) {
+        console.error("html-docx-js library not found on window object.");
+        toast({
+          title: "Error",
+          description: "Could not generate Word document. The library may not have loaded.",
+          variant: "destructive",
+        });
+        return;
+      }
+
       const fileBuffer = htmlDocx.asBlob(htmlContent);
       const url = URL.createObjectURL(fileBuffer);
       const a = document.createElement('a');
