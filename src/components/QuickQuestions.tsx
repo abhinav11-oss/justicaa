@@ -1,10 +1,8 @@
-
 import { Button } from "@/components/ui/button";
 import { MessageSquare, FileText, Users, Scale } from "lucide-react";
 
 interface QuickQuestionsProps {
   onQuestionClick: (question: string) => void;
-  isVisible: boolean;
 }
 
 const quickQuestions = [
@@ -40,9 +38,7 @@ const quickQuestions = [
   }
 ];
 
-export const QuickQuestions = ({ onQuestionClick, isVisible }: QuickQuestionsProps) => {
-  if (!isVisible) return null;
-
+export const QuickQuestions = ({ onQuestionClick }: QuickQuestionsProps) => {
   return (
     <div className="space-y-4 p-4">
       <div className="text-center">

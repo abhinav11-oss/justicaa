@@ -24,9 +24,10 @@ interface Message {
 
 interface ChatInterfaceProps {
   conversationId: string | null;
+  onSelectConversation: (id: string) => void;
 }
 
-export const ChatInterface = ({ conversationId: propConversationId }: ChatInterfaceProps) => {
+export const ChatInterface = ({ conversationId: propConversationId, onSelectConversation }: ChatInterfaceProps) => {
   const { t } = useTranslation();
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState("");
@@ -172,6 +173,7 @@ export const ChatInterface = ({ conversationId: propConversationId }: ChatInterf
         if (convError) throw convError;
         setConversationId(conversation.id);
         currentConvId = conversation.id;
+        onSelectConversation(conversation.id);
       }
 
       const { data, error } = await supabase.functions.invoke('ai-legal-chat-hf', {
@@ -256,14 +258,13 @@ export const ChatInterface = ({ conversationId: propConversationId }: ChatInterf
         <CardContent className="flex-1 flex flex-col p-0">
           <div className="flex-1 overflow-y-auto" ref={chatContainerRef}>
             <div className="px-3 md:px-6">
-              {messages.length === 0 && !isLoading && !showPrompts && <WelcomeScreen />}
-              
-              {(showPrompts || (messages.length === 0 && !isLoading)) && (
-                <QuickQuestions 
-                  onQuestionClick={handleQuestionClick}
-                  isVisible={true}
-                />
-              )}
+              {messages.length === 0 && !isLoading ? (
+                showPrompts ? (
+                  <QuickQuestions onQuestionClick={handleQuestionClick} />
+                ) : (
+                  <WelcomeScreen />
+                )
+              ) : null}
               
               {messages.length > 0 && (
                 <div className="space-y-3 md:space-y-4 py-4">

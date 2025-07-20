@@ -64,6 +64,7 @@ export const ChatView = ({ conversationId, onSelectConversation, onNewConversati
               <ChatInterface 
                 key={conversationId}
                 conversationId={conversationId}
+                onSelectConversation={onSelectConversation}
               />
             </div>
           </div>
@@ -77,6 +78,7 @@ export const ChatView = ({ conversationId, onSelectConversation, onNewConversati
             <ChatInterface 
               key={conversationId}
               conversationId={conversationId}
+              onSelectConversation={onSelectConversation}
             />
           </div>
         </>
