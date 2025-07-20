@@ -7,9 +7,7 @@ export const useSmoothScroll = () => {
       duration: 1.2,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // Easing function
       orientation: 'vertical',
-      smooth: true,
-      mouseMultiplier: 1,
-      smoothTouch: false,
+      wheelMultiplier: 1,
       touchMultiplier: 2,
       infinite: false,
     });
