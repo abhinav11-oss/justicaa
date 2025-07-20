@@ -272,15 +272,11 @@ export const ChatInterface = ({ conversationId: propConversationId, onSelectConv
                     <div key={message.id} className={`flex items-start space-x-2 md:space-x-3 ${message.role === "user" ? "justify-end" : "justify-start"}`}>
                       {message.role === "assistant" && <div className="bg-primary p-1.5 md:p-2 rounded-full flex-shrink-0"><Bot className="h-3 w-3 md:h-4 md:w-4 text-primary-foreground" /></div>}
                       <div className={`max-w-[85%] md:max-w-[80%] p-3 md:p-4 rounded-lg ${message.role === "user" ? "bg-primary text-primary-foreground" : "bg-muted"}`}>
-                        <ReactMarkdown
-                          className="prose prose-sm dark:prose-invert max-w-none"
-                          remarkPlugins={[remarkGfm]}
-                          components={{
-                            p: ({node, ...props}) => <p className="mb-2 last:mb-0" {...props} />,
-                          }}
-                        >
-                          {message.content}
-                        </ReactMarkdown>
+                        <div className="prose prose-sm dark:prose-invert max-w-none leading-relaxed">
+                          <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                            {message.content}
+                          </ReactMarkdown>
+                        </div>
                         <div className="flex items-center justify-between mt-2 pt-2 border-t border-current/10">
                           <span className="text-xs opacity-70">{message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                           <div className="flex items-center space-x-1">
