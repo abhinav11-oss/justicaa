@@ -1,6 +1,6 @@
 import React from "react";
 import { LegalGuides } from "@/components/LegalGuides";
-import { KnowledgeBase } from "@/components/KnowledgeBase";
+import { ConstitutionExplorer } from "@/components/ConstitutionExplorer";
 import { DocumentTemplates } from "@/components/DocumentTemplates";
 import { DocumentTools } from "@/components/DocumentTools";
 import { LawyerFinder } from "@/components/LawyerFinder";
@@ -51,7 +51,7 @@ export const DashboardMainContent: React.FC<MainContentProps> = ({
     case "calculator":
       return <LegalFeeCalculator />;
     case "research":
-      return <KnowledgeBase />;
+      return <ConstitutionExplorer />;
     case "settings":
       return <SettingsPanel />;
     default:
