@@ -17,6 +17,7 @@ import {
   ChevronRight,
   Gavel,
   Calculator,
+  ShieldCheck,
 } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import {
@@ -68,6 +69,11 @@ export const DashboardSidebar: React.FC<SidebarProps> = ({
             id: "generator",
             icon: FilePlus,
             title: t("dashboard.documents"),
+          },
+          {
+            id: "healthcheck",
+            icon: ShieldCheck,
+            title: "Legal Health Check",
           },
           {
             id: "templates",

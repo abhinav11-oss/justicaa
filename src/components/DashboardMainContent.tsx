@@ -9,6 +9,7 @@ import { SettingsPanel } from "@/components/SettingsPanel";
 import { ChatView } from "@/components/ChatView";
 import { IndianLawsExplorer } from "@/components/IndianLawsExplorer";
 import { LegalFeeCalculator } from "@/components/LegalFeeCalculator";
+import { LegalHealthCheck } from "@/components/LegalHealthCheck";
 
 interface MainContentProps {
   activeTab: string;
@@ -39,6 +40,8 @@ export const DashboardMainContent: React.FC<MainContentProps> = ({
       return <LawyerFinder category="all" />;
     case "generator":
       return <DocumentTools category="all" />;
+    case "healthcheck":
+      return <LegalHealthCheck />;
     case "templates":
       return <DocumentTemplates />;
     case "guides":
