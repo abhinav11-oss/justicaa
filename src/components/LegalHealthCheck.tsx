@@ -2,9 +2,14 @@ import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Upload, File, ShieldCheck, BarChart, Lock, Loader2, AlertTriangle } from 'lucide-react';
+import { Upload, File, ShieldCheck, Lock, Loader2, AlertTriangle } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
 import { motion, AnimatePresence } from "framer-motion";
+import { supabase } from "@/integrations/supabase/client";
+import * as pdfjsLib from 'pdfjs-dist';
+import mammoth from 'mammoth';
+
+pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
 
 interface AnalysisReport {
   riskScore: number;
@@ -15,6 +20,44 @@ interface AnalysisReport {
     severity: 'High' | 'Medium' | 'Low';
   }[];
 }
+
+const readFileAsText = (file: File): Promise<string> => {
+  return new Promise(async (resolve, reject) => {
+    if (file.type === 'application/pdf') {
+      try {
+        const reader = new FileReader();
+        reader.onload = async (event) => {
+          if (!event.target?.result) return reject('Failed to read file');
+          const pdf = await pdfjsLib.getDocument({ data: event.target.result as ArrayBuffer }).promise;
+          let text = '';
+          for (let i = 1; i <= pdf.numPages; i++) {
+            const page = await pdf.getPage(i);
+            const content = await page.getTextContent();
+            text += content.items.map(item => ('str' in item ? item.str : '')).join(' ') + '\n';
+          }
+          resolve(text);
+        };
+        reader.readAsArrayBuffer(file);
+      } catch (error) {
+        reject(error);
+      }
+    } else if (file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
+      try {
+        const reader = new FileReader();
+        reader.onload = async (event) => {
+          if (!event.target?.result) return reject('Failed to read file');
+          const result = await mammoth.extractRawText({ arrayBuffer: event.target.result as ArrayBuffer });
+          resolve(result.value);
+        };
+        reader.readAsArrayBuffer(file);
+      } catch (error) {
+        reject(error);
+      }
+    } else {
+      reject(new Error('Unsupported file type. Please upload a .pdf or .docx file.'));
+    }
+  });
+};
 
 const FileUploader = ({ onFileSelect, acceptedTypes, children }: { onFileSelect: (file: File) => void, acceptedTypes: string, children: React.ReactNode }) => {
   const inputRef = React.useRef<HTMLInputElement>(null);
@@ -65,31 +108,35 @@ export const LegalHealthCheck = () => {
   const handleAnalyze = async () => {
     if (!file) return;
     setLoading(true);
-    await new Promise(resolve => setTimeout(resolve, 3000));
+    setReport(null);
+    try {
+      const text = await readFileAsText(file);
+      if (text.trim().length < 50) {
+        throw new Error("Could not extract sufficient text from the document. It might be an image-based PDF or empty.");
+      }
 
-    const mockReport: AnalysisReport = {
-      riskScore: 68,
-      summary: "This is a standard employment agreement with generally fair terms. However, several clauses related to non-compete and termination could be more favorable to the employee and warrant careful review.",
-      flaggedClauses: [
-        {
-          clause: "Non-Compete Clause (Section 8.1)",
-          reason: "The 24-month non-compete period is potentially unenforceable in some jurisdictions as it may be considered overly restrictive.",
-          severity: 'High',
-        },
-        {
-          clause: "Termination for Convenience (Section 12.3)",
-          reason: "The company can terminate the agreement without cause with only 15 days' notice, which is shorter than the industry standard of 30 days.",
-          severity: 'Medium',
-        },
-        {
-          clause: "Intellectual Property (Section 9)",
-          reason: "The clause grants the company ownership of all inventions, even those created outside of work hours, if they relate to the company's business. This is a very broad claim.",
-          severity: 'Low',
-        },
-      ],
-    };
-    setReport(mockReport);
-    setLoading(false);
+      const { data, error } = await supabase.functions.invoke('legal-health-check', {
+        body: { text },
+      });
+
+      if (error) throw error;
+      
+      if (data.riskScore === undefined || !data.summary || !Array.isArray(data.flaggedClauses)) {
+        throw new Error("The AI returned an invalid report format. Please try again.");
+      }
+
+      setReport(data as AnalysisReport);
+      toast({ title: "Analysis Complete!" });
+
+    } catch (error: any) {
+      toast({
+        title: "Analysis Failed",
+        description: error.message,
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
