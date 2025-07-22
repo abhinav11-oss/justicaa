@@ -80,6 +80,32 @@
   }
 }
 
+@layer utilities {
+  /* Custom scrollbar for horizontal scrolling elements */
+  .horizontal-scrollbar::-webkit-scrollbar {
+    height: 6px;
+  }
+
+  .horizontal-scrollbar::-webkit-scrollbar-track {
+    background: hsl(var(--muted));
+    border-radius: 10px;
+  }
+
+  .horizontal-scrollbar::-webkit-scrollbar-thumb {
+    background: hsl(var(--muted-foreground) / 0.5);
+    border-radius: 10px;
+  }
+
+  .horizontal-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--muted-foreground) / 0.7);
+  }
+
+  .horizontal-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--muted-foreground) / 0.5) hsl(var(--muted));
+  }
+}
+
 /* Custom Auth Form Styles */
 .auth-form-container {
   display: flex;

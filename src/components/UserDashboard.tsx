@@ -368,107 +368,115 @@ export function UserDashboard({ onSelectConversation }: UserDashboardProps) {
       <Card>
         <CardHeader>
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid w-full grid-cols-4">
-              <TabsTrigger value="conversations">{t('dashboard.conversations')}</TabsTrigger>
-              <TabsTrigger value="archived">{t('dashboard.archived')}</TabsTrigger>
-              <TabsTrigger value="documents">{t('dashboard.documentsTab')}</TabsTrigger>
-              <TabsTrigger value="matters">{t('dashboard.mattersTab')}</TabsTrigger>
-            </TabsList>
+            <div className="w-full overflow-x-auto horizontal-scrollbar pb-2">
+              <TabsList className="grid w-full grid-cols-4 min-w-[500px]">
+                <TabsTrigger value="conversations">{t('dashboard.conversations')}</TabsTrigger>
+                <TabsTrigger value="archived">{t('dashboard.archived')}</TabsTrigger>
+                <TabsTrigger value="documents">{t('dashboard.documentsTab')}</TabsTrigger>
+                <TabsTrigger value="matters">{t('dashboard.mattersTab')}</TabsTrigger>
+              </TabsList>
+            </div>
           </Tabs>
         </CardHeader>
         <CardContent>
           <Tabs value={activeTab}>
             <TabsContent value="conversations">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>{t('dashboard.table.title')}</TableHead>
-                    <TableHead>{t('dashboard.table.category')}</TableHead>
-                    <TableHead>{t('dashboard.table.date')}</TableHead>
-                    <TableHead>{t('dashboard.table.status')}</TableHead>
-                    <TableHead className="text-right">{t('dashboard.table.actions')}</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {conversations.map((c) => (
-                    <TableRow key={c.id} onClick={() => onSelectConversation(c.id)} className="cursor-pointer hover:bg-muted/50">
-                      <TableCell className="font-medium">{c.title}</TableCell>
-                      <TableCell><Badge variant="outline">{c.legal_category}</Badge></TableCell>
-                      <TableCell>{new Date(c.created_at).toLocaleDateString()}</TableCell>
-                      <TableCell><Badge className={getStatusColor(c.status)}>{c.status}</Badge></TableCell>
-                      <TableCell className="text-right">
-                        <ConversationActions conversation={c} />
-                      </TableCell>
+              <div className="w-full overflow-x-auto horizontal-scrollbar">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>{t('dashboard.table.title')}</TableHead>
+                      <TableHead>{t('dashboard.table.category')}</TableHead>
+                      <TableHead>{t('dashboard.table.date')}</TableHead>
+                      <TableHead>{t('dashboard.table.status')}</TableHead>
+                      <TableHead className="text-right">{t('dashboard.table.actions')}</TableHead>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+                  </TableHeader>
+                  <TableBody>
+                    {conversations.map((c) => (
+                      <TableRow key={c.id} onClick={() => onSelectConversation(c.id)} className="cursor-pointer hover:bg-muted/50">
+                        <TableCell className="font-medium">{c.title}</TableCell>
+                        <TableCell><Badge variant="outline">{c.legal_category}</Badge></TableCell>
+                        <TableCell>{new Date(c.created_at).toLocaleDateString()}</TableCell>
+                        <TableCell><Badge className={getStatusColor(c.status)}>{c.status}</Badge></TableCell>
+                        <TableCell className="text-right">
+                          <ConversationActions conversation={c} />
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
             </TabsContent>
             <TabsContent value="archived">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>{t('dashboard.table.title')}</TableHead>
-                    <TableHead>{t('dashboard.table.category')}</TableHead>
-                    <TableHead>{t('dashboard.table.date')}</TableHead>
-                    <TableHead>{t('dashboard.table.status')}</TableHead>
-                    <TableHead className="text-right">{t('dashboard.table.actions')}</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {archivedConversations.map((c) => (
-                    <TableRow key={c.id} onClick={() => onSelectConversation(c.id)} className="cursor-pointer hover:bg-muted/50">
-                      <TableCell className="font-medium">{c.title}</TableCell>
-                      <TableCell><Badge variant="outline">{c.legal_category}</Badge></TableCell>
-                      <TableCell>{new Date(c.created_at).toLocaleDateString()}</TableCell>
-                      <TableCell><Badge className={getStatusColor(c.status)}>{c.status}</Badge></TableCell>
-                      <TableCell className="text-right">
-                        <ConversationActions conversation={c} isArchived />
-                      </TableCell>
+              <div className="w-full overflow-x-auto horizontal-scrollbar">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>{t('dashboard.table.title')}</TableHead>
+                      <TableHead>{t('dashboard.table.category')}</TableHead>
+                      <TableHead>{t('dashboard.table.date')}</TableHead>
+                      <TableHead>{t('dashboard.table.status')}</TableHead>
+                      <TableHead className="text-right">{t('dashboard.table.actions')}</TableHead>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+                  </TableHeader>
+                  <TableBody>
+                    {archivedConversations.map((c) => (
+                      <TableRow key={c.id} onClick={() => onSelectConversation(c.id)} className="cursor-pointer hover:bg-muted/50">
+                        <TableCell className="font-medium">{c.title}</TableCell>
+                        <TableCell><Badge variant="outline">{c.legal_category}</Badge></TableCell>
+                        <TableCell>{new Date(c.created_at).toLocaleDateString()}</TableCell>
+                        <TableCell><Badge className={getStatusColor(c.status)}>{c.status}</Badge></TableCell>
+                        <TableCell className="text-right">
+                          <ConversationActions conversation={c} isArchived />
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
             </TabsContent>
             <TabsContent value="documents">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>{t('dashboard.table.title')}</TableHead>
-                    <TableHead>{t('dashboard.table.type')}</TableHead>
-                    <TableHead>{t('dashboard.table.date')}</TableHead>
-                    <TableHead>{t('dashboard.table.status')}</TableHead>
-                    <TableHead className="text-right">{t('dashboard.table.actions')}</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {documents.map((d) => (
-                    <TableRow key={d.id}>
-                      <TableCell className="font-medium">{d.title}</TableCell>
-                      <TableCell><Badge variant="outline">{d.document_type}</Badge></TableCell>
-                      <TableCell>{new Date(d.created_at).toLocaleDateString()}</TableCell>
-                      <TableCell><Badge className={getStatusColor(d.status)}>{d.status}</Badge></TableCell>
-                      <TableCell className="text-right">
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="icon" className="h-8 w-8 p-0">
-                              <Download className="h-4 w-4" />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuItem onClick={() => downloadDocumentAsPdf(d)}>
-                              Download as PDF
-                            </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => downloadDocumentAsWord(d)}>
-                              Download as Word
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
+              <div className="w-full overflow-x-auto horizontal-scrollbar">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>{t('dashboard.table.title')}</TableHead>
+                      <TableHead>{t('dashboard.table.type')}</TableHead>
+                      <TableHead>{t('dashboard.table.date')}</TableHead>
+                      <TableHead>{t('dashboard.table.status')}</TableHead>
+                      <TableHead className="text-right">{t('dashboard.table.actions')}</TableHead>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+                  </TableHeader>
+                  <TableBody>
+                    {documents.map((d) => (
+                      <TableRow key={d.id}>
+                        <TableCell className="font-medium">{d.title}</TableCell>
+                        <TableCell><Badge variant="outline">{d.document_type}</Badge></TableCell>
+                        <TableCell>{new Date(d.created_at).toLocaleDateString()}</TableCell>
+                        <TableCell><Badge className={getStatusColor(d.status ?? "")}>{d.status}</Badge></TableCell>
+                        <TableCell className="text-right">
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button variant="ghost" size="icon" className="h-8 w-8 p-0">
+                                <Download className="h-4 w-4" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                              <DropdownMenuItem onClick={() => downloadDocumentAsPdf(d)}>
+                                Download as PDF
+                              </DropdownMenuItem>
+                              <DropdownMenuItem onClick={() => downloadDocumentAsWord(d)}>
+                                Download as Word
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
             </TabsContent>
             <TabsContent value="matters">
               <div className="text-center py-12 text-muted-foreground">

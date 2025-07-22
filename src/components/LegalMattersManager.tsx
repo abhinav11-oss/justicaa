@@ -187,32 +187,34 @@ export const LegalMattersManager = () => {
               <p className="text-sm">Click "Add New Matter" to get started.</p>
             </div>
           ) : (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Title</TableHead>
-                  <TableHead>Type</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Priority</TableHead>
-                  <TableHead>Deadline</TableHead>
-                  <TableHead className="text-right">Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {matters.map((matter) => (
-                  <TableRow key={matter.id}>
-                    <TableCell className="font-medium">{matter.title}</TableCell>
-                    <TableCell><Badge variant="outline">{matter.matter_type}</Badge></TableCell>
-                    <TableCell><Badge className={getStatusBadge(matter.status)}>{matter.status}</Badge></TableCell>
-                    <TableCell><span className={getPriorityBadge(matter.priority)}>{matter.priority}</span></TableCell>
-                    <TableCell>{matter.deadline_date ? format(new Date(matter.deadline_date), "PPP") : "N/A"}</TableCell>
-                    <TableCell className="text-right">
-                      <Button variant="ghost" size="icon" onClick={() => deleteMatter(matter.id)}><Trash2 className="h-4 w-4" /></Button>
-                    </TableCell>
+            <div className="w-full overflow-x-auto horizontal-scrollbar">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Title</TableHead>
+                    <TableHead>Type</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Priority</TableHead>
+                    <TableHead>Deadline</TableHead>
+                    <TableHead className="text-right">Actions</TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+                </TableHeader>
+                <TableBody>
+                  {matters.map((matter) => (
+                    <TableRow key={matter.id}>
+                      <TableCell className="font-medium">{matter.title}</TableCell>
+                      <TableCell><Badge variant="outline">{matter.matter_type}</Badge></TableCell>
+                      <TableCell><Badge className={getStatusBadge(matter.status)}>{matter.status}</Badge></TableCell>
+                      <TableCell><span className={getPriorityBadge(matter.priority)}>{matter.priority}</span></TableCell>
+                      <TableCell>{matter.deadline_date ? format(new Date(matter.deadline_date), "PPP") : "N/A"}</TableCell>
+                      <TableCell className="text-right">
+                        <Button variant="ghost" size="icon" onClick={() => deleteMatter(matter.id)}><Trash2 className="h-4 w-4" /></Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
           )}
         </CardContent>
       </Card>

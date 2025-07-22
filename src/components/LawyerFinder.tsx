@@ -220,12 +220,14 @@ export const LawyerFinder = ({ category }: LawyerFinderProps) => {
       </Card>
 
       <Tabs value={selectedCategory} onValueChange={(v) => setSelectedCategory(v as keyof typeof categoryMap)}>
-        <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="All">All</TabsTrigger>
-          <TabsTrigger value="Business Law">Business</TabsTrigger>
-          <TabsTrigger value="Personal Legal">Personal</TabsTrigger>
-          <TabsTrigger value="Contract Review">Contracts</TabsTrigger>
-        </TabsList>
+        <div className="w-full overflow-x-auto horizontal-scrollbar pb-2">
+          <TabsList className="grid w-full grid-cols-4 min-w-[500px]">
+            <TabsTrigger value="All">All</TabsTrigger>
+            <TabsTrigger value="Business Law">Business</TabsTrigger>
+            <TabsTrigger value="Personal Legal">Personal</TabsTrigger>
+            <TabsTrigger value="Contract Review">Contracts</TabsTrigger>
+          </TabsList>
+        </div>
         <TabsContent value={selectedCategory} className="space-y-4 mt-4">
           <div className="flex items-center space-x-2">
             <Filter className="h-4 w-4" />

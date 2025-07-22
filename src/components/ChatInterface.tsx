@@ -354,8 +354,8 @@ export const ChatInterface = ({ conversationId: propConversationId, onSelectConv
                 {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : isInputDisabled ? <Lock className="h-4 w-4" /> : <Send className="h-4 w-4" />}
               </Button>
             </div>
-            <div className="flex items-center justify-between mt-2">
-              <div className="flex items-center gap-4">
+            <div className="flex flex-wrap items-center justify-between gap-y-2 gap-x-4 mt-2">
+              <div className="flex items-center gap-x-2 sm:gap-x-4 flex-wrap gap-y-2">
                 <VoiceChat
                   onTranscript={handleTranscript}
                   isListening={isListening}
@@ -370,7 +370,7 @@ export const ChatInterface = ({ conversationId: propConversationId, onSelectConv
                   Prompts
                 </Button>
               </div>
-              <p className="text-xs text-muted-foreground text-center hidden md:block">
+              <p className="text-xs text-muted-foreground text-center md:text-right">
                 {t('chat.disclaimer')}
               </p>
             </div>
