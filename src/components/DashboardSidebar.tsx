@@ -16,6 +16,7 @@ import {
   ChevronLeft,
   ChevronRight,
   Gavel,
+  Calculator,
 } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import {
@@ -82,6 +83,11 @@ export const DashboardSidebar: React.FC<SidebarProps> = ({
             id: "laws",
             icon: Gavel,
             title: "Indian Laws",
+          },
+          {
+            id: "calculator",
+            icon: Calculator,
+            title: "Fee Calculator",
           },
           {
             id: "research",
