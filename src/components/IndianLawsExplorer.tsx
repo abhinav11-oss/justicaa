@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Badge } from "@/components/ui/badge";
-import { Search, Gavel, Landmark, Shield, Building, Users, Home, Briefcase } from "lucide-react";
+import { Search, Gavel, Landmark, Shield, Building, Users, Home, Briefcase, Laptop } from "lucide-react";
 
 const lawCategories = [
   {
@@ -47,12 +47,20 @@ const lawCategories = [
           { title: "Section 164: Recording of confessions and statements", description: "Lays down the procedure for a Magistrate to record confessions and statements during an investigation." },
         ],
       },
+      {
+        title: "Indian Evidence Act, 1872",
+        description: "Consolidates, defines, and amends the law of evidence in India.",
+        keySections: [
+          { title: "Section 24: Confession caused by inducement, threat or promise", description: "Makes a confession irrelevant in a criminal proceeding if it appears to have been caused by any inducement, threat, or promise." },
+          { title: "Section 32: Dying Declaration", description: "Deals with the admissibility of a statement made by a person as to the cause of his death, or as to any of the circumstances of the transaction which resulted in his death." },
+        ],
+      },
     ],
   },
   {
     id: "civil",
-    name: "Civil Law",
-    icon: Briefcase,
+    name: "Civil & Property Law",
+    icon: Home,
     acts: [
       {
         title: "Code of Civil Procedure (CPC), 1908",
@@ -60,7 +68,6 @@ const lawCategories = [
         keySections: [
           { title: "Section 9: Courts to try all civil suits unless barred", description: "Establishes the jurisdiction of civil courts to hear all civil matters." },
           { title: "Order 7: Plaint", description: "Details the particulars that must be contained in a plaint (the statement of claim filed by a plaintiff)." },
-          { title: "Order 8: Written Statement, Set-off and Counter-claim", description: "Governs the defendant's reply to the plaint." },
         ],
       },
       {
@@ -69,6 +76,72 @@ const lawCategories = [
         keySections: [
           { title: "Section 10: What agreements are contracts", description: "Outlines the essential elements of a valid contract, such as free consent, lawful consideration, and lawful object." },
           { title: "Section 73: Compensation for loss or damage caused by breach of contract", description: "Provides for remedies in case of a breach of contract." },
+        ],
+      },
+      {
+        title: "Transfer of Property Act, 1882",
+        description: "Regulates the transfer of property in India. It contains specific provisions regarding what constitutes a transfer and the conditions attached to it.",
+        keySections: [
+          { title: "Section 5: 'Transfer of property' defined", description: "Defines transfer of property as an act by which a living person conveys property, in present or in future, to one or more other living persons." },
+          { title: "Section 54: 'Sale' defined", description: "Defines sale as a transfer of ownership in exchange for a price paid or promised or part-paid and part-promised." },
+        ],
+      },
+    ],
+  },
+  {
+    id: "corporate",
+    name: "Corporate & Business Law",
+    icon: Building,
+    acts: [
+      {
+        title: "Companies Act, 2013",
+        description: "An Act to consolidate and amend the law relating to companies.",
+        keySections: [
+          { title: "Section 3: Formation of company", description: "Lays down the requirements for the formation of public and private companies." },
+          { title: "Section 135: Corporate Social Responsibility (CSR)", description: "Mandates that companies of a certain size must spend a portion of their profits on CSR activities." },
+        ],
+      },
+      {
+        title: "Limited Liability Partnership Act, 2008",
+        description: "Governs the formation and regulation of Limited Liability Partnerships (LLPs).",
+        keySections: [
+          { title: "Section 3: Limited liability partnership to be a body corporate", description: "Establishes an LLP as a separate legal entity from its partners." },
+        ],
+      },
+    ],
+  },
+  {
+    id: "labour",
+    name: "Labour & Employment Law",
+    icon: Users,
+    acts: [
+      {
+        title: "Code on Wages, 2019",
+        description: "Amends and consolidates the laws relating to wages and bonuses and matters connected therewith.",
+        keySections: [
+          { title: "Section 5: Minimum wages", description: "Empowers the central and state governments to fix minimum wages for employees." },
+        ],
+      },
+      {
+        title: "Industrial Relations Code, 2020",
+        description: "Consolidates and amends the laws relating to Trade Unions, conditions of employment in industrial establishment or undertaking, investigation and settlement of industrial disputes.",
+        keySections: [
+          { title: "Chapter V: Strikes and Lock-outs", description: "Regulates the process and legality of strikes and lock-outs." },
+        ],
+      },
+    ],
+  },
+  {
+    id: "it",
+    name: "Information Technology Law",
+    icon: Laptop,
+    acts: [
+      {
+        title: "Information Technology Act, 2000",
+        description: "The primary law in India dealing with cybercrime and electronic commerce.",
+        keySections: [
+          { title: "Section 43A: Compensation for failure to protect data", description: "Makes corporate bodies liable to pay damages if they are negligent in implementing and maintaining reasonable security practices and procedures, resulting in wrongful loss or gain." },
+          { title: "Section 66: Computer related offences", description: "Defines hacking and prescribes punishment for it." },
         ],
       },
     ],
@@ -84,7 +157,6 @@ const lawCategories = [
         keySections: [
           { title: "Section 2(9): Definition of 'consumer'", description: "Defines who qualifies as a consumer under the act." },
           { title: "Section 35: Manner in which complaint shall be made", description: "Specifies the procedure for filing a complaint in a Consumer Commission." },
-          { title: "Chapter VI: Product Liability", description: "Introduces provisions for product liability action against manufacturers and sellers." },
         ],
       },
     ],
@@ -113,7 +185,7 @@ export const IndianLawsExplorer = () => {
       <div className="relative">
         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
         <Input
-          placeholder="Search for laws or sections (e.g., 'IPC 302', 'FIR')"
+          placeholder="Search for laws or sections (e.g., 'IPC 302', 'Contract Act')"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           className="pl-10"
