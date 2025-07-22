@@ -10,6 +10,7 @@ import { ChatView } from "@/components/ChatView";
 import { IndianLawsExplorer } from "@/components/IndianLawsExplorer";
 import { LegalFeeCalculator } from "@/components/LegalFeeCalculator";
 import { LegalHealthCheck } from "@/components/LegalHealthCheck";
+import { LegalMattersManager } from "@/components/LegalMattersManager";
 
 interface MainContentProps {
   activeTab: string;
@@ -36,6 +37,8 @@ export const DashboardMainContent: React.FC<MainContentProps> = ({
       return <UserDashboard onSelectConversation={onSelectConversation} />;
     case "chat":
       return <ChatView onSelectConversation={onSelectConversation} onNewConversation={onNewConversation} conversationId={activeConversationId} />;
+    case "matters":
+      return <LegalMattersManager />;
     case "lawyers":
       return <LawyerFinder category="all" />;
     case "generator":

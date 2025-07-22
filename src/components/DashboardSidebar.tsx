@@ -18,6 +18,7 @@ import {
   Gavel,
   Calculator,
   ShieldCheck,
+  Briefcase,
 } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import {
@@ -60,6 +61,11 @@ export const DashboardSidebar: React.FC<SidebarProps> = ({
     { id: "chat", icon: MessageSquare, title: t("dashboard.aiChat") },
     ...(user
       ? [
+          {
+            id: "matters",
+            icon: Briefcase,
+            title: "Matters",
+          },
           {
             id: "lawyers",
             icon: Users,
