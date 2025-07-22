@@ -71,8 +71,8 @@ export const ConstitutionExplorer = () => {
       {!loading && Object.keys(groupedArticles).length === 0 && (
          <div className="text-center py-12 text-muted-foreground">
             <BookOpen className="h-12 w-12 mx-auto mb-4" />
-            <p>Could not load Constitution articles.</p>
-            <p className="text-sm">Please try refreshing the page.</p>
+            <p>No Constitution articles found.</p>
+            <p className="text-sm">It seems there are no articles in the database at this time.</p>
           </div>
       )}
 
