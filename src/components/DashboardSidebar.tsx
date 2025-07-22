@@ -92,11 +92,6 @@ export const DashboardSidebar: React.FC<SidebarProps> = ({
             title: t("dashboard.guides"),
           },
           {
-            id: "laws",
-            icon: Gavel,
-            title: "Indian Laws",
-          },
-          {
             id: "calculator",
             icon: Calculator,
             title: "Fee Calculator",
