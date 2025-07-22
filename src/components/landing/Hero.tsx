@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { motion } from "framer-motion";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, ShieldCheck, Briefcase, FilePlus } from "lucide-react";
 import { AnimatedGridBackground } from "@/components/AnimatedGridBackground";
 
 interface HeroProps {
@@ -23,10 +23,10 @@ export const Hero = ({ onCTAClick, onTryForFree }: HeroProps) => {
               transition={{ duration: 0.8, ease: "easeOut" }}
             >
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-6 tracking-tighter">
-                Your AI Partner for Legal Help in India
+                Go Beyond Legal Advice. Manage Your Case with AI.
               </h1>
               <p className="text-lg md:text-xl text-muted-foreground max-w-xl mx-auto lg:mx-0 mb-10">
-                From filing RTIs to understanding your rights, Justicaa simplifies law with intelligent chat and auto-generated legal documents.
+                Analyze contracts with our AI Health Check, track case deadlines, and generate legal documents instantly. Justicaa is your all-in-one legal management platform.
               </p>
               <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
                 <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
@@ -40,6 +40,20 @@ export const Hero = ({ onCTAClick, onTryForFree }: HeroProps) => {
                     Sign In
                   </Button>
                 </motion.div>
+              </div>
+              <div className="mt-8 flex flex-wrap justify-center lg:justify-start gap-x-6 gap-y-2 text-sm text-muted-foreground">
+                <div className="flex items-center gap-2">
+                  <ShieldCheck className="h-4 w-4 text-primary" />
+                  <span>AI Legal Health Check</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Briefcase className="h-4 w-4 text-primary" />
+                  <span>Case Deadline Tracker</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <FilePlus className="h-4 w-4 text-primary" />
+                  <span>Instant Document Generation</span>
+                </div>
               </div>
             </motion.div>
             
