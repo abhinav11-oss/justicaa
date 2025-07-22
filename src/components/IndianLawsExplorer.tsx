@@ -35,12 +35,14 @@ export const IndianLawsExplorer = () => {
 
       if (error) throw error;
       
-      // The API response seems to have a 'docs' array
-      if (data.docs && Array.isArray(data.docs)) {
+      console.log("Received data from iKanoon function:", data);
+
+      // Add a more robust check to ensure data and data.docs are valid
+      if (data && data.docs && Array.isArray(data.docs)) {
         setResults(data.docs);
       } else {
         setResults([]);
-        toast({ title: "No results found or unexpected API response." });
+        toast({ title: "No results found", description: "The search returned no matching documents or the API response was unexpected." });
       }
 
     } catch (error: any) {
