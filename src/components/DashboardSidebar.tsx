@@ -15,6 +15,7 @@ import {
   X,
   ChevronLeft,
   ChevronRight,
+  Gavel,
 } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import {
@@ -76,6 +77,11 @@ export const DashboardSidebar: React.FC<SidebarProps> = ({
             id: "guides",
             icon: BookOpen,
             title: t("dashboard.guides"),
+          },
+          {
+            id: "laws",
+            icon: Gavel,
+            title: "Indian Laws",
           },
           {
             id: "research",

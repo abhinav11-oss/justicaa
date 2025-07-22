@@ -7,6 +7,7 @@ import { LawyerFinder } from "@/components/LawyerFinder";
 import { UserDashboard } from "@/components/UserDashboard";
 import { SettingsPanel } from "@/components/SettingsPanel";
 import { ChatView } from "@/components/ChatView";
+import { IndianLawsExplorer } from "@/components/IndianLawsExplorer";
 
 interface MainContentProps {
   activeTab: string;
@@ -41,6 +42,8 @@ export const DashboardMainContent: React.FC<MainContentProps> = ({
       return <DocumentTemplates />;
     case "guides":
       return <LegalGuides />;
+    case "laws":
+      return <IndianLawsExplorer />;
     case "research":
       return <KnowledgeBase />;
     case "settings":
