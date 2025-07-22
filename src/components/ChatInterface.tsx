@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Send, Bot, User, Loader2, Copy, Lock, Volume2, Paperclip, Sparkles, Mic } from "lucide-react";
+import { Send, Bot, User, Loader2, Copy, Lock, Volume2, Paperclip, Sparkles, Mic, Users } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
@@ -14,12 +14,14 @@ import { VoiceChat, useSpeakText } from "@/components/VoiceChat";
 import { Switch } from "@/components/ui/switch";
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { RecommendedLawyers } from "./RecommendedLawyers";
 
 interface Message {
   id: string;
   role: "user" | "assistant";
   content: string;
   timestamp: Date;
+  category?: string;
 }
 
 interface ChatInterfaceProps {
@@ -37,6 +39,9 @@ export const ChatInterface = ({ conversationId: propConversationId, onSelectConv
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [showPrompts, setShowPrompts] = useState(true);
   const [isListening, setIsListening] = useState(false);
+  const [lastAiCategory, setLastAiCategory] = useState<string | null>(null);
+  const [showRecommendations, setShowRecommendations] = useState(false);
+  const [userCity, setUserCity] = useState<string | null>(null);
   const { user } = useAuth();
   const { toast } = useToast();
   const { speakText, isSpeaking } = useSpeakText();
@@ -60,7 +65,10 @@ export const ChatInterface = ({ conversationId: propConversationId, onSelectConv
       const savedCount = localStorage.getItem('trialMessagesUsed');
       setTrialMessagesUsed(savedCount ? parseInt(savedCount) : 0);
     }
-  }, [isTrialMode]);
+    if (user) {
+      fetchUserCity();
+    }
+  }, [isTrialMode, user]);
 
   useEffect(() => {
     if (propConversationId && !isLoading) {
@@ -73,6 +81,23 @@ export const ChatInterface = ({ conversationId: propConversationId, onSelectConv
       setShowPrompts(true);
     }
   }, [propConversationId]);
+
+  const fetchUserCity = async () => {
+    if (!user) return;
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('state_jurisdiction')
+        .eq('id', user.id)
+        .single();
+      if (error) throw error;
+      if (data?.state_jurisdiction) {
+        setUserCity(data.state_jurisdiction);
+      }
+    } catch (error) {
+      console.warn("Could not fetch user's city from profile.");
+    }
+  };
 
   const fetchMessages = async (convId: string) => {
     setIsLoading(true);
@@ -90,8 +115,11 @@ export const ChatInterface = ({ conversationId: propConversationId, onSelectConv
         role: msg.sender === 'user' ? 'user' : 'assistant',
         content: msg.content,
         timestamp: new Date(msg.created_at),
+        category: msg.metadata?.category,
       }));
       setMessages(loadedMessages);
+      const lastAssistantMsg = loadedMessages.filter(m => m.role === 'assistant').pop();
+      setLastAiCategory(lastAssistantMsg?.category || null);
     } catch (error) {
       toast({
         title: t('common.error'),
@@ -153,6 +181,7 @@ export const ChatInterface = ({ conversationId: propConversationId, onSelectConv
     setInputValue("");
     setIsLoading(true);
     setShowPrompts(false);
+    setLastAiCategory(null);
 
     if (isTrialMode) {
       const newCount = trialMessagesUsed + 1;
@@ -187,14 +216,16 @@ export const ChatInterface = ({ conversationId: propConversationId, onSelectConv
         role: "assistant",
         content: data.response || "I apologize, but I couldn't process your request.",
         timestamp: new Date(),
+        category: data.category,
       };
+      setLastAiCategory(data.category);
 
       setMessages(prev => [...prev, assistantMessage]);
 
       if (user && currentConvId) {
         await supabase.from("chat_messages").insert([
           { conversation_id: currentConvId, sender: "user", content: content, created_at: userMessage.timestamp.toISOString() },
-          { conversation_id: currentConvId, sender: "assistant", content: assistantMessage.content, created_at: assistantMessage.timestamp.toISOString() }
+          { conversation_id: currentConvId, sender: "assistant", content: assistantMessage.content, created_at: assistantMessage.timestamp.toISOString(), metadata: { category: data.category } }
         ]);
       }
 
@@ -294,6 +325,14 @@ export const ChatInterface = ({ conversationId: propConversationId, onSelectConv
                       <div className="bg-muted p-3 md:p-4 rounded-lg"><div className="flex items-center space-x-2"><Loader2 className="h-3 w-3 md:h-4 w-4 animate-spin" /><span className="text-sm">{t('chat.thinking')}</span></div></div>
                     </div>
                   )}
+                  {!isLoading && lastAiCategory && user && (
+                    <div className="flex justify-center">
+                      <Button variant="outline" size="sm" onClick={() => setShowRecommendations(true)}>
+                        <Users className="h-4 w-4 mr-2" />
+                        Find a Lawyer for This Case
+                      </Button>
+                    </div>
+                  )}
                 </div>
               )}
               <div ref={messagesEndRef} />
@@ -360,6 +399,15 @@ export const ChatInterface = ({ conversationId: propConversationId, onSelectConv
           </div>
         </DialogContent>
       </Dialog>
+
+      {lastAiCategory && (
+        <RecommendedLawyers
+          isOpen={showRecommendations}
+          onClose={() => setShowRecommendations(false)}
+          category={lastAiCategory}
+          city={userCity}
+        />
+      )}
     </div>
   );
 };
