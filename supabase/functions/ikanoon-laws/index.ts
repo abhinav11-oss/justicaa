@@ -22,20 +22,34 @@ serve(async (req) => {
       throw new Error('Search query is required.');
     }
 
-    // The iKanoon API seems to use the token directly in the URL
-    const apiUrl = `https://api.indiankanoon.org/search/?formInput=${encodeURIComponent(query)}&token=${IKANOON_API_KEY}`;
+    const apiUrl = 'https://api.indiankanoon.org/search/';
 
     const response = await fetch(apiUrl, {
-      method: 'POST', // As per some documentation, it might be a POST request
+      method: 'POST',
       headers: {
+        'Authorization': `Token ${IKANOON_API_KEY}`,
         'Content-Type': 'application/json',
-      }
+      },
+      body: JSON.stringify({
+        formInput: query,
+      }),
     });
 
     if (!response.ok) {
       const errorText = await response.text();
       console.error('iKanoon API error:', errorText);
-      throw new Error(`iKanoon API error: ${response.status} - ${errorText}`);
+      let errorMessage = `iKanoon API error: ${response.status}`;
+      try {
+        const errorJson = JSON.parse(errorText);
+        if (errorJson.detail) {
+          errorMessage += ` - ${errorJson.detail}`;
+        } else {
+          errorMessage += ` - ${errorText}`;
+        }
+      } catch (e) {
+        errorMessage += ` - ${errorText}`;
+      }
+      throw new Error(errorMessage);
     }
 
     const data = await response.json();
