@@ -8,6 +8,7 @@ import { ThemeProvider } from "next-themes";
 import Landing from "./pages/Landing";
 import Dashboard from "./pages/Dashboard";
 import Auth from "./pages/Auth";
+import AuthCallback from "./pages/AuthCallback";
 import NotFound from "./pages/NotFound";
 import "./i18n"; // Import i18n configuration
 import { MotionConfig } from "framer-motion";
@@ -34,6 +35,7 @@ const App = () => {
                 <Routes>
                   <Route path="/" element={<Landing />} />
                   <Route path="/auth" element={<Auth />} />
+                  <Route path="/auth/callback" element={<AuthCallback />} />
                   <Route path="/dashboard" element={<Dashboard />} />
                   <Route path="/index" element={<Navigate to="/" replace />} />
                   <Route path="*" element={<NotFound />} />

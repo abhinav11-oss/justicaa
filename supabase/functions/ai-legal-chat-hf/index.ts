@@ -17,8 +17,11 @@ serve(async (req) => {
 
     console.log('Processing legal query:', message);
 
-    // Get Gemini API key from environment
-    const geminiApiKey = Deno.env.get('GEMINI_API_KEY');
+    // Accept a few common secret names to make deployment less fragile.
+    const geminiApiKey =
+      Deno.env.get('GEMINI_API_KEY') ||
+      Deno.env.get('GOOGLE_API_KEY') ||
+      Deno.env.get('GOOGLE_GEMINI_API_KEY');
     
     if (!geminiApiKey) {
       throw new Error('Gemini API key not configured');
@@ -146,7 +149,8 @@ Remember: You're helping Indian citizens navigate their legal system effectively
 
     return new Response(JSON.stringify({ 
       response: aiResponse,
-      category: category 
+      category: category,
+      fallback: false,
     }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
@@ -179,9 +183,10 @@ For immediate legal assistance, contact your nearest Legal Services Authority or
 
     return new Response(JSON.stringify({ 
       error: error.message,
-      response: fallbackResponse 
+      response: fallbackResponse,
+      category: 'general',
+      fallback: true,
     }), {
-      status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   }
