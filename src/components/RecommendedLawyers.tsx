@@ -13,6 +13,8 @@ interface RecommendedLawyersProps {
   city: string | null;
 }
 
+const normalizeValue = (value: string) => value.trim().toLowerCase();
+
 export const RecommendedLawyers = ({ isOpen, onClose, category, city }: RecommendedLawyersProps) => {
   const [recommended, setRecommended] = useState<Lawyer[]>([]);
 
@@ -29,7 +31,9 @@ export const RecommendedLawyers = ({ isOpen, onClose, category, city }: Recommen
       );
 
       if (city) {
-        const cityMatches = potentialMatches.filter(lawyer => lawyer.city.toLowerCase() === city.toLowerCase());
+        const cityMatches = potentialMatches.filter(
+          (lawyer) => normalizeValue(lawyer.city) === normalizeValue(city),
+        );
         if (cityMatches.length > 0) {
           potentialMatches = cityMatches;
         }
@@ -77,7 +81,21 @@ export const RecommendedLawyers = ({ isOpen, onClose, category, city }: Recommen
                     <div className="text-center space-y-2">
                       <div className="flex items-center justify-center space-x-1"><Star className="h-5 w-5 fill-yellow-400 text-yellow-400" /> <span className="font-bold text-lg">{lawyer.rating}</span></div>
                       <Button size="sm" className="w-full" onClick={() => window.open(`tel:${lawyer.phone}`)}><Phone className="h-4 w-4 mr-2" />Call</Button>
-                      <Button size="sm" variant="outline" className="w-full" onClick={() => window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(lawyer.address)}`)}><Navigation className="h-4 w-4 mr-2" />Directions</Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="w-full"
+                        onClick={() =>
+                          window.open(
+                            `https://www.google.com/maps/search/?api=1&query=${lawyer.latitude},${lawyer.longitude}`,
+                            "_blank",
+                            "noopener,noreferrer",
+                          )
+                        }
+                      >
+                        <Navigation className="h-4 w-4 mr-2" />
+                        Directions
+                      </Button>
                     </div>
                   </div>
                 </CardContent>
