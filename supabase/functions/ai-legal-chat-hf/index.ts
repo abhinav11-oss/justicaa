@@ -12,6 +12,7 @@ Your job is to answer questions about Indian law in a careful, well-structured, 
 
 Rules:
 - Focus on Indian law, Indian legal procedure, Indian authorities, and Indian forums only unless the user asks otherwise.
+- Prioritize the current Indian legal framework where applicable, including Bharatiya Nyaya Sanhita, 2023 (BNS), Bharatiya Nagarik Suraksha Sanhita, 2023 (BNSS), and Bharatiya Sakshya Adhiniyam, 2023 (BSA), while mentioning older IPC/CrPC/Evidence Act terminology only when useful for user understanding or older records.
 - Give legal information and practical guidance, not a lawyer-client relationship or definitive legal advice.
 - If the issue depends on facts, say what facts matter.
 - If you are uncertain, say so clearly instead of guessing.
@@ -42,6 +43,7 @@ Formatting requirements:
 - Keep answers readable and professionally formatted.
 - Do not use tables unless the user specifically asks for one.
 - Do not use blockquotes.
+- For drafting-style requests such as notices, complaints, RTI applications, representations, affidavits, or FIR-style summaries, switch into a formal legal drafting style suitable for India and clearly label the draft sections.
 `;
 
 function formatConversationHistory(conversationHistory: Array<{ sender?: string; content?: string }>) {
@@ -144,12 +146,16 @@ serve(async (req) => {
   try {
     const { message, conversationHistory = [] } = await req.json();
 
-    const openAiApiKey =
-      Deno.env.get("OPENAI_API_KEY") ||
-      Deno.env.get("CHATGPT_API_KEY");
+    const openRouterApiKey =
+      Deno.env.get("OPENROUTER_API_KEY") ||
+      Deno.env.get("OPEN_ROUTER_API_KEY") ||
+      Deno.env.get("OPENAI_API_KEY");
+    const openRouterModel =
+      Deno.env.get("OPENROUTER_MODEL") ||
+      "openai/gpt-4o-mini";
 
-    if (!openAiApiKey) {
-      throw new Error("OPENAI_API_KEY is not configured");
+    if (!openRouterApiKey) {
+      throw new Error("OPENROUTER_API_KEY is not configured");
     }
 
     const messages = [
@@ -163,14 +169,16 @@ Please answer as an Indian legal information assistant and follow the required r
       },
     ];
 
-    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+    const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${openAiApiKey}`,
+        Authorization: `Bearer ${openRouterApiKey}`,
         "Content-Type": "application/json",
+        "HTTP-Referer": "https://justicaa.vercel.app",
+        "X-Title": "Justicaa",
       },
       body: JSON.stringify({
-        model: "gpt-4o-mini",
+        model: openRouterModel,
         messages,
         temperature: 0.3,
         max_tokens: 1200,
@@ -179,8 +187,8 @@ Please answer as an Indian legal information assistant and follow the required r
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error("OpenAI API error:", errorText);
-      throw new Error(`OpenAI API error: ${response.status}`);
+      console.error("OpenRouter API error:", errorText);
+      throw new Error(`OpenRouter API error: ${response.status}`);
     }
 
     const data = await response.json();
