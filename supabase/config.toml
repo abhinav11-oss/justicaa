@@ -34,3 +34,6 @@ secret = ""
 
 [functions.ai-legal-chat-hf]
 verify_jwt = false
+
+[functions.find-lawyers]
+verify_jwt = false
