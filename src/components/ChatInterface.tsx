@@ -268,7 +268,7 @@ export const ChatInterface = ({ conversationId: propConversationId, onSelectConv
         }
       }
 
-      toast({ title: t('common.error'), description: "Failed to reach Gemini. Showing fallback legal guidance.", variant: "destructive" });
+      toast({ title: t('common.error'), description: "AI service is unavailable right now. Showing fallback legal guidance.", variant: "destructive" });
       const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
         role: "assistant",
