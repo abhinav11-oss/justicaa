@@ -191,12 +191,6 @@ export const ChatInterface = ({ conversationId: propConversationId, onSelectConv
 
     try {
       let currentConvId = conversationId;
-      const conversationHistory = messages
-        .slice(-6)
-        .map((msg) => ({
-          sender: msg.role === "user" ? "user" : "assistant",
-          content: msg.content,
-        }));
 
       if (!currentConvId && user) {
         const { data: conversation, error: convError } = await supabase
@@ -212,12 +206,7 @@ export const ChatInterface = ({ conversationId: propConversationId, onSelectConv
       }
 
       const { data, error } = await supabase.functions.invoke('ai-legal-chat-hf', {
-        body: {
-          message: content,
-          conversation_id: currentConvId,
-          category: "general",
-          conversationHistory,
-        }
+        body: { message: content, conversation_id: currentConvId, category: "general" }
       });
 
       if (error) throw error;
@@ -246,33 +235,11 @@ export const ChatInterface = ({ conversationId: propConversationId, onSelectConv
 
     } catch (error) {
       console.error("Error sending message:", error);
-      let fallbackContent = "I'm sorry, I'm having trouble connecting right now.";
-
-      // Supabase edge functions can return a JSON body even on error responses.
-      if (
-        error &&
-        typeof error === "object" &&
-        "context" in error &&
-        error.context &&
-        typeof error.context === "object" &&
-        "json" in error.context &&
-        typeof error.context.json === "function"
-      ) {
-        try {
-          const errorBody = await error.context.json();
-          if (errorBody?.response) {
-            fallbackContent = errorBody.response;
-          }
-        } catch (parseError) {
-          console.warn("Could not parse edge function error response:", parseError);
-        }
-      }
-
-      toast({ title: t('common.error'), description: "AI service is unavailable right now. Showing fallback legal guidance.", variant: "destructive" });
+      toast({ title: t('common.error'), description: "Failed to send message.", variant: "destructive" });
       const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
         role: "assistant",
-        content: fallbackContent,
+        content: "I'm sorry, I'm having trouble connecting right now.",
         timestamp: new Date(),
       };
       setMessages(prev => [...prev, errorMessage]);
