@@ -6,9 +6,6 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-const RAPIDAPI_KEY = Deno.env.get('RAPIDAPI_KEY') || '1d7a515a07mshb011cbed39c7ba7p18b251jsn6250207866b2';
-const RAPIDAPI_HOST = 'crawler-google-places.p.rapidapi.com';
-
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -17,7 +14,12 @@ serve(async (req) => {
   try {
     const { latitude, longitude, city, specialization } = await req.json();
 
-    // Build the search query
+    const APIFY_TOKEN = Deno.env.get('APIFY_TOKEN');
+    if (!APIFY_TOKEN) {
+      throw new Error('APIFY_TOKEN not configured. Please set it in Supabase secrets.');
+    }
+
+    // Build search query
     let searchQuery = "lawyers advocates";
     if (specialization && specialization !== "all") {
       searchQuery = `${specialization} lawyers`;
@@ -31,11 +33,11 @@ serve(async (req) => {
       throw new Error("Either city or location coordinates are required");
     }
 
-    console.log("Searching Google Places for:", searchQuery);
+    console.log("Searching Google Places via Apify for:", searchQuery);
 
-    // Call the Apify Google Places Crawler via RapidAPI
-    // Using run-sync-get-dataset-items to get results directly
-    const apiUrl = `https://${RAPIDAPI_HOST}/run-sync-get-dataset-items`;
+    // Use Apify run-sync-get-dataset-items endpoint
+    // This runs the actor synchronously and returns the dataset items directly
+    const apiUrl = `https://api.apify.com/v2/acts/compass~crawler-google-places/run-sync-get-dataset-items?token=${APIFY_TOKEN}`;
 
     const requestBody: any = {
       searchStringsArray: [searchQuery],
@@ -44,10 +46,12 @@ serve(async (req) => {
       deeperCityScrape: false,
     };
 
-    // If we have coordinates, add them for better results
+    // If we have coordinates, use them for location-based search
     if (latitude && longitude) {
-      requestBody.lat = String(latitude);
-      requestBody.lng = String(longitude);
+      requestBody.customGeolocation = {
+        latitude,
+        longitude,
+      };
       requestBody.zoom = 13;
     }
 
@@ -55,22 +59,20 @@ serve(async (req) => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'X-RapidAPI-Key': RAPIDAPI_KEY,
-        'X-RapidAPI-Host': RAPIDAPI_HOST,
       },
       body: JSON.stringify(requestBody),
     });
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error("RapidAPI error:", response.status, errorText);
-      throw new Error(`API returned ${response.status}: ${errorText}`);
+      console.error("Apify API error:", response.status, errorText);
+      throw new Error(`Apify API returned ${response.status}`);
     }
 
     const rawResults = await response.json();
-    console.log(`Got ${Array.isArray(rawResults) ? rawResults.length : 0} results from crawler`);
+    console.log(`Got ${Array.isArray(rawResults) ? rawResults.length : 0} results from Apify`);
 
-    // Transform the raw crawler data into our clean format
+    // Transform raw crawler output into our clean format
     const lawyers = (Array.isArray(rawResults) ? rawResults : []).map((place: any) => {
       // Calculate distance if user coordinates provided
       let distance: number | undefined;
@@ -91,20 +93,20 @@ serve(async (req) => {
         name: place.title || place.name || "Unknown",
         address: place.address || place.street || "",
         rating: place.totalScore || place.rating || 0,
-        totalRatings: place.reviewsCount || place.reviews || 0,
+        totalRatings: place.reviewsCount || 0,
         phone: place.phone || place.phoneUnformatted || "",
         website: place.website || "",
         latitude: place.location?.lat || null,
         longitude: place.location?.lng || null,
         distance,
-        isOpen: place.openingHours?.state === "open" ? true : 
+        isOpen: place.openingHours?.state === "open" ? true :
                place.openingHours?.state === "closed" ? false : null,
         category: place.categoryName || "",
         photos: place.imageUrl ? [place.imageUrl] : [],
       };
     });
 
-    // Sort by distance if available, otherwise by rating
+    // Sort: distance first, then rating
     lawyers.sort((a: any, b: any) => {
       if (a.distance !== undefined && b.distance !== undefined) {
         return a.distance - b.distance;

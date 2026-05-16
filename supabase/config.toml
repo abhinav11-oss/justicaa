@@ -23,11 +23,9 @@ pop3_port = 54326
 
 [storage]
 enabled = true
-port = 54327
 
 [auth]
 enabled = true
-port = 54328
 
 [auth.external.google]
 enabled = false
@@ -35,4 +33,7 @@ client_id = ""
 secret = ""
 
 [functions.ai-legal-chat-hf]
+verify_jwt = false
+
+[functions.find-lawyers]
 verify_jwt = false
