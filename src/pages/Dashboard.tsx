@@ -133,7 +133,7 @@ const Dashboard = () => {
           </div>
         )}
 
-        <div className="flex-1 p-4 sm:p-6 overflow-y-auto">
+        <div className={`flex-1 ${activeTab === 'chat' ? 'p-0 overflow-hidden' : 'p-4 sm:p-6 overflow-y-auto'}`}>
           <DashboardMainContent
             activeTab={activeTab}
             isTrialMode={isTrialMode}

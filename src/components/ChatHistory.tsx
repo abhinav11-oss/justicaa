@@ -3,10 +3,16 @@ import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
-import { Plus, MessageSquare, Pin, MoreHorizontal, Loader2 } from "lucide-react";
+import { Plus, Pin, PinOff, MoreHorizontal, Loader2, Trash2 } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface Conversation {
   id: string;
@@ -47,8 +53,11 @@ export const ChatHistory = ({ onSelectConversation, onNewConversation, activeCon
 
       if (error) throw error;
       
-      setHistory(data || []);
-      setPinned([]);
+      const allHistory = data || [];
+      const pinnedIds = JSON.parse(localStorage.getItem(`pinned_chats_${user!.id}`) || "[]");
+      
+      setPinned(allHistory.filter(c => pinnedIds.includes(c.id)));
+      setHistory(allHistory.filter(c => !pinnedIds.includes(c.id)));
 
     } catch (error: any) {
       toast({
@@ -60,6 +69,82 @@ export const ChatHistory = ({ onSelectConversation, onNewConversation, activeCon
       setLoading(false);
     }
   };
+
+  const handlePin = (id: string, isPinned: boolean) => {
+    const pinnedIds = JSON.parse(localStorage.getItem(`pinned_chats_${user!.id}`) || "[]");
+    let newPinnedIds;
+    if (isPinned) {
+      newPinnedIds = pinnedIds.filter((pid: string) => pid !== id);
+    } else {
+      newPinnedIds = [...pinnedIds, id];
+    }
+    localStorage.setItem(`pinned_chats_${user!.id}`, JSON.stringify(newPinnedIds));
+    fetchHistory();
+  };
+
+  const handleDelete = async (id: string) => {
+    try {
+      const { error } = await supabase
+        .from("chat_conversations")
+        .delete()
+        .eq("id", id);
+        
+      if (error) throw error;
+      
+      if (activeConversationId === id) {
+        onNewConversation();
+      } else {
+        fetchHistory();
+      }
+      toast({ title: "Chat deleted successfully" });
+    } catch (error: any) {
+      toast({
+        title: "Error deleting chat",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+  };
+
+  const renderConversationItem = (conv: Conversation, isPinned: boolean) => (
+    <Button
+      key={conv.id}
+      variant={activeConversationId === conv.id ? "secondary" : "ghost"}
+      className={cn(
+        "w-full justify-start h-auto py-2 text-left group relative",
+        activeConversationId === conv.id && "bg-primary/10 text-primary"
+      )}
+      onClick={() => onSelectConversation(conv.id)}
+    >
+      <div className="flex items-center justify-between w-full">
+        <p className="text-sm font-medium truncate flex-1 pr-6">{conv.title}</p>
+        <div className="absolute right-2 opacity-0 group-hover:opacity-100 focus-within:opacity-100 data-[state=open]:opacity-100 transition-opacity">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="h-6 w-6" 
+                onClick={(e) => e.stopPropagation()}
+              >
+                <MoreHorizontal className="h-4 w-4 text-muted-foreground" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" onClick={(e) => e.stopPropagation()}>
+              <DropdownMenuItem onClick={(e) => { e.stopPropagation(); handlePin(conv.id, isPinned); }}>
+                {isPinned ? <PinOff className="h-4 w-4 mr-2" /> : <Pin className="h-4 w-4 mr-2" />}
+                {isPinned ? "Unpin Chat" : "Pin Chat"}
+              </DropdownMenuItem>
+              <DropdownMenuItem className="text-destructive focus:text-destructive" onClick={(e) => { e.stopPropagation(); handleDelete(conv.id); }}>
+                <Trash2 className="h-4 w-4 mr-2" />
+                Delete Chat
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      </div>
+    </Button>
+  );
 
   return (
     <div className="bg-card h-full flex flex-col border-r">
@@ -79,7 +164,9 @@ export const ChatHistory = ({ onSelectConversation, onNewConversation, activeCon
             {pinned.length === 0 ? (
               <p className="text-sm text-muted-foreground px-2">{t('chat.noPinned')}</p>
             ) : (
-              <></>
+              <div className="space-y-1">
+                {pinned.map(conv => renderConversationItem(conv, true))}
+              </div>
             )}
           </div>
           <div>
@@ -92,22 +179,7 @@ export const ChatHistory = ({ onSelectConversation, onNewConversation, activeCon
               <p className="text-sm text-muted-foreground px-2">{t('chat.historyEmpty')}</p>
             ) : (
               <div className="space-y-1">
-                {history.map(conv => (
-                  <Button
-                    key={conv.id}
-                    variant={activeConversationId === conv.id ? "secondary" : "ghost"}
-                    className={cn(
-                      "w-full justify-start h-auto py-2 text-left",
-                      activeConversationId === conv.id && "bg-primary/10 text-primary"
-                    )}
-                    onClick={() => onSelectConversation(conv.id)}
-                  >
-                    <div className="flex items-center justify-between w-full">
-                      <p className="text-sm font-medium truncate flex-1">{conv.title}</p>
-                      <MoreHorizontal className="h-4 w-4 text-muted-foreground ml-2" />
-                    </div>
-                  </Button>
-                ))}
+                {history.map(conv => renderConversationItem(conv, false))}
               </div>
             )}
           </div>
