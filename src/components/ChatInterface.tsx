@@ -354,23 +354,8 @@ export const ChatInterface = ({ conversationId: propConversationId, onSelectConv
                 {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : isInputDisabled ? <Lock className="h-4 w-4" /> : <Send className="h-4 w-4" />}
               </Button>
             </div>
-            <div className="flex flex-wrap items-center justify-between gap-y-2 gap-x-4 mt-2">
-              <div className="flex items-center gap-x-2 sm:gap-x-4 flex-wrap gap-y-2">
-                <VoiceChat
-                  onTranscript={handleTranscript}
-                  isListening={isListening}
-                  onListeningChange={setIsListening}
-                />
-                <div className="flex items-center gap-2">
-                  <Switch id="internet-mode" onCheckedChange={(checked) => toast({ title: `Internet access ${checked ? 'enabled' : 'disabled'}. This is a demo feature.`})} />
-                  <Label htmlFor="internet-mode" className="text-sm text-muted-foreground">Internet</Label>
-                </div>
-                <Button variant="outline" size="sm" onClick={() => setShowPrompts(!showPrompts)}>
-                  <Sparkles className="h-4 w-4 mr-2" />
-                  Prompts
-                </Button>
-              </div>
-              <p className="text-xs text-muted-foreground text-center md:text-right">
+            <div className="flex justify-center mt-2">
+              <p className="text-xs text-muted-foreground text-center">
                 {t('chat.disclaimer')}
               </p>
             </div>
