@@ -96,7 +96,7 @@ const Dashboard = () => {
         sidebarOpen={sidebarOpen}
         setSidebarOpen={setSidebarOpen}
       />
-      <main className="flex-1 flex flex-col">
+      <main className="flex-1 flex flex-col h-full overflow-hidden">
         <DashboardHeader
           isMobile={isMobile}
           onMenuClick={() => setSidebarOpen(true)}
@@ -133,7 +133,7 @@ const Dashboard = () => {
           </div>
         )}
 
-        <div className={`flex-1 ${activeTab === 'chat' ? 'p-0 overflow-hidden' : 'p-4 sm:p-6 overflow-y-auto'}`}>
+        <div className={`flex-1 min-h-0 ${activeTab === 'chat' ? 'p-0 overflow-hidden' : 'p-4 sm:p-6 overflow-y-auto'}`}>
           <DashboardMainContent
             activeTab={activeTab}
             isTrialMode={isTrialMode}

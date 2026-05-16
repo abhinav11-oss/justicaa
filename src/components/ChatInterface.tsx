@@ -285,8 +285,8 @@ export const ChatInterface = ({ conversationId: propConversationId, onSelectConv
 
   return (
     <div className="h-full flex flex-col bg-background">
-      <Card className="flex-1 flex flex-col rounded-none border-0 h-full">
-        <CardContent className="flex-1 flex flex-col p-0">
+      <Card className="flex-1 flex flex-col rounded-none border-0 h-full min-h-0 overflow-hidden">
+        <CardContent className="flex-1 flex flex-col p-0 min-h-0 overflow-hidden">
           <div className="flex-1 overflow-y-auto" ref={chatContainerRef}>
             <div className="px-3 md:px-6">
               {messages.length === 0 && !isLoading ? (
