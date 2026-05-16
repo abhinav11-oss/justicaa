@@ -10,8 +10,10 @@ import { About } from "@/components/landing/About";
 import { Testimonials } from "@/components/landing/Testimonials";
 import { CTASection } from "@/components/landing/CTASection";
 import { Footer } from "@/components/landing/Footer";
+import { useSmoothScroll } from "@/hooks/useSmoothScroll";
 
 const Landing = () => {
+  useSmoothScroll();
   const { user } = useAuth();
   const navigate = useNavigate();
 
