@@ -147,7 +147,7 @@ export const ChatHistory = ({ onSelectConversation, onNewConversation, activeCon
   );
 
   return (
-    <div className="bg-card h-full flex flex-col border-r">
+    <div className="bg-card h-full flex flex-col border-r overflow-hidden">
       <div className="p-4 space-y-4 border-b">
         <h2 className="text-xl font-bold">{t('chat.history')}</h2>
         <Button className="w-full" onClick={onNewConversation}>
