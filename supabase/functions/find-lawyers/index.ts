@@ -6,6 +6,9 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+const RAPIDAPI_KEY = Deno.env.get('RAPIDAPI_KEY') || '1d7a515a07mshb011cbed39c7ba7p18b251jsn6250207866b2';
+const RAPIDAPI_HOST = 'crawler-google-places.p.rapidapi.com';
+
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -14,99 +17,94 @@ serve(async (req) => {
   try {
     const { latitude, longitude, city, specialization } = await req.json();
 
-    const apiKey = Deno.env.get('GOOGLE_PLACES_API_KEY');
-    if (!apiKey) {
-      throw new Error('Google Places API key not configured. Please set GOOGLE_PLACES_API_KEY in Supabase secrets.');
-    }
-
     // Build the search query
-    let query = "lawyers advocates near";
+    let searchQuery = "lawyers advocates";
     if (specialization && specialization !== "all") {
-      query = `${specialization} lawyers advocates near`;
+      searchQuery = `${specialization} lawyers`;
     }
 
-    let locationParam = "";
-    if (latitude && longitude) {
-      locationParam = `&location=${latitude},${longitude}&radius=30000`;
-      query += ` me`;
-    } else if (city) {
-      query += ` ${city} India`;
+    if (city) {
+      searchQuery += ` in ${city} India`;
+    } else if (latitude && longitude) {
+      searchQuery += ` near me`;
     } else {
-      throw new Error("Either latitude/longitude or city is required");
+      throw new Error("Either city or location coordinates are required");
     }
 
-    // Use Google Places Text Search API
-    const searchUrl = `https://maps.googleapis.com/maps/api/place/textsearch/json?query=${encodeURIComponent(query)}${locationParam}&type=lawyer&key=${apiKey}`;
+    console.log("Searching Google Places for:", searchQuery);
 
-    console.log("Searching for lawyers:", query);
+    // Call the Apify Google Places Crawler via RapidAPI
+    // Using run-sync-get-dataset-items to get results directly
+    const apiUrl = `https://${RAPIDAPI_HOST}/run-sync-get-dataset-items`;
 
-    const placesResponse = await fetch(searchUrl);
-    if (!placesResponse.ok) {
-      throw new Error(`Google Places API error: ${placesResponse.status}`);
+    const requestBody: any = {
+      searchStringsArray: [searchQuery],
+      maxCrawledPlacesPerSearch: 20,
+      language: "en",
+      deeperCityScrape: false,
+    };
+
+    // If we have coordinates, add them for better results
+    if (latitude && longitude) {
+      requestBody.lat = String(latitude);
+      requestBody.lng = String(longitude);
+      requestBody.zoom = 13;
     }
 
-    const placesData = await placesResponse.json();
+    const response = await fetch(apiUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-RapidAPI-Key': RAPIDAPI_KEY,
+        'X-RapidAPI-Host': RAPIDAPI_HOST,
+      },
+      body: JSON.stringify(requestBody),
+    });
 
-    if (placesData.status !== "OK" && placesData.status !== "ZERO_RESULTS") {
-      console.error("Places API status:", placesData.status, placesData.error_message);
-      throw new Error(`Google Places API returned: ${placesData.status}`);
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error("RapidAPI error:", response.status, errorText);
+      throw new Error(`API returned ${response.status}: ${errorText}`);
     }
 
-    const results = placesData.results || [];
+    const rawResults = await response.json();
+    console.log(`Got ${Array.isArray(rawResults) ? rawResults.length : 0} results from crawler`);
 
-    // For each result, get details (phone number)
-    const lawyers = await Promise.all(
-      results.slice(0, 20).map(async (place: any, index: number) => {
-        let phone = "";
-        let website = "";
+    // Transform the raw crawler data into our clean format
+    const lawyers = (Array.isArray(rawResults) ? rawResults : []).map((place: any) => {
+      // Calculate distance if user coordinates provided
+      let distance: number | undefined;
+      if (latitude && longitude && place.location?.lat && place.location?.lng) {
+        const R = 6371;
+        const dLat = (place.location.lat - latitude) * Math.PI / 180;
+        const dLon = (place.location.lng - longitude) * Math.PI / 180;
+        const a =
+          Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+          Math.cos(latitude * Math.PI / 180) * Math.cos(place.location.lat * Math.PI / 180) *
+          Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        distance = Math.round((R * c) * 10) / 10;
+      }
 
-        // Get place details for phone number
-        try {
-          const detailsUrl = `https://maps.googleapis.com/maps/api/place/details/json?place_id=${place.place_id}&fields=formatted_phone_number,international_phone_number,website,opening_hours&key=${apiKey}`;
-          const detailsRes = await fetch(detailsUrl);
-          const detailsData = await detailsRes.json();
-          if (detailsData.result) {
-            phone = detailsData.result.international_phone_number || detailsData.result.formatted_phone_number || "";
-            website = detailsData.result.website || "";
-          }
-        } catch (e) {
-          console.warn("Could not fetch details for place:", place.name);
-        }
+      return {
+        id: place.placeId || place.cid || String(Math.random()),
+        name: place.title || place.name || "Unknown",
+        address: place.address || place.street || "",
+        rating: place.totalScore || place.rating || 0,
+        totalRatings: place.reviewsCount || place.reviews || 0,
+        phone: place.phone || place.phoneUnformatted || "",
+        website: place.website || "",
+        latitude: place.location?.lat || null,
+        longitude: place.location?.lng || null,
+        distance,
+        isOpen: place.openingHours?.state === "open" ? true : 
+               place.openingHours?.state === "closed" ? false : null,
+        category: place.categoryName || "",
+        photos: place.imageUrl ? [place.imageUrl] : [],
+      };
+    });
 
-        // Calculate distance if user location provided
-        let distance: number | undefined;
-        if (latitude && longitude && place.geometry?.location) {
-          const R = 6371;
-          const dLat = (place.geometry.location.lat - latitude) * Math.PI / 180;
-          const dLon = (place.geometry.location.lng - longitude) * Math.PI / 180;
-          const a =
-            Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-            Math.cos(latitude * Math.PI / 180) * Math.cos(place.geometry.location.lat * Math.PI / 180) *
-            Math.sin(dLon / 2) * Math.sin(dLon / 2);
-          const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-          distance = Math.round((R * c) * 10) / 10;
-        }
-
-        return {
-          id: place.place_id,
-          name: place.name,
-          address: place.formatted_address || "",
-          rating: place.rating || 0,
-          totalRatings: place.user_ratings_total || 0,
-          phone,
-          website,
-          latitude: place.geometry?.location?.lat,
-          longitude: place.geometry?.location?.lng,
-          distance,
-          isOpen: place.opening_hours?.open_now ?? null,
-          photos: place.photos?.slice(0, 1).map((p: any) =>
-            `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=${p.photo_reference}&key=${apiKey}`
-          ) || [],
-        };
-      })
-    );
-
-    // Sort by distance if available, else by rating
+    // Sort by distance if available, otherwise by rating
     lawyers.sort((a: any, b: any) => {
       if (a.distance !== undefined && b.distance !== undefined) {
         return a.distance - b.distance;
