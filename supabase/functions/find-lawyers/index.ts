@@ -6,7 +6,7 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-const GOOGLE_PLACES_API_KEY = Deno.env.get('GOOGLE_PLACES_API_KEY') || 'AlzaSyDNZDLG5ZySVyXY-4IXtH-tChnEhCSJ2kY';
+const GOOGLE_PLACES_API_KEY = Deno.env.get('GOOGLE_PLACES_API_KEY') || 'AIzaSyC1Vpu2Jy_TcCshBAEeTxDsxGHCljYNGqw';
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
