@@ -64,7 +64,7 @@ export const Hero = ({ onCTAClick, onTryForFree }: HeroProps) => {
               className="relative"
             >
               <img 
-                src="/images/hero-image.jpg" 
+                src="/LANDING2.png" 
                 alt="Justicaa Dashboard on Laptop and Mobile" 
                 className="w-full h-auto rounded-lg"
               />
