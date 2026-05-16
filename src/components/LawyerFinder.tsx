@@ -1,171 +1,127 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { MapPin, Phone, Navigation, Filter, Star, Copy, CheckCircle, AlertCircle, Globe } from "lucide-react";
+import { MapPin, Phone, Navigation, Star, AlertCircle, Loader2, LocateFixed, Globe, ExternalLink } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useGeolocation } from "@/hooks/useGeolocation";
-import { lawyersDatabase, Lawyer } from "@/data/lawyers";
+import { supabase } from "@/integrations/supabase/client";
+
+interface LiveLawyer {
+  id: string;
+  name: string;
+  address: string;
+  rating: number;
+  totalRatings: number;
+  phone: string;
+  website: string;
+  latitude: number;
+  longitude: number;
+  distance?: number;
+  isOpen: boolean | null;
+  photos: string[];
+}
 
 interface LawyerFinderProps {
   category?: string;
 }
 
-const categoryMap = {
-  "All": [],
-  "Business Law": ["Business Law", "Corporate Law", "Tax Law", "Contract Law", "Intellectual Property"],
-  "Personal Legal": ["Family Law", "Personal Legal", "Consumer Law", "Employment Law", "Criminal Law", "Civil Law"],
-  "Contract Review": ["Contract Law", "Business Law", "Employment Law", "Civil Law"]
-};
-
-const cityCoordinates = {
-  "Gwalior": { lat: 26.2183, lng: 78.1828 },
-  "Delhi": { lat: 28.6139, lng: 77.2090 },
-  "Mumbai": { lat: 19.0760, lng: 72.8777 },
-  "Bangalore": { lat: 12.9716, lng: 77.5946 },
-  "Jhansi": { lat: 25.4484, lng: 78.5685 },
-  "Bhopal": { lat: 23.2599, lng: 77.4126 },
-  "Indore": { lat: 22.7196, lng: 75.8577 },
-  "Ujjain": { lat: 23.1765, lng: 75.7885 }
-};
-
-const pincodeToCity: { [key: string]: string } = {
-  "474001": "Gwalior", "474006": "Gwalior", "474011": "Gwalior",
-  "110001": "Delhi", "110005": "Delhi", "110024": "Delhi",
-  "400050": "Mumbai", "400058": "Mumbai", "400076": "Mumbai",
-  "560034": "Bangalore", "560011": "Bangalore", "560100": "Bangalore",
-  "284001": "Jhansi", "284003": "Jhansi",
-  "462011": "Bhopal", "462016": "Bhopal",
-  "452010": "Indore", "452001": "Indore",
-  "456010": "Ujjain", "456006": "Ujjain"
-};
+const specializations = [
+  "Criminal Law", "Family Law", "Property Law", "Civil Law", "Business Law", "Contract Law",
+  "Consumer Law", "Employment Law", "Cyber Law", "Corporate Law", "Tax Law", "Divorce Law",
+];
 
 export const LawyerFinder = ({ category }: LawyerFinderProps) => {
-  const [filteredLawyers, setFilteredLawyers] = useState<Lawyer[]>([]);
-  const [selectedCategory, setSelectedCategory] = useState<keyof typeof categoryMap>("All");
+  const [lawyers, setLawyers] = useState<LiveLawyer[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
   const [selectedSpecialization, setSelectedSpecialization] = useState<string>("all");
-  const [userCity, setUserCity] = useState<string>("");
-  const [manualLocation, setManualLocation] = useState("");
+  const [cityInput, setCityInput] = useState("");
   const [showPhoneModal, setShowPhoneModal] = useState<string | null>(null);
-  const [searchMode, setSearchMode] = useState<'city' | 'location' | null>(null);
+  const [searchedLocation, setSearchedLocation] = useState<string | null>(null);
+  const [hasSearched, setHasSearched] = useState(false);
   const { toast } = useToast();
-  const { latitude, longitude, error, loading, getCurrentLocation, setManualLocation: setGeoLocation } = useGeolocation();
+  const { latitude, longitude, error: geoError, loading: geoLoading, getCurrentLocation } = useGeolocation();
 
-  const specializations = [
-    "Criminal Law", "Family Law", "Property Law", "Civil Law", "Business Law", "Contract Law",
-    "Consumer Law", "Employment Law", "Cyber Law", "Personal Legal", "Intellectual Property",
-    "Corporate Law", "Tax Law"
-  ];
+  const fetchLawyers = async (params: { latitude?: number; longitude?: number; city?: string; specialization?: string }) => {
+    setIsSearching(true);
+    setHasSearched(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('find-lawyers', {
+        body: {
+          latitude: params.latitude || null,
+          longitude: params.longitude || null,
+          city: params.city || null,
+          specialization: params.specialization && params.specialization !== "all" ? params.specialization : null,
+        }
+      });
 
-  const cities = ["Gwalior", "Delhi", "Mumbai", "Bangalore", "Jhansi", "Bhopal", "Indore", "Ujjain"];
+      if (error) throw error;
 
-  const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number): number => {
-    const R = 6371; // Earth's radius in kilometers
-    const dLat = (lat2 - lat1) * Math.PI / 180;
-    const dLon = (lon2 - lon1) * Math.PI / 180;
-    const a = 
-      Math.sin(dLat/2) * Math.sin(dLat/2) +
-      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
-      Math.sin(dLon/2) * Math.sin(dLon/2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-    return Math.round((R * c) * 10) / 10;
+      if (data?.error) {
+        throw new Error(data.error);
+      }
+
+      setLawyers(data?.lawyers || []);
+
+      if (data?.lawyers?.length > 0) {
+        toast({ title: `Found ${data.lawyers.length} lawyers nearby` });
+      } else {
+        toast({ title: "No lawyers found", description: "Try a different location or broaden your search.", variant: "destructive" });
+      }
+    } catch (error: any) {
+      console.error("Error fetching lawyers:", error);
+      toast({
+        title: "Error finding lawyers",
+        description: error.message || "Something went wrong. Please try again.",
+        variant: "destructive",
+      });
+      setLawyers([]);
+    } finally {
+      setIsSearching(false);
+    }
   };
 
+  // When GPS location is obtained, auto-search
   useEffect(() => {
-    let tempLawyers = [...lawyersDatabase];
-
-    // 1. Location Filtering
-    if (searchMode === 'location' && latitude && longitude) {
-      tempLawyers.forEach(lawyer => {
-        lawyer.distance = calculateDistance(latitude, longitude, lawyer.latitude, lawyer.longitude);
-      });
-      tempLawyers = tempLawyers.filter(l => l.distance !== undefined && l.distance <= 50);
-    } else if (searchMode === 'city' && userCity) {
-      tempLawyers = tempLawyers.filter(l => l.city === userCity);
+    if (latitude && longitude && !geoLoading && !isSearching) {
+      setSearchedLocation("your current location");
+      fetchLawyers({ latitude, longitude, specialization: selectedSpecialization });
     }
-
-    // 2. Category Filtering
-    if (selectedCategory !== "All") {
-      const relevantSpecs = categoryMap[selectedCategory] || [];
-      if (relevantSpecs.length > 0) {
-        tempLawyers = tempLawyers.filter(lawyer => 
-          lawyer.specialization.some(spec => relevantSpecs.includes(spec))
-        );
-      }
-    }
-
-    // 3. Specialization Filtering
-    if (selectedSpecialization !== "all") {
-      tempLawyers = tempLawyers.filter(lawyer => 
-        lawyer.specialization.includes(selectedSpecialization)
-      );
-    }
-
-    // 4. Sorting
-    tempLawyers.sort((a, b) => {
-      if (a.distance !== undefined && b.distance !== undefined) {
-        return a.distance - b.distance;
-      }
-      return b.rating - a.rating;
-    });
-
-    setFilteredLawyers(tempLawyers);
-  }, [latitude, longitude, userCity, selectedCategory, selectedSpecialization, searchMode]);
-
-  useEffect(() => {
-    if (category && categoryMap[category as keyof typeof categoryMap]) {
-      setSelectedCategory(category as keyof typeof categoryMap);
-    }
-  }, [category]);
+  }, [latitude, longitude, geoLoading]);
 
   const handleUseCurrentLocation = () => {
-    setUserCity("");
-    setSearchMode('location');
+    setCityInput("");
+    setSearchedLocation(null);
     getCurrentLocation();
-    toast({ title: "Getting your location..." });
+    toast({ title: "📍 Getting your location...", description: "Please allow location access in your browser." });
   };
 
-  const handleCitySelect = (city: string) => {
-    if (cityCoordinates[city as keyof typeof cityCoordinates]) {
-      const coords = cityCoordinates[city as keyof typeof cityCoordinates];
-      setGeoLocation(coords.lat, coords.lng);
-      setUserCity(city);
-      setSearchMode('city');
-      toast({ title: `Showing lawyers in ${city}` });
-    }
-  };
-
-  const handleLocationSubmit = () => {
-    const input = manualLocation.trim();
-    if (!input) {
-      toast({ title: "Location Required", variant: "destructive" });
+  const handleCitySearch = () => {
+    const city = cityInput.trim();
+    if (!city) {
+      toast({ title: "Please enter a city name", variant: "destructive" });
       return;
     }
+    setSearchedLocation(city);
+    fetchLawyers({ city, specialization: selectedSpecialization });
+  };
 
-    const pincodeMatch = input.match(/^\d{6}$/);
-    if (pincodeMatch) {
-      const city = pincodeToCity[input];
-      if (city) {
-        handleCitySelect(city);
-        return;
-      }
-    }
-
-    const matchedCity = cities.find(c => c.toLowerCase() === input.toLowerCase());
-    if (matchedCity) {
-      handleCitySelect(matchedCity);
-    } else {
-      toast({ title: "Location Not Found", description: "Please enter a valid city or 6-digit pincode.", variant: "destructive" });
+  const handleSpecializationChange = (value: string) => {
+    setSelectedSpecialization(value);
+    // Re-search with new specialization if we already have a location
+    if (latitude && longitude) {
+      fetchLawyers({ latitude, longitude, specialization: value });
+    } else if (searchedLocation && searchedLocation !== "your current location") {
+      fetchLawyers({ city: searchedLocation, specialization: value });
     }
   };
 
   const handleCall = (phone: string, lawyerName: string) => {
     if (!phone) {
-      setShowPhoneModal(`Number not available for ${lawyerName}`);
+      toast({ title: "Phone number not available", description: `No contact number listed for ${lawyerName}`, variant: "destructive" });
       return;
     }
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
@@ -176,109 +132,204 @@ export const LawyerFinder = ({ category }: LawyerFinderProps) => {
     }
   };
 
-  const handleDirections = (lawyer: Lawyer) => {
-    const destinationQuery = encodeURIComponent(lawyer.address);
-    
+  const handleDirections = (lawyer: LiveLawyer) => {
+    let url: string;
     if (latitude && longitude) {
-        const origin = `${latitude},${longitude}`;
-        const destination = `${lawyer.latitude},${lawyer.longitude}`;
-        const directionsUrl = `https://www.google.com/maps/dir/?api=1&origin=${origin}&destination=${destination}`;
-        window.open(directionsUrl, '_blank');
+      url = `https://www.google.com/maps/dir/?api=1&origin=${latitude},${longitude}&destination=${lawyer.latitude},${lawyer.longitude}`;
     } else {
-        const searchUrl = `https://www.google.com/maps/search/?api=1&query=${destinationQuery}`;
-        window.open(searchUrl, '_blank');
+      url = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(lawyer.address)}`;
     }
+    window.open(url, '_blank');
+  };
+
+  const renderStars = (rating: number) => {
+    const fullStars = Math.floor(rating);
+    const hasHalf = rating % 1 >= 0.3;
+    return (
+      <div className="flex items-center gap-1">
+        {Array.from({ length: 5 }).map((_, i) => (
+          <Star
+            key={i}
+            className={`h-3.5 w-3.5 ${
+              i < fullStars
+                ? "fill-yellow-400 text-yellow-400"
+                : i === fullStars && hasHalf
+                ? "fill-yellow-400/50 text-yellow-400"
+                : "text-muted-foreground/30"
+            }`}
+          />
+        ))}
+        <span className="text-sm font-medium ml-1">{rating}</span>
+        </div>
+    );
   };
 
   return (
     <div className="space-y-6">
+      {/* Search Section */}
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center"><MapPin className="h-5 w-5 mr-2" />Find Lawyers</CardTitle>
+          <CardTitle className="flex items-center gap-2">
+            <MapPin className="h-5 w-5 text-primary" />
+            Find Lawyers Near You
+          </CardTitle>
+          <p className="text-sm text-muted-foreground">Search for real lawyers and advocates in your area using Google Maps data.</p>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <Select onValueChange={handleCitySelect}>
-              <SelectTrigger><SelectValue placeholder="Select a city" /></SelectTrigger>
-              <SelectContent>{cities.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}</SelectContent>
-            </Select>
-            <Button onClick={handleUseCurrentLocation} disabled={loading} variant="outline">
-              {loading ? "Getting Location..." : "Use Current Location"}
+            <div className="flex gap-2">
+              <Input
+                placeholder="Enter your city (e.g. Gwalior, Delhi)..."
+                value={cityInput}
+                onChange={(e) => setCityInput(e.target.value)}
+                onKeyPress={(e) => e.key === 'Enter' && handleCitySearch()}
+              />
+              <Button onClick={handleCitySearch} disabled={isSearching}>
+                {isSearching ? <Loader2 className="h-4 w-4 animate-spin" /> : "Search"}
+              </Button>
+            </div>
+            <Button onClick={handleUseCurrentLocation} disabled={geoLoading || isSearching} variant="outline" className="gap-2">
+              {geoLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <LocateFixed className="h-4 w-4" />}
+              {geoLoading ? "Detecting Location..." : "Use My Current Location"}
             </Button>
           </div>
-          <div className="flex gap-2">
-            <Input
-              placeholder="Or enter city/pincode"
-              value={manualLocation}
-              onChange={(e) => setManualLocation(e.target.value)}
-              onKeyPress={(e) => e.key === 'Enter' && handleLocationSubmit()}
-            />
-            <Button onClick={handleLocationSubmit}>Search</Button>
-          </div>
-          {error && <div className="text-sm text-destructive flex items-center"><AlertCircle className="h-4 w-4 mr-2" />{error}</div>}
-        </CardContent>
-      </Card>
 
-      <Tabs value={selectedCategory} onValueChange={(v) => setSelectedCategory(v as keyof typeof categoryMap)}>
-        <div className="w-full overflow-x-auto horizontal-scrollbar pb-2">
-          <TabsList className="grid w-full grid-cols-4 min-w-[500px]">
-            <TabsTrigger value="All">All</TabsTrigger>
-            <TabsTrigger value="Business Law">Business</TabsTrigger>
-            <TabsTrigger value="Personal Legal">Personal</TabsTrigger>
-            <TabsTrigger value="Contract Review">Contracts</TabsTrigger>
-          </TabsList>
-        </div>
-        <TabsContent value={selectedCategory} className="space-y-4 mt-4">
-          <div className="flex items-center space-x-2">
-            <Filter className="h-4 w-4" />
-            <Select value={selectedSpecialization} onValueChange={setSelectedSpecialization}>
-              <SelectTrigger className="w-48"><SelectValue placeholder="Filter by specialization" /></SelectTrigger>
+          {/* Specialization filter */}
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-muted-foreground whitespace-nowrap">Filter by:</span>
+            <Select value={selectedSpecialization} onValueChange={handleSpecializationChange}>
+              <SelectTrigger className="w-full md:w-64">
+                <SelectValue placeholder="All Specializations" />
+              </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All Specializations</SelectItem>
+                <SelectItem value="all">All Lawyers & Advocates</SelectItem>
                 {specializations.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
               </SelectContent>
             </Select>
           </div>
-          <div>
-            <h3 className="text-lg font-semibold">{filteredLawyers.length} Lawyers Found</h3>
-            {filteredLawyers.length === 0 && searchMode ? (
-              <Card><CardContent className="text-center py-8"><p>No lawyers found. Try a different location or filter.</p></CardContent></Card>
-            ) : (
-              <div className="grid gap-4 md:grid-cols-2 mt-4">
-                {filteredLawyers.map((lawyer) => (
-                  <Card key={lawyer.id} className="hover:shadow-lg transition-shadow">
-                    <CardContent className="p-6 space-y-3">
-                      <div className="flex justify-between items-start">
-                        <div>
-                          <h4 className="font-semibold text-lg">{lawyer.name}</h4>
-                          <p className="text-muted-foreground text-sm">{lawyer.location}, {lawyer.city}</p>
-                        </div>
-                        <div className="flex items-center space-x-1"><Star className="h-4 w-4 fill-yellow-400 text-yellow-400" /><span>{lawyer.rating}</span></div>
-                      </div>
-                      <div className="flex flex-wrap gap-2">
-                        {lawyer.specialization.map(s => <Badge key={s} variant="outline">{s}</Badge>)}
-                      </div>
-                      <div className="text-sm text-muted-foreground space-y-1">
-                        <p>Experience: {lawyer.experience} years</p>
-                        {lawyer.distance && <p className="text-primary font-medium">{lawyer.distance} km away</p>}
-                      </div>
-                      <div className="flex space-x-2 pt-2">
-                        <Button size="sm" onClick={() => handleCall(lawyer.phone, lawyer.name)} className="flex-1"><Phone className="h-4 w-4 mr-2" />Call</Button>
-                        <Button size="sm" variant="outline" onClick={() => handleDirections(lawyer)} className="flex-1"><Navigation className="h-4 w-4 mr-2" />Directions</Button>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            )}
-          </div>
-        </TabsContent>
-      </Tabs>
 
+          {geoError && (
+            <div className="text-sm text-destructive flex items-center gap-2 bg-destructive/10 rounded-md px-3 py-2">
+              <AlertCircle className="h-4 w-4 flex-shrink-0" />
+              <span>{geoError}</span>
+            </div>
+          )}
+
+          {searchedLocation && !isSearching && (
+            <div className="text-sm text-primary flex items-center gap-2 bg-primary/10 rounded-md px-3 py-2">
+              <MapPin className="h-4 w-4 flex-shrink-0" />
+              <span>Showing results near <strong>{searchedLocation}</strong></span>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Results Section */}
+      {isSearching ? (
+        <Card>
+          <CardContent className="flex flex-col items-center justify-center py-16 gap-4">
+            <Loader2 className="h-10 w-10 animate-spin text-primary" />
+            <p className="text-muted-foreground">Finding lawyers near you...</p>
+          </CardContent>
+        </Card>
+      ) : hasSearched && lawyers.length === 0 ? (
+        <Card>
+          <CardContent className="text-center py-12 space-y-3">
+            <MapPin className="h-10 w-10 mx-auto text-muted-foreground/50" />
+            <p className="text-muted-foreground">No lawyers found for this location.</p>
+            <p className="text-sm text-muted-foreground">Try searching a different city or use your current location.</p>
+          </CardContent>
+        </Card>
+      ) : lawyers.length > 0 ? (
+        <div>
+          <h3 className="text-lg font-semibold mb-4">{lawyers.length} Lawyers Found</h3>
+          <div className="grid gap-4 md:grid-cols-2">
+            {lawyers.map((lawyer) => (
+              <Card key={lawyer.id} className="hover:shadow-lg transition-shadow overflow-hidden">
+                <CardContent className="p-5 space-y-3">
+                  <div className="flex justify-between items-start gap-2">
+                    <div className="min-w-0 flex-1">
+                      <h4 className="font-semibold text-base truncate">{lawyer.name}</h4>
+                      <p className="text-muted-foreground text-sm flex items-start gap-1 mt-0.5">
+                        <MapPin className="h-3.5 w-3.5 mt-0.5 flex-shrink-0" />
+                        <span className="line-clamp-2">{lawyer.address}</span>
+                      </p>
+                    </div>
+                    {lawyer.isOpen !== null && (
+                      <Badge variant={lawyer.isOpen ? "default" : "secondary"} className="flex-shrink-0 text-xs">
+                        {lawyer.isOpen ? "Open" : "Closed"}
+                      </Badge>
+                    )}
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    {lawyer.rating > 0 ? (
+                      <div className="flex items-center gap-1">
+                        {renderStars(lawyer.rating)}
+                        {lawyer.totalRatings > 0 && (
+                          <span className="text-xs text-muted-foreground ml-1">({lawyer.totalRatings})</span>
+                        )}
+                      </div>
+                    ) : (
+                      <span className="text-xs text-muted-foreground">No ratings yet</span>
+                    )}
+                    {lawyer.distance !== undefined && (
+                      <span className="text-sm text-primary font-medium">📍 {lawyer.distance} km</span>
+                    )}
+                  </div>
+
+                  <div className="flex flex-wrap gap-2 pt-1">
+                    <Button size="sm" onClick={() => handleCall(lawyer.phone, lawyer.name)} className="flex-1" disabled={!lawyer.phone}>
+                      <Phone className="h-4 w-4 mr-1.5" />
+                      {lawyer.phone ? "Call" : "No Phone"}
+                    </Button>
+                    <Button size="sm" variant="outline" onClick={() => handleDirections(lawyer)} className="flex-1">
+                      <Navigation className="h-4 w-4 mr-1.5" />
+                      Directions
+                    </Button>
+                    {lawyer.website && (
+                      <Button size="sm" variant="ghost" onClick={() => window.open(lawyer.website, '_blank')} className="px-3">
+                        <Globe className="h-4 w-4" />
+                      </Button>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      ) : !hasSearched ? (
+        <Card>
+          <CardContent className="text-center py-12 space-y-4">
+            <LocateFixed className="h-12 w-12 mx-auto text-muted-foreground/30" />
+            <div>
+              <p className="text-lg font-medium">Search for lawyers near you</p>
+              <p className="text-sm text-muted-foreground mt-1">Enter a city or use your current location to find lawyers and advocates in your area.</p>
+            </div>
+            <Button onClick={handleUseCurrentLocation} variant="outline" className="gap-2">
+              <LocateFixed className="h-4 w-4" />
+              Detect My Location
+            </Button>
+          </CardContent>
+        </Card>
+      ) : null}
+
+      {/* Phone Modal */}
       <Dialog open={!!showPhoneModal} onOpenChange={() => setShowPhoneModal(null)}>
         <DialogContent>
           <DialogHeader><DialogTitle>Contact Number</DialogTitle></DialogHeader>
-          <DialogDescription>{showPhoneModal}</DialogDescription>
+          <DialogDescription className="text-lg font-mono text-center py-4">{showPhoneModal}</DialogDescription>
+          <div className="flex justify-center">
+            <Button
+              variant="outline"
+              onClick={() => {
+                navigator.clipboard.writeText(showPhoneModal || "");
+                toast({ title: "Phone number copied!" });
+              }}
+            >
+              Copy Number
+            </Button>
+          </div>
         </DialogContent>
       </Dialog>
     </div>
