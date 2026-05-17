@@ -115,7 +115,7 @@ export const ChatInterface = ({ conversationId: propConversationId, onSelectConv
         role: msg.sender === 'user' ? 'user' : 'assistant',
         content: msg.content,
         timestamp: new Date(msg.created_at),
-        category: msg.metadata?.category,
+        category: (msg.metadata as any)?.category,
       }));
       setMessages(loadedMessages);
       const lastAssistantMsg = loadedMessages.filter(m => m.role === 'assistant').pop();
