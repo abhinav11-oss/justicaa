@@ -85,11 +85,15 @@ export const LegalMattersManager = () => {
   const onSubmit = async (values: MatterFormValues) => {
     if (!user) return;
     try {
-      const { error } = await supabase.from("legal_matters").insert({
-        ...values,
+      const { error } = await supabase.from("legal_matters").insert([{
+        title: values.title,
+        description: values.description,
+        matter_type: values.matter_type,
+        priority: values.priority,
+        status: values.status,
         user_id: user.id,
         deadline_date: values.deadline_date ? format(values.deadline_date, "yyyy-MM-dd") : null,
-      });
+      }]);
       if (error) throw error;
       toast({ title: "Success", description: "Legal matter added successfully." });
       fetchMatters();
