@@ -6,7 +6,7 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-const GOOGLE_PLACES_API_KEY = Deno.env.get('GOOGLE_PLACES_API_KEY') || 'AIzaSyC1Vpu2Jy_TcCshBAEeTxDsxGHCljYNGqw';
+const GOOGLE_PLACES_API_KEY = Deno.env.get('GOOGLE_PLACES_API_KEY');
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -14,6 +14,10 @@ serve(async (req) => {
   }
 
   try {
+    if (!GOOGLE_PLACES_API_KEY) {
+      throw new Error('GOOGLE_PLACES_API_KEY environment variable is not configured');
+    }
+
     const { latitude, longitude, city, specialization } = await req.json();
 
     // Build search query
