@@ -42,7 +42,7 @@ export const ChatView = ({ conversationId, onSelectConversation, onNewConversati
   );
 
   return (
-    <div className="flex h-full w-full overflow-hidden">
+    <div className="flex h-full min-h-0 w-full overflow-hidden">
       {isMobile ? (
         <>
           {showHistory && (
@@ -50,7 +50,7 @@ export const ChatView = ({ conversationId, onSelectConversation, onNewConversati
               {historyPanel}
             </div>
           )}
-          <div className="flex-1 flex flex-col h-full overflow-hidden">
+          <div className="flex-1 flex flex-col h-full min-h-0 overflow-hidden">
             <Button 
               variant="outline" 
               size="sm" 
@@ -70,10 +70,10 @@ export const ChatView = ({ conversationId, onSelectConversation, onNewConversati
         </>
       ) : (
         <>
-          <div className="w-1/4 min-w-[280px] max-w-[350px] h-full overflow-hidden flex-shrink-0">
+          <div className="w-1/4 min-w-[280px] max-w-[350px] h-full min-h-0 overflow-hidden flex-shrink-0">
             {historyPanel}
           </div>
-          <div className="flex-1 h-full min-w-0 overflow-hidden">
+          <div className="flex-1 h-full min-h-0 min-w-0 overflow-hidden">
             <ChatInterface 
               conversationId={conversationId}
               onSelectConversation={onSelectConversation}
