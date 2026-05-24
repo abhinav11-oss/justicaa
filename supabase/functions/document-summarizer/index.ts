@@ -13,41 +13,40 @@ serve(async (req) => {
 
   try {
     const { text } = await req.json();
+
+    if (typeof text !== 'string' || !text.trim()) {
+      throw new Error('Text is required');
+    }
+
+    const documentText = text.slice(0, 40000); // basic truncation
     const geminiApiKey = Deno.env.get('GEMINI_API_KEY');
-
     if (!geminiApiKey) throw new Error('GEMINI_API_KEY not set');
-    if (!text) throw new Error('Text is required');
 
-    const prompt = `You are a legal assistant. Summarize the following legal document. Identify key clauses, obligations, parties involved, and the term of the agreement. Present the summary in a clear, concise, and easy-to-understand format using Markdown. Here is the document text:\n\n"${text}"`;
+    const prompt = `You are a legal document summarizer focused on Indian legal and commercial documents. Write clear Markdown. Highlight parties, purpose, key obligations, payment terms, duration, termination, dispute resolution, liabilities, unusual clauses, and practical risks. Keep the summary readable for a non-lawyer without dropping important legal detail.\n\nSummarize this document.\n\nDocument text:\n---\n${documentText}\n---`;
 
-    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${geminiApiKey}`, {
+    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${geminiApiKey}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         contents: [{ parts: [{ text: prompt }] }],
+        generationConfig: { temperature: 0.2, maxOutputTokens: 1400 }
       }),
     });
 
     if (!res.ok) {
-      const errorBody = await res.text();
-      console.error("Gemini API Error:", errorBody);
-      throw new Error(`AI service failed with status ${res.status}`);
-    }
-    
-    const data = await res.json();
-    
-    if (!data.candidates || data.candidates.length === 0) {
-      console.warn("Gemini response blocked or empty:", JSON.stringify(data));
-      throw new Error("The AI's safety filters blocked the request or returned no content.");
+      const errorText = await res.text();
+      console.error("Gemini error:", errorText);
+      throw new Error(`Gemini API error: ${res.status}`);
     }
 
-    const summary = data.candidates[0]?.content?.parts[0]?.text || "Could not generate summary.";
+    const data = await res.json();
+    const summary = data.candidates?.[0]?.content?.parts?.[0]?.text || "Failed to generate summary.";
 
     return new Response(JSON.stringify({ summary }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   } catch (error) {
-    console.error("Summarizer Error:", error.message);
+    console.error('Summarizer Error:', error.message);
     return new Response(JSON.stringify({ error: `An error occurred: ${error.message}` }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },

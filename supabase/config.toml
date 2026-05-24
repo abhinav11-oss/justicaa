@@ -1,4 +1,3 @@
-
 project_id = "dtkoulzbrvzuobddmizk"
 
 [api]
@@ -36,4 +35,16 @@ secret = ""
 verify_jwt = false
 
 [functions.find-lawyers]
+verify_jwt = false
+
+[functions.document-summarizer]
+verify_jwt = false
+
+[functions.document-translator]
+verify_jwt = false
+
+[functions.image-ocr]
+verify_jwt = false
+
+[functions.legal-health-check]
 verify_jwt = false

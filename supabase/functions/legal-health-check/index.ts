@@ -6,6 +6,27 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+const normalizeHealthCheckReport = (input: any) => {
+  if (input.isLegalDocument === false) {
+    return {
+      isLegalDocument: false,
+      documentType: input.documentType || 'Unknown Document',
+      message: input.message || 'Yeh legal document nahin lag raha. Yeh tool sirf legal documents analyze karta hai.',
+    };
+  }
+
+  return {
+    isLegalDocument: true,
+    documentType: input.documentType || 'Legal Document',
+    riskScore: typeof input.riskScore === 'number' ? input.riskScore : 50,
+    summary: input.summary || 'No summary available.',
+    keyDetails: input.keyDetails || { parties: '', duration: '', value: '' },
+    flaggedClauses: Array.isArray(input.flaggedClauses) ? input.flaggedClauses : [],
+    positivePoints: Array.isArray(input.positivePoints) ? input.positivePoints : [],
+    overallVerdict: input.overallVerdict || 'Review Recommended',
+  };
+};
+
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -13,98 +34,61 @@ serve(async (req) => {
 
   try {
     const { text } = await req.json();
-    const geminiApiKey = Deno.env.get('GEMINI_API_KEY');
 
-    if (!geminiApiKey) throw new Error('GEMINI_API_KEY not set');
-    if (!text) throw new Error('Document text is required');
-
-    const trimmedText = text.trim();
-    if (trimmedText.length < 50) {
-      throw new Error("Could not extract sufficient text from the document. It might be an image-based PDF or empty.");
+    if (typeof text !== 'string' || !text.trim()) {
+      throw new Error('Document text is required');
     }
 
-    // Truncate very long documents to avoid token limits (keep first ~15000 chars)
-    const documentText = trimmedText.length > 15000 ? trimmedText.substring(0, 15000) + "\n\n[... Document truncated for analysis ...]" : trimmedText;
+    const documentText = text.slice(0, 40000);
+    const geminiApiKey = Deno.env.get('GEMINI_API_KEY');
+    if (!geminiApiKey) throw new Error('GEMINI_API_KEY not set');
 
-    const prompt = `You are an expert AI legal document analyst specializing in Indian law.
+    const prompt = `You are an expert legal document analyst focused on Indian law. Classify whether a document is legal or non-legal. For legal documents, analyze practical risk, one-sided clauses, missing protections, enforceability concerns, payment exposure, termination, indemnity, jurisdiction, dispute resolution, and ambiguity. Return only valid JSON.
 
-**STEP 1 — DOCUMENT CLASSIFICATION:**
-First, determine whether the following text is a LEGAL DOCUMENT or NOT.
-A legal document includes: contracts, agreements, terms & conditions, legal notices, court orders, affidavits, MOUs, NDAs, rental agreements, employment contracts, power of attorney, wills, FIRs, sale deeds, partnership deeds, or any official document with legal clauses/terms.
-Non-legal documents include: essays, articles, stories, marketing material, personal letters, academic papers, code, random text, shopping lists, etc.
+If the document is NOT legal, respond with:
+{ "isLegalDocument": false, "documentType": "string", "message": "short Hinglish message" }
 
-**STEP 2 — RESPOND:**
-Your response MUST be a single, valid JSON object. Do not include any text or markdown before or after the JSON.
-
-**If the document is NOT a legal document**, respond with exactly:
-{
-  "isLegalDocument": false,
-  "documentType": "<what kind of document it appears to be, e.g. 'article', 'essay', 'marketing brochure', etc.>",
-  "message": "<a short, friendly message in Hinglish explaining that this is not a legal document and the tool only analyzes legal documents>"
-}
-
-**If the document IS a legal document**, respond with:
+If the document IS legal, respond with:
 {
   "isLegalDocument": true,
-  "documentType": "<type of legal document, e.g. 'Rental Agreement', 'Employment Contract', 'NDA', etc.>",
-  "riskScore": <integer from 0 to 100, where 0 = no risk, 100 = extremely high risk>,
-  "summary": "<2-3 sentence summary of the document's purpose and overall risk level in simple Hinglish>",
-  "keyDetails": {
-    "parties": "<names of the parties involved, if identifiable>",
-    "duration": "<contract duration/validity if mentioned>",
-    "value": "<monetary value if mentioned>"
-  },
-  "flaggedClauses": [
-    {
-      "clause": "<title or short quote of the risky clause>",
-      "reason": "<clear, simple explanation in Hinglish of why this is risky>",
-      "severity": "<High, Medium, or Low>",
-      "recommendation": "<what the user should do about this clause, in Hinglish>"
-    }
-  ],
-  "positivePoints": ["<good things about this document>"],
-  "overallVerdict": "<one of: 'Safe to Sign', 'Review Recommended', 'Do Not Sign Without Legal Advice'>"
+  "documentType": "string",
+  "riskScore": 0,
+  "summary": "2-3 sentence Hinglish summary",
+  "keyDetails": { "parties": "string", "duration": "string", "value": "string" },
+  "flaggedClauses": [ { "clause": "string", "reason": "string", "severity": "High | Medium | Low", "recommendation": "string" } ],
+  "positivePoints": ["string"],
+  "overallVerdict": "Safe to Sign | Review Recommended | Do Not Sign Without Legal Advice"
 }
 
-Analyze based on fairness, clarity, compliance with Indian legal practices, and identify clauses that are ambiguous, overly restrictive, one-sided, or potentially unfavorable.
-
-Here is the document text:
+Document text:
 ---
 ${documentText}
 ---`;
 
-    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${geminiApiKey}`, {
+    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${geminiApiKey}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         contents: [{ parts: [{ text: prompt }] }],
-        generationConfig: {
-          responseMimeType: "application/json",
-        },
+        generationConfig: { temperature: 0.1, responseMimeType: "application/json" }
       }),
     });
 
     if (!res.ok) {
-      const errorBody = await res.text();
-      console.error("Gemini API Error:", errorBody);
-      throw new Error(`AI service failed with status ${res.status}`);
+      const errorText = await res.text();
+      console.error("Gemini error:", errorText);
+      throw new Error(`Gemini API error: ${res.status}`);
     }
 
     const data = await res.json();
-
-    if (!data.candidates || data.candidates.length === 0) {
-      console.warn("Gemini response blocked or empty:", JSON.stringify(data));
-      throw new Error("The AI's safety filters blocked the request or returned no content.");
-    }
-
-    const reportJsonString = data.candidates[0]?.content?.parts[0]?.text;
-    const report = JSON.parse(reportJsonString);
+    const responseText = data.candidates?.[0]?.content?.parts?.[0]?.text || "{}";
+    const report = normalizeHealthCheckReport(JSON.parse(responseText));
 
     return new Response(JSON.stringify(report), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   } catch (error) {
-    console.error("Health Check Error:", error.message);
+    console.error('Health Check Error:', error.message);
     return new Response(JSON.stringify({ error: `An error occurred: ${error.message}` }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
