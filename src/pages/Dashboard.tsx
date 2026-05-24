@@ -96,7 +96,7 @@ const Dashboard = () => {
         sidebarOpen={sidebarOpen}
         setSidebarOpen={setSidebarOpen}
       />
-      <main className="flex-1 flex flex-col h-full overflow-hidden">
+      <main className="flex-1 flex flex-col h-full overflow-hidden pb-[env(safe-area-inset-bottom)]">
         <DashboardHeader
           isMobile={isMobile}
           onMenuClick={() => setSidebarOpen(true)}

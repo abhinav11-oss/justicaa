@@ -197,7 +197,7 @@ const CompareAgreementsTool = ({ onBack }: { onBack: () => void }) => {
   return (
     <ToolWrapper title="Compare Agreements" onBack={onBack}>
       <div className="space-y-4">
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <FileUploader onFileSelect={setFile1} acceptedTypes=".txt,.pdf,.docx">
             <p className="font-semibold">{file1 ? file1.name : "Upload Document 1"}</p>
             <p className="text-xs text-muted-foreground">.txt, .pdf, .docx</p>

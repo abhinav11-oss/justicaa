@@ -288,7 +288,7 @@ export const ChatInterface = ({ conversationId: propConversationId, onSelectConv
       <Card className="flex-1 min-h-0 flex flex-col rounded-none border-0 overflow-hidden">
         <CardContent className="flex-1 min-h-0 flex flex-col p-0 overflow-hidden">
           <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain" ref={chatContainerRef}>
-            <div className="px-3 md:px-6">
+            <div className="px-3 md:px-6 max-w-4xl mx-auto w-full">
               {messages.length === 0 && !isLoading ? (
                 showPrompts ? (
                   <QuickQuestions onQuestionClick={handleQuestionClick} />
@@ -340,7 +340,7 @@ export const ChatInterface = ({ conversationId: propConversationId, onSelectConv
           </div>
 
           <div className="p-3 md:p-4 flex-shrink-0 border-t bg-card">
-            <div className="relative">
+            <div className="relative max-w-4xl mx-auto w-full">
               <Button variant="ghost" size="icon" className="absolute left-1 top-1/2 -translate-y-1/2 h-8 w-8 text-muted-foreground"><Paperclip className="h-5 w-5" /></Button>
               <Input
                 value={inputValue}

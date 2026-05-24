@@ -382,80 +382,152 @@ export function UserDashboard({ onSelectConversation }: UserDashboardProps) {
           <Tabs value={activeTab}>
             <TabsContent value="conversations">
               <div className="w-full overflow-x-auto horizontal-scrollbar">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>{t('dashboard.table.title')}</TableHead>
-                      <TableHead>{t('dashboard.table.category')}</TableHead>
-                      <TableHead>{t('dashboard.table.date')}</TableHead>
-                      <TableHead>{t('dashboard.table.status')}</TableHead>
-                      <TableHead className="text-right">{t('dashboard.table.actions')}</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {conversations.map((c) => (
-                      <TableRow key={c.id} onClick={() => onSelectConversation(c.id)} className="cursor-pointer hover:bg-muted/50">
-                        <TableCell className="font-medium">{c.title}</TableCell>
-                        <TableCell><Badge variant="outline">{c.legal_category}</Badge></TableCell>
-                        <TableCell>{new Date(c.created_at).toLocaleDateString()}</TableCell>
-                        <TableCell><Badge className={getStatusColor(c.status)}>{c.status}</Badge></TableCell>
-                        <TableCell className="text-right">
-                          <ConversationActions conversation={c} />
-                        </TableCell>
+                {/* Desktop Table View */}
+                <div className="hidden md:block">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>{t('dashboard.table.title')}</TableHead>
+                        <TableHead>{t('dashboard.table.category')}</TableHead>
+                        <TableHead>{t('dashboard.table.date')}</TableHead>
+                        <TableHead>{t('dashboard.table.status')}</TableHead>
+                        <TableHead className="text-right">{t('dashboard.table.actions')}</TableHead>
                       </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
+                    </TableHeader>
+                    <TableBody>
+                      {conversations.map((c) => (
+                        <TableRow key={c.id} onClick={() => onSelectConversation(c.id)} className="cursor-pointer hover:bg-muted/50">
+                          <TableCell className="font-medium">{c.title}</TableCell>
+                          <TableCell><Badge variant="outline">{c.legal_category}</Badge></TableCell>
+                          <TableCell>{new Date(c.created_at).toLocaleDateString()}</TableCell>
+                          <TableCell><Badge className={getStatusColor(c.status)}>{c.status}</Badge></TableCell>
+                          <TableCell className="text-right">
+                            <ConversationActions conversation={c} />
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+                {/* Mobile Card View */}
+                <div className="grid grid-cols-1 gap-4 md:hidden">
+                  {conversations.map((c) => (
+                    <Card key={c.id} className="cursor-pointer hover:border-primary/50 transition-colors" onClick={() => onSelectConversation(c.id)}>
+                      <CardContent className="p-4 flex flex-col gap-3">
+                        <div className="flex justify-between items-start">
+                          <h3 className="font-semibold line-clamp-2 pr-4">{c.title}</h3>
+                          <div onClick={(e) => e.stopPropagation()}><ConversationActions conversation={c} /></div>
+                        </div>
+                        <div className="flex flex-wrap gap-2 items-center text-sm text-muted-foreground">
+                          <Badge variant="outline">{c.legal_category}</Badge>
+                          <Badge className={getStatusColor(c.status)}>{c.status}</Badge>
+                          <span className="ml-auto">{new Date(c.created_at).toLocaleDateString()}</span>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
               </div>
             </TabsContent>
             <TabsContent value="archived">
               <div className="w-full overflow-x-auto horizontal-scrollbar">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>{t('dashboard.table.title')}</TableHead>
-                      <TableHead>{t('dashboard.table.category')}</TableHead>
-                      <TableHead>{t('dashboard.table.date')}</TableHead>
-                      <TableHead>{t('dashboard.table.status')}</TableHead>
-                      <TableHead className="text-right">{t('dashboard.table.actions')}</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {archivedConversations.map((c) => (
-                      <TableRow key={c.id} onClick={() => onSelectConversation(c.id)} className="cursor-pointer hover:bg-muted/50">
-                        <TableCell className="font-medium">{c.title}</TableCell>
-                        <TableCell><Badge variant="outline">{c.legal_category}</Badge></TableCell>
-                        <TableCell>{new Date(c.created_at).toLocaleDateString()}</TableCell>
-                        <TableCell><Badge className={getStatusColor(c.status)}>{c.status}</Badge></TableCell>
-                        <TableCell className="text-right">
-                          <ConversationActions conversation={c} isArchived />
-                        </TableCell>
+                {/* Desktop Table View */}
+                <div className="hidden md:block">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>{t('dashboard.table.title')}</TableHead>
+                        <TableHead>{t('dashboard.table.category')}</TableHead>
+                        <TableHead>{t('dashboard.table.date')}</TableHead>
+                        <TableHead>{t('dashboard.table.status')}</TableHead>
+                        <TableHead className="text-right">{t('dashboard.table.actions')}</TableHead>
                       </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
+                    </TableHeader>
+                    <TableBody>
+                      {archivedConversations.map((c) => (
+                        <TableRow key={c.id} onClick={() => onSelectConversation(c.id)} className="cursor-pointer hover:bg-muted/50">
+                          <TableCell className="font-medium">{c.title}</TableCell>
+                          <TableCell><Badge variant="outline">{c.legal_category}</Badge></TableCell>
+                          <TableCell>{new Date(c.created_at).toLocaleDateString()}</TableCell>
+                          <TableCell><Badge className={getStatusColor(c.status)}>{c.status}</Badge></TableCell>
+                          <TableCell className="text-right">
+                            <ConversationActions conversation={c} isArchived />
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+                {/* Mobile Card View */}
+                <div className="grid grid-cols-1 gap-4 md:hidden">
+                  {archivedConversations.map((c) => (
+                    <Card key={c.id} className="cursor-pointer hover:border-primary/50 transition-colors" onClick={() => onSelectConversation(c.id)}>
+                      <CardContent className="p-4 flex flex-col gap-3">
+                        <div className="flex justify-between items-start">
+                          <h3 className="font-semibold line-clamp-2 pr-4">{c.title}</h3>
+                          <div onClick={(e) => e.stopPropagation()}><ConversationActions conversation={c} isArchived /></div>
+                        </div>
+                        <div className="flex flex-wrap gap-2 items-center text-sm text-muted-foreground">
+                          <Badge variant="outline">{c.legal_category}</Badge>
+                          <Badge className={getStatusColor(c.status)}>{c.status}</Badge>
+                          <span className="ml-auto">{new Date(c.created_at).toLocaleDateString()}</span>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
               </div>
             </TabsContent>
             <TabsContent value="documents">
               <div className="w-full overflow-x-auto horizontal-scrollbar">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>{t('dashboard.table.title')}</TableHead>
-                      <TableHead>{t('dashboard.table.type')}</TableHead>
-                      <TableHead>{t('dashboard.table.date')}</TableHead>
-                      <TableHead>{t('dashboard.table.status')}</TableHead>
-                      <TableHead className="text-right">{t('dashboard.table.actions')}</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {documents.map((d) => (
-                      <TableRow key={d.id}>
-                        <TableCell className="font-medium">{d.title}</TableCell>
-                        <TableCell><Badge variant="outline">{d.document_type}</Badge></TableCell>
-                        <TableCell>{new Date(d.created_at).toLocaleDateString()}</TableCell>
-                        <TableCell><Badge className={getStatusColor(d.status ?? "")}>{d.status}</Badge></TableCell>
-                        <TableCell className="text-right">
+                {/* Desktop Table View */}
+                <div className="hidden md:block">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>{t('dashboard.table.title')}</TableHead>
+                        <TableHead>{t('dashboard.table.type')}</TableHead>
+                        <TableHead>{t('dashboard.table.date')}</TableHead>
+                        <TableHead>{t('dashboard.table.status')}</TableHead>
+                        <TableHead className="text-right">{t('dashboard.table.actions')}</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {documents.map((d) => (
+                        <TableRow key={d.id}>
+                          <TableCell className="font-medium">{d.title}</TableCell>
+                          <TableCell><Badge variant="outline">{d.document_type}</Badge></TableCell>
+                          <TableCell>{new Date(d.created_at).toLocaleDateString()}</TableCell>
+                          <TableCell><Badge className={getStatusColor(d.status ?? "")}>{d.status}</Badge></TableCell>
+                          <TableCell className="text-right">
+                            <DropdownMenu>
+                              <DropdownMenuTrigger asChild>
+                                <Button variant="ghost" size="icon" className="h-8 w-8 p-0">
+                                  <Download className="h-4 w-4" />
+                                </Button>
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent align="end">
+                                <DropdownMenuItem onClick={() => downloadDocumentAsPdf(d)}>
+                                  Download as PDF
+                                </DropdownMenuItem>
+                                <DropdownMenuItem onClick={() => downloadDocumentAsWord(d)}>
+                                  Download as Word
+                                </DropdownMenuItem>
+                              </DropdownMenuContent>
+                            </DropdownMenu>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+                {/* Mobile Card View */}
+                <div className="grid grid-cols-1 gap-4 md:hidden">
+                  {documents.map((d) => (
+                    <Card key={d.id} className="hover:border-primary/50 transition-colors">
+                      <CardContent className="p-4 flex flex-col gap-3">
+                        <div className="flex justify-between items-start">
+                          <h3 className="font-semibold line-clamp-2 pr-4">{d.title}</h3>
                           <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                               <Button variant="ghost" size="icon" className="h-8 w-8 p-0">
@@ -471,11 +543,16 @@ export function UserDashboard({ onSelectConversation }: UserDashboardProps) {
                               </DropdownMenuItem>
                             </DropdownMenuContent>
                           </DropdownMenu>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
+                        </div>
+                        <div className="flex flex-wrap gap-2 items-center text-sm text-muted-foreground">
+                          <Badge variant="outline">{d.document_type}</Badge>
+                          <Badge className={getStatusColor(d.status ?? "")}>{d.status}</Badge>
+                          <span className="ml-auto">{new Date(d.created_at).toLocaleDateString()}</span>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
               </div>
             </TabsContent>
             <TabsContent value="matters">

@@ -50,7 +50,7 @@ export const DashboardHeader: React.FC<HeaderProps> = ({
           <Input placeholder="Search..." className="pl-8 w-64" />
         </div>
       </div>
-      <div className="flex items-center space-x-2">
+      <div className="flex items-center gap-1 sm:gap-2">
         <LanguageSelector />
         <ThemeToggle />
         <Button
