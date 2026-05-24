@@ -20,7 +20,7 @@ serve(async (req) => {
 
     const prompt = `You are a legal assistant. Summarize the following legal document. Identify key clauses, obligations, parties involved, and the term of the agreement. Present the summary in a clear, concise, and easy-to-understand format using Markdown. Here is the document text:\n\n"${text}"`;
 
-    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiApiKey}`, {
+    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${geminiApiKey}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
