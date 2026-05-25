@@ -52,7 +52,12 @@ export const ChatInterface = ({ conversationId: propConversationId, onSelectConv
   const TRIAL_MESSAGE_LIMIT = 3;
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTo({
+        top: chatContainerRef.current.scrollHeight,
+        behavior: "smooth"
+      });
+    }
   };
 
   useEffect(() => {

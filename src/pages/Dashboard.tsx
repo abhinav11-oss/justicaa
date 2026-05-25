@@ -84,7 +84,7 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="h-screen overflow-hidden flex bg-muted/40">
+    <div className="h-[100dvh] overflow-hidden flex bg-muted/40">
       <DashboardSidebar
         user={user}
         isTrialMode={isTrialMode}
