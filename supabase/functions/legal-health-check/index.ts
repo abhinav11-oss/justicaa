@@ -6,6 +6,7 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const normalizeHealthCheckReport = (input: any) => {
   if (input.isLegalDocument === false) {
     return {

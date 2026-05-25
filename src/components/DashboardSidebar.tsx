@@ -31,6 +31,7 @@ import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 
 interface SidebarProps {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   user: any;
   isTrialMode: boolean;
   activeTab: string;

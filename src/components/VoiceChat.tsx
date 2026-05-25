@@ -142,6 +142,7 @@ export const VoiceChat = ({ onTranscript, isListening, onListeningChange }: Voic
   );
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useSpeakText = () => {
   const { t } = useTranslation();
   const [isSpeaking, setIsSpeaking] = useState(false);

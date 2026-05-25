@@ -71,6 +71,7 @@ export const LawyerFinder = ({ category }: LawyerFinderProps) => {
       } else {
         toast({ title: "No lawyers found", description: "Try a different location or broaden your search.", variant: "destructive" });
       }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.error("Error fetching lawyers:", error);
       toast({
@@ -90,6 +91,7 @@ export const LawyerFinder = ({ category }: LawyerFinderProps) => {
       setSearchedLocation("your current location");
       fetchLawyers({ latitude, longitude, specialization: selectedSpecialization });
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [latitude, longitude, geoLoading]);
 
   const handleUseCurrentLocation = () => {

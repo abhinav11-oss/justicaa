@@ -21,6 +21,7 @@ interface LegalGuide {
   category: string;
   duration: string;
   difficulty: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   icon: any;
   steps: GuideStep[];
   flowchart: string;

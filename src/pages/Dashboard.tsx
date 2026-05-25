@@ -40,10 +40,7 @@ const Dashboard = () => {
     setActiveTab("chat");
   };
 
-  const handleNewConversation = () => {
-    setActiveConversationId(null);
-    setActiveTab("chat");
-  };
+  const handleNewConversation = () => handleSelectConversation(null);
 
   useEffect(() => {
     if (isTrialMode) {

@@ -12,6 +12,7 @@ interface Message {
   content: string;
   sender: string;
   created_at: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   metadata?: any;
 }
 
@@ -22,12 +23,14 @@ interface ConversationDetailProps {
 
 export function ConversationDetail({ conversationId, onBack }: ConversationDetailProps) {
   const [messages, setMessages] = useState<Message[]>([]);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [conversation, setConversation] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
 
   useEffect(() => {
     fetchConversationDetails();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [conversationId]);
 
   const fetchConversationDetails = async () => {

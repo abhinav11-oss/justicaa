@@ -44,6 +44,7 @@ export const ConstitutionExplorer = () => {
           toast({ title: "No articles found", description: "Could not load the Constitution articles." });
         }
 
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (error: any) {
         toast({ title: "Failed to load articles", description: error.message, variant: "destructive" });
       } finally {

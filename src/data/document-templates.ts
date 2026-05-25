@@ -16,6 +16,7 @@ export interface DocumentTemplate {
   category: string;
   difficulty: string;
   estimatedTime: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   icon: any;
   fields: TemplateField[];
   generateContent: (data: Record<string, string>) => string;

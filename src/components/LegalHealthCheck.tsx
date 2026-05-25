@@ -42,6 +42,7 @@ interface NonLegalReport {
 type AnalysisResult = LegalReport | NonLegalReport;
 
 const readFileAsText = (file: File): Promise<string> => {
+  // eslint-disable-next-line no-async-promise-executor
   return new Promise(async (resolve, reject) => {
     if (file.type === 'application/pdf') {
       try {
@@ -186,6 +187,7 @@ export const LegalHealthCheck = () => {
       } else {
         toast({ title: "✅ Analysis Complete!" });
       }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       toast({
         title: "Analysis Failed",

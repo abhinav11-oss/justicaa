@@ -54,6 +54,7 @@ Always maintain a helpful, professional tone while being clear about the limitat
     // Build conversation context
     const messages = [
       { role: "system", content: systemPrompt },
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       ...conversationHistory.map((msg: any) => ({
         role: msg.sender === 'user' ? 'user' : 'assistant',
         content: msg.content

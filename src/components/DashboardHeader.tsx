@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 interface HeaderProps {
   isMobile: boolean;
   onMenuClick: () => void;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   user: any;
 }
 

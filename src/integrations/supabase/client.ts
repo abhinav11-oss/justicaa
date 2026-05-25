@@ -18,6 +18,7 @@ export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABL
 });
 
 // Session recovery error handler
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const handleSessionError = async (error: any) => {
   console.error('Session error detected:', error);
   

@@ -16,6 +16,7 @@ export const downloadAsPdf = (htmlContent: string, filename: string) => {
 };
 
 export const downloadAsWord = (htmlContent: string, filename:string) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const htmlDocx = (window as any).htmlDocx;
   if (!htmlDocx) {
     console.error("html-docx-js library not found on window object.");

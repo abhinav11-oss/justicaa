@@ -24,24 +24,9 @@ const Landing = () => {
     }
   }, [user, navigate]);
 
-  const handleCTAClick = () => {
-    if (user) {
-      navigate("/dashboard");
-    } else {
-      // Navigate to auth page in same window
-      navigate("/auth");
-    }
-  };
+  const handleCTAClick = () => navigate(user ? "/dashboard" : "/auth");
 
-  const handleTryForFree = () => {
-    if (user) {
-      // If user is already logged in, go to dashboard
-      navigate("/dashboard");
-    } else {
-      // Navigate to dashboard with trial mode
-      navigate("/dashboard?trial=true");
-    }
-  };
+  const handleTryForFree = () => navigate(user ? "/dashboard" : "/dashboard?trial=true");
 
   const fadeInUp = {
     initial: { opacity: 0, y: 60 },

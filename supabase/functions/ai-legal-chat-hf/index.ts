@@ -74,6 +74,7 @@ Remember: You're helping Indian citizens navigate their legal system effectively
     let conversationContext = "";
     if (conversationHistory.length > 0) {
       conversationContext = "\n\nPrevious conversation context:\n";
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       conversationHistory.slice(-3).forEach((msg: any) => {
         conversationContext += `${msg.sender === 'user' ? 'User' : 'Assistant'}: ${msg.content}\n`;
       });

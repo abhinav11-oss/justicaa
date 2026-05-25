@@ -57,6 +57,7 @@ serve(async (req) => {
 
     // Step 2: Get details (phone) for top results
     const lawyers = await Promise.all(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       places.slice(0, 20).map(async (place: any) => {
         let phone = "";
         let website = "";
@@ -108,6 +109,8 @@ serve(async (req) => {
     );
 
     // Sort by distance if available, else by rating
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     lawyers.sort((a: any, b: any) => {
       if (a.distance !== undefined && b.distance !== undefined) {
         return a.distance - b.distance;

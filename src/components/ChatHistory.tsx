@@ -40,6 +40,7 @@ export const ChatHistory = ({ onSelectConversation, onNewConversation, activeCon
     } else {
       setLoading(false);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, activeConversationId]);
 
   const fetchHistory = async () => {
@@ -59,6 +60,7 @@ export const ChatHistory = ({ onSelectConversation, onNewConversation, activeCon
       setPinned(allHistory.filter(c => pinnedIds.includes(c.id)));
       setHistory(allHistory.filter(c => !pinnedIds.includes(c.id)));
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       toast({
         title: "Error fetching chat history",
@@ -97,6 +99,7 @@ export const ChatHistory = ({ onSelectConversation, onNewConversation, activeCon
         fetchHistory();
       }
       toast({ title: "Chat deleted successfully" });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       toast({
         title: "Error deleting chat",

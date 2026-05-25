@@ -68,6 +68,7 @@ export const ChatInterface = ({ conversationId: propConversationId, onSelectConv
     if (user) {
       fetchUserCity();
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isTrialMode, user]);
 
   useEffect(() => {
@@ -80,6 +81,7 @@ export const ChatInterface = ({ conversationId: propConversationId, onSelectConv
       setConversationId(null);
       setShowPrompts(true);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [propConversationId]);
 
   const fetchUserCity = async () => {
@@ -115,6 +117,7 @@ export const ChatInterface = ({ conversationId: propConversationId, onSelectConv
         role: msg.sender === 'user' ? 'user' : 'assistant',
         content: msg.content,
         timestamp: new Date(msg.created_at),
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         category: (msg.metadata as any)?.category,
       }));
       setMessages(loadedMessages);

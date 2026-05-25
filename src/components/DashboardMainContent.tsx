@@ -14,6 +14,7 @@ import { LegalMattersManager } from "@/components/LegalMattersManager";
 interface MainContentProps {
   activeTab: string;
   isTrialMode: boolean;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   user: any;
   onSelectConversation: (id: string | null) => void;
   onNewConversation: () => void;

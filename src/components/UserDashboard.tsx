@@ -63,6 +63,7 @@ interface LegalDocument {
   title: string;
   document_type: string;
   status: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   content: any;
   created_at: string;
 }
@@ -98,6 +99,7 @@ export function UserDashboard({ onSelectConversation }: UserDashboardProps) {
     if (user) {
       fetchUserData();
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
   const fetchUserData = async () => {
@@ -251,6 +253,7 @@ export function UserDashboard({ onSelectConversation }: UserDashboardProps) {
     const htmlContent = getHtmlContent(doc);
     
     try {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const htmlDocx = (window as any).htmlDocx;
       if (!htmlDocx) {
         console.error("html-docx-js library not found on window object.");

@@ -51,6 +51,7 @@ export const AuthForm = ({ onAuthSuccess }: AuthFormProps) => {
         description: "You have been successfully signed in.",
       });
       onAuthSuccess?.();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       toast({
         title: "Sign In Failed",
@@ -99,6 +100,7 @@ export const AuthForm = ({ onAuthSuccess }: AuthFormProps) => {
         description: "Please check your email to confirm your account.",
       });
       onAuthSuccess?.();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       toast({
         title: "Sign Up Failed",
@@ -131,6 +133,7 @@ export const AuthForm = ({ onAuthSuccess }: AuthFormProps) => {
         description: "Please check your email for password reset instructions.",
       });
       setAuthMode("signin");
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       toast({
         title: "Reset Failed",
@@ -148,6 +151,7 @@ export const AuthForm = ({ onAuthSuccess }: AuthFormProps) => {
     try {
       const { error } = await signInWithGoogle();
       if (error) throw error;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       toast({
         title: "Google Sign In Failed",

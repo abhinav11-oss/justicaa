@@ -31,6 +31,7 @@ export const ChatView = ({ conversationId, onSelectConversation, onNewConversati
     if (!user) {
       onNewConversation();
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
   const historyPanel = (

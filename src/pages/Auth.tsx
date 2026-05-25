@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useCallback } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import { AuthForm } from "@/components/AuthForm";
@@ -7,24 +7,7 @@ const Auth = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
 
-  // Redirect to dashboard on successful auth
-  useEffect(() => {
-    if (user) {
-      // Send message to parent window for popup flow (legacy support)
-      if (window.opener) {
-        window.opener.postMessage(
-          { type: "AUTH_SUCCESS", user },
-          window.location.origin
-        );
-        window.close();
-      } else {
-        // Navigate to dashboard using React Router
-        navigate("/dashboard");
-      }
-    }
-  }, [user, navigate]);
-
-  const handleAuthSuccess = () => {
+  const handleAuthSuccess = useCallback(() => {
     if (window.opener) {
       window.opener.postMessage(
         { type: "AUTH_SUCCESS", user },
@@ -34,7 +17,12 @@ const Auth = () => {
     } else {
       navigate("/dashboard");
     }
-  };
+  }, [user, navigate]);
+
+  // Redirect to dashboard on successful auth
+  useEffect(() => {
+    if (user) handleAuthSuccess();
+  }, [user, handleAuthSuccess]);
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">

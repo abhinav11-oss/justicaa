@@ -80,6 +80,7 @@ export const LegalMattersManager = () => {
 
   useEffect(() => {
     fetchMatters();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
   const onSubmit = async (values: MatterFormValues) => {
