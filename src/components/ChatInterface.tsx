@@ -3,7 +3,6 @@ import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Send, Bot, User, Loader2, Copy, Lock, Volume2, Paperclip, Sparkles, Mic, Users } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
@@ -292,84 +291,83 @@ export const ChatInterface = ({ conversationId: propConversationId, onSelectConv
   );
 
   return (
-    <div className="h-full min-h-0 flex flex-col bg-background w-full">
-      <Card className="flex-1 h-full min-h-0 flex flex-col rounded-none border-0 overflow-hidden w-full">
-        <CardContent className="flex-1 h-full min-h-0 flex flex-col p-0 overflow-hidden w-full">
-          <div className="flex-1 h-full min-h-0 overflow-y-auto overscroll-contain w-full" ref={chatContainerRef}>
-            <div className="px-3 md:px-6 max-w-4xl mx-auto w-full">
-              {messages.length === 0 && !isLoading ? (
-                showPrompts ? (
-                  <QuickQuestions onQuestionClick={handleQuestionClick} />
-                ) : (
-                  <WelcomeScreen />
-                )
-              ) : null}
-              
-              {messages.length > 0 && (
-                <div className="space-y-3 md:space-y-4 py-4">
-                  {messages.map((message) => (
-                    <div key={message.id} className={`flex items-start space-x-2 md:space-x-3 ${message.role === "user" ? "justify-end" : "justify-start"}`}>
-                      {message.role === "assistant" && <div className="bg-primary p-1.5 md:p-2 rounded-full flex-shrink-0"><Bot className="h-3 w-3 md:h-4 md:w-4 text-primary-foreground" /></div>}
-                      <div className={`max-w-[85%] md:max-w-[80%] p-3 md:p-4 rounded-lg ${message.role === "user" ? "bg-primary text-primary-foreground" : "bg-muted"}`}>
-                        <div className="prose prose-sm dark:prose-invert max-w-none leading-relaxed">
-                          <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                            {message.content}
-                          </ReactMarkdown>
-                        </div>
-                        <div className="flex items-center justify-between mt-2 pt-2 border-t border-current/10">
-                          <span className="text-xs opacity-70">{message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
-                          <div className="flex items-center space-x-1">
-                            {message.role === "assistant" && <Button variant="ghost" size="sm" onClick={() => handleSpeakMessage(message.content)} className="h-5 w-5 md:h-6 md:w-6 p-0 opacity-70 hover:opacity-100" disabled={isSpeaking}><Volume2 className="h-3 w-3" /></Button>}
-                            <Button variant="ghost" size="sm" onClick={() => copyToClipboard(message.content)} className="h-5 w-5 md:h-6 md:w-6 p-0 opacity-70 hover:opacity-100"><Copy className="h-3 w-3" /></Button>
-                          </div>
+    <div className="h-full flex flex-col bg-background overflow-hidden">
+      <div className="flex-1 min-h-0 relative">
+        <div className="absolute inset-0 overflow-y-auto overscroll-contain" ref={chatContainerRef}>
+          <div className="px-3 md:px-6 max-w-4xl mx-auto w-full">
+            {messages.length === 0 && !isLoading ? (
+              showPrompts ? (
+                <QuickQuestions onQuestionClick={handleQuestionClick} />
+              ) : (
+                <WelcomeScreen />
+              )
+            ) : null}
+            
+            {messages.length > 0 && (
+              <div className="space-y-3 md:space-y-4 py-4">
+                {messages.map((message) => (
+                  <div key={message.id} className={`flex items-start space-x-2 md:space-x-3 ${message.role === "user" ? "justify-end" : "justify-start"}`}>
+                    {message.role === "assistant" && <div className="bg-primary p-1.5 md:p-2 rounded-full flex-shrink-0"><Bot className="h-3 w-3 md:h-4 md:w-4 text-primary-foreground" /></div>}
+                    <div className={`max-w-[85%] md:max-w-[80%] p-3 md:p-4 rounded-lg ${message.role === "user" ? "bg-primary text-primary-foreground" : "bg-muted"}`}>
+                      <div className="prose prose-sm dark:prose-invert max-w-none leading-relaxed">
+                        <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                          {message.content}
+                        </ReactMarkdown>
+                      </div>
+                      <div className="flex items-center justify-between mt-2 pt-2 border-t border-current/10">
+                        <span className="text-xs opacity-70">{message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                        <div className="flex items-center space-x-1">
+                          {message.role === "assistant" && <Button variant="ghost" size="sm" onClick={() => handleSpeakMessage(message.content)} className="h-5 w-5 md:h-6 md:w-6 p-0 opacity-70 hover:opacity-100" disabled={isSpeaking}><Volume2 className="h-3 w-3" /></Button>}
+                          <Button variant="ghost" size="sm" onClick={() => copyToClipboard(message.content)} className="h-5 w-5 md:h-6 md:w-6 p-0 opacity-70 hover:opacity-100"><Copy className="h-3 w-3" /></Button>
                         </div>
                       </div>
-                      {message.role === "user" && <div className="bg-primary p-1.5 md:p-2 rounded-full flex-shrink-0"><User className="h-3 w-3 md:h-4 md:w-4 text-primary-foreground" /></div>}
                     </div>
-                  ))}
-                  {isLoading && (
-                    <div className="flex items-start space-x-2 md:space-x-3">
-                      <div className="bg-primary p-1.5 md:p-2 rounded-full"><Bot className="h-3 w-3 md:h-4 md:w-4 text-primary-foreground" /></div>
-                      <div className="bg-muted p-3 md:p-4 rounded-lg"><div className="flex items-center space-x-2"><Loader2 className="h-3 w-3 md:h-4 w-4 animate-spin" /><span className="text-sm">{t('chat.thinking')}</span></div></div>
-                    </div>
-                  )}
-                  {!isLoading && lastAiCategory && user && (
-                    <div className="flex justify-center">
-                      <Button variant="outline" size="sm" onClick={() => setShowRecommendations(true)}>
-                        <Users className="h-4 w-4 mr-2" />
-                        Find a Lawyer for This Case
-                      </Button>
-                    </div>
-                  )}
-                </div>
-              )}
-              <div ref={messagesEndRef} />
-            </div>
+                    {message.role === "user" && <div className="bg-primary p-1.5 md:p-2 rounded-full flex-shrink-0"><User className="h-3 w-3 md:h-4 md:w-4 text-primary-foreground" /></div>}
+                  </div>
+                ))}
+                {isLoading && (
+                  <div className="flex items-start space-x-2 md:space-x-3">
+                    <div className="bg-primary p-1.5 md:p-2 rounded-full"><Bot className="h-3 w-3 md:h-4 md:w-4 text-primary-foreground" /></div>
+                    <div className="bg-muted p-3 md:p-4 rounded-lg"><div className="flex items-center space-x-2"><Loader2 className="h-3 w-3 md:h-4 w-4 animate-spin" /><span className="text-sm">{t('chat.thinking')}</span></div></div>
+                  </div>
+                )}
+                {!isLoading && lastAiCategory && user && (
+                  <div className="flex justify-center">
+                    <Button variant="outline" size="sm" onClick={() => setShowRecommendations(true)}>
+                      <Users className="h-4 w-4 mr-2" />
+                      Find a Lawyer for This Case
+                    </Button>
+                  </div>
+                )}
+              </div>
+            )}
+            <div ref={messagesEndRef} />
           </div>
+        </div>
+      </div>
 
-          <div className="p-3 md:p-4 flex-shrink-0 border-t bg-card">
-            <div className="relative max-w-4xl mx-auto w-full">
-              <Button variant="ghost" size="icon" className="absolute left-1 top-1/2 -translate-y-1/2 h-8 w-8 text-muted-foreground"><Paperclip className="h-5 w-5" /></Button>
-              <Input
-                value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)}
-                onKeyPress={handleKeyPress}
-                placeholder={isInputDisabled ? t('auth.signInContinue') : t('chat.placeholder')}
-                disabled={isLoading || isInputDisabled}
-                className="flex-1 text-sm md:text-base pl-10 pr-12"
-              />
-              <Button onClick={() => handleSendMessage()} disabled={isLoading || !inputValue.trim() || isInputDisabled} size="icon" className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8">
-                {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : isInputDisabled ? <Lock className="h-4 w-4" /> : <Send className="h-4 w-4" />}
-              </Button>
-            </div>
-            <div className="flex justify-center mt-2">
-              <p className="text-xs text-muted-foreground text-center">
-                {t('chat.disclaimer')}
-              </p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+      <div className="p-3 md:p-4 flex-shrink-0 border-t bg-card">
+        <div className="relative max-w-4xl mx-auto w-full">
+          <Button variant="ghost" size="icon" className="absolute left-1 top-1/2 -translate-y-1/2 h-8 w-8 text-muted-foreground"><Paperclip className="h-5 w-5" /></Button>
+          <Input
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+            onKeyPress={handleKeyPress}
+            placeholder={isInputDisabled ? t('auth.signInContinue') : t('chat.placeholder')}
+            disabled={isLoading || isInputDisabled}
+            className="flex-1 text-sm md:text-base pl-10 pr-12"
+          />
+          <Button onClick={() => handleSendMessage()} disabled={isLoading || !inputValue.trim() || isInputDisabled} size="icon" className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8">
+            {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : isInputDisabled ? <Lock className="h-4 w-4" /> : <Send className="h-4 w-4" />}
+          </Button>
+        </div>
+        <div className="flex justify-center mt-2">
+          <p className="text-xs text-muted-foreground text-center">
+            {t('chat.disclaimer')}
+          </p>
+        </div>
+      </div>
+    </div>
       
       <Dialog open={showAuthModal} onOpenChange={setShowAuthModal}>
         <DialogContent className="sm:max-w-[425px] mx-4">

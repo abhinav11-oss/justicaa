@@ -71,10 +71,10 @@ export const ChatView = ({ conversationId, onSelectConversation, onNewConversati
         </>
       ) : (
         <>
-          <div className="w-1/4 min-w-[280px] max-w-[350px] h-full min-h-0 overflow-hidden flex-shrink-0 flex flex-col">
+          <div className="w-1/4 min-w-[280px] max-w-[350px] min-h-0 overflow-hidden flex-shrink-0 self-stretch">
             {historyPanel}
           </div>
-          <div className="flex-1 h-full min-h-0 min-w-0 overflow-hidden flex flex-col">
+          <div className="flex-1 min-h-0 min-w-0 overflow-hidden self-stretch">
             <ChatInterface 
               conversationId={conversationId}
               onSelectConversation={onSelectConversation}

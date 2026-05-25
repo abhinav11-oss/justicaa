@@ -93,7 +93,7 @@ const Dashboard = () => {
         sidebarOpen={sidebarOpen}
         setSidebarOpen={setSidebarOpen}
       />
-      <main className="flex-1 flex flex-col h-full w-full min-w-0 overflow-hidden pb-[env(safe-area-inset-bottom)]">
+      <main className="flex-1 flex flex-col min-h-0 min-w-0 overflow-hidden pb-[env(safe-area-inset-bottom)]">
         <DashboardHeader
           isMobile={isMobile}
           onMenuClick={() => setSidebarOpen(true)}
@@ -130,7 +130,7 @@ const Dashboard = () => {
           </div>
         )}
 
-        <div className={`flex-1 h-full min-h-0 flex flex-col w-full ${activeTab === 'chat' ? 'p-0 overflow-hidden' : 'p-4 sm:p-6 overflow-y-auto'}`}>
+        <div className={`flex-1 min-h-0 overflow-hidden ${activeTab === 'chat' ? 'p-0' : 'p-4 sm:p-6 overflow-y-auto'}`}>
           <DashboardMainContent
             activeTab={activeTab}
             isTrialMode={isTrialMode}

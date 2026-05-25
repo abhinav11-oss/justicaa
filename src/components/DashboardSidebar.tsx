@@ -218,7 +218,7 @@ export const DashboardSidebar: React.FC<SidebarProps> = ({
   const renderSidebar = () => (
     <aside
       className={cn(
-        "flex-col py-4 bg-card border-r transition-[width] duration-300 ease-in-out",
+        "flex-col py-4 bg-card border-r transition-[width] duration-300 ease-in-out flex-shrink-0 overflow-hidden",
         isMobile ? "w-64" : isExpanded ? "w-60" : "w-20",
         isMobile ? "fixed inset-y-0 left-0 z-50" : "hidden md:flex"
       )}
