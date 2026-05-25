@@ -292,10 +292,10 @@ export const ChatInterface = ({ conversationId: propConversationId, onSelectConv
   );
 
   return (
-    <div className="h-full min-h-0 flex flex-col bg-background">
-      <Card className="flex-1 min-h-0 flex flex-col rounded-none border-0 overflow-hidden">
-        <CardContent className="flex-1 min-h-0 flex flex-col p-0 overflow-hidden">
-          <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain" ref={chatContainerRef}>
+    <div className="h-full min-h-0 flex flex-col bg-background w-full">
+      <Card className="flex-1 h-full min-h-0 flex flex-col rounded-none border-0 overflow-hidden w-full">
+        <CardContent className="flex-1 h-full min-h-0 flex flex-col p-0 overflow-hidden w-full">
+          <div className="flex-1 h-full min-h-0 overflow-y-auto overscroll-contain w-full" ref={chatContainerRef}>
             <div className="px-3 md:px-6 max-w-4xl mx-auto w-full">
               {messages.length === 0 && !isLoading ? (
                 showPrompts ? (

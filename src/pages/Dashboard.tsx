@@ -84,7 +84,7 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="h-[100dvh] overflow-hidden flex bg-muted/40">
+    <div className="h-screen w-full overflow-hidden flex bg-muted/40">
       <DashboardSidebar
         user={user}
         isTrialMode={isTrialMode}
@@ -93,7 +93,7 @@ const Dashboard = () => {
         sidebarOpen={sidebarOpen}
         setSidebarOpen={setSidebarOpen}
       />
-      <main className="flex-1 flex flex-col h-full overflow-hidden pb-[env(safe-area-inset-bottom)]">
+      <main className="flex-1 flex flex-col h-full w-full min-w-0 overflow-hidden pb-[env(safe-area-inset-bottom)]">
         <DashboardHeader
           isMobile={isMobile}
           onMenuClick={() => setSidebarOpen(true)}
@@ -101,7 +101,7 @@ const Dashboard = () => {
         />
 
         {isTrialMode && !user && (
-          <div className="px-6 py-2 bg-primary/10 border-b border-primary/20">
+          <div className="px-6 py-2 bg-primary/10 border-b border-primary/20 flex-shrink-0">
             <div className="flex items-center justify-center space-x-2">
               <MessageSquare className="h-4 w-4 text-primary" />
               <p className="text-sm text-center text-primary">
@@ -120,7 +120,7 @@ const Dashboard = () => {
         )}
 
         {sessionError && (
-          <div className="px-6 py-2 bg-destructive/10 border-b border-destructive/20">
+          <div className="px-6 py-2 bg-destructive/10 border-b border-destructive/20 flex-shrink-0">
             <div className="flex items-center justify-center space-x-2">
               <AlertTriangle className="h-4 w-4 text-destructive" />
               <p className="text-sm text-center text-destructive">
@@ -130,7 +130,7 @@ const Dashboard = () => {
           </div>
         )}
 
-        <div className={`flex-1 min-h-0 flex flex-col ${activeTab === 'chat' ? 'p-0 overflow-hidden' : 'p-4 sm:p-6 overflow-y-auto'}`}>
+        <div className={`flex-1 h-full min-h-0 flex flex-col w-full ${activeTab === 'chat' ? 'p-0 overflow-hidden' : 'p-4 sm:p-6 overflow-y-auto'}`}>
           <DashboardMainContent
             activeTab={activeTab}
             isTrialMode={isTrialMode}
