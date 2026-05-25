@@ -158,7 +158,7 @@ export const ChatHistory = ({ onSelectConversation, onNewConversation, activeCon
           {t('chat.newChat')}
         </Button>
       </div>
-      <ScrollArea className="flex-1">
+      <ScrollArea className="flex-1 min-h-0">
         <div className="p-4 space-y-4">
           <div>
             <h3 className="text-sm font-semibold text-muted-foreground mb-2 flex items-center">
