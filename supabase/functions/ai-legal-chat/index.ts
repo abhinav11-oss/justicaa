@@ -4,19 +4,20 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',   //Allow requests from all domains.
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  'Access-Control-Allow-Headers':       //Allow these request headers.
+ 'authorization, x-client-info, apikey, content-type',
 };
 
-serve(async (req) => {
+serve(async (req) => {               //Starts your server.
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY');
+    const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY');         //Reads secret from environment.
     if (!OPENAI_API_KEY) {
-      throw new Error('OPENAI_API_KEY is not set');
+      throw new Error('OPENAI_API_KEY is not set');             //Prevents running without API access. 
     }
 
     const { message, conversationHistory = [] } = await req.json();
