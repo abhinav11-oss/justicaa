@@ -291,6 +291,7 @@ export const ChatInterface = ({ conversationId: propConversationId, onSelectConv
   );
 
   return (
+    <>
     <div className="h-full flex flex-col bg-background overflow-hidden">
       <div className="flex-1 min-h-0 relative">
         <div className="absolute inset-0 overflow-y-auto overscroll-contain" ref={chatContainerRef}>
@@ -399,6 +400,6 @@ export const ChatInterface = ({ conversationId: propConversationId, onSelectConv
           city={userCity}
         />
       )}
-    </div>
+    </>
   );
 };
