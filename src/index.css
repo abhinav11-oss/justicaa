@@ -3,6 +3,14 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Critical: must be outside @layer to have highest specificity */
+html, body, #root {
+  height: 100% !important;
+  overflow: hidden !important;
+  margin: 0;
+  padding: 0;
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -53,10 +61,6 @@
 @layer base {
   * {
     @apply border-border;
-  }
-  html, body, #root {
-    height: 100%;
-    overflow: hidden;
   }
   body {
     @apply bg-background text-foreground;

@@ -151,14 +151,14 @@ export const ChatHistory = ({ onSelectConversation, onNewConversation, activeCon
 
   return (
     <div className="bg-card h-full flex flex-col border-r overflow-hidden">
-      <div className="p-4 space-y-4 border-b">
+      <div className="p-4 space-y-4 border-b flex-shrink-0">
         <h2 className="text-xl font-bold">{t('chat.history')}</h2>
         <Button className="w-full" onClick={onNewConversation}>
           <Plus className="h-4 w-4 mr-2" />
           {t('chat.newChat')}
         </Button>
       </div>
-      <ScrollArea className="flex-1 min-h-0">
+      <ScrollArea className="flex-1 min-h-0" data-scroll-container>
         <div className="p-4 space-y-4">
           <div>
             <h3 className="text-sm font-semibold text-muted-foreground mb-2 flex items-center">

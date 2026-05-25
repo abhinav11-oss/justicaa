@@ -43,7 +43,7 @@ export const ChatView = ({ conversationId, onSelectConversation, onNewConversati
   );
 
   return (
-    <div className="flex h-full min-h-0 w-full overflow-hidden">
+    <div style={{ height: '100%', width: '100%', overflow: 'hidden', display: 'flex', position: 'relative' }}>
       {isMobile ? (
         <>
           {showHistory && (
@@ -51,7 +51,7 @@ export const ChatView = ({ conversationId, onSelectConversation, onNewConversati
               {historyPanel}
             </div>
           )}
-          <div className="flex-1 flex flex-col h-full min-h-0 overflow-hidden">
+          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0, overflow: 'hidden' }}>
             <Button 
               variant="outline" 
               size="sm" 
@@ -61,7 +61,7 @@ export const ChatView = ({ conversationId, onSelectConversation, onNewConversati
               <PanelLeftOpen className="h-4 w-4 mr-2" />
               {showHistory ? "Close History" : "View History"}
             </Button>
-            <div className="flex-1 min-h-0 overflow-hidden">
+            <div style={{ flex: 1, minHeight: 0, overflow: 'hidden' }}>
               <ChatInterface 
                 conversationId={conversationId}
                 onSelectConversation={onSelectConversation}
@@ -71,10 +71,10 @@ export const ChatView = ({ conversationId, onSelectConversation, onNewConversati
         </>
       ) : (
         <>
-          <div className="w-1/4 min-w-[280px] max-w-[350px] min-h-0 overflow-hidden flex-shrink-0 self-stretch">
+          <div style={{ width: '25%', minWidth: 280, maxWidth: 350, height: '100%', overflow: 'hidden', flexShrink: 0 }}>
             {historyPanel}
           </div>
-          <div className="flex-1 min-h-0 min-w-0 overflow-hidden self-stretch">
+          <div style={{ flex: 1, minWidth: 0, height: '100%', overflow: 'hidden' }}>
             <ChatInterface 
               conversationId={conversationId}
               onSelectConversation={onSelectConversation}

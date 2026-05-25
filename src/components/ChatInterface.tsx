@@ -294,7 +294,7 @@ export const ChatInterface = ({ conversationId: propConversationId, onSelectConv
     <>
     <div className="h-full flex flex-col bg-background overflow-hidden">
       <div className="flex-1 min-h-0 relative">
-        <div className="absolute inset-0 overflow-y-auto overscroll-contain" ref={chatContainerRef}>
+        <div className="absolute inset-0 overflow-y-auto overscroll-contain" ref={chatContainerRef} data-scroll-container>
           <div className="px-3 md:px-6 max-w-4xl mx-auto w-full">
             {messages.length === 0 && !isLoading ? (
               showPrompts ? (

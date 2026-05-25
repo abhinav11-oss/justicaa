@@ -83,8 +83,24 @@ const Dashboard = () => {
     return null;
   }
 
+  // Prevent any document-level scrolling as a safety net
+  useEffect(() => {
+    const prevent = (e: Event) => {
+      const target = e.target as HTMLElement;
+      // Allow scrolling only inside elements that are meant to scroll
+      if (target.closest('[data-scroll-container]')) return;
+      e.preventDefault();
+    };
+    document.addEventListener('wheel', prevent, { passive: false });
+    document.addEventListener('touchmove', prevent, { passive: false });
+    return () => {
+      document.removeEventListener('wheel', prevent);
+      document.removeEventListener('touchmove', prevent);
+    };
+  }, []);
+
   return (
-    <div className="h-screen w-full overflow-hidden flex bg-muted/40">
+    <div style={{ height: '100vh', width: '100vw', overflow: 'hidden', display: 'flex' }} className="bg-muted/40">
       <DashboardSidebar
         user={user}
         isTrialMode={isTrialMode}
@@ -93,7 +109,7 @@ const Dashboard = () => {
         sidebarOpen={sidebarOpen}
         setSidebarOpen={setSidebarOpen}
       />
-      <main className="flex-1 flex flex-col min-h-0 min-w-0 overflow-hidden pb-[env(safe-area-inset-bottom)]">
+      <div style={{ flex: 1, minWidth: 0, display: 'grid', gridTemplateRows: 'auto 1fr', overflow: 'hidden' }}>
         <DashboardHeader
           isMobile={isMobile}
           onMenuClick={() => setSidebarOpen(true)}
@@ -101,7 +117,7 @@ const Dashboard = () => {
         />
 
         {isTrialMode && !user && (
-          <div className="px-6 py-2 bg-primary/10 border-b border-primary/20 flex-shrink-0">
+          <div className="px-6 py-2 bg-primary/10 border-b border-primary/20" style={{ gridRow: 'span 1' }}>
             <div className="flex items-center justify-center space-x-2">
               <MessageSquare className="h-4 w-4 text-primary" />
               <p className="text-sm text-center text-primary">
@@ -120,7 +136,7 @@ const Dashboard = () => {
         )}
 
         {sessionError && (
-          <div className="px-6 py-2 bg-destructive/10 border-b border-destructive/20 flex-shrink-0">
+          <div className="px-6 py-2 bg-destructive/10 border-b border-destructive/20" style={{ gridRow: 'span 1' }}>
             <div className="flex items-center justify-center space-x-2">
               <AlertTriangle className="h-4 w-4 text-destructive" />
               <p className="text-sm text-center text-destructive">
@@ -130,7 +146,7 @@ const Dashboard = () => {
           </div>
         )}
 
-        <div className={`flex-1 min-h-0 overflow-hidden ${activeTab === 'chat' ? 'p-0' : 'p-4 sm:p-6 overflow-y-auto'}`}>
+        <div style={{ overflow: 'hidden', minHeight: 0 }} className={activeTab !== 'chat' ? 'p-4 sm:p-6 overflow-y-auto' : ''}>
           <DashboardMainContent
             activeTab={activeTab}
             isTrialMode={isTrialMode}
@@ -140,7 +156,7 @@ const Dashboard = () => {
             activeConversationId={activeConversationId}
           />
         </div>
-      </main>
+      </div>
     </div>
   );
 };
