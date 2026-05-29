@@ -83,60 +83,70 @@ Remember: You're helping Indian citizens navigate their legal system effectively
     // Prepare the full prompt
     const fullPrompt = `${indianLegalSystemPrompt}${conversationContext}\n\nUser's Legal Question: ${message}\n\nProvide a comprehensive, helpful response following the guidelines above:`;
 
-    // Call Gemini API
-    const geminiResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${geminiApiKey}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        contents: [{
-          parts: [{
-            text: fullPrompt
-          }]
-        }],
-        generationConfig: {
-          temperature: 0.7,
-          topK: 40,
-          topP: 0.95,
-          maxOutputTokens: 1024,
-        },
-        safetySettings: [
-          {
-            category: "HARM_CATEGORY_HARASSMENT",
-            threshold: "BLOCK_MEDIUM_AND_ABOVE"
-          },
-          {
-            category: "HARM_CATEGORY_HATE_SPEECH", 
-            threshold: "BLOCK_MEDIUM_AND_ABOVE"
-          },
-          {
-            category: "HARM_CATEGORY_SEXUALLY_EXPLICIT",
-            threshold: "BLOCK_MEDIUM_AND_ABOVE"
-          },
-          {
-            category: "HARM_CATEGORY_DANGEROUS_CONTENT",
-            threshold: "BLOCK_MEDIUM_AND_ABOVE"
-          }
-        ]
-      }),
-    });
-
-    if (!geminiResponse.ok) {
-      const errorData = await geminiResponse.text();
-      console.error('Gemini API error:', errorData);
-      throw new Error(`Gemini API error: ${geminiResponse.status}`);
-    }
-
-    const geminiData = await geminiResponse.json();
-    
+    // Call Gemini API with error recovery
     let aiResponse = null;
-    if (geminiData.candidates && geminiData.candidates[0]?.content?.parts?.[0]?.text) {
-      aiResponse = geminiData.candidates[0].content.parts[0].text.trim();
+    let apiError = null;
+
+    try {
+      const geminiResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${geminiApiKey}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          contents: [{
+            parts: [{
+              text: fullPrompt
+            }]
+          }],
+          generationConfig: {
+            temperature: 0.7,
+            topK: 40,
+            topP: 0.95,
+            maxOutputTokens: 1024,
+          },
+          safetySettings: [
+            {
+              category: "HARM_CATEGORY_HARASSMENT",
+              threshold: "BLOCK_MEDIUM_AND_ABOVE"
+            },
+            {
+              category: "HARM_CATEGORY_HATE_SPEECH", 
+              threshold: "BLOCK_MEDIUM_AND_ABOVE"
+            },
+            {
+              category: "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+              threshold: "BLOCK_MEDIUM_AND_ABOVE"
+            },
+            {
+              category: "HARM_CATEGORY_DANGEROUS_CONTENT",
+              threshold: "BLOCK_MEDIUM_AND_ABOVE"
+            }
+          ]
+        }),
+      });
+
+      if (!geminiResponse.ok) {
+        const errorData = await geminiResponse.text();
+        console.error('Gemini API error:', geminiResponse.status, errorData);
+        apiError = `Gemini API error: ${geminiResponse.status}`;
+        // Don't throw - fall through to use knowledge base fallback
+      } else {
+        const geminiData = await geminiResponse.json();
+        
+        if (geminiData.candidates && geminiData.candidates[0]?.content?.parts?.[0]?.text) {
+          aiResponse = geminiData.candidates[0].content.parts[0].text.trim();
+        }
+      }
+    } catch (fetchError) {
+      console.error('Gemini API fetch error:', fetchError);
+      apiError = fetchError.message;
+      // Don't throw - fall through to use knowledge base fallback
     }
 
-    // Fallback to Indian legal knowledge base if Gemini fails
+    // Fallback to Indian legal knowledge base if Gemini fails or returns empty
     if (!aiResponse || aiResponse.length < 50) {
+      console.log('Using knowledge base fallback. API error:', apiError);
       aiResponse = generateIndianLegalResponse(message);
     }
 
@@ -148,6 +158,7 @@ Remember: You're helping Indian citizens navigate their legal system effectively
     // Categorize based on Indian legal domains
     const category = categorizeIndianLegalResponse(aiResponse, message);
 
+    // Always return 200 so the client always gets the response
     return new Response(JSON.stringify({ 
       response: aiResponse,
       category: category 
@@ -156,9 +167,9 @@ Remember: You're helping Indian citizens navigate their legal system effectively
     });
 
   } catch (error) {
-    console.error('Error in Indian legal AI function:', error);
+    console.error('Critical error in Indian legal AI function:', error);
     
-    // Provide helpful fallback response
+    // Even on critical errors, return 200 with a fallback so the user sees something useful
     const fallbackResponse = `मुझे खुशी होगी आपकी कानूनी सहायता करने में! (I'd be happy to assist with your legal query!)
 
 Unfortunately, I'm experiencing a technical issue right now. However, here are some immediate steps you can take:
@@ -182,10 +193,9 @@ Unfortunately, I'm experiencing a technical issue right now. However, here are s
 For immediate legal assistance, contact your nearest Legal Services Authority or dial 1968 for legal aid.`;
 
     return new Response(JSON.stringify({ 
-      error: error.message,
-      response: fallbackResponse 
+      response: fallbackResponse,
+      category: 'general'
     }), {
-      status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   }
