@@ -17,12 +17,9 @@ serve(async (req) => {
 
     console.log('Processing legal query:', message);
 
-    // Get Gemini API key from environment
+    // Get API keys from environment
     const geminiApiKey = Deno.env.get('GEMINI_API_KEY');
-    
-    if (!geminiApiKey) {
-      throw new Error('Gemini API key not configured');
-    }
+    const openAiApiKey = Deno.env.get('OPENAI_API_KEY');
 
     // Build comprehensive Indian legal system prompt
     const indianLegalSystemPrompt = `🎯 You are a highly knowledgeable and responsible Indian legal assistant trained on real Indian laws and procedures. Your goal is to help Indian citizens by providing accurate, actionable, and easy-to-understand legal answers.
@@ -87,64 +84,111 @@ Remember: You're helping Indian citizens navigate their legal system effectively
     let aiResponse = null;
     let apiError = null;
 
-    try {
-      const geminiResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${geminiApiKey}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          contents: [{
-            parts: [{
-              text: fullPrompt
-            }]
-          }],
-          generationConfig: {
-            temperature: 0.7,
-            topK: 40,
-            topP: 0.95,
-            maxOutputTokens: 1024,
+    if (geminiApiKey) {
+      try {
+        const geminiResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${geminiApiKey}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
           },
-          safetySettings: [
-            {
-              category: "HARM_CATEGORY_HARASSMENT",
-              threshold: "BLOCK_MEDIUM_AND_ABOVE"
+          body: JSON.stringify({
+            contents: [{
+              parts: [{
+                text: fullPrompt
+              }]
+            }],
+            generationConfig: {
+              temperature: 0.7,
+              topK: 40,
+              topP: 0.95,
+              maxOutputTokens: 1024,
             },
-            {
-              category: "HARM_CATEGORY_HATE_SPEECH", 
-              threshold: "BLOCK_MEDIUM_AND_ABOVE"
-            },
-            {
-              category: "HARM_CATEGORY_SEXUALLY_EXPLICIT",
-              threshold: "BLOCK_MEDIUM_AND_ABOVE"
-            },
-            {
-              category: "HARM_CATEGORY_DANGEROUS_CONTENT",
-              threshold: "BLOCK_MEDIUM_AND_ABOVE"
-            }
-          ]
-        }),
-      });
+            safetySettings: [
+              {
+                category: "HARM_CATEGORY_HARASSMENT",
+                threshold: "BLOCK_MEDIUM_AND_ABOVE"
+              },
+              {
+                category: "HARM_CATEGORY_HATE_SPEECH", 
+                threshold: "BLOCK_MEDIUM_AND_ABOVE"
+              },
+              {
+                category: "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+                threshold: "BLOCK_MEDIUM_AND_ABOVE"
+              },
+              {
+                category: "HARM_CATEGORY_DANGEROUS_CONTENT",
+                threshold: "BLOCK_MEDIUM_AND_ABOVE"
+              }
+            ]
+          }),
+        });
 
-      if (!geminiResponse.ok) {
-        const errorData = await geminiResponse.text();
-        console.error('Gemini API error:', geminiResponse.status, errorData);
-        apiError = `Gemini API error: ${geminiResponse.status}`;
-        // Don't throw - fall through to use knowledge base fallback
-      } else {
-        const geminiData = await geminiResponse.json();
-        
-        if (geminiData.candidates && geminiData.candidates[0]?.content?.parts?.[0]?.text) {
-          aiResponse = geminiData.candidates[0].content.parts[0].text.trim();
+        if (!geminiResponse.ok) {
+          const errorData = await geminiResponse.text();
+          console.error('Gemini API error:', geminiResponse.status, errorData);
+          apiError = `Gemini API error: ${geminiResponse.status}`;
+        } else {
+          const geminiData = await geminiResponse.json();
+          if (geminiData.candidates && geminiData.candidates[0]?.content?.parts?.[0]?.text) {
+            aiResponse = geminiData.candidates[0].content.parts[0].text.trim();
+          }
         }
+      } catch (fetchError) {
+        console.error('Gemini API fetch error:', fetchError);
+        apiError = fetchError.message;
       }
-    } catch (fetchError) {
-      console.error('Gemini API fetch error:', fetchError);
-      apiError = fetchError.message;
-      // Don't throw - fall through to use knowledge base fallback
+    } else {
+      apiError = 'Gemini API key not configured';
     }
 
-    // Fallback to Indian legal knowledge base if Gemini fails or returns empty
+    // Try OpenAI API if Gemini failed or was not configured
+    if ((!aiResponse || aiResponse.length < 50) && openAiApiKey) {
+      try {
+        console.log('Gemini failed or not configured. Attempting to call OpenAI API...');
+        
+        const openAiMessages = [
+          { role: "system", content: indianLegalSystemPrompt },
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          ...conversationHistory.slice(-5).map((msg: any) => ({
+            role: msg.sender === 'user' ? 'user' : 'assistant',
+            content: msg.content
+          })),
+          { role: "user", content: message }
+        ];
+
+        const openAiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${openAiApiKey}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            model: 'gpt-4o-mini',
+            messages: openAiMessages,
+            max_tokens: 1024,
+            temperature: 0.7,
+          }),
+        });
+
+        if (!openAiResponse.ok) {
+          const errorData = await openAiResponse.text();
+          console.error('OpenAI API error:', openAiResponse.status, errorData);
+          apiError = `OpenAI API error: ${openAiResponse.status}. Previous Gemini error: ${apiError}`;
+        } else {
+          const openAiData = await openAiResponse.json();
+          if (openAiData.choices && openAiData.choices[0]?.message?.content) {
+            aiResponse = openAiData.choices[0].message.content.trim();
+            console.log('OpenAI response received successfully as fallback');
+          }
+        }
+      } catch (openAiError) {
+        console.error('OpenAI API fetch error:', openAiError);
+        apiError = `OpenAI API fetch error: ${openAiError.message}. Previous Gemini error: ${apiError}`;
+      }
+    }
+
+    // Fallback to Indian legal knowledge base if both Gemini and OpenAI failed or returned empty
     if (!aiResponse || aiResponse.length < 50) {
       console.log('Using knowledge base fallback. API error:', apiError);
       aiResponse = generateIndianLegalResponse(message);
