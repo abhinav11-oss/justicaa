@@ -130,7 +130,7 @@ const Dashboard = () => {
           </div>
         )}
 
-        <div style={{ overflow: 'hidden', minHeight: 0 }} className={activeTab !== 'chat' ? 'p-4 sm:p-6 overflow-y-auto' : ''}>
+        <div style={{ overflowY: activeTab !== 'chat' ? 'auto' : 'hidden', overflowX: 'hidden', minHeight: 0 }} className={activeTab !== 'chat' ? 'p-4 sm:p-6' : ''}>
           <DashboardMainContent
             activeTab={activeTab}
             isTrialMode={isTrialMode}
