@@ -67,7 +67,7 @@ Always maintain a professional, helpful, and empowering tone while explaining co
 
     if (geminiApiKey) {
       try {
-        const geminiResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${geminiApiKey}`, {
+        const geminiResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite:generateContent?key=${geminiApiKey}`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -123,49 +123,63 @@ Always maintain a professional, helpful, and empowering tone while explaining co
       apiError = 'Gemini API key not configured';
     }
 
-    // Try OpenAI API if Gemini failed or was not configured
-    if ((!aiResponse || aiResponse.length < 50) && openAiApiKey) {
+    // Try Fallback Gemini API if primary failed or was not configured
+    if ((!aiResponse || aiResponse.length < 50) && geminiApiKey) {
       try {
-        console.log('Gemini failed or not configured. Attempting to call OpenAI API...');
+        console.log('Primary Gemini failed or not configured. Attempting to call Fallback Gemini API...');
         
-        const openAiMessages = [
-          { role: "system", content: indianLegalSystemPrompt },
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          ...conversationHistory.slice(-5).map((msg: any) => ({
-            role: msg.sender === 'user' ? 'user' : 'assistant',
-            content: msg.content
-          })),
-          { role: "user", content: message }
-        ];
-
-        const openAiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
+        const fallbackResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${geminiApiKey}`, {
           method: 'POST',
           headers: {
-            'Authorization': `Bearer ${openAiApiKey}`,
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            model: 'gpt-4o-mini',
-            messages: openAiMessages,
-            max_tokens: 4096,
-            temperature: 0.7,
+            contents: [{
+              parts: [{
+                text: fullPrompt
+              }]
+            }],
+            generationConfig: {
+              temperature: 0.7,
+              topK: 40,
+              topP: 0.95,
+              maxOutputTokens: 8192,
+            },
+            safetySettings: [
+              {
+                category: "HARM_CATEGORY_HARASSMENT",
+                threshold: "BLOCK_MEDIUM_AND_ABOVE"
+              },
+              {
+                category: "HARM_CATEGORY_HATE_SPEECH", 
+                threshold: "BLOCK_MEDIUM_AND_ABOVE"
+              },
+              {
+                category: "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+                threshold: "BLOCK_MEDIUM_AND_ABOVE"
+              },
+              {
+                category: "HARM_CATEGORY_DANGEROUS_CONTENT",
+                threshold: "BLOCK_MEDIUM_AND_ABOVE"
+              }
+            ]
           }),
         });
 
-        if (!openAiResponse.ok) {
-          const errorData = await openAiResponse.text();
-          console.error('OpenAI API error:', openAiResponse.status, errorData);
-          apiError = `OpenAI API error: ${openAiResponse.status}. Previous Gemini error: ${apiError}`;
+        if (!fallbackResponse.ok) {
+          const errorData = await fallbackResponse.text();
+          console.error('Fallback Gemini API error:', fallbackResponse.status, errorData);
+          apiError = `Fallback Gemini API error: ${fallbackResponse.status}. Previous error: ${apiError}`;
         } else {
-          const openAiData = await openAiResponse.json();
-          if (openAiData.choices && openAiData.choices[0]?.message?.content) {
-            aiResponse = openAiData.choices[0].message.content.trim();
-            console.log('OpenAI response received successfully as fallback');
+          const fallbackData = await fallbackResponse.json();
+          if (fallbackData.candidates && fallbackData.candidates[0]?.content?.parts?.[0]?.text) {
+            aiResponse = fallbackData.candidates[0].content.parts[0].text.trim();
+            console.log('Fallback Gemini response received successfully');
           }
         }
-      } catch (openAiError) {
-        console.error('OpenAI API fetch error:', openAiError);
-        apiError = `OpenAI API fetch error: ${openAiError.message}. Previous Gemini error: ${apiError}`;
+      } catch (fallbackError) {
+        console.error('Fallback Gemini API fetch error:', fallbackError);
+        apiError = `Fallback Gemini API fetch error: ${fallbackError.message}. Previous error: ${apiError}`;
       }
     }
 
