@@ -137,9 +137,11 @@ export const LawyerFinder = ({ category }: LawyerFinderProps) => {
   const handleDirections = (lawyer: LiveLawyer) => {
     let url: string;
     if (latitude && longitude) {
-      url = `https://www.google.com/maps/dir/?api=1&origin=${latitude},${longitude}&destination=${lawyer.latitude},${lawyer.longitude}`;
+      // Use Mappls navigation with user's origin coordinates and the lawyer's eLoc as destination
+      url = `https://mappls.com/navigation?places=${latitude},${longitude};${lawyer.id}&isNav=true&mode=driving`;
     } else {
-      url = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(lawyer.address)}`;
+      // If no origin, just show the place on Mappls using its eLoc
+      url = `https://mappls.com/${lawyer.id}`;
     }
     window.open(url, '_blank');
   };
