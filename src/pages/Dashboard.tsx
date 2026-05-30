@@ -83,22 +83,6 @@ const Dashboard = () => {
     return null;
   }
 
-  // Prevent any document-level scrolling as a safety net
-  useEffect(() => {
-    const prevent = (e: Event) => {
-      const target = e.target as HTMLElement;
-      // Allow scrolling only inside elements that are meant to scroll
-      if (target.closest('[data-scroll-container]')) return;
-      e.preventDefault();
-    };
-    document.addEventListener('wheel', prevent, { passive: false });
-    document.addEventListener('touchmove', prevent, { passive: false });
-    return () => {
-      document.removeEventListener('wheel', prevent);
-      document.removeEventListener('touchmove', prevent);
-    };
-  }, []);
-
   return (
     <div style={{ height: '100vh', width: '100vw', overflow: 'hidden', display: 'flex' }} className="bg-muted/40">
       <DashboardSidebar
