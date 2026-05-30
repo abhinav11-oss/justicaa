@@ -82,7 +82,7 @@ Always maintain a professional, helpful, and empowering tone while explaining co
               temperature: 0.7,
               topK: 40,
               topP: 0.95,
-              maxOutputTokens: 1024,
+              maxOutputTokens: 8192,
             },
             safetySettings: [
               {
@@ -147,7 +147,7 @@ Always maintain a professional, helpful, and empowering tone while explaining co
           body: JSON.stringify({
             model: 'gpt-4o-mini',
             messages: openAiMessages,
-            max_tokens: 1024,
+            max_tokens: 4096,
             temperature: 0.7,
           }),
         });
