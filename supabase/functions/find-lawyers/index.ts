@@ -125,7 +125,7 @@ serve(async (req) => {
   } catch (error) {
     console.error('Error in find-lawyers:', error);
     return new Response(JSON.stringify({ error: error.message, lawyers: [] }), {
-      status: 500,
+      status: 200,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   }
