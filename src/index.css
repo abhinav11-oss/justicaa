@@ -3,10 +3,9 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Critical: must be outside @layer to have highest specificity */
+/* Standard app container setup */
 html, body, #root {
-  height: 100% !important;
-  overflow: hidden !important;
+  min-height: 100vh;
   margin: 0;
   padding: 0;
 }
