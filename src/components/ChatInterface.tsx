@@ -14,7 +14,6 @@ import { Switch } from "@/components/ui/switch";
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { RecommendedLawyers } from "./RecommendedLawyers";
-import { sendMessageViaPuter } from "@/lib/puterAI";
 
 interface Message {
   id: string;
@@ -213,19 +212,16 @@ export const ChatInterface = ({ conversationId: propConversationId, onSelectConv
         onSelectConversation(conversation.id);
       }
 
-      // Build conversation history from existing messages for context
-      const conversationHistory = messages.map(msg => ({
-        role: msg.role as 'user' | 'assistant',
-        content: msg.content,
-      }));
+      const { data, error } = await supabase.functions.invoke('ai-legal-chat-hf', {
+        body: { message: content, conversation_id: currentConvId, category: "general" }
+      });
 
-      // Call Grok AI via Puter.js — no API keys needed!
-      const data = await sendMessageViaPuter(content, conversationHistory);
+      if (error) throw error;
 
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
         role: "assistant",
-        content: data.response,
+        content: data.response || "I apologize, but I couldn't process your request.",
         timestamp: new Date(),
         category: data.category,
       };
@@ -233,7 +229,6 @@ export const ChatInterface = ({ conversationId: propConversationId, onSelectConv
 
       setMessages(prev => [...prev, assistantMessage]);
 
-      // Save messages to Supabase for logged-in users
       if (user && currentConvId) {
         await supabase.from("chat_messages").insert([
           { conversation_id: currentConvId, sender: "user", content: content, created_at: userMessage.timestamp.toISOString() },
@@ -245,14 +240,13 @@ export const ChatInterface = ({ conversationId: propConversationId, onSelectConv
         setTimeout(() => setShowAuthModal(true), 2000);
       }
 
-    } catch (error: any) {
+    } catch (error) {
       console.error("Error sending message:", error);
-      const errorMsg = error?.message || "AI se connect nahi ho paa raha. Page refresh karein aur dubara try karein.";
-      toast({ title: t('common.error'), description: errorMsg, variant: "destructive" });
+      toast({ title: t('common.error'), description: "Failed to send message.", variant: "destructive" });
       const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
         role: "assistant",
-        content: `⚠️ **Error:** ${errorMsg}\n\nPlease refresh the page and try again.`,
+        content: "I'm sorry, I'm having trouble connecting right now. Please try again.",
         timestamp: new Date(),
       };
       setMessages(prev => [...prev, errorMessage]);

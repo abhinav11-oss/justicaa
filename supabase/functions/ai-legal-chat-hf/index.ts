@@ -169,15 +169,10 @@ Always maintain a professional, helpful, and empowering tone while explaining co
       }
     }
 
-    // Handle failure of both Gemini and OpenAI APIs
+    // Fallback to Indian legal knowledge base if both Gemini and OpenAI failed or returned empty
     if (!aiResponse || aiResponse.length < 50) {
-      console.error('Both Gemini and OpenAI APIs failed or were not configured. Last error:', apiError);
-      
-      const missingKeysMsg = (!geminiApiKey && !openAiApiKey) 
-        ? "No API keys configured. You must add GEMINI_API_KEY or OPENAI_API_KEY to your Supabase Edge Function secrets."
-        : "Both AI engines failed to generate a response. Please check your API quotas and billing limits.";
-        
-      aiResponse = `⚠️ **AI System Error**\n\nI apologize, but I am unable to connect to my AI engines right now.\n\n**Reason:** ${missingKeysMsg}\n\n*Note: Local predefined responses have been disabled as per your request. The AI will only function when the API connection is restored.*`;
+      console.log('Using knowledge base fallback. API error:', apiError);
+      aiResponse = generateIndianLegalResponse(message);
     }
 
     // Ensure Indian legal disclaimer is included
