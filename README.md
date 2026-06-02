@@ -1,4 +1,4 @@
-# ⚖️ Justicaa – Your AI Partner for Legal Help, Documents & Lawyers
+r,# ⚖️ Justicaa – Your AI Partner for Legal Help, Documents & Lawyers
 
 **Justicaa** is a professional-grade AI-powered legal assistant built for Indian citizens. From filing RTIs to understanding rights during police arrests, Justicaa simplifies law with intelligent chat, auto-generated legal documents, and multilingual support.
 
@@ -54,7 +54,7 @@ Justicaa is a digital legal assistant that:
 |--------------|-------------------------------------|
 | Frontend     | React + Vite + TypeScript + TailwindCSS + ShadCN |
 | Backend      | Supabase (Auth, Edge Functions, DB) |
-| AI Engine    | OpenAI GPT API + LangChain          |
+| AI Engine    | OpenAI API, Gemini API          |
 | Hosting      | Vercel                              |
 | Dev Tools    | GitHub, Postman, Supabase CLI       |
 
